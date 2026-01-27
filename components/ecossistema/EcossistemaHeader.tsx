@@ -14,6 +14,8 @@
  * 3. Area de usuario: "Entrar" ou Nome + Avatar + Dropdown
  *
  * NAO ALTERAR ESTE COMPONENTE SEM ATUALIZAR TODOS OS SISTEMAS
+ *
+ * @version 2.0.1 - Force rebuild 2024-01-27
  */
 
 import React, { useState, useRef, useEffect } from 'react';

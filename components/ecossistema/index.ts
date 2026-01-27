@@ -7,6 +7,8 @@
  * - blog.nutrifitcoach.com.br
  *
  * NAO ALTERAR SEM ATUALIZAR TODOS OS SISTEMAS
+ *
+ * @version 2.0.1
  */
 
 export { default as EcossistemaHeader } from './EcossistemaHeader';
