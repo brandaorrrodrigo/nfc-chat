@@ -1,0 +1,814 @@
+/* ========================================
+   LANDING PAGE ENHANCEMENTS v2.0 - CSS
+   ======================================== */
+
+/* ========================================
+   1. EXIT INTENT POPUP
+   ======================================== */
+
+.exit-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 14, 39, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  padding: 20px;
+}
+
+.exit-popup-overlay.active {
+  opacity: 1;
+}
+
+.exit-popup {
+  background: linear-gradient(180deg, #1a1f3a 0%, #0a0e27 100%);
+  border: 2px solid #00f5ff;
+  border-radius: 24px;
+  max-width: 600px;
+  width: 100%;
+  position: relative;
+  padding: 40px 30px;
+  box-shadow: 0 20px 60px rgba(0, 245, 255, 0.3);
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.exit-popup-overlay.active .exit-popup {
+  transform: scale(1);
+}
+
+.exit-popup-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #fff;
+  font-size: 32px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  line-height: 1;
+}
+
+.exit-popup-close:hover {
+  background: rgba(255, 0, 110, 0.2);
+  transform: rotate(90deg);
+}
+
+.exit-popup-icon {
+  font-size: 64px;
+  text-align: center;
+  margin-bottom: 20px;
+  animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.exit-popup h2 {
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, #00f5ff 0%, #ff006e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.exit-popup-subtitle {
+  text-align: center;
+  font-size: 18px;
+  color: #a8b2d1;
+  margin-bottom: 30px;
+}
+
+.exit-popup-offer {
+  background: rgba(0, 245, 255, 0.05);
+  border: 1px solid rgba(0, 245, 255, 0.2);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.exit-popup-badge {
+  background: linear-gradient(135deg, #ff006e 0%, #ff4d00 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  display: inline-block;
+  margin-bottom: 16px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.exit-popup-offer h3 {
+  font-size: 22px;
+  margin-bottom: 16px;
+  color: #fff;
+}
+
+.exit-popup-benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.exit-popup-benefits li {
+  padding: 10px 0;
+  font-size: 16px;
+  color: #a8b2d1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.exit-popup-benefits li:last-child {
+  border-bottom: none;
+}
+
+.exit-popup-benefits strong {
+  color: #00f5ff;
+}
+
+.exit-popup-urgency {
+  background: linear-gradient(135deg, rgba(255, 0, 110, 0.1) 0%, rgba(255, 77, 0, 0.1) 100%);
+  border: 1px solid rgba(255, 0, 110, 0.3);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  margin-bottom: 24px;
+  font-size: 16px;
+  color: #fff;
+}
+
+.exit-popup-urgency strong {
+  color: #ff006e;
+  font-size: 20px;
+}
+
+.exit-popup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.exit-popup-input {
+  padding: 18px 24px;
+  font-size: 16px;
+  border: 2px solid rgba(0, 245, 255, 0.3);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.exit-popup-input:focus {
+  outline: none;
+  border-color: #00f5ff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.exit-popup-btn {
+  padding: 18px 24px;
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #00f5ff 0%, #00b8c4 100%);
+  color: #0a0e27;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 24px rgba(0, 245, 255, 0.3);
+}
+
+.exit-popup-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0, 245, 255, 0.4);
+}
+
+.exit-popup-guarantee {
+  text-align: center;
+  font-size: 14px;
+  color: #a8b2d1;
+  margin-top: 16px;
+  margin-bottom: 0;
+}
+
+/* ========================================
+   2. SOCIAL PROOF NOTIFICATIONS
+   ======================================== */
+
+.social-proof-notification {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  background: linear-gradient(135deg, #1a1f3a 0%, #0a0e27 100%);
+  border: 2px solid #00f5ff;
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0 8px 32px rgba(0, 245, 255, 0.3);
+  z-index: 99999;
+  max-width: 380px;
+  transform: translateX(-120%);
+  transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.social-proof-notification.active {
+  transform: translateX(0);
+}
+
+.social-proof-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.social-proof-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+  animation: flicker 2s infinite;
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.social-proof-text {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.social-proof-name {
+  color: #00f5ff;
+  font-weight: 600;
+  display: block;
+}
+
+.social-proof-action {
+  color: #fff;
+  display: block;
+  margin: 2px 0;
+}
+
+.social-proof-meta {
+  color: #a8b2d1;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .social-proof-notification {
+    left: 15px;
+    right: 15px;
+    max-width: none;
+    bottom: 15px;
+  }
+}
+
+/* ========================================
+   3. COUNTDOWN TIMER
+   ======================================== */
+
+.countdown-timer {
+  background: linear-gradient(135deg, rgba(255, 0, 110, 0.1) 0%, rgba(0, 245, 255, 0.1) 100%);
+  border: 2px solid rgba(0, 245, 255, 0.3);
+  border-radius: 20px;
+  padding: 24px;
+  text-align: center;
+  margin: 30px auto;
+  max-width: 600px;
+}
+
+.countdown-timer.urgent {
+  animation: urgentPulse 1s infinite;
+  border-color: #ff006e;
+}
+
+@keyframes urgentPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 20px rgba(255, 0, 110, 0.3);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 0 40px rgba(255, 0, 110, 0.5);
+  }
+}
+
+.countdown-label {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 16px;
+}
+
+.countdown-digits {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.countdown-digit {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 16px 20px;
+  min-width: 90px;
+}
+
+.countdown-value {
+  display: block;
+  font-size: 36px;
+  font-weight: 700;
+  color: #00f5ff;
+  line-height: 1;
+  font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+}
+
+.countdown-unit {
+  display: block;
+  font-size: 12px;
+  color: #a8b2d1;
+  margin-top: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.countdown-separator {
+  font-size: 32px;
+  color: #00f5ff;
+  font-weight: 700;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .countdown-digit {
+    min-width: 70px;
+    padding: 12px 16px;
+  }
+
+  .countdown-value {
+    font-size: 28px;
+  }
+
+  .countdown-unit {
+    font-size: 10px;
+  }
+
+  .countdown-separator {
+    font-size: 24px;
+  }
+}
+
+/* ========================================
+   4. WHATSAPP FLOATING BUTTON
+   ======================================== */
+
+.whatsapp-float {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.4);
+  z-index: 99998;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: #fff;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 32px rgba(37, 211, 102, 0.6);
+}
+
+.whatsapp-float svg {
+  width: 32px;
+  height: 32px;
+}
+
+.whatsapp-text {
+  position: absolute;
+  right: 70px;
+  background: rgba(10, 14, 39, 0.95);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(37, 211, 102, 0.3);
+}
+
+.whatsapp-float:hover .whatsapp-text {
+  opacity: 1;
+  right: 75px;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .whatsapp-float {
+    bottom: 80px; /* Acima do social proof */
+    width: 56px;
+    height: 56px;
+  }
+
+  .whatsapp-float svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .whatsapp-text {
+    display: none;
+  }
+}
+
+/* ========================================
+   5. SCROLL PROGRESS BAR
+   ======================================== */
+
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #00f5ff 0%, #ff006e 100%);
+  z-index: 999999;
+  width: 0%;
+  transition: width 0.1s ease;
+  box-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
+}
+
+/* ========================================
+   6. "AS SEEN IN" SECTION
+   ======================================== */
+
+.as-seen-in {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 245, 255, 0.1);
+  border-radius: 20px;
+  padding: 40px;
+  margin: 60px auto;
+  max-width: 1200px;
+  text-align: center;
+}
+
+.as-seen-in h3 {
+  font-size: 16px;
+  color: #a8b2d1;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 600;
+}
+
+.as-seen-in-logos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+}
+
+.as-seen-in-logo {
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+  height: 40px;
+  filter: grayscale(100%);
+}
+
+.as-seen-in-logo:hover {
+  opacity: 1;
+  filter: grayscale(0%);
+}
+
+/* ========================================
+   7. COMPARISON SECTION
+   ======================================== */
+
+.comparison-section {
+  padding: 80px 20px;
+  background: linear-gradient(180deg, #0a0e27 0%, #1a1f3a 100%);
+}
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.comparison-card {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 24px;
+  padding: 40px;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.comparison-card.bad {
+  border: 2px solid rgba(255, 0, 110, 0.3);
+}
+
+.comparison-card.good {
+  border: 2px solid rgba(0, 245, 255, 0.5);
+  background: linear-gradient(135deg, rgba(0, 245, 255, 0.05) 0%, rgba(0, 184, 196, 0.05) 100%);
+  transform: scale(1.05);
+}
+
+.comparison-badge {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.comparison-badge.bad {
+  background: linear-gradient(135deg, #ff006e 0%, #ff4d00 100%);
+  color: #fff;
+}
+
+.comparison-badge.good {
+  background: linear-gradient(135deg, #00f5ff 0%, #00b8c4 100%);
+  color: #0a0e27;
+}
+
+.comparison-icon {
+  font-size: 64px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.comparison-title {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 30px;
+  color: #fff;
+}
+
+.comparison-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.comparison-features li {
+  padding: 14px 0;
+  font-size: 16px;
+  color: #a8b2d1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.comparison-features li:last-child {
+  border-bottom: none;
+}
+
+.comparison-card.bad .comparison-features li::before {
+  content: '❌';
+  flex-shrink: 0;
+}
+
+.comparison-card.good .comparison-features li::before {
+  content: '✅';
+  flex-shrink: 0;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .comparison-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .comparison-card.good {
+    transform: scale(1);
+  }
+
+  .exit-popup {
+    padding: 30px 20px;
+  }
+
+  .exit-popup h2 {
+    font-size: 24px;
+  }
+
+  .exit-popup-offer {
+    padding: 20px;
+  }
+}
+
+/* ========================================
+   8. MOBILE OPTIMIZATIONS
+   ======================================== */
+
+@media (max-width: 768px) {
+  /* Botões maiores para touch */
+  .btn,
+  button[type="submit"],
+  a.button {
+    min-height: 52px;
+    font-size: 16px !important;
+    padding: 16px 24px !important;
+  }
+
+  /* Input de email maior */
+  input[type="email"],
+  input[type="text"] {
+    min-height: 52px;
+    font-size: 16px !important; /* Evita zoom no iOS */
+    padding: 16px !important;
+  }
+
+  /* Tooltips mais visíveis */
+  .termo {
+    text-decoration: underline dotted;
+    text-decoration-color: #00f5ff;
+    cursor: help;
+  }
+
+  /* Espaçamento touch-friendly */
+  .email-form {
+    gap: 16px !important;
+  }
+
+  /* Textos legíveis */
+  body {
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+  }
+
+  h1 {
+    font-size: 32px !important;
+    line-height: 1.2 !important;
+  }
+
+  h2 {
+    font-size: 28px !important;
+  }
+
+  h3 {
+    font-size: 22px !important;
+  }
+}
+
+/* ========================================
+   9. ANIMATIONS & INTERACTIONS
+   ======================================== */
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation: slideInUp 0.6s ease-out;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Seleção de texto customizada */
+::selection {
+  background: rgba(0, 245, 255, 0.3);
+  color: #fff;
+}
+
+::-moz-selection {
+  background: rgba(0, 245, 255, 0.3);
+  color: #fff;
+}
+
+/* ========================================
+   10. ACCESSIBILITY
+   ======================================== */
+
+/* Focus visível para navegação por teclado */
+a:focus,
+button:focus,
+input:focus {
+  outline: 2px solid #00f5ff;
+  outline-offset: 2px;
+}
+
+/* Esconder visualmente mas manter acessível para screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Reduzir animações para quem prefere */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ========================================
+   11. LOADING STATES
+   ======================================== */
+
+.loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid #00f5ff;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ========================================
+   12. PRINT STYLES
+   ======================================== */
+
+@media print {
+  .whatsapp-float,
+  .social-proof-notification,
+  .exit-popup-overlay,
+  .scroll-progress-bar,
+  .countdown-timer {
+    display: none !important;
+  }
+}

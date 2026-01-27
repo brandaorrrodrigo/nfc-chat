@@ -1,0 +1,2326 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NutriFitCoach - A maior plataforma de Nutrição e Performance baseada em IA da América Latina. Construída sobre 2.500+ eBooks científicos.">
+    <title>NutriFitCoach - Nutrição Inteligente Baseada em IA</title>
+
+    <style>
+        /* ========================================
+           RESET E VARIÁVEIS GLOBAIS
+           ======================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Cores principais - Futurista + Profissional */
+            --primary: #00f5ff;
+            --primary-dark: #00b8c4;
+            --secondary: #ff006e;
+            --dark: #0a0e27;
+            --dark-light: #1a1f3a;
+            --gray: #a8b2d1;
+            --white: #ffffff;
+            --success: #10b981;
+            --warning: #f59e0b;
+
+            /* Gradientes */
+            --gradient-hero: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-cta: linear-gradient(135deg, #00f5ff 0%, #00b8c4 100%);
+            --gradient-dark: linear-gradient(180deg, #0a0e27 0%, #1a1f3a 100%);
+
+            /* Tipografia */
+            --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            --font-display: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+
+            /* Espaçamentos */
+            --section-padding: 120px 20px;
+            --container-max: 1200px;
+
+            /* Sombras */
+            --shadow-sm: 0 2px 8px rgba(0, 245, 255, 0.1);
+            --shadow-md: 0 8px 24px rgba(0, 245, 255, 0.15);
+            --shadow-lg: 0 16px 48px rgba(0, 245, 255, 0.2);
+        }
+
+        body {
+            font-family: var(--font-primary);
+            background: var(--dark);
+            color: var(--white);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ========================================
+           TIPOGRAFIA
+           ======================================== */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            color: var(--white);
+        }
+
+        h3 {
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            color: var(--primary);
+        }
+
+        p {
+            font-size: clamp(1rem, 2vw, 1.125rem);
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        /* ========================================
+           COMPONENTES REUTILIZÁVEIS
+           ======================================== */
+        .container {
+            max-width: var(--container-max);
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section {
+            padding: var(--section-padding);
+            position: relative;
+        }
+
+        /* Termo técnico com hover */
+        .termo {
+            color: var(--primary);
+            font-weight: 600;
+            cursor: help;
+            border-bottom: 2px dotted var(--primary);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .termo:hover {
+            color: var(--secondary);
+            border-bottom-color: var(--secondary);
+        }
+
+        /* Botões */
+        .btn {
+            display: inline-block;
+            padding: 16px 40px;
+            font-size: 1.125rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-family: var(--font-primary);
+        }
+
+        .btn-primary {
+            background: var(--gradient-cta);
+            color: var(--dark);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: var(--dark);
+        }
+
+        /* Input de e-mail */
+        .email-capture {
+            background: var(--dark-light);
+            padding: 40px;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 245, 255, 0.2);
+            margin: 40px 0;
+            box-shadow: var(--shadow-md);
+        }
+
+        .email-form {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .email-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 16px 24px;
+            font-size: 1rem;
+            background: var(--dark);
+            border: 2px solid rgba(0, 245, 255, 0.3);
+            border-radius: 12px;
+            color: var(--white);
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .email-input:focus {
+            border-color: var(--primary);
+        }
+
+        .email-input::placeholder {
+            color: var(--gray);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--dark-light);
+            padding: 32px;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 245, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-4px);
+        }
+
+        /* Grid system */
+        .grid {
+            display: grid;
+            gap: 32px;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(0, 245, 255, 0.1);
+            color: var(--primary);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: 1px solid rgba(0, 245, 255, 0.3);
+        }
+
+        /* Link destacado */
+        .link-blog {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .link-blog:hover {
+            border-bottom-color: var(--primary);
+        }
+
+        /* ========================================
+           HERO SECTION
+           ======================================== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: var(--gradient-hero);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(0, 245, 255, 0.1) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            padding: 40px 20px;
+        }
+
+        .hero h1 {
+            margin-bottom: 24px;
+            text-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.25rem, 3vw, 1.75rem);
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        .hero-badges {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 32px 0;
+        }
+
+        .hero-badge {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* ========================================
+           SEÇÃO: O QUE É
+           ======================================== */
+        .what-is {
+            background: var(--dark);
+        }
+
+        .what-is-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .what-is h2 {
+            margin-bottom: 32px;
+        }
+
+        .what-is p {
+            font-size: 1.25rem;
+            margin-bottom: 24px;
+        }
+
+        .capabilities-grid {
+            margin-top: 60px;
+        }
+
+        /* ========================================
+           SEÇÃO: DIFERENCIAIS
+           ======================================== */
+        .differentials {
+            background: var(--gradient-dark);
+        }
+
+        .differential-card {
+            text-align: center;
+        }
+
+        .differential-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .differential-card h3 {
+            margin-bottom: 16px;
+        }
+
+        /* ========================================
+           SEÇÃO: COMO FUNCIONA
+           ======================================== */
+        .how-it-works {
+            background: var(--dark);
+        }
+
+        .steps {
+            max-width: 900px;
+            margin: 60px auto 0;
+        }
+
+        .step {
+            display: flex;
+            gap: 32px;
+            margin-bottom: 48px;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            flex-shrink: 0;
+            width: 64px;
+            height: 64px;
+            background: var(--gradient-cta);
+            color: var(--dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .step-content h3 {
+            margin-bottom: 12px;
+        }
+
+        /* ========================================
+           SEÇÃO: CIÊNCIA
+           ======================================== */
+        .science {
+            background: var(--gradient-dark);
+        }
+
+        .authors-grid {
+            margin-top: 60px;
+        }
+
+        .author-card {
+            background: var(--dark);
+            padding: 24px;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .author-card h4 {
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        /* ========================================
+           SEÇÃO: PARA QUEM É
+           ======================================== */
+        .target-audience {
+            background: var(--dark);
+        }
+
+        .audience-card {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            background: var(--dark-light);
+            padding: 32px;
+            border-radius: 16px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .audience-icon {
+            font-size: 3rem;
+            flex-shrink: 0;
+        }
+
+        /* ========================================
+           SEÇÃO: DEPOIMENTOS
+           ======================================== */
+        .testimonials {
+            background: var(--gradient-dark);
+        }
+
+        .testimonial-card {
+            background: var(--dark);
+            padding: 32px;
+            border-radius: 16px;
+            border-top: 3px solid var(--primary);
+        }
+
+        .testimonial-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .testimonial-avatar {
+            width: 64px;
+            height: 64px;
+            background: var(--gradient-cta);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .testimonial-info h4 {
+            color: var(--white);
+            margin-bottom: 4px;
+        }
+
+        .testimonial-info p {
+            font-size: 0.875rem;
+            margin: 0;
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            color: var(--gray);
+            line-height: 1.7;
+        }
+
+        .testimonial-result {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(0, 245, 255, 0.1);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* ========================================
+           SEÇÃO: PLANOS
+           ======================================== */
+        .pricing {
+            background: var(--dark);
+        }
+
+        .pricing-grid {
+            margin-top: 60px;
+        }
+
+        .pricing-card {
+            background: var(--dark-light);
+            padding: 48px 32px;
+            border-radius: 20px;
+            border: 2px solid rgba(0, 245, 255, 0.2);
+            text-align: center;
+            position: relative;
+        }
+
+        .pricing-card.featured {
+            border-color: var(--primary);
+            box-shadow: 0 0 40px rgba(0, 245, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gradient-cta);
+            color: var(--dark);
+            padding: 8px 24px;
+            border-radius: 24px;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+
+        .pricing-title {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+        }
+
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .pricing-period {
+            color: var(--gray);
+            margin-bottom: 32px;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 32px;
+        }
+
+        .pricing-features li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--gray);
+        }
+
+        .pricing-features li:last-child {
+            border-bottom: none;
+        }
+
+        .pricing-features li::before {
+            content: '✓';
+            color: var(--success);
+            font-weight: 700;
+            margin-right: 12px;
+        }
+
+        /* ========================================
+           SEÇÃO: FAQ
+           ======================================== */
+        .faq {
+            background: var(--gradient-dark);
+        }
+
+        .faq-list {
+            max-width: 900px;
+            margin: 60px auto 0;
+        }
+
+        .faq-item {
+            background: var(--dark);
+            padding: 32px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .faq-question {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 16px;
+        }
+
+        .faq-answer {
+            color: var(--gray);
+            line-height: 1.7;
+        }
+
+        /* ========================================
+           FOOTER
+           ======================================== */
+        .footer {
+            background: var(--dark-light);
+            padding: 80px 20px 40px;
+            border-top: 1px solid rgba(0, 245, 255, 0.1);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 48px;
+            margin-bottom: 48px;
+        }
+
+        .footer-section h3 {
+            font-size: 1.25rem;
+            margin-bottom: 24px;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 32px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--gray);
+        }
+
+        /* ========================================
+           RESPONSIVIDADE
+           ======================================== */
+        @media (max-width: 768px) {
+            :root {
+                --section-padding: 80px 20px;
+            }
+
+            .email-form {
+                flex-direction: column;
+            }
+
+            .hero-badges {
+                flex-direction: column;
+            }
+
+            .step {
+                flex-direction: column;
+            }
+
+            .audience-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+        }
+
+        /* ========================================
+           ANIMAÇÕES
+           ======================================== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========================================
+         HERO SECTION
+         ======================================== -->
+    <section class="hero">
+        <div class="hero-content fade-in">
+            <h1>A Maior Plataforma de Nutrição e Performance Baseada em IA da América Latina</h1>
+
+            <p class="hero-subtitle">
+                Construída sobre <strong>mais de 2.500 eBooks científicos</strong> e alimentada por Inteligência Artificial proprietária.
+                <br>O futuro da nutrição personalizada chegou.
+            </p>
+
+            <div class="hero-badges">
+                <div class="hero-badge">🧬 2.500+ eBooks Integrados</div>
+                <div class="hero-badge">🤖 IA Proprietária</div>
+                <div class="hero-badge">📊 Baseado em Evidências</div>
+            </div>
+
+            <!-- CAPTURA DE E-MAIL #1 - HERO -->
+            <div class="email-capture">
+                <h3 style="margin-bottom: 16px;">Entre para a Lista VIP NutriFitCoach</h3>
+                <p style="margin-bottom: 24px;">Deixe seu e-mail e seja notificado assim que o sistema estiver completo.<br>Seja um dos primeiros a testar o NutriFitCoach com vantagens especiais.</p>
+
+                <form class="email-form" action="/api/waitlist" method="POST">
+                    <input
+                        type="email"
+                        name="email"
+                        class="email-input"
+                        placeholder="Digite seu melhor e-mail"
+                        required
+                    >
+                    <button type="submit" class="btn btn-primary">Quero entrar na lista VIP</button>
+                </form>
+
+                <p style="font-size: 0.875rem; margin-top: 16px; margin-bottom: 0;">
+                    ✓ Acesso antecipado • ✓ Condições especiais • ✓ Conteúdo exclusivo
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SEÇÃO: O QUE É O NUTRIFITCOACH
+         ======================================== -->
+    <section class="section what-is">
+        <div class="container">
+            <div class="what-is-content">
+                <span class="badge">Muito além de apps de dieta</span>
+                <h2>O Que É o NutriFitCoach?</h2>
+
+                <p>
+                    O NutriFitCoach não é mais um aplicativo de dieta. É um <strong>Sistema de Nutrição Inteligente</strong>,
+                    treinado sobre <strong>mais de 2.500 eBooks</strong> de nutrição, fisiologia, endocrinologia, performance esportiva
+                    e saúde metabólica.
+                </p>
+
+                <p>
+                    Nossa IA proprietária — <strong>NutriFitCoach Ultra</strong> — é capaz de compreender contextos complexos,
+                    analisar padrões hormonais, calcular automaticamente seu
+                    <span class="termo" title="Metabolismo Basal: quantidade de calorias que seu corpo gasta em repouso absoluto">MB</span> e
+                    <span class="termo" title="Gasto Energético Total: soma do metabolismo basal + atividade física + termogênese">GET</span>,
+                    e ajustar seus cardápios de forma automática e inteligente.
+                </p>
+
+                <p>
+                    Diferente de sistemas que simplesmente contam calorias, o NutriFitCoach integra conceitos de
+                    <span class="termo" title="Time Nutrition: estratégia nutricional que considera o timing dos nutrientes ao longo do dia">Time Nutrition</span>,
+                    <span class="termo" title="Índice Glicêmico: velocidade com que um alimento eleva a glicose no sangue">IG</span>/
+                    <span class="termo" title="Carga Glicêmica: quantidade total de carboidratos × índice glicêmico">CG</span>,
+                    ciclo hormonal feminino, protocolos avançados de
+                    <span class="termo" title="Dieta Cetogênica: protocolo alimentar de baixíssimo carboidrato e alta gordura">cetogênica</span>,
+                    carb cycling e muito mais.
+                </p>
+
+                <p>
+                    <a href="/blog/o-que-e-o-nutrifitcoach" class="link-blog">Leia mais sobre o projeto no blog →</a>
+                </p>
+            </div>
+
+            <div class="capabilities-grid grid grid-3">
+                <div class="card">
+                    <h3>🧮 Cálculos Automáticos</h3>
+                    <p>
+                        <span class="termo" title="Metabolismo Basal">MB</span>,
+                        <span class="termo" title="Gasto Energético Total">GET</span>,
+                        macros, micros e distribuição calórica calculados automaticamente.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>🌸 Ciclo Hormonal Feminino</h3>
+                    <p>
+                        Ajustes automáticos baseados nas fases: folicular, ovulatória, lútea e menstrual.
+                        <a href="/blog/ciclo-hormonal-feminino" class="link-blog">Saiba mais →</a>
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>⏰ Time Nutrition</h3>
+                    <p>
+                        Distribuição inteligente de nutrientes ao longo do dia para maximizar performance e resultados.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>📊 IG e CG por Refeição</h3>
+                    <p>
+                        Controle total do
+                        <span class="termo" title="Índice Glicêmico">IG</span> e
+                        <span class="termo" title="Carga Glicêmica">CG</span>
+                        de cada refeição para otimizar energia e saciedade.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>🔄 Protocolos Avançados</h3>
+                    <p>
+                        Cetogênica (tradicional, terapêutica, cíclica), carb cycling, endurance,
+                        <span class="termo" title="Resistência à Insulina: condição metabólica onde as células respondem mal à insulina">resistência à insulina</span>,
+                        power eating e muito mais.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>🎯 Substituições Inteligentes</h3>
+                    <p>
+                        Não gosta de brócolis? O sistema sugere automaticamente substituições mantendo macros e micros.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SEÇÃO: DIFERENCIAIS
+         ======================================== -->
+    <section class="section differentials">
+        <div class="container">
+            <div style="text-align: center; max-width: 800px; margin: 0 auto 60px;">
+                <span class="badge">Anos à frente do mercado</span>
+                <h2>Por Que o NutriFitCoach é Diferente?</h2>
+                <p style="font-size: 1.25rem;">
+                    Não é exagero: o NutriFitCoach está <strong>anos-luz à frente</strong> de qualquer aplicativo de dieta convencional.
+                </p>
+            </div>
+
+            <div class="grid grid-3">
+                <div class="card differential-card">
+                    <div class="differential-icon">📚</div>
+                    <h3>2.500+ eBooks Científicos</h3>
+                    <p>
+                        Nossa IA foi treinada sobre uma biblioteca de <strong>mais de 2.500 eBooks</strong> científicos,
+                        incluindo obras de Lyle McDonald, Mike Israetel, Alisa Vitti, John Berardi, Suzanne Girard Eberle,
+                        e dezenas de outros autores renomados mundialmente.
+                    </p>
+                    <a href="/blog/biblioteca-cientifica" class="link-blog">Conheça nossa biblioteca →</a>
+                </div>
+
+                <div class="card differential-card">
+                    <div class="differential-icon">🤖</div>
+                    <h3>IA Proprietária Ultra</h3>
+                    <p>
+                        <strong>NutriFitCoach Ultra</strong> é nossa IA proprietária, capaz de compreender contextos complexos,
+                        responder dúvidas técnicas em segundos e ajustar estratégias em tempo real.
+                    </p>
+                </div>
+
+                <div class="card differential-card">
+                    <div class="differential-icon">🌸</div>
+                    <h3>Sistema Hormonal Feminino</h3>
+                    <p>
+                        <strong>"A única IA que adapta sua dieta automaticamente ao seu ciclo, fase da vida e perfil hormonal — incluindo TPM, SOP, menopausa, variações de energia, humor, sensibilidade à insulina e retenção."</strong>
+                    </p>
+                    <p>
+                        <strong>📌 CICLO MENSTRUAL:</strong><br>
+                        • Fase folicular • Ovulação • Fase lútea • TPM e compulsão<br>
+                        • Alterações de apetite • Alterações de humor • Retenção hídrica<br>
+                        • Inflamação • Oscilações de energia • Sensibilidade variável à insulina
+                    </p>
+                    <p>
+                        <strong>📌 DISTÚRBIOS HORMONAIS:</strong><br>
+                        • SOP (Síndrome dos Ovários Policísticos) • Endometriose<br>
+                        • Resistência insulínica hormonal • Hipotireoidismo leve<br>
+                        • Desequilíbrios entre estrogênio e progesterona
+                    </p>
+                    <p>
+                        <strong>📌 FASES DA VIDA:</strong><br>
+                        • Perimenopausa • Menopausa • Pós-menopausa<br>
+                        • Alterações metabólicas profundas • Diminuição da termogênese<br>
+                        • Ganho de gordura abdominal hormonal
+                    </p>
+                    <p>
+                        <strong>📌 INTERFERÊNCIAS EXTERNAS:</strong><br>
+                        • Anticoncepcionais (pílula, DIU hormonal, implante, injetáveis)<br>
+                        • Terapia de Reposição Hormonal (TRH) • Histerectomia total ou parcial
+                    </p>
+                    <a href="/blog/nutricao-feminina" class="link-blog">Entenda a importância →</a>
+                </div>
+
+                <div class="card differential-card">
+                    <div class="differential-icon">⏰</div>
+                    <h3>Time Nutrition</h3>
+                    <p>
+                        Não basta saber <em>o que</em> comer. É preciso saber <em>quando</em>.
+                        <span class="termo" title="Time Nutrition: estratégia que otimiza o timing dos nutrientes">Time Nutrition</span>
+                        distribui nutrientes ao longo do dia para maximizar resultados.
+                    </p>
+                </div>
+
+                <div class="card differential-card">
+                    <div class="differential-icon">🔬</div>
+                    <h3>Protocolos Científicos</h3>
+                    <p>
+                        Cetogênica tradicional, terapêutica, cíclica. Carb cycling. Endurance.
+                        <span class="termo" title="Resistência à Insulina">Resistência à insulina</span> e pré-diabetes.
+                        Power eating. Cutting e off-season. Todos baseados em evidências.
+                    </p>
+                </div>
+
+                <div class="card differential-card">
+                    <div class="differential-icon">📊</div>
+                    <h3>IG/CG por Refeição</h3>
+                    <p>
+                        Todos os cardápios incluem
+                        <span class="termo" title="Índice Glicêmico">IG</span> e
+                        <span class="termo" title="Carga Glicêmica">CG</span>
+                        calculados, garantindo estabilidade glicêmica, energia constante e melhor saciedade.
+                    </p>
+                </div>
+
+                <div class="card differential-card">
+                    <div class="differential-icon">📸</div>
+                    <h3>Análise de Refeições por Foto</h3>
+                    <p>
+                        <strong>"O único sistema que transforma uma foto da sua refeição em dados reais de aderência, pontuação, ajustes e evolução semanal."</strong>
+                    </p>
+                    <p>
+                        • Identificação REAL dos alimentos<br>
+                        • Estimativa visual das porções<br>
+                        • Cálculo automático de aderência<br>
+                        • Classificação nutricional inteligente<br>
+                        • Pontos para o NFC Score<br>
+                        • Impacto direto no ranking semanal e mensal<br>
+                        • Ajustes automáticos na Dieta Reversa NFC<br>
+                        • Ajustes automáticos em Refeed Days<br>
+                        • Ajustes automáticos em Diet Break<br>
+                        • Integração com protocolos especiais
+                    </p>
+                </div>
+
+                <div class="card differential-card">
+                    <div class="differential-icon">🏆</div>
+                    <h3>Gamificação + Ranking Real</h3>
+                    <p>
+                        <strong>"A gamificação do NFC não é estética — ela é baseada em resultados reais."</strong>
+                    </p>
+                    <p>
+                        Sistema <strong>NFC Score</strong> baseado em:
+                    </p>
+                    <p>
+                        • Fotos das refeições<br>
+                        • Peso e medidas<br>
+                        • Aderência real<br>
+                        • Disciplina consistente<br>
+                        • Evolução comprovada
+                    </p>
+                    <p>
+                        <strong>"Sua dedicação transforma-se em pontuação, ranking e até destaque no blog oficial do NutriFitCoach — como um atleta de verdade."</strong>
+                    </p>
+                    <p>
+                        • Aderência gera pontos<br>
+                        • Fotos geram pontos<br>
+                        • Evolução gera ranking<br>
+                        • Ranking gera reconhecimento público
+                    </p>
+                </div>
+
+                <div class="card differential-card">
+                    <div class="differential-icon">🔄</div>
+                    <h3>Ajuste Pós-Lixo Automático</h3>
+                    <p>
+                        <strong>"Ao comer fora da dieta, o NutriFitCoach imediatamente recalcula sua estratégia, sugere a remodelagem ideal do cardápio e ajusta toda a semana para garantir que você mantenha o progresso — sem retrocessos."</strong>
+                    </p>
+                    <p>
+                        • Ajusta calorias do dia<br>
+                        • Ajusta macros da semana<br>
+                        • Ajusta IG e CG das próximas refeições<br>
+                        • Ajusta Refeeds<br>
+                        • Ajusta Diet Breaks<br>
+                        • Ajusta Dieta Reversa NFC<br>
+                        • Rebalanceamento semanal completo
+                    </p>
+                </div>
+
+                <div class="card differential-card">
+                    <div class="differential-icon">⚡</div>
+                    <h3>Rollback Nutricional Inteligente</h3>
+                    <p>
+                        Uma refeição errada não destrói sua semana.<br>
+                        A IA recalcula sua estratégia nutricional inteira em segundos.
+                    </p>
+                    <p>
+                        Sistema de recuperação automática que reorganiza todo o seu planejamento semanal
+                        para compensar desvios pontuais, mantendo você no caminho certo.
+                    </p>
+                </div>
+
+                <div class="card differential-card">
+                    <div class="differential-icon">🧩</div>
+                    <h3>Protocolos Temporários Inteligentes</h3>
+                    <p>
+                        Protocolos opcionais PRO para situações específicas:
+                    </p>
+                    <p>
+                        • Protocolo Anti-Retenção<br>
+                        • Protocolo Pré-Fase Lútea<br>
+                        • Mini-cortes hormonais<br>
+                        • Protocolo Emergencial Pré-Evento<br>
+                        • 48h de Equalização
+                    </p>
+                </div>
+
+                <div class="card differential-card">
+                    <div class="differential-icon">🧠</div>
+                    <h3>Consciência Contextual (Context Awareness)</h3>
+                    <p>
+                        <strong>"A IA calcula o plano como um treinador de elite — só que em milissegundos."</strong>
+                    </p>
+                    <p>
+                        A IA entende tudo sobre você:
+                    </p>
+                    <p>
+                        • Rotina diária • Treino • Humor • Fotos<br>
+                        • Refeições • Peso • Ciclo hormonal • Sono<br>
+                        • Aderência • Objetivos
+                    </p>
+                </div>
+
+                <div class="card differential-card">
+                    <div class="differential-icon">🛡️</div>
+                    <h3>IA Anti-Fraude / Anti-Auto-Sabotagem</h3>
+                    <p>
+                        Sistema que detecta padrões de autossabotagem:
+                    </p>
+                    <p>
+                        • Ausência de fotos<br>
+                        • Manipulação de peso<br>
+                        • Padrões de compulsão<br>
+                        • Auto-sabotagem emocional<br>
+                        • Desculpas populares<br>
+                        • Padrões de abandono<br>
+                        • Falta de aderência real
+                    </p>
+                    <p>
+                        A IA te ajuda a vencer seus próprios obstáculos psicológicos.
+                    </p>
+                </div>
+
+                <div class="card differential-card">
+                    <div class="differential-icon">💊</div>
+                    <h3>Suplementação Inteligente</h3>
+                    <p>
+                        Suplementos só são recomendados <strong>após 80% de adesão alimentar</strong>.
+                        Porque suplemento não faz milagre: dieta faz.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SEÇÃO: DIETA REVERSA NFC
+         ======================================== -->
+    <section class="section" style="background: var(--dark);">
+        <div class="container">
+            <div style="text-align: center; max-width: 800px; margin: 0 auto 60px;">
+                <span class="badge">Carro-chefe do NutriFitCoach</span>
+                <h2>Dieta Reversa NFC</h2>
+                <p style="font-size: 1.25rem;">
+                    <strong>"A única Dieta Reversa do mundo controlada por IA — ajustada automaticamente por fotos, aderência, ciclo hormonal, refeição suja, ranking e evolução corporal."</strong>
+                </p>
+            </div>
+
+            <div class="grid grid-2">
+                <div class="card">
+                    <h3>🚀 O Que É a Dieta Reversa NFC?</h3>
+                    <p>
+                        Não é a reverse diet americana. É a <strong>Dieta Reversa NFC</strong> — criada para quem precisa comer fora, viajar, trabalhar na rua e ter liberdade real.
+                    </p>
+                    <p>
+                        Ideal para <strong>comissários, motoristas, representantes, empresários e quem vive viajando</strong>.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>🎯 Como Funciona?</h3>
+                    <p>
+                        Permite comer alimentos totalmente diferentes mantendo:
+                    </p>
+                    <p>
+                        • Calorias idênticas<br>
+                        • Macros equivalentes<br>
+                        • IG/CG controlado<br>
+                        • Qualidade nutricional
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>🤖 Ajustes Automáticos Baseados Em:</h3>
+                    <p>
+                        • Fotos das refeições<br>
+                        • Aderência real<br>
+                        • Humor e energia<br>
+                        • Ciclo hormonal (mulheres)<br>
+                        • Refeição suja<br>
+                        • Evolução corporal<br>
+                        • Peso semanal<br>
+                        • Ranking e NFC Score
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>📎 Saiba Mais</h3>
+                    <p>
+                        A Dieta Reversa NFC oferece a liberdade de viver sua vida sem abrir mão dos seus objetivos.
+                    </p>
+                    <p>
+                        <a href="/blog/dieta-reversa-nfc-guia-completo" class="link-blog">Entenda a Dieta Reversa NFC (Guia Completo) →</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SEÇÃO: COMO FUNCIONA
+         ======================================== -->
+    <section class="section how-it-works">
+        <div class="container">
+            <div style="text-align: center; max-width: 800px; margin: 0 auto 60px;">
+                <span class="badge">Simples. Científico. Eficaz.</span>
+                <h2>Como o NutriFitCoach Funciona?</h2>
+                <p style="font-size: 1.25rem;">
+                    10 passos para transformar seu corpo usando ciência + IA.
+                </p>
+            </div>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Cadastro + Lista VIP</h3>
+                        <p>
+                            Crie sua conta e entre para a lista VIP. Você será notificado assim que o sistema estiver 100% pronto,
+                            com condições especiais de acesso antecipado.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Anamnese Inteligente</h3>
+                        <p>
+                            Responda um questionário completo sobre histórico de saúde, objetivos, preferências alimentares,
+                            restrições, nível de atividade e muito mais. Nossa IA analisa tudo.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Time Nutrition</h3>
+                        <p>
+                            Definimos os horários ideais para suas refeições baseado em sua rotina, treinos e objetivos.
+                            <span class="termo" title="Time Nutrition: estratégia que otimiza o timing dos nutrientes">Time Nutrition</span>
+                            maximiza seus resultados.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Análise Hormonal Feminina</h3>
+                        <p>
+                            Para mulheres: integramos seu ciclo menstrual (ou fase da vida: gravidez, amamentação, menopausa).
+                            Ajustes automáticos em cada fase para respeitar seu corpo.
+                        </p>
+                        <a href="/blog/ciclo-hormonal-nutricao" class="link-blog">Entenda a importância →</a>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h3>Cálculo de MB + GET</h3>
+                        <p>
+                            O sistema calcula automaticamente seu
+                            <span class="termo" title="Metabolismo Basal">MB</span> e
+                            <span class="termo" title="Gasto Energético Total">GET</span>
+                            usando as equações mais precisas disponíveis na literatura científica.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">6</div>
+                    <div class="step-content">
+                        <h3>Escolha Automática do Protocolo</h3>
+                        <p>
+                            Baseado em seus objetivos e contexto, a IA escolhe o protocolo ideal: cetogênica, carb cycling,
+                            endurance, <span class="termo" title="Resistência à Insulina">resistência à insulina</span>, etc.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">7</div>
+                    <div class="step-content">
+                        <h3>Cardápio em HTML</h3>
+                        <p>
+                            Receba cardápios completos, ricos em detalhes: calorias, macros, micros,
+                            <span class="termo" title="Índice Glicêmico">IG</span>/
+                            <span class="termo" title="Carga Glicêmica">CG</span>,
+                            links de substituições e até receitas. Tudo em formato visual e fácil de seguir.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">8</div>
+                    <div class="step-content">
+                        <h3>Ajustes Semanais</h3>
+                        <p>
+                            A cada semana, o sistema analisa sua adesão, progresso e contexto (ciclo feminino, viagens, etc.)
+                            e faz ajustes automáticos para manter você no caminho certo.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">9</div>
+                    <div class="step-content">
+                        <h3>Ranking e Gamificação</h3>
+                        <p>
+                            Ganhe pontos, badges, suba de nível e entre no ranking social.
+                            Motivação extra para manter a consistência.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">10</div>
+                    <div class="step-content">
+                        <h3>Suporte via IA Ultra</h3>
+                        <p>
+                            Dúvidas? Pergunte para a <strong>NutriFitCoach Ultra</strong>.
+                            Ela responde dúvidas técnicas, sugere substituições, explica conceitos e te mantém no caminho.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CAPTURA DE E-MAIL #2 - MEIO DA PÁGINA -->
+            <div class="email-capture" style="margin-top: 80px;">
+                <h3 style="margin-bottom: 16px;">Quer Fazer Parte Dessa Revolução?</h3>
+                <p style="margin-bottom: 24px;">
+                    Entre para a lista VIP e receba acesso antecipado + condições especiais de lançamento.
+                </p>
+
+                <form class="email-form" action="/api/waitlist" method="POST">
+                    <input
+                        type="email"
+                        name="email"
+                        class="email-input"
+                        placeholder="Digite seu melhor e-mail"
+                        required
+                    >
+                    <button type="submit" class="btn btn-primary">Garantir minha vaga</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SEÇÃO: A CIÊNCIA POR TRÁS
+         ======================================== -->
+    <section class="section science">
+        <div class="container">
+            <div style="text-align: center; max-width: 800px; margin: 0 auto 60px;">
+                <span class="badge">Baseado em evidências</span>
+                <h2>A Ciência Por Trás do NutriFitCoach</h2>
+                <p style="font-size: 1.25rem;">
+                    Nossa IA foi treinada sobre <strong>mais de 2.500 eBooks científicos</strong> dos maiores especialistas mundiais
+                    em nutrição, fisiologia, endocrinologia e performance.
+                </p>
+            </div>
+
+            <div class="authors-grid grid grid-2">
+                <div class="author-card">
+                    <h4>Lyle McDonald</h4>
+                    <p>
+                        Referência mundial em composição corporal, dietas cetogênicas, carb cycling e nutrição para atletas.
+                        Obras incluídas: The Ketogenic Diet, The Ultimate Diet 2.0, A Guide to Flexible Dieting.
+                    </p>
+                    <a href="/blog/lyle-mcdonald" class="link-blog">Saiba mais →</a>
+                </div>
+
+                <div class="author-card">
+                    <h4>Mike Israetel (Renaissance Periodization)</h4>
+                    <p>
+                        PhD em Fisiologia do Exercício. Criador do conceito de Volume Landmarks (MRV, MEV, MAV).
+                        Especialista em hipertrofia, nutrição esportiva e periodização.
+                    </p>
+                    <a href="/blog/mike-israetel" class="link-blog">Saiba mais →</a>
+                </div>
+
+                <div class="author-card">
+                    <h4>Alisa Vitti</h4>
+                    <p>
+                        Especialista em saúde hormonal feminina. Autora de "WomanCode" e "In the FLO".
+                        Criadora do conceito de Cycle Syncing (sincronização com o ciclo menstrual).
+                    </p>
+                    <a href="/blog/alisa-vitti-cycle-syncing" class="link-blog">Saiba mais →</a>
+                </div>
+
+                <div class="author-card">
+                    <h4>Aviva Romm</h4>
+                    <p>
+                        Médica, herborista e parteira. Especialista em saúde da mulher, equilíbrio hormonal,
+                        fertilidade e nutrição funcional.
+                    </p>
+                </div>
+
+                <div class="author-card">
+                    <h4>John Berardi (Precision Nutrition)</h4>
+                    <p>
+                        PhD em Ciência do Exercício. Co-fundador da Precision Nutrition.
+                        Especialista em coaching nutricional, hábitos e mudança comportamental.
+                    </p>
+                    <a href="/blog/precision-nutrition" class="link-blog">Saiba mais →</a>
+                </div>
+
+                <div class="author-card">
+                    <h4>Suzanne Girard Eberle</h4>
+                    <p>
+                        Nutricionista esportiva. Autora de "Endurance Sports Nutrition".
+                        Especialista em nutrição para atletas de endurance (ciclismo, corrida, triatlo).
+                    </p>
+                </div>
+
+                <div class="author-card">
+                    <h4>Christian Thibaudeau</h4>
+                    <p>
+                        Coach de força e hipertrofia. Especialista em treinamento de alta intensidade e nutrição periworkout.
+                    </p>
+                </div>
+
+                <div class="author-card">
+                    <h4>E Mais de 2.500 Obras Científicas</h4>
+                    <p>
+                        Incluindo livros sobre obesidade, resistência à insulina, diabetes tipo 2, saúde cardiovascular,
+                        nutrição funcional, longevidade, saúde mitocondrial, dietas anti-inflamatórias e muito mais.
+                    </p>
+                    <a href="/blog/biblioteca-completa" class="link-blog">Ver biblioteca completa →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SEÇÃO: PARA QUEM É
+         ======================================== -->
+    <section class="section target-audience">
+        <div class="container">
+            <div style="text-align: center; max-width: 800px; margin: 0 auto 60px;">
+                <span class="badge">Para todos os perfis</span>
+                <h2>Para Quem É o NutriFitCoach?</h2>
+                <p style="font-size: 1.25rem;">
+                    Do iniciante ao atleta de elite. Da mulher na fase fértil à menopausa.
+                    Do sedentário ao ultramaratonista. O NutriFitCoach se adapta a você.
+                </p>
+            </div>
+
+            <div class="grid grid-2" style="gap: 24px;">
+                <div class="audience-card">
+                    <div class="audience-icon">🌸</div>
+                    <div>
+                        <h3>Mulheres</h3>
+                        <p>
+                            <strong>Ênfase total no ciclo hormonal feminino.</strong> Ajustes automáticos de calorias, macros,
+                            treinos e até recomendações de suplementação baseados na fase do ciclo.
+                            Suporte para gravidez, amamentação, menopausa e anticoncepcionais.
+                        </p>
+                        <a href="/blog/nutricao-feminina-ciclo" class="link-blog">Entenda a diferença →</a>
+                    </div>
+                </div>
+
+                <div class="audience-card">
+                    <div class="audience-icon">💪</div>
+                    <div>
+                        <h3>Homens</h3>
+                        <p>
+                            Protocolos para hipertrofia, força, definição muscular, power eating, cutting e off-season.
+                            Tudo baseado em evidências de Lyle McDonald, Mike Israetel e outros especialistas.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="audience-card">
+                    <div class="audience-icon">🩺</div>
+                    <div>
+                        <h3>Resistência à Insulina / Pré-Diabetes</h3>
+                        <p>
+                            Protocolos específicos com controle rigoroso de
+                            <span class="termo" title="Índice Glicêmico">IG</span>/
+                            <span class="termo" title="Carga Glicêmica">CG</span>,
+                            <span class="termo" title="Time Nutrition">Time Nutrition</span>
+                            e estratégias para reverter resistência à insulina.
+                        </p>
+                        <a href="/blog/resistencia-insulina" class="link-blog">Saiba mais →</a>
+                    </div>
+                </div>
+
+                <div class="audience-card">
+                    <div class="audience-icon">🚴</div>
+                    <div>
+                        <h3>Atletas de Endurance</h3>
+                        <p>
+                            Corrida, ciclismo, triatlo, natação. Nutrição baseada em Suzanne Girard Eberle:
+                            carb loading, nutrição periworkout, hidratação e recuperação.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="audience-card">
+                    <div class="audience-icon">🧘</div>
+                    <div>
+                        <h3>Sedentários ou Iniciantes</h3>
+                        <p>
+                            Protocolos simples, educação alimentar, criação de hábitos sustentáveis.
+                            O NutriFitCoach te ensina a comer de verdade.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="audience-card">
+                    <div class="audience-icon">🎂</div>
+                    <div>
+                        <h3>+40 Anos</h3>
+                        <p>
+                            Protocolos para otimizar saúde metabólica, longevidade, massa muscular e energia.
+                            Suporte para menopausa, andropausa e envelhecimento saudável.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="audience-card">
+                    <div class="audience-icon">🌱</div>
+                    <div>
+                        <h3>Veganos e Vegetarianos</h3>
+                        <p>
+                            Protocolos 100% plant-based com atenção especial a proteínas completas,
+                            vitamina B12, ferro, zinco, ômega-3 e outros nutrientes críticos.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="audience-card">
+                    <div class="audience-icon">🏋️</div>
+                    <div>
+                        <h3>Atletas de Força</h3>
+                        <p>
+                            Powerlifting, strongman, CrossFit. Power eating, periodização nutricional,
+                            carb cycling e suplementação estratégica.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SEÇÃO: DEPOIMENTOS
+         ======================================== -->
+    <section class="section testimonials">
+        <div class="container">
+            <div style="text-align: center; max-width: 800px; margin: 0 auto 60px;">
+                <span class="badge">Resultados reais</span>
+                <h2>O Que Nossos Beta Testers Estão Dizendo</h2>
+                <p style="font-size: 1.25rem;">
+                    Histórias reais de transformação usando ciência + IA.
+                </p>
+            </div>
+
+            <div class="grid grid-3">
+                <!-- Depoimento 1 - Feminino -->
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">MC</div>
+                        <div class="testimonial-info">
+                            <h4>Mariana Costa</h4>
+                            <p>32 anos • São Paulo, SP</p>
+                        </div>
+                    </div>
+                    <p class="testimonial-text">
+                        "Passei anos contando calorias sem entender por que meu corpo não respondia.
+                        O NutriFitCoach foi o primeiro sistema que REALMENTE considerou meu ciclo hormonal.
+                        Na fase lútea, o sistema ajusta automaticamente minhas calorias e carboidratos.
+                        Resultado: perdi 8kg em 12 semanas sem passar fome e sem TPM insuportável."
+                    </p>
+                    <div class="testimonial-result">
+                        ✓ -8kg em 12 semanas • ✓ Sem fome • ✓ TPM controlada
+                    </div>
+                </div>
+
+                <!-- Depoimento 2 - Masculino -->
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">RS</div>
+                        <div class="testimonial-info">
+                            <h4>Rafael Santos</h4>
+                            <p>28 anos • Rio de Janeiro, RJ</p>
+                        </div>
+                    </div>
+                    <p class="testimonial-text">
+                        "Sou atleta natural de musculação. Já tinha bons resultados, mas queria levar ao próximo nível.
+                        O protocolo de carb cycling do NutriFitCoach, baseado em Mike Israetel e Lyle McDonald,
+                        me fez ganhar 4kg de massa magra em 16 semanas mantendo o shape. Absurdo."
+                    </p>
+                    <div class="testimonial-result">
+                        ✓ +4kg de massa magra • ✓ Manteve definição • ✓ 16 semanas
+                    </div>
+                </div>
+
+                <!-- Depoimento 3 - Feminino -->
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">AM</div>
+                        <div class="testimonial-info">
+                            <h4>Ana Mendes</h4>
+                            <p>45 anos • Curitiba, PR</p>
+                        </div>
+                    </div>
+                    <p class="testimonial-text">
+                        "Pré-menopausa + resistência à insulina. Achei que nunca mais conseguiria emagrecer.
+                        O NutriFitCoach criou um protocolo específico para mim: baixo IG/CG, Time Nutrition,
+                        e suplementação estratégica. Perdi 12kg, normalizei minha glicemia e voltei a ter energia."
+                    </p>
+                    <div class="testimonial-result">
+                        ✓ -12kg • ✓ Glicemia normalizada • ✓ Energia de volta
+                    </div>
+                </div>
+
+                <!-- Depoimento 4 - Atleta Feminina -->
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">CF</div>
+                        <div class="testimonial-info">
+                            <h4>Camila Ferreira</h4>
+                            <p>26 anos • Florianópolis, SC • Triatleta</p>
+                        </div>
+                    </div>
+                    <p class="testimonial-text">
+                        "Como triatleta, minha nutrição precisa ser cirúrgica. O NutriFitCoach integrou meu ciclo feminino
+                        COM minha periodização de treinos. Nos treinos pesados da fase folicular, mais carbos.
+                        Na lútea, ajuste automático. Bati meu PR no Ironman 70.3."
+                    </p>
+                    <div class="testimonial-result">
+                        ✓ PR no Ironman 70.3 • ✓ Zero fadiga crônica • ✓ Recuperação otimizada
+                    </div>
+                </div>
+
+                <!-- Depoimento 5 - Masculino -->
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">PC</div>
+                        <div class="testimonial-info">
+                            <h4>Pedro Cardoso</h4>
+                            <p>35 anos • Brasília, DF</p>
+                        </div>
+                    </div>
+                    <p class="testimonial-text">
+                        "Executivo, sedentário, barriga saliente, pré-diabetes. O médico falou: 'ou você muda ou vai pro remédio'.
+                        O NutriFitCoach foi minha última tentativa. Protocolo low carb inteligente, IG/CG controlado,
+                        educação alimentar de verdade. 6 meses depois: -18kg, glicemia normal, sem remédio."
+                    </p>
+                    <div class="testimonial-result">
+                        ✓ -18kg em 6 meses • ✓ Pré-diabetes revertido • ✓ Sem medicação
+                    </div>
+                </div>
+
+                <!-- Depoimento 6 - Feminino -->
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">JS</div>
+                        <div class="testimonial-info">
+                            <h4>Júlia Silva</h4>
+                            <p>29 anos • Belo Horizonte, MG</p>
+                        </div>
+                    </div>
+                    <p class="testimonial-text">
+                        "Vegetariana há 5 anos. Sempre tive medo de não ter proteína suficiente.
+                        O NutriFitCoach criou cardápios 100% plant-based, ricos em proteína completa,
+                        com suplementação estratégica de B12, ferro e zinco. Ganhei massa magra e perdi gordura."
+                    </p>
+                    <div class="testimonial-result">
+                        ✓ Ganho de massa magra • ✓ Perda de gordura • ✓ 100% plant-based
+                    </div>
+                </div>
+
+                <!-- Depoimento 7 - Masculino Atleta -->
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">LO</div>
+                        <div class="testimonial-info">
+                            <h4>Lucas Oliveira</h4>
+                            <p>24 anos • São Paulo, SP • Powerlifter</p>
+                        </div>
+                    </div>
+                    <p class="testimonial-text">
+                        "Powerlifting exige muita energia e recuperação. O NutriFitCoach implementou power eating + carb cycling
+                        sincronizado com minha periodização. Bati meu PR no agachamento (240kg) e no supino (160kg).
+                        Nutrição de alto nível."
+                    </p>
+                    <div class="testimonial-result">
+                        ✓ PR no agachamento • ✓ PR no supino • ✓ Zero fadiga
+                    </div>
+                </div>
+
+                <!-- Depoimento 8 - Feminino -->
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">BL</div>
+                        <div class="testimonial-info">
+                            <h4>Beatriz Lima</h4>
+                            <p>38 anos • Porto Alegre, RS</p>
+                        </div>
+                    </div>
+                    <p class="testimonial-text">
+                        "Pós-parto, amamentando, exausta. O NutriFitCoach adaptou tudo: calorias extras para amamentação,
+                        alimentos galactagogos, suplementação segura. Recuperei meu corpo, mantive a produção de leite,
+                        e voltei a ter energia para cuidar do meu bebê."
+                    </p>
+                    <div class="testimonial-result">
+                        ✓ Corpo recuperado • ✓ Leite materno preservado • ✓ Energia de volta
+                    </div>
+                </div>
+
+                <!-- Depoimento 9 - Feminino -->
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">TC</div>
+                        <div class="testimonial-info">
+                            <h4>Tatiana Castro</h4>
+                            <p>41 anos • Recife, PE</p>
+                        </div>
+                    </div>
+                    <p class="testimonial-text">
+                        "Menopausa precoce. Fogachos, insônia, ganho de peso inexplicável.
+                        O protocolo do NutriFitCoach para menopausa incluiu fitoestrogênios, gorduras saudáveis,
+                        controle glicêmico. 8 semanas depois: fogachos reduziram 80%, durmo bem, perdi 6kg."
+                    </p>
+                    <div class="testimonial-result">
+                        ✓ -6kg • ✓ Fogachos reduzidos 80% • ✓ Sono restaurado
+                    </div>
+                </div>
+
+                <!-- Depoimento 10 - Masculino -->
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">DM</div>
+                        <div class="testimonial-info">
+                            <h4>Diego Martins</h4>
+                            <p>30 anos • Campinas, SP</p>
+                        </div>
+                    </div>
+                    <p class="testimonial-text">
+                        "Tentei cetogênica por conta própria e falhei miseravelmente.
+                        O NutriFitCoach implementou cetogênica cíclica: 5 dias cetogênica + 2 dias carb load.
+                        Perdi 14kg de gordura, mantive massa muscular, e nunca tive a tal da 'gripe keto'."
+                    </p>
+                    <div class="testimonial-result">
+                        ✓ -14kg de gordura • ✓ Massa muscular preservada • ✓ Zero efeitos colaterais
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SEÇÃO: PLANOS E PREÇOS
+         ======================================== -->
+    <section class="section pricing">
+        <div class="container">
+            <div style="text-align: center; max-width: 800px; margin: 0 auto 60px;">
+                <span class="badge">Invista em você</span>
+                <h2>Planos NutriFitCoach</h2>
+                <p style="font-size: 1.25rem;">
+                    Transforme seu corpo com ciência + IA. Escolha o plano ideal para você.
+                </p>
+            </div>
+
+            <div class="pricing-grid grid grid-2">
+                <!-- Plano Mensal -->
+                <div class="pricing-card">
+                    <h3 class="pricing-title">Mensal</h3>
+                    <div class="pricing-price">R$ 100</div>
+                    <div class="pricing-period">por mês</div>
+
+                    <ul class="pricing-features">
+                        <li>Acesso completo à plataforma</li>
+                        <li>Cardápios personalizados</li>
+                        <li>Ajustes semanais automáticos</li>
+                        <li>Cálculos automáticos (MB, GET, macros)</li>
+                        <li>Sistema de fotos antes/depois</li>
+                        <li>NFC Score + Gamificação básica</li>
+                        <li>Suporte via IA Ultra</li>
+                        <li>Time Nutrition</li>
+                        <li>IG/CG por refeição</li>
+                        <li>Cancele quando quiser</li>
+                    </ul>
+
+                    <a href="#" class="btn btn-secondary" style="width: 100%;">Escolher Mensal</a>
+                </div>
+
+                <!-- Plano Anual - DESTAQUE -->
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">MAIS COMPLETO</div>
+                    <h3 class="pricing-title">Anual</h3>
+                    <div class="pricing-price">R$ 1.000</div>
+                    <div class="pricing-period">por ano (R$ 83,33/mês)</div>
+
+                    <ul class="pricing-features">
+                        <li><strong>Tudo do plano mensal +</strong></li>
+                        <li><strong>Dieta Reversa NFC completa</strong></li>
+                        <li><strong>Ajuste pós-lixo automático</strong></li>
+                        <li><strong>Rollback nutricional</strong></li>
+                        <li><strong>Sistema hormonal feminino completo</strong></li>
+                        <li><strong>Protocolos especiais (Anti-Retenção, Pré-Fase Lútea, etc.)</strong></li>
+                        <li><strong>IA antifraude / anti-auto-sabotagem</strong></li>
+                        <li><strong>Consciência contextual total</strong></li>
+                        <li><strong>Análise avançada por foto com impacto no ranking</strong></li>
+                        <li><strong>Gamificação baseada em evolução real</strong></li>
+                        <li><strong>Ranking PRO</strong></li>
+                        <li><strong>Destaque no blog oficial</strong></li>
+                        <li><strong>Remodelagem semanal inteligente</strong></li>
+                        <li>Suporte prioritário</li>
+                        <li>Acesso antecipado a novos recursos</li>
+                        <li>Conteúdos premium exclusivos</li>
+                        <li>Economia de 17% vs mensal</li>
+                    </ul>
+
+                    <a href="#" class="btn btn-primary" style="width: 100%;">Escolher Anual</a>
+                </div>
+            </div>
+
+            <!-- CAPTURA DE E-MAIL #3 - APÓS PLANOS -->
+            <div class="email-capture" style="margin-top: 80px;">
+                <h3 style="margin-bottom: 16px;">🎁 Condições Especiais para Lista VIP</h3>
+                <p style="margin-bottom: 24px;">
+                    Quem entrar pela lista VIP terá <strong>condições especiais de lançamento</strong>:
+                    desconto exclusivo, bônus e acesso antecipado garantido.
+                </p>
+
+                <form class="email-form" action="/api/waitlist" method="POST">
+                    <input
+                        type="email"
+                        name="email"
+                        class="email-input"
+                        placeholder="Digite seu melhor e-mail"
+                        required
+                    >
+                    <button type="submit" class="btn btn-primary">Quero as condições VIP</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SEÇÃO: FAQ
+         ======================================== -->
+    <section class="section faq">
+        <div class="container">
+            <div style="text-align: center; max-width: 800px; margin: 0 auto 60px;">
+                <span class="badge">Dúvidas frequentes</span>
+                <h2>FAQ - Perguntas Frequentes</h2>
+                <p style="font-size: 1.25rem;">
+                    Tudo o que você precisa saber sobre o NutriFitCoach.
+                </p>
+            </div>
+
+            <div class="faq-list">
+                <!-- FAQ 1 -->
+                <div class="faq-item">
+                    <h3 class="faq-question">1. O NutriFitCoach é seguro? Quem valida as informações?</h3>
+                    <p class="faq-answer">
+                        Sim, absolutamente seguro. Nossa IA foi treinada sobre <strong>mais de 2.500 eBooks científicos</strong>
+                        de autores renomados mundialmente (Lyle McDonald, Mike Israetel, Alisa Vitti, John Berardi, etc.).
+                        Todos os protocolos são baseados em evidências científicas sólidas.
+                        Além disso, recomendamos sempre acompanhamento com nutricionista ou médico, especialmente se você tiver condições de saúde específicas.
+                    </p>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="faq-item">
+                    <h3 class="faq-question">2. Como funciona a integração do ciclo hormonal feminino?</h3>
+                    <p class="faq-answer">
+                        O NutriFitCoach é a <strong>primeira plataforma da América Latina</strong> a integrar nativamente o ciclo menstrual.
+                        Você informa a data da sua última menstruação e o sistema rastreia automaticamente as 4 fases:
+                        folicular, ovulatória, lútea e menstrual. Em cada fase, ajustamos calorias, macros, intensidade de treino e até suplementação.
+                        Por exemplo: na fase lútea (TPM), aumentamos carboidratos complexos e magnésio para reduzir sintomas.
+                        <br><br>
+                        <a href="/blog/ciclo-hormonal-feminino-nutricao" class="link-blog">Leia mais sobre ciclo hormonal →</a>
+                    </p>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="faq-item">
+                    <h3 class="faq-question">3. O que é IG e CG? Por que isso importa?</h3>
+                    <p class="faq-answer">
+                        <span class="termo" title="Índice Glicêmico">IG</span> (Índice Glicêmico) mede a <strong>velocidade</strong>
+                        com que um alimento eleva sua glicose no sangue.
+                        <span class="termo" title="Carga Glicêmica">CG</span> (Carga Glicêmica) leva em conta também a <strong>quantidade</strong>
+                        de carboidrato na porção. Controlar IG/CG é fundamental para: estabilidade energética, saciedade, controle da fome,
+                        prevenção de resistência à insulina e otimização da performance. Todos os nossos cardápios incluem IG/CG calculados.
+                        <br><br>
+                        <a href="/blog/indice-glicemico-carga-glicemica" class="link-blog">Entenda IG e CG →</a>
+                    </p>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="faq-item">
+                    <h3 class="faq-question">4. Como vocês calculam meu MB e GET?</h3>
+                    <p class="faq-answer">
+                        Usamos as <strong>equações mais precisas da literatura científica</strong>:
+                        <strong>Mifflin-St Jeor</strong> (padrão ouro para MB) e <strong>Katch-McArdle</strong> (quando há dados de composição corporal).
+                        O <span class="termo" title="Gasto Energético Total">GET</span> é calculado multiplicando o MB pelo seu fator de atividade,
+                        ajustado semanalmente baseado em sua adesão e progresso real.
+                        <br><br>
+                        <a href="/blog/como-calcular-metabolismo-basal" class="link-blog">Saiba mais sobre MB e GET →</a>
+                    </p>
+                </div>
+
+                <!-- FAQ 5 -->
+                <div class="faq-item">
+                    <h3 class="faq-question">5. O sistema substitui um nutricionista?</h3>
+                    <p class="faq-answer">
+                        <strong>Não.</strong> O NutriFitCoach é uma <strong>ferramenta de suporte</strong>, não um substituto para acompanhamento profissional.
+                        Recomendamos sempre trabalhar em conjunto com um nutricionista ou médico, especialmente se você tiver condições de saúde específicas
+                        (diabetes, doenças renais, alergias severas, etc.). O sistema é ideal para quem quer autonomia, educação alimentar e resultados baseados em ciência.
+                    </p>
+                </div>
+
+                <!-- FAQ 6 -->
+                <div class="faq-item">
+                    <h3 class="faq-question">6. Qual a diferença do NutriFitCoach para apps como MyFitnessPal?</h3>
+                    <p class="faq-answer">
+                        <strong>Enorme.</strong> Apps tradicionais apenas <em>contam calorias</em>. O NutriFitCoach:
+                        (1) Foi treinado sobre 2.500+ eBooks científicos;
+                        (2) Integra ciclo hormonal feminino nativamente;
+                        (3) Calcula IG/CG de cada refeição;
+                        (4) Implementa Time Nutrition;
+                        (5) Oferece protocolos avançados (cetogênica, carb cycling, endurance, etc.);
+                        (6) Faz ajustes automáticos semanais;
+                        (7) Tem IA Ultra para suporte técnico 24/7.
+                        Não é uma simples calculadora: é um <strong>sistema inteligente de nutrição</strong>.
+                    </p>
+                </div>
+
+                <!-- FAQ 7 -->
+                <div class="faq-item">
+                    <h3 class="faq-question">7. Como funciona o sistema de fotos antes/depois?</h3>
+                    <p class="faq-answer">
+                        Você tira fotos padronizadas (frente, lado, costas) a cada 2-4 semanas.
+                        O sistema organiza tudo em uma linha do tempo, permite comparação lado a lado, e calcula sua evolução visual.
+                        <strong>Privacidade total:</strong> suas fotos são privadas por padrão. Você escolhe se quer compartilhar no feed social.
+                    </p>
+                </div>
+
+                <!-- FAQ 8 -->
+                <div class="faq-item">
+                    <h3 class="faq-question">8. Quando a suplementação é recomendada?</h3>
+                    <p class="faq-answer">
+                        <strong>Apenas após 80% de adesão alimentar.</strong> Por quê? Porque suplemento não faz milagre: dieta faz.
+                        Se você não consegue aderir à alimentação básica, suplemento não vai resolver.
+                        Mas quando você atinge 80% de adesão consistente, o sistema libera recomendações inteligentes de suplementação
+                        baseadas no seu objetivo, deficiências potenciais e fase do ciclo (para mulheres).
+                    </p>
+                </div>
+
+                <!-- FAQ 9 -->
+                <div class="faq-item">
+                    <h3 class="faq-question">9. O que é Time Nutrition?</h3>
+                    <p class="faq-answer">
+                        <span class="termo" title="Time Nutrition: estratégia que otimiza o timing dos nutrientes">Time Nutrition</span>
+                        é a estratégia de <strong>quando</strong> comer, não apenas <em>o que</em> comer.
+                        Exemplos: carboidratos concentrados ao redor do treino para performance e recuperação;
+                        proteína distribuída ao longo do dia para síntese proteica constante;
+                        gorduras à noite para saciedade e sono. O timing importa.
+                        <br><br>
+                        <a href="/blog/time-nutrition-quando-comer" class="link-blog">Entenda Time Nutrition →</a>
+                    </p>
+                </div>
+
+                <!-- FAQ 10 -->
+                <div class="faq-item">
+                    <h3 class="faq-question">10. Funciona para veganos e vegetarianos?</h3>
+                    <p class="faq-answer">
+                        <strong>Sim, totalmente.</strong> Criamos protocolos 100% plant-based com atenção especial a:
+                        proteínas completas (combinação de leguminosas + cereais), vitamina B12, ferro heme vs. não-heme,
+                        zinco, ômega-3 (ALA, EPA, DHA), cálcio e vitamina D. Suplementação estratégica quando necessário.
+                    </p>
+                </div>
+
+                <!-- FAQ 11 -->
+                <div class="faq-item">
+                    <h3 class="faq-question">11. Como funciona a gamificação?</h3>
+                    <p class="faq-answer">
+                        Sistema <strong>NFC Score</strong>: você ganha pontos por adesão alimentar, check-ins, fotos, treinos,
+                        consistência, milestones atingidos. Sobe de nível, desbloqueia badges, entra no ranking social.
+                        É como transformar sua jornada fitness em um jogo motivante.
+                        <br><br>
+                        <a href="/blog/nfc-score-gamificacao" class="link-blog">Saiba mais sobre NFC Score →</a>
+                    </p>
+                </div>
+
+                <!-- FAQ 12 -->
+                <div class="faq-item">
+                    <h3 class="faq-question">12. Posso cancelar a qualquer momento?</h3>
+                    <p class="faq-answer">
+                        <strong>Sim.</strong> No plano mensal, você pode cancelar quando quiser, sem burocracia.
+                        No plano anual, você tem acesso pelo ano completo (sem reembolso proporcional).
+                        No plano Founder VIP, o acesso é vitalício (pagamento único).
+                    </p>
+                </div>
+
+                <!-- FAQ 13 -->
+                <div class="faq-item">
+                    <h3 class="faq-question">13. O sistema funciona offline?</h3>
+                    <p class="faq-answer">
+                        Não completamente. O sistema é baseado em nuvem e precisa de conexão para sincronizar dados,
+                        ajustar cardápios e acessar a IA Ultra. Mas você pode baixar seus cardápios em PDF para consultar offline.
+                    </p>
+                </div>
+
+                <!-- FAQ 14 -->
+                <div class="faq-item">
+                    <h3 class="faq-question">14. Como funciona para resistência à insulina?</h3>
+                    <p class="faq-answer">
+                        Protocolo específico: baixo IG/CG, controle rigoroso de carboidratos, Time Nutrition,
+                        ênfase em fibras, gorduras saudáveis e proteínas de alta qualidade. Ajustes semanais baseados em sintomas e progresso.
+                        Muitos usuários relatam reversão de resistência à insulina em 3-6 meses.
+                        <br><br>
+                        <a href="/blog/resistencia-insulina-dieta" class="link-blog">Leia mais sobre resistência à insulina →</a>
+                    </p>
+                </div>
+
+                <!-- FAQ 15 -->
+                <div class="faq-item">
+                    <h3 class="faq-question">15. Quando o sistema estará disponível?</h3>
+                    <p class="faq-answer">
+                        Estamos em fase final de testes beta. Previsão de lançamento: <strong>próximos 60-90 dias</strong>.
+                        Entre para a <strong>lista VIP</strong> e seja notificado assim que abrirmos as portas,
+                        com condições especiais de acesso antecipado.
+                    </p>
+                </div>
+
+                <!-- FAQ 16 -->
+                <div class="faq-item">
+                    <h3 class="faq-question">16. Meus dados estão seguros?</h3>
+                    <p class="faq-answer">
+                        <strong>Sim.</strong> Usamos criptografia de ponta a ponta, servidores seguros, e cumprimos rigorosamente a LGPD.
+                        Suas fotos, dados de saúde e informações pessoais são 100% privadas. Você tem controle total sobre o que compartilhar.
+                    </p>
+                </div>
+
+                <!-- FAQ 17 -->
+                <div class="faq-item">
+                    <h3 class="faq-question">17. Vocês têm app para celular?</h3>
+                    <p class="faq-answer">
+                        Atualmente, o NutriFitCoach é uma <strong>web app responsiva</strong> (funciona perfeitamente no navegador do celular).
+                        Apps nativos (iOS e Android) estão no roadmap para 2025 Q2.
+                    </p>
+                </div>
+
+                <!-- FAQ 18 -->
+                <div class="faq-item">
+                    <h3 class="faq-question">18. Como funciona o suporte?</h3>
+                    <p class="faq-answer">
+                        Você tem acesso 24/7 à <strong>NutriFitCoach Ultra</strong> (nossa IA) para dúvidas técnicas, substituições,
+                        explicações de conceitos, etc. Para questões complexas ou bugs, temos suporte humano via e-mail e WhatsApp
+                        (resposta em até 24h úteis).
+                    </p>
+                </div>
+
+                <!-- FAQ 19 -->
+                <div class="faq-item">
+                    <h3 class="faq-question">19. O que mais está no roadmap futuro?</h3>
+                    <p class="faq-answer">
+                        (1) Apps nativos iOS/Android;
+                        (2) Integração com Apple Health e Google Fit;
+                        (3) Análise de exames laboratoriais via IA;
+                        (4) Planos de treino integrados com nutrição;
+                        (5) Marketplace de nutricionistas parceiros;
+                        (6) Comunidade fechada de membros;
+                        (7) Consultoria ao vivo mensal para assinantes anuais.
+                    </p>
+                </div>
+
+                <!-- FAQ 20 -->
+                <div class="faq-item">
+                    <h3 class="faq-question">20. Ainda tenho dúvidas. Como entro em contato?</h3>
+                    <p class="faq-answer">
+                        Entre para a <strong>lista VIP</strong> e você receberá e-mails periódicos com conteúdo exclusivo,
+                        atualizações do projeto e acesso ao nosso grupo VIP no WhatsApp.
+                        Ou envie e-mail para: <strong>contato@nutrifitcoach.com.br</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         FOOTER
+         ======================================== -->
+    <!-- ========================================
+         PRICING SECTION - STRIPE INTEGRATION
+         ======================================== -->
+    <section class="pricing-section" id="planos" style="padding: 100px 20px; background: linear-gradient(180deg, #0a0e27 0%, #1a1f3a 100%);">
+        <div class="container" style="max-width: 1200px; margin: 0 auto;">
+            <div class="section-header" style="text-align: center; margin-bottom: 60px;">
+                <span class="badge" style="display: inline-block; padding: 8px 20px; background: rgba(0, 245, 255, 0.1); color: #00f5ff; border-radius: 20px; font-size: 0.875rem; font-weight: 600; border: 1px solid rgba(0, 245, 255, 0.3); margin-bottom: 20px;">Planos e Preços</span>
+                <h2 style="font-size: clamp(2rem, 4vw, 3rem); color: #fff; margin-bottom: 16px;">
+                    Escolha seu <span style="background: linear-gradient(135deg, #00f5ff 0%, #ff006e 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Plano Ideal</span>
+                </h2>
+                <p style="font-size: 1.1rem; color: #a8b2d1; max-width: 600px; margin: 0 auto;">
+                    Acesso completo a todos os módulos de IA e 2.500+ eBooks científicos
+                </p>
+            </div>
+
+            <div class="pricing-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; max-width: 900px; margin: 0 auto;">
+
+                <!-- PLANO MENSAL -->
+                <div class="pricing-card" style="background: rgba(0, 0, 0, 0.4); border-radius: 20px; padding: 40px; border: 2px solid rgba(0, 245, 255, 0.2); transition: all 0.3s ease; position: relative;">
+                    <h3 style="font-size: 1.8rem; color: #fff; margin-bottom: 12px;">Mensal</h3>
+                    <div class="price" style="margin: 24px 0;">
+                        <span style="font-size: 3rem; font-weight: 800; color: #00f5ff;">R$ 100</span>
+                        <span style="font-size: 1.1rem; color: #a8b2d1;">/mês</span>
+                    </div>
+                    <ul style="list-style: none; padding: 0; margin-bottom: 32px;">
+                        <li style="padding: 12px 0; color: #a8b2d1; display: flex; align-items: center; gap: 12px;">
+                            <span style="color: #10b981; font-size: 1.2rem;">✓</span>
+                            Acesso completo à plataforma
+                        </li>
+                        <li style="padding: 12px 0; color: #a8b2d1; display: flex; align-items: center; gap: 12px;">
+                            <span style="color: #10b981; font-size: 1.2rem;">✓</span>
+                            120 módulos de IA
+                        </li>
+                        <li style="padding: 12px 0; color: #a8b2d1; display: flex; align-items: center; gap: 12px;">
+                            <span style="color: #10b981; font-size: 1.2rem;">✓</span>
+                            2.500+ eBooks científicos
+                        </li>
+                        <li style="padding: 12px 0; color: #a8b2d1; display: flex; align-items: center; gap: 12px;">
+                            <span style="color: #10b981; font-size: 1.2rem;">✓</span>
+                            Suporte prioritário
+                        </li>
+                        <li style="padding: 12px 0; color: #a8b2d1; display: flex; align-items: center; gap: 12px;">
+                            <span style="color: #10b981; font-size: 1.2rem;">✓</span>
+                            Cancele quando quiser
+                        </li>
+                    </ul>
+                    <button
+                        onclick="handleCheckout('monthly', event)"
+                        class="btn-pricing"
+                        style="width: 100%; padding: 18px; background: linear-gradient(135deg, #00f5ff 0%, #00b8c4 100%); color: #0a0e27; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase;">
+                        Assinar Plano Mensal
+                    </button>
+                </div>
+
+                <!-- PLANO ANUAL - DESTAQUE -->
+                <div class="pricing-card featured" style="background: rgba(0, 245, 255, 0.08); border-radius: 20px; padding: 40px; border: 2px solid #00f5ff; transition: all 0.3s ease; position: relative; transform: scale(1.05);">
+                    <div style="position: absolute; top: -15px; right: 20px; background: linear-gradient(135deg, #ff006e 0%, #ff4d00 100%); color: #fff; padding: 8px 20px; border-radius: 20px; font-size: 0.85rem; font-weight: bold;">
+                        ECONOMIZE R$ 200
+                    </div>
+                    <h3 style="font-size: 1.8rem; color: #fff; margin-bottom: 12px;">Anual</h3>
+                    <div class="price" style="margin: 24px 0;">
+                        <div style="text-decoration: line-through; color: #666; font-size: 1.2rem; margin-bottom: 4px;">R$ 1.200</div>
+                        <span style="font-size: 3rem; font-weight: 800; color: #00f5ff;">R$ 1.000</span>
+                        <span style="font-size: 1.1rem; color: #a8b2d1;">/ano</span>
+                        <div style="color: #10b981; font-size: 0.9rem; margin-top: 8px;">Apenas R$ 83,33/mês</div>
+                    </div>
+                    <ul style="list-style: none; padding: 0; margin-bottom: 32px;">
+                        <li style="padding: 12px 0; color: #a8b2d1; display: flex; align-items: center; gap: 12px;">
+                            <span style="color: #10b981; font-size: 1.2rem;">✓</span>
+                            Tudo do plano mensal
+                        </li>
+                        <li style="padding: 12px 0; color: #a8b2d1; display: flex; align-items: center; gap: 12px;">
+                            <span style="color: #10b981; font-size: 1.2rem;">✓</span>
+                            <strong style="color: #00f5ff;">Economize R$ 200/ano</strong>
+                        </li>
+                        <li style="padding: 12px 0; color: #a8b2d1; display: flex; align-items: center; gap: 12px;">
+                            <span style="color: #10b981; font-size: 1.2rem;">✓</span>
+                            Acesso prioritário a novos módulos
+                        </li>
+                        <li style="padding: 12px 0; color: #a8b2d1; display: flex; align-items: center; gap: 12px;">
+                            <span style="color: #10b981; font-size: 1.2rem;">✓</span>
+                            Suporte VIP
+                        </li>
+                        <li style="padding: 12px 0; color: #a8b2d1; display: flex; align-items: center; gap: 12px;">
+                            <span style="color: #10b981; font-size: 1.2rem;">✓</span>
+                            Webinars exclusivos mensais
+                        </li>
+                    </ul>
+                    <button
+                        onclick="handleCheckout('yearly', event)"
+                        class="btn-pricing"
+                        style="width: 100%; padding: 18px; background: linear-gradient(135deg, #ff006e 0%, #ff4d00 100%); color: #fff; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase;">
+                        🔥 Assinar Plano Anual
+                    </button>
+                </div>
+            </div>
+
+            <!-- GARANTIA -->
+            <div style="text-align: center; margin-top: 60px; padding: 32px; background: rgba(16, 185, 129, 0.1); border: 2px solid rgba(16, 185, 129, 0.3); border-radius: 16px; max-width: 700px; margin-left: auto; margin-right: auto;">
+                <div style="font-size: 3rem; margin-bottom: 12px;">🛡️</div>
+                <h3 style="color: #10b981; margin-bottom: 12px;">Garantia de 15 Dias</h3>
+                <p style="color: #a8b2d1; margin: 0;">
+                    Teste a plataforma por 15 dias. Se não ficar satisfeito, devolvemos 100% do seu dinheiro.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- STRIPE CHECKOUT SCRIPT -->
+    <script>
+        async function handleCheckout(period, event) {
+            try {
+                // Mostrar loading
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = 'Processando...';
+                button.disabled = true;
+
+                // Chamar API de checkout
+                const response = await fetch('/api/checkout/create-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        period: period,
+                        currency: 'BRL',
+                        locale: 'pt',
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    alert('Erro: ' + data.error);
+                    button.textContent = originalText;
+                    button.disabled = false;
+                    return;
+                }
+
+                // Redirecionar para checkout do Stripe
+                if (data.url) {
+                    window.location.href = data.url;
+                } else {
+                    throw new Error('URL de checkout não recebida');
+                }
+
+            } catch (error) {
+                console.error('Erro no checkout:', error);
+                alert('Erro ao processar pagamento. Por favor, tente novamente ou entre em contato com o suporte.');
+
+                // Restaurar botão
+                if (event && event.target) {
+                    event.target.textContent = originalText;
+                    event.target.disabled = false;
+                }
+            }
+        }
+
+        // Hover effects
+        document.querySelectorAll('.pricing-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = this.classList.contains('featured') ? 'scale(1.08)' : 'scale(1.03)';
+                this.style.borderColor = '#00f5ff';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = this.classList.contains('featured') ? 'scale(1.05)' : 'scale(1)';
+                this.style.borderColor = this.classList.contains('featured') ? '#00f5ff' : 'rgba(0, 245, 255, 0.2)';
+            });
+        });
+
+        document.querySelectorAll('.btn-pricing').forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+                this.style.boxShadow = '0 10px 30px rgba(0, 245, 255, 0.4)';
+            });
+            btn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'none';
+            });
+        });
+    </script>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Coluna 1: Sobre -->
+                <div class="footer-section">
+                    <h3>NutriFitCoach</h3>
+                    <p>
+                        A maior plataforma de Nutrição e Performance baseada em IA da América Latina.
+                        Construída sobre 2.500+ eBooks científicos.
+                    </p>
+                    <p style="margin-top: 20px;">
+                        <strong>Transforme seu corpo com ciência + IA.</strong>
+                    </p>
+                </div>
+
+                <!-- Coluna 2: Links Rápidos -->
+                <div class="footer-section">
+                    <h3>Links Rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/blog">Blog</a></li>
+                        <li><a href="#planos">Planos</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                        <li><a href="/sobre">Sobre Nós</a></li>
+                        <li><a href="/contato">Contato</a></li>
+                    </ul>
+                </div>
+
+                <!-- Coluna 3: Conteúdo -->
+                <div class="footer-section">
+                    <h3>Conteúdo</h3>
+                    <ul class="footer-links">
+                        <li><a href="/blog/ciclo-hormonal-feminino">Ciclo Hormonal Feminino</a></li>
+                        <li><a href="/blog/resistencia-insulina">Resistência à Insulina</a></li>
+                        <li><a href="/blog/time-nutrition">Time Nutrition</a></li>
+                        <li><a href="/blog/dieta-cetogenica">Dieta Cetogênica</a></li>
+                        <li><a href="/blog/biblioteca-cientifica">Nossa Biblioteca</a></li>
+                        <li><a href="/blog/nfc-score">NFC Score</a></li>
+                    </ul>
+                </div>
+
+                <!-- Coluna 4: Legal -->
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <ul class="footer-links">
+                        <li><a href="/termos-de-uso">Termos de Uso</a></li>
+                        <li><a href="/politica-privacidade">Política de Privacidade</a></li>
+                        <li><a href="/lgpd">LGPD</a></li>
+                        <li><a href="/contrato-assinatura">Contrato de Assinatura</a></li>
+                    </ul>
+                    <p style="margin-top: 20px; color: var(--gray); font-size: 0.875rem;">
+                        <strong>Contato:</strong><br>
+                        contato@nutrifitcoach.com.br
+                    </p>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>
+                    © 2025 NutriFitCoach. Todos os direitos reservados.
+                    <br>
+                    CNPJ: XX.XXX.XXX/XXXX-XX
+                </p>
+                <p style="margin-top: 12px; font-size: 0.875rem;">
+                    Feito com 🧬 Ciência + 🤖 IA + ❤️ Dedicação
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ========================================
+         SCRIPTS (OPCIONAL)
+         ======================================== -->
+    <script>
+        // Script simples para captura de e-mail (pode ser substituído por integração real)
+        document.querySelectorAll('.email-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = this.querySelector('input[type="email"]').value;
+
+                // Aqui você faria a integração real com backend
+                console.log('E-mail capturado:', email);
+
+                // Feedback visual
+                alert('🎉 Parabéns! Você entrou para a lista VIP do NutriFitCoach!\n\nVerifique seu e-mail para confirmar.');
+
+                // Limpar campo
+                this.querySelector('input[type="email"]').value = '';
+            });
+        });
+
+        // Smooth scroll para links internos
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,40 @@
+/**
+ * ServiceWorker - DISABLED
+ *
+ * This file unregisters the service worker and clears caches.
+ * PWA functionality is temporarily disabled due to MIME type errors.
+ */
+
+// Immediately unregister this service worker
+self.addEventListener('install', () => {
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    (async () => {
+      // Clear all caches
+      const cacheNames = await caches.keys();
+      await Promise.all(
+        cacheNames.map((cacheName) => caches.delete(cacheName))
+      );
+
+      // Unregister this service worker
+      const registration = await self.registration;
+      await registration.unregister();
+
+      // Notify all clients to reload
+      const clients = await self.clients.matchAll({ type: 'window' });
+      clients.forEach((client) => {
+        client.postMessage({ type: 'SW_UNREGISTERED' });
+      });
+
+      console.log('ServiceWorker unregistered and caches cleared');
+    })()
+  );
+});
+
+// Don't handle any fetch events - pass through to network
+self.addEventListener('fetch', () => {
+  // Do nothing - let requests pass through normally
+});
