@@ -8,13 +8,18 @@
  * - Criar tópico / responder / reagir: login obrigatório
  *
  * Implementa:
- * - Modal de login rápido
+ * - Modal de login integrado com NextAuth
  * - Aviso contextual ao tentar interagir sem login
  *
  * Visual: Modal cyberpunk
+ *
+ * IMPORTANTE: Login é LOCAL (chat.nutrifitcoach.com.br)
+ * NUNCA redireciona para app.nutrifitcoach.com.br
  */
 
 import React, { useState } from 'react';
+import { usePathname } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import {
   X,
   LogIn,
@@ -46,26 +51,48 @@ export default function LoginModal({
   onClose,
   contexto = 'participar',
 }: LoginModalProps) {
+  const pathname = usePathname();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     setIsLoading(true);
-    // MVP: Simular login
-    setTimeout(() => {
+
+    try {
+      const result = await signIn('credentials', {
+        email,
+        password,
+        action: 'login',
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setError('Email ou senha incorretos');
+        return;
+      }
+
+      if (result?.ok) {
+        onClose();
+        // Refresh para atualizar o estado de auth
+        window.location.reload();
+      }
+    } catch (err) {
+      setError('Erro ao fazer login. Tente novamente.');
+    } finally {
       setIsLoading(false);
-      alert('[MVP DEMO] Login simulado. Em produção, você seria autenticado.');
-      onClose();
-    }, 1500);
+    }
   };
 
   const handleSocialLogin = (provider: string) => {
-    alert(`[MVP DEMO] Login com ${provider} será implementado na versão final.`);
+    // TODO: Implementar OAuth providers
+    alert(`Login com ${provider} será implementado em breve.`);
   };
 
   return (
@@ -187,6 +214,12 @@ export default function LoginModal({
                 </div>
               </div>
 
+              {error && (
+                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+                  {error}
+                </div>
+              )}
+
               <div className="flex items-center justify-between">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
@@ -220,9 +253,7 @@ export default function LoginModal({
             <p className="mt-6 text-center text-sm text-zinc-500">
               Não tem conta?{' '}
               <a
-                href="https://app.nutrifitcoach.com.br/registro"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/registro"
                 className="text-[#00ff88] hover:underline"
               >
                 Criar conta grátis
@@ -233,7 +264,7 @@ export default function LoginModal({
           {/* Footer */}
           <div className="px-6 py-4 bg-zinc-950/50 border-t border-zinc-800">
             <p className="text-[10px] text-zinc-600 text-center font-mono">
-              MVP DEMO • AUTENTICAÇÃO SIMULADA
+              Conta gratuita • chat.nutrifitcoach.com.br
             </p>
           </div>
         </div>

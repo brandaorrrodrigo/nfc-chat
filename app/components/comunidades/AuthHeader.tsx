@@ -368,9 +368,10 @@ export default function AuthHeader({ user, onLogout }: AuthHeaderProps) {
               <UserMenu user={user} onLogout={onLogout} />
             ) : (
               // Não logado - Mostrar botões
+              // IMPORTANTE: Links RELATIVOS para manter no mesmo domínio (chat.nutrifitcoach.com.br)
               <>
                 <Link
-                  href={getLoginUrl('/comunidades')}
+                  href="/login"
                   className={`
                     flex items-center gap-2
                     px-3 py-2
@@ -386,7 +387,7 @@ export default function AuthHeader({ user, onLogout }: AuthHeaderProps) {
                 </Link>
 
                 <Link
-                  href={getRegistroUrl('/comunidades')}
+                  href="/registro"
                   className={`
                     flex items-center gap-2
                     px-3 py-2
