@@ -1043,7 +1043,7 @@ export default function PainelVivoPage() {
   const params = useParams();
   const slug = typeof params?.slug === 'string' ? params.slug : '';
 
-  const { user, isAuthenticated, logout } = useComunidadesAuth();
+  const { user, isAuthenticated, isLoading: authLoading, logout } = useComunidadesAuth();
   const { isOpen, interactionType, openModal, closeModal } = useLoginRequiredModal();
 
   const [comunidade, setComunidade] = useState<(ComunidadeData & { mensagens: Mensagem[] }) | null>(null);
@@ -1204,7 +1204,7 @@ export default function PainelVivoPage() {
       />
 
       {/* Auth Header */}
-      <AuthHeader user={user} onLogout={logout} />
+      <AuthHeader user={user} isLoading={authLoading} onLogout={logout} />
 
       {/* ===== HEADER DO PAINEL ===== */}
       <header className="flex-shrink-0 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800 z-40">

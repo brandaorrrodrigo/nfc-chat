@@ -46,8 +46,9 @@ export default function LoginComunidadesPage() {
       }
 
       if (result?.ok) {
-        router.push(callbackUrl);
-        router.refresh();
+        // Full page redirect to ensure SessionProvider refreshes
+        // router.push + router.refresh doesn't update client-side session state
+        window.location.href = callbackUrl;
       }
     } catch (err) {
       console.error('[Login Error]', err);

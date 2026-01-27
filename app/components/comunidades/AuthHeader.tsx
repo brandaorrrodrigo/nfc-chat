@@ -29,6 +29,7 @@ import {
   Users,
   Sparkles,
   ArrowLeft,
+  Loader2,
 } from 'lucide-react';
 import { APP_ROUTES, BLOG_ROUTES } from '@/lib/navigation';
 
@@ -48,6 +49,7 @@ export interface AuthUser {
 
 interface AuthHeaderProps {
   user: AuthUser | null;
+  isLoading?: boolean;
   onLogout?: () => void;
 }
 
@@ -287,7 +289,7 @@ function UserMenu({
 // COMPONENTE PRINCIPAL: AuthHeader
 // ========================================
 
-export default function AuthHeader({ user, onLogout }: AuthHeaderProps) {
+export default function AuthHeader({ user, isLoading, onLogout }: AuthHeaderProps) {
   return (
     <header className="sticky top-0 z-50 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800">
       <div className="max-w-6xl mx-auto px-4 py-3">
@@ -367,7 +369,13 @@ export default function AuthHeader({ user, onLogout }: AuthHeaderProps) {
               </Link>
             </div>
 
-            {user ? (
+            {isLoading ? (
+              // Carregando sessão - mostrar skeleton
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-zinc-800 animate-pulse" />
+                <Loader2 className="w-4 h-4 text-zinc-500 animate-spin" />
+              </div>
+            ) : user ? (
               // Usuário logado - menu do usuário
               <UserMenu user={user} onLogout={onLogout} />
             ) : (

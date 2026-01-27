@@ -12,7 +12,12 @@ import { ComunidadesAuthProvider } from '@/app/components/comunidades/Comunidade
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <SessionProvider refetchOnWindowFocus={false}>
+    <SessionProvider
+      // Refetch session when window regains focus to catch updates
+      refetchOnWindowFocus={true}
+      // Refetch session every 5 minutes to keep it fresh
+      refetchInterval={5 * 60}
+    >
       <ComunidadesAuthProvider>
         {children}
       </ComunidadesAuthProvider>
