@@ -1,10 +1,62 @@
 /**
  * IA Module - Exportacoes Publicas
  *
- * Centraliza todas as funcoes de IA para uso no projeto.
+ * ARQUITETURA EM CAMADAS:
+ *
+ * CAMADA 1 - OBSERVADORA
+ * - Le mensagens, detecta padroes
+ * - NAO responde automaticamente
+ *
+ * CAMADA 2 - FACILITADORA
+ * - Decide QUANDO intervir
+ * - Resumos, destaques, perguntas
+ *
+ * CAMADA 3 - PONTE BLOG
+ * - Temas tecnicos -> artigos
+ *
+ * CAMADA 4 - PONTE APP
+ * - Frustracao/acompanhamento -> app (sem CTA)
  */
 
-// Configuracao e constantes
+// ========================================
+// CAMADA 1: OBSERVADORA
+// ========================================
+
+export {
+  analisarMensagem,
+  detectarEmpateDiscussao,
+  identificarUsuariosDestaque,
+  calcularSentimentoGeral,
+  gerarObservacao,
+} from './observer';
+
+export type {
+  MensagemObservada,
+  PadraoDetectado,
+  UsuarioDestaque,
+  ObservacaoComunidade,
+} from './observer';
+
+// ========================================
+// CAMADA 2: FACILITADORA
+// ========================================
+
+export {
+  decidirIntervencao,
+  gerarIntervencao,
+  CONFIG_FACILITADORA,
+} from './facilitator';
+
+export type {
+  TipoIntervencao,
+  DecisaoFacilitadora,
+  IntervencaoIA,
+} from './facilitator';
+
+// ========================================
+// CONFIGURACAO GERAL
+// ========================================
+
 export {
   diasDesdelancamento,
   getFaseAtual,
@@ -24,9 +76,12 @@ export type {
   ArtigoBlog,
 } from '@/app/comunidades/config/ia-facilitadora';
 
-// Motor de decisao
+// ========================================
+// LEGACY (manter compatibilidade)
+// ========================================
+
 export {
-  decidirIntervencao,
+  decidirIntervencao as decidirIntervencaoLegacy,
   gerarResposta,
   getRespostaContextual,
   RESPOSTAS_CONTEXTUAIS,
