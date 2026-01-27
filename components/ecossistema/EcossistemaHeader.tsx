@@ -15,7 +15,7 @@
  *
  * NAO ALTERAR ESTE COMPONENTE SEM ATUALIZAR TODOS OS SISTEMAS
  *
- * @version 2.0.1 - Force rebuild 2024-01-27
+ * @version 2.0.2 - Force rebuild 2026-01-27T
  */
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -192,7 +192,7 @@ export default function EcossistemaHeader({ user, isLoading, onLogout }: Ecossis
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-zinc-950 border-b border-zinc-800">
+    <header className="sticky top-0 z-50 bg-zinc-950 border-b border-zinc-800" data-ecossistema="v2.0.2">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* 1. LOGO - sempre leva para landing raiz */}
