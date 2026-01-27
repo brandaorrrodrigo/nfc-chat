@@ -6,6 +6,9 @@
  * Visual: Feed contínuo estilo aeroporto/bolsa de valores
  * Leitura sem cliques - fluxo contínuo de mensagens
  * Estética: Cyberpunk Dark + Verde Neon (#00ff88)
+ *
+ * IMPORTANTE: Header e Footer são renderizados GLOBALMENTE via providers.tsx
+ * Esta página contém APENAS o conteúdo específico.
  */
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -20,7 +23,6 @@ import {
   ChevronDown,
   AlertTriangle,
 } from 'lucide-react';
-import AuthHeader from '@/app/components/comunidades/AuthHeader';
 import { UserAvatar } from '@/app/components/comunidades/AuthHeader';
 import SmartFAB from '@/app/components/comunidades/SmartFAB';
 import LoginRequiredModal, { useLoginRequiredModal } from '@/app/components/comunidades/LoginRequiredModal';
@@ -1043,7 +1045,7 @@ export default function PainelVivoPage() {
   const params = useParams();
   const slug = typeof params?.slug === 'string' ? params.slug : '';
 
-  const { user, isAuthenticated, isLoading: authLoading, logout } = useComunidadesAuth();
+  const { user, isAuthenticated } = useComunidadesAuth();
   const { isOpen, interactionType, openModal, closeModal } = useLoginRequiredModal();
 
   const [comunidade, setComunidade] = useState<(ComunidadeData & { mensagens: Mensagem[] }) | null>(null);
@@ -1182,7 +1184,7 @@ export default function PainelVivoPage() {
   }
 
   return (
-    <div className="h-screen bg-black flex flex-col overflow-hidden">
+    <div className="min-h-[calc(100vh-64px)] bg-black flex flex-col overflow-hidden">
       {/* Background Grid */}
       <div
         className="fixed inset-0 opacity-[0.02] pointer-events-none"
@@ -1203,11 +1205,8 @@ export default function PainelVivoPage() {
         }}
       />
 
-      {/* Auth Header */}
-      <AuthHeader user={user} isLoading={authLoading} onLogout={logout} />
-
-      {/* ===== HEADER DO PAINEL ===== */}
-      <header className="flex-shrink-0 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800 z-40">
+      {/* ===== BARRA DE INFO DA COMUNIDADE (Header global via providers.tsx) ===== */}
+      <div className="flex-shrink-0 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800 z-40">
         {/* Top Bar */}
         <div className="border-b border-zinc-900">
           <div className="max-w-4xl mx-auto px-4 py-2 flex items-center justify-between">
@@ -1276,7 +1275,7 @@ export default function PainelVivoPage() {
             style={{ animation: 'slideRight 2s ease-in-out infinite' }}
           />
         </div>
-      </header>
+      </div>
 
       {/* ===== FEED CONTÍNUO ===== */}
       <main

@@ -1,13 +1,19 @@
 'use client';
 
+/**
+ * PÁGINA: Login Comunidades
+ *
+ * IMPORTANTE: Header e Footer são renderizados GLOBALMENTE via providers.tsx
+ * Esta página contém APENAS o conteúdo específico.
+ */
+
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { Users, Mail, Lock, ArrowLeft, Loader2, Eye, EyeOff, Zap, User } from 'lucide-react';
 
 export default function LoginComunidadesPage() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/';
   const initialMode = searchParams.get('mode') === 'register' ? 'register' : 'login';
@@ -59,23 +65,19 @@ export default function LoginComunidadesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black flex flex-col">
-      {/* Header */}
-      <header className="border-b border-zinc-800/50">
-        <div className="max-w-md mx-auto px-4 py-4">
-          <Link
-            href="/login"
-            className="inline-flex items-center gap-2 text-zinc-400 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Voltar</span>
-          </Link>
-        </div>
-      </header>
+    <div className="bg-black py-8">
+      {/* Main Content */}
+      <div className="max-w-md mx-auto px-4">
+        {/* Back Link */}
+        <Link
+          href="/login"
+          className="inline-flex items-center gap-2 text-zinc-400 hover:text-white transition-colors mb-8"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Voltar</span>
+        </Link>
 
-      {/* Main */}
-      <main className="flex-1 flex items-center justify-center px-4 py-12">
-        <div className="w-full max-w-md">
+        <div className="w-full">
           {/* Logo/Header */}
           <div className="text-center mb-8">
             <div className="w-16 h-16 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center mx-auto mb-4">
@@ -223,18 +225,16 @@ export default function LoginComunidadesPage() {
               <ArrowLeft className="w-5 h-5 text-[#00ff88] rotate-180 group-hover:translate-x-1 transition-transform" />
             </div>
           </Link>
-        </div>
-      </main>
 
-      {/* Footer */}
-      <footer className="border-t border-zinc-800/50 py-6">
-        <div className="max-w-md mx-auto px-4 text-center text-zinc-600 text-sm">
-          Ao continuar, você concorda com nossos{' '}
-          <a href="#" className="text-zinc-400 hover:underline">Termos</a>
-          {' '}e{' '}
-          <a href="#" className="text-zinc-400 hover:underline">Privacidade</a>
+          {/* Terms */}
+          <p className="text-center text-zinc-600 text-sm mt-8">
+            Ao continuar, você concorda com nossos{' '}
+            <a href="#" className="text-zinc-400 hover:underline">Termos</a>
+            {' '}e{' '}
+            <a href="#" className="text-zinc-400 hover:underline">Privacidade</a>
+          </p>
         </div>
-      </footer>
+      </div>
     </div>
   );
 }

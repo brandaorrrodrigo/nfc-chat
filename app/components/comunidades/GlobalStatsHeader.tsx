@@ -142,8 +142,9 @@ export default function GlobalStatsHeader({ refreshInterval = 45000 }: GlobalSta
     };
   }, [fetchStats, refreshInterval, stats.ultimaAtualizacao]);
 
+  // @deprecated - Header global agora é EcossistemaHeader via providers.tsx
   return (
-    <header className="sticky top-0 z-40 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800">
+    <div className="sticky top-0 z-40 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between py-3 gap-4">
           {/* Stats Grid */}
@@ -236,6 +237,6 @@ export default function GlobalStatsHeader({ refreshInterval = 45000 }: GlobalSta
           }
         }
       `}</style>
-    </header>
+    </div>
   );
 }

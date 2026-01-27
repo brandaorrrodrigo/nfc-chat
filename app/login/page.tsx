@@ -1,5 +1,14 @@
 'use client';
 
+/**
+ * PÁGINA: Hub de Login
+ *
+ * Escolha entre Comunidades (grátis) e App Premium
+ *
+ * IMPORTANTE: Header e Footer são renderizados GLOBALMENTE via providers.tsx
+ * Esta página contém APENAS o conteúdo específico.
+ */
+
 import Link from 'next/link';
 import { Users, Sparkles, Crown, Zap, Brain, ChefHat, Star, ArrowRight, CheckCircle } from 'lucide-react';
 
@@ -17,21 +26,9 @@ const metrics = [
 
 export default function LoginHubPage() {
   return (
-    <div className="min-h-screen bg-black">
-      {/* Header */}
-      <header className="border-b border-zinc-800/50">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-[#00ff88]/10 border border-[#00ff88]/30 flex items-center justify-center">
-              <Zap className="w-5 h-5 text-[#00ff88]" />
-            </div>
-            <span className="text-xl font-bold text-white">NutriFitCoach</span>
-          </div>
-        </div>
-      </header>
-
+    <div className="bg-black">
       {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-4 py-12 md:py-20">
+      <div className="max-w-6xl mx-auto px-4 py-12 md:py-20">
         {/* Hero */}
         <div className="text-center mb-12 md:mb-16">
           <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">
@@ -198,14 +195,7 @@ export default function LoginHubPage() {
             </p>
           </div>
         </section>
-      </main>
-
-      {/* Footer */}
-      <footer className="border-t border-zinc-800/50 py-8 mt-16">
-        <div className="max-w-6xl mx-auto px-4 text-center text-zinc-500 text-sm">
-          © 2024 NutriFitCoach. Todos os direitos reservados.
-        </div>
-      </footer>
+      </div>
     </div>
   );
 }

@@ -289,9 +289,13 @@ function UserMenu({
 // COMPONENTE PRINCIPAL: AuthHeader
 // ========================================
 
+/**
+ * @deprecated Usar EcossistemaHeader via providers.tsx
+ * Este componente é mantido apenas para referência e exportação de subcomponentes
+ */
 export default function AuthHeader({ user, isLoading, onLogout }: AuthHeaderProps) {
   return (
-    <header className="sticky top-0 z-50 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800">
+    <div className="sticky top-0 z-50 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800">
       <div className="max-w-6xl mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Logo / Brand */}
@@ -437,6 +441,6 @@ export default function AuthHeader({ user, isLoading, onLogout }: AuthHeaderProp
           animation: fadeIn 0.2s ease-out forwards;
         }
       `}</style>
-    </header>
+    </div>
   );
 }

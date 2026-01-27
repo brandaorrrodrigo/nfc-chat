@@ -1,6 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+/**
+ * PÁGINA: Login App Premium
+ *
+ * IMPORTANTE: Header e Footer são renderizados GLOBALMENTE via providers.tsx
+ * Esta página contém APENAS o conteúdo específico.
+ */
+
+import { useState } from 'react';
 import Link from 'next/link';
 import { Sparkles, ArrowLeft, ExternalLink, Loader2, Crown, CheckCircle } from 'lucide-react';
 import { APP_ROUTES } from '@/lib/navigation';
@@ -23,23 +30,19 @@ export default function LoginAppPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black flex flex-col">
-      {/* Header */}
-      <header className="border-b border-zinc-800/50">
-        <div className="max-w-md mx-auto px-4 py-4">
-          <Link
-            href="/login"
-            className="inline-flex items-center gap-2 text-zinc-400 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Voltar</span>
-          </Link>
-        </div>
-      </header>
+    <div className="bg-black py-8">
+      {/* Main Content */}
+      <div className="max-w-md mx-auto px-4">
+        {/* Back Link */}
+        <Link
+          href="/login"
+          className="inline-flex items-center gap-2 text-zinc-400 hover:text-white transition-colors mb-8"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Voltar</span>
+        </Link>
 
-      {/* Main */}
-      <main className="flex-1 flex items-center justify-center px-4 py-12">
-        <div className="w-full max-w-md">
+        <div className="w-full">
           {/* Logo/Header */}
           <div className="text-center mb-8">
             <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#00ff88]/20 to-[#00ff88]/5 border border-[#00ff88]/30 flex items-center justify-center mx-auto mb-6">
@@ -116,21 +119,19 @@ export default function LoginAppPage() {
               <span className="text-white font-medium">Acesse as Comunidades</span>
             </p>
           </Link>
-        </div>
-      </main>
 
-      {/* Footer */}
-      <footer className="border-t border-zinc-800/50 py-6">
-        <div className="max-w-md mx-auto px-4 text-center text-zinc-600 text-sm">
-          <a
-            href={APP_ROUTES.HOME}
-            className="inline-flex items-center gap-2 text-zinc-400 hover:text-white transition-colors"
-          >
-            <span>Visitar app.nutrifitcoach.com.br</span>
-            <ExternalLink className="w-4 h-4" />
-          </a>
+          {/* App Link */}
+          <div className="text-center mt-8">
+            <a
+              href={APP_ROUTES.HOME}
+              className="inline-flex items-center gap-2 text-zinc-400 hover:text-white transition-colors text-sm"
+            >
+              <span>Visitar app.nutrifitcoach.com.br</span>
+              <ExternalLink className="w-4 h-4" />
+            </a>
+          </div>
         </div>
-      </footer>
+      </div>
     </div>
   );
 }

@@ -437,8 +437,8 @@ export default function AdminPanelPage({ params }: Props) {
         }}
       />
 
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800">
+      {/* Page Navigation - Nota: Header global é renderizado via providers.tsx */}
+      <div className="sticky top-0 z-50 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-4">
@@ -505,7 +505,7 @@ export default function AdminPanelPage({ params }: Props) {
             ))}
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Content */}
       <main className="relative z-10 max-w-7xl mx-auto px-4 py-6">

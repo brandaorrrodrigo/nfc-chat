@@ -5,6 +5,9 @@
  *
  * Visual: Cyberpunk/Sci-Fi - Arena Digital
  * Estética: Fundo escuro + Verde Neon (#00ff88)
+ *
+ * IMPORTANTE: Header e Footer são renderizados GLOBALMENTE via providers.tsx
+ * Esta página contém APENAS o conteúdo específico.
  */
 
 import React from 'react';
@@ -26,7 +29,6 @@ import {
   LucideIcon,
 } from 'lucide-react';
 import { getLoginUrl, COMUNIDADES_ROUTES } from '@/lib/navigation';
-import { EcossistemaHeader, EcossistemaFooter } from '@/components/ecossistema';
 import { useComunidadesAuth } from '@/app/components/comunidades/ComunidadesAuthContext';
 
 // ========================================
@@ -353,21 +355,13 @@ function ArenaCard({ comunidade }: ArenaCardProps) {
 // ========================================
 
 export default function ComunidadesPage() {
-  const { user, isAuthenticated, isLoading, logout } = useComunidadesAuth();
-
-  // Converter para formato do EcossistemaHeader
-  const ecossistemaUser = user ? {
-    id: user.id,
-    nome: user.nome,
-    email: user.email,
-    avatar: user.avatar,
-  } : null;
+  const { isAuthenticated } = useComunidadesAuth();
 
   return (
-    <div className="min-h-screen bg-black flex flex-col">
+    <div className="relative bg-black">
       {/* Background Grid Pattern */}
       <div
-        className="fixed inset-0 opacity-[0.02]"
+        className="fixed inset-0 opacity-[0.02] pointer-events-none"
         style={{
           backgroundImage: `
             linear-gradient(#00ff88 1px, transparent 1px),
@@ -375,13 +369,6 @@ export default function ComunidadesPage() {
           `,
           backgroundSize: '50px 50px',
         }}
-      />
-
-      {/* Unified Ecosystem Header */}
-      <EcossistemaHeader
-        user={ecossistemaUser}
-        isLoading={isLoading}
-        onLogout={logout}
       />
 
       {/* Container Principal */}
@@ -443,9 +430,6 @@ export default function ComunidadesPage() {
           </p>
         </div>
       </div>
-
-      {/* Unified Ecosystem Footer */}
-      <EcossistemaFooter />
     </div>
   );
 }
