@@ -5,17 +5,78 @@
  * - Provider: Credentials (email + senha)
  * - Sem Stripe
  * - Sem verificação de pagamento
- * - Sessão JWT simples
+ * - Sessão JWT PERSISTENTE (365 dias)
  *
  * ARQUITETURA:
  * - Comunidades = FREE
  * - App NutriFitCoach = PAGO (domínio separado)
  * - Auth NÃO compartilhado entre os dois
+ *
+ * PERSISTÊNCIA:
+ * - Sessão dura 1 ANO (365 dias)
+ * - JWT atualiza a cada 24h de uso
+ * - Usuário SÓ sai se clicar em "Sair" explicitamente
+ * - Sobrevive: F5, fechar navegador, reiniciar PC
  */
 
 import type { AuthOptions, User } from 'next-auth';
+import type { CookiesOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { v4 as uuidv4 } from 'uuid';
+
+// ========================================
+// CONFIGURAÇÃO DE PERSISTÊNCIA
+// ========================================
+
+// Sessão de 1 ANO - usuário NUNCA é deslogado automaticamente
+const SESSION_MAX_AGE = 365 * 24 * 60 * 60; // 365 dias em segundos
+
+// Atualiza o token a cada 24 horas de uso ativo
+const SESSION_UPDATE_AGE = 24 * 60 * 60; // 24 horas em segundos
+
+// Configuração de cookies para máxima persistência
+const isProduction = process.env.NODE_ENV === 'production';
+const cookieDomain = isProduction ? '.nutrifitcoach.com.br' : undefined;
+
+const cookieOptions: Partial<CookiesOptions> = {
+  sessionToken: {
+    name: isProduction
+      ? '__Secure-next-auth.session-token'
+      : 'next-auth.session-token',
+    options: {
+      httpOnly: true,
+      sameSite: 'lax',
+      path: '/',
+      secure: isProduction,
+      // Domain para permitir cookies em subdomínios (chat., app., blog.)
+      domain: cookieDomain,
+      // maxAge definido pela sessão
+    },
+  },
+  callbackUrl: {
+    name: isProduction
+      ? '__Secure-next-auth.callback-url'
+      : 'next-auth.callback-url',
+    options: {
+      httpOnly: true,
+      sameSite: 'lax',
+      path: '/',
+      secure: isProduction,
+      domain: cookieDomain,
+    },
+  },
+  csrfToken: {
+    name: isProduction
+      ? '__Host-next-auth.csrf-token'
+      : 'next-auth.csrf-token',
+    options: {
+      httpOnly: true,
+      sameSite: 'lax',
+      path: '/',
+      secure: isProduction,
+    },
+  },
+};
 
 // Usuários mock para desenvolvimento
 // TODO: Substituir por integração com Supabase
@@ -99,13 +160,19 @@ export const authOptions: AuthOptions = {
       },
     }),
   ],
+  // ========================================
+  // SESSÃO PERSISTENTE (365 DIAS)
+  // ========================================
   session: {
     strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 dias
+    maxAge: SESSION_MAX_AGE, // 365 dias - NUNCA expira automaticamente
+    updateAge: SESSION_UPDATE_AGE, // Renova a cada 24h de uso
   },
   jwt: {
-    maxAge: 30 * 24 * 60 * 60, // 30 dias
+    maxAge: SESSION_MAX_AGE, // JWT também dura 365 dias
   },
+  // Cookies configurados para máxima persistência
+  cookies: cookieOptions,
   pages: {
     signIn: '/login/comunidades',
     error: '/login/comunidades',

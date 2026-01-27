@@ -10,7 +10,12 @@
  * - Usa useSession() do NextAuth para estado real de auth
  * - Login redireciona para /login com callbackUrl para retornar
  * - Logout via signOut() do NextAuth
- * - Sessão de 30 dias com refresh diário
+ *
+ * PERSISTÊNCIA (365 DIAS):
+ * - Sessão NUNCA expira automaticamente
+ * - Sobrevive: F5, fechar navegador, reiniciar PC
+ * - Usuário SÓ sai se clicar em "Sair" explicitamente
+ * - JWT renovado automaticamente a cada 24h de uso
  */
 
 import React, { createContext, useContext, useMemo, ReactNode } from 'react';
