@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+// BUILD MARKER: 2026-01-27T23:50 - Force complete rebuild
 const nextConfig = {
   reactStrictMode: true,
 
