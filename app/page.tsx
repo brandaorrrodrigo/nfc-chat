@@ -24,10 +24,10 @@ import {
   TrendingDown,
   Home,
   LucideIcon,
-  Rocket,
-  ArrowRight,
 } from 'lucide-react';
-import { APP_ROUTES, getLoginUrl, COMUNIDADES_ROUTES } from '@/lib/navigation';
+import { getLoginUrl, COMUNIDADES_ROUTES } from '@/lib/navigation';
+import { EcossistemaHeader, EcossistemaFooter } from '@/components/ecossistema';
+import { useComunidadesAuth } from '@/app/components/comunidades/ComunidadesAuthContext';
 
 // ========================================
 // DADOS: 9 COMUNIDADES INICIAIS (FASE 1)
@@ -353,8 +353,18 @@ function ArenaCard({ comunidade }: ArenaCardProps) {
 // ========================================
 
 export default function ComunidadesPage() {
+  const { user, isAuthenticated, isLoading, logout } = useComunidadesAuth();
+
+  // Converter para formato do EcossistemaHeader
+  const ecossistemaUser = user ? {
+    id: user.id,
+    nome: user.nome,
+    email: user.email,
+    avatar: user.avatar,
+  } : null;
+
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-black flex flex-col">
       {/* Background Grid Pattern */}
       <div
         className="fixed inset-0 opacity-[0.02]"
@@ -367,36 +377,12 @@ export default function ComunidadesPage() {
         }}
       />
 
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-zinc-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-[#00ff88]/10 border border-[#00ff88]/30 flex items-center justify-center">
-              <Users className="w-5 h-5 text-[#00ff88]" />
-            </div>
-            <div>
-              <h1 className="text-lg font-bold text-white">NutriFitCoach</h1>
-              <p className="text-xs text-zinc-500">Comunidades</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <a
-              href={APP_ROUTES.LOGIN}
-              className="px-4 py-2 text-sm text-zinc-400 hover:text-white transition-colors"
-            >
-              Entrar
-            </a>
-            <a
-              href={APP_ROUTES.DASHBOARD}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold text-sm rounded-lg transition-all hover:shadow-[0_0_20px_rgba(139,92,246,0.4)]"
-            >
-              <Rocket className="w-4 h-4" />
-              Acessar App
-            </a>
-          </div>
-        </div>
-      </header>
+      {/* Unified Ecosystem Header */}
+      <EcossistemaHeader
+        user={ecossistemaUser}
+        isLoading={isLoading}
+        onLogout={logout}
+      />
 
       {/* Container Principal */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
@@ -458,39 +444,8 @@ export default function ComunidadesPage() {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="border-t border-zinc-800 bg-black/50 backdrop-blur-sm py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-[#00ff88]/10 border border-[#00ff88]/30 flex items-center justify-center">
-                <Users className="w-4 h-4 text-[#00ff88]" />
-              </div>
-              <span className="text-sm text-zinc-400">NutriFitCoach Comunidades</span>
-            </div>
-
-            <div className="flex items-center gap-6">
-              <a
-                href={APP_ROUTES.HOME}
-                className="flex items-center gap-2 text-sm text-zinc-400 hover:text-[#00ff88] transition-colors"
-              >
-                <Rocket className="w-4 h-4" />
-                Ir para o App
-              </a>
-              <a
-                href={APP_ROUTES.BLOG}
-                className="text-sm text-zinc-400 hover:text-white transition-colors"
-              >
-                Blog
-              </a>
-            </div>
-
-            <p className="text-xs text-zinc-600">
-              © 2024 NutriFitCoach. Todos os direitos reservados.
-            </p>
-          </div>
-        </div>
-      </footer>
+      {/* Unified Ecosystem Footer */}
+      <EcossistemaFooter />
     </div>
   );
 }
