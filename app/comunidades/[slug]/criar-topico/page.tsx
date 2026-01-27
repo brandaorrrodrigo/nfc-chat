@@ -15,6 +15,7 @@ import { ArrowLeft, Send, MessageSquare, HelpCircle, Megaphone, ExternalLink, Lo
 import ImageUploader from '@/app/components/comunidades/ImageUploader';
 import useImageUpload from '@/hooks/useImageUpload';
 import { useComunidadesAuth } from '@/app/components/comunidades/ComunidadesAuthContext';
+import { APP_ROUTES } from '@/lib/navigation';
 
 // ========================================
 // PÁGINA PRINCIPAL
@@ -94,7 +95,7 @@ export default function CriarTopicoPage({ params }: Props) {
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
             <span className="text-sm font-mono text-[#00ff88]">NutriFit Comunidades</span>
             <a
-              href="https://app.nutrifitcoach.com.br"
+              href={APP_ROUTES.DASHBOARD}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-sm text-zinc-400 hover:text-[#00ff88] transition-colors"
@@ -155,7 +156,7 @@ export default function CriarTopicoPage({ params }: Props) {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
           <span className="text-sm font-mono text-[#00ff88]">NutriFit Comunidades</span>
           <a
-            href="https://app.nutrifitcoach.com.br"
+            href={APP_ROUTES.DASHBOARD}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 text-sm text-zinc-400 hover:text-[#00ff88] transition-colors"

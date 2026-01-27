@@ -20,7 +20,7 @@ import {
   Heart,
   ArrowRight,
 } from 'lucide-react';
-import { APP_ROUTES, COMUNIDADES_ROUTES } from '@/lib/navigation';
+import { APP_ROUTES, COMUNIDADES_ROUTES, BLOG_ROUTES } from '@/lib/navigation';
 
 export default function ComunidadesFooter() {
   const currentYear = new Date().getFullYear();
@@ -77,13 +77,15 @@ export default function ComunidadesFooter() {
                 </Link>
               </li>
               <li>
-                <Link
-                  href={APP_ROUTES.BLOG}
+                <a
+                  href={BLOG_ROUTES.HOME}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors"
                 >
                   <BookOpen className="w-4 h-4" />
                   Blog
-                </Link>
+                </a>
               </li>
               <li>
                 <Link

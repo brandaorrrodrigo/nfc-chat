@@ -30,7 +30,7 @@ import {
   Sparkles,
   ArrowLeft,
 } from 'lucide-react';
-import { APP_ROUTES, getLoginUrl, getRegistroUrl } from '@/lib/navigation';
+import { APP_ROUTES, BLOG_ROUTES } from '@/lib/navigation';
 
 // ========================================
 // TIPOS
@@ -324,13 +324,15 @@ export default function AuthHeader({ user, onLogout }: AuthHeaderProps) {
               <Users className="w-4 h-4" />
               Comunidades
             </Link>
-            <Link
-              href={APP_ROUTES.BLOG}
+            <a
+              href={BLOG_ROUTES.HOME}
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center gap-2 px-3 py-2 text-sm text-zinc-400 hover:text-white hover:bg-zinc-800/50 rounded-lg transition-all"
             >
               <BookOpen className="w-4 h-4" />
               Blog
-            </Link>
+            </a>
             {/* BOTÃO DESTACADO: Voltar ao App */}
             <Link
               href={APP_ROUTES.DASHBOARD}
@@ -345,13 +347,15 @@ export default function AuthHeader({ user, onLogout }: AuthHeaderProps) {
           <div className="flex items-center gap-2">
             {/* Mobile navigation links */}
             <div className="flex md:hidden items-center gap-1">
-              <Link
-                href={APP_ROUTES.BLOG}
+              <a
+                href={BLOG_ROUTES.HOME}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800/50 rounded-lg transition-all"
                 title="Blog"
               >
                 <BookOpen className="w-5 h-5" />
-              </Link>
+              </a>
               {/* Mobile: Botão destacado para App */}
               <Link
                 href={APP_ROUTES.DASHBOARD}

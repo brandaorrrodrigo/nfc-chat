@@ -23,6 +23,7 @@ import type {
   UsuarioDestaque,
   PadraoDetectado,
 } from './observer';
+import { BLOG_URL } from '@/lib/navigation';
 
 // ========================================
 // TIPOS
@@ -316,20 +317,20 @@ function gerarPonteBlog(decisao: DecisaoFacilitadora): IntervencaoIA {
   const temas = decisao.dados.temasTecnicos || [];
   const tema = temas[0] || 'esse assunto';
 
-  // Mapeamento tema -> slug do blog
+  // Mapeamento tema -> slug do blog (URLs absolutas para blog.nutrifitcoach.com.br)
   const mapaBlog: Record<string, string> = {
-    lipedema: '/blog/lipedema-guia-completo',
-    'deficit calorico': '/blog/deficit-calorico-como-funciona',
-    jejum: '/blog/jejum-intermitente-iniciantes',
-    proteina: '/blog/proteina-quanto-consumir',
-    ozempic: '/blog/canetas-emagrecimento',
-    wegovy: '/blog/canetas-emagrecimento',
-    semaglutida: '/blog/canetas-emagrecimento',
-    tireoide: '/blog/tireoide-emagrecimento',
-    hipertrofia: '/blog/treino-hipertrofia-mulheres',
+    lipedema: `${BLOG_URL}/lipedema-guia-completo`,
+    'deficit calorico': `${BLOG_URL}/deficit-calorico-como-funciona`,
+    jejum: `${BLOG_URL}/jejum-intermitente-iniciantes`,
+    proteina: `${BLOG_URL}/proteina-quanto-consumir`,
+    ozempic: `${BLOG_URL}/canetas-emagrecimento`,
+    wegovy: `${BLOG_URL}/canetas-emagrecimento`,
+    semaglutida: `${BLOG_URL}/canetas-emagrecimento`,
+    tireoide: `${BLOG_URL}/tireoide-emagrecimento`,
+    hipertrofia: `${BLOG_URL}/treino-hipertrofia-mulheres`,
   };
 
-  const link = mapaBlog[tema] || '/blog';
+  const link = mapaBlog[tema] || BLOG_URL;
 
   return {
     tipo: 'ponte_blog',
