@@ -30,6 +30,8 @@ import ImageGallery, { GalleryImage } from '@/app/components/comunidades/ImageGa
 import ReactionPicker from '@/app/components/comunidades/ReactionPicker';
 import FavoriteButton from '@/app/components/comunidades/FavoriteButton';
 import { ImagePreview } from '@/hooks/useImageUpload';
+import { IAPerguntaDoDia } from '@/app/components/comunidades/IAInsights';
+import { getPerguntaDoDia, getFaseAtual } from '@/lib/ia';
 
 // ========================================
 // TIPOS
@@ -1283,6 +1285,14 @@ export default function PainelVivoPage() {
         className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent"
       >
         <div className="max-w-4xl mx-auto py-4">
+          {/* Pergunta do Dia - IA Facilitadora */}
+          <div className="px-4 mb-4">
+            <IAPerguntaDoDia
+              pergunta={getPerguntaDoDia()}
+              fase={getFaseAtual()}
+            />
+          </div>
+
           <div className="space-y-0 divide-y divide-zinc-900/50">
             {mensagens.map((mensagem, index) => (
               <MensagemItem
