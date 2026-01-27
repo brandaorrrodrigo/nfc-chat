@@ -16,6 +16,8 @@
  * - Refetch ao focar janela para manter UI sincronizada
  * - Refetch a cada 10 minutos para renovação suave
  * - Usuário SÓ sai se clicar em "Sair" explicitamente
+ *
+ * @version 2.0.0 - Unified ecosystem header/footer
  */
 
 import { SessionProvider, useSession, signOut } from 'next-auth/react';
