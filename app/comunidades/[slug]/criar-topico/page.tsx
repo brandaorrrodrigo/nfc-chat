@@ -77,7 +77,7 @@ export default function CriarTopicoPage({ params }: Props) {
 
   if (enviado) {
     return (
-      <div className="min-h-screen bg-black">
+      <div className="bg-black">
         {/* Background Grid Pattern */}
         <div
           className="fixed inset-0 opacity-[0.02]"
@@ -89,22 +89,6 @@ export default function CriarTopicoPage({ params }: Props) {
             backgroundSize: '50px 50px',
           }}
         />
-
-        {/* Top Bar */}
-        <div className="relative z-20 bg-zinc-900/80 backdrop-blur-sm border-b border-zinc-800">
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
-            <span className="text-sm font-mono text-[#00ff88]">NutriFit Comunidades</span>
-            <a
-              href={APP_ROUTES.DASHBOARD}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm text-zinc-400 hover:text-[#00ff88] transition-colors"
-            >
-              <span>Acessar App</span>
-              <ExternalLink className="w-4 h-4" />
-            </a>
-          </div>
-        </div>
 
         <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="text-center">
@@ -138,7 +122,7 @@ export default function CriarTopicoPage({ params }: Props) {
   ];
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="bg-black">
       {/* Background Grid Pattern */}
       <div
         className="fixed inset-0 opacity-[0.02]"
@@ -150,22 +134,6 @@ export default function CriarTopicoPage({ params }: Props) {
           backgroundSize: '50px 50px',
         }}
       />
-
-      {/* Top Bar */}
-      <div className="relative z-20 bg-zinc-900/80 backdrop-blur-sm border-b border-zinc-800">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
-          <span className="text-sm font-mono text-[#00ff88]">NutriFit Comunidades</span>
-          <a
-            href={APP_ROUTES.DASHBOARD}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 text-sm text-zinc-400 hover:text-[#00ff88] transition-colors"
-          >
-            <span>Acessar App</span>
-            <ExternalLink className="w-4 h-4" />
-          </a>
-        </div>
-      </div>
 
       {/* Container Principal */}
       <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
