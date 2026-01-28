@@ -7,7 +7,7 @@
  * Separado do layout.tsx para manter o layout como Server Component.
  *
  * HEADER/FOOTER GLOBAL:
- * - EcossistemaHeader e EcossistemaFooter são renderizados AQUI
+ * - UniversalHeader e UniversalFooter são renderizados AQUI
  * - NENHUMA página deve renderizar header/footer
  * - Isso garante consistência visual em TODO o ecossistema
  *
@@ -17,13 +17,13 @@
  * - Refetch a cada 10 minutos para renovação suave
  * - Usuário SÓ sai se clicar em "Sair" explicitamente
  *
- * @version 2.0.0 - Unified ecosystem header/footer
+ * @version 3.0.0 - Design System Unificado
  */
 
 import { SessionProvider, useSession, signOut } from 'next-auth/react';
 import { ComunidadesAuthProvider } from '@/app/components/comunidades/ComunidadesAuthContext';
-import { EcossistemaHeader, EcossistemaFooter } from '@/components/ecossistema';
-import type { EcossistemaUser } from '@/components/ecossistema';
+import { UniversalHeader, UniversalFooter } from '@/components/shared';
+import type { UniversalUser } from '@/components/shared';
 
 // Intervalo de refresh em segundos (10 minutos)
 // Mantém a sessão viva e a UI sincronizada
@@ -32,19 +32,22 @@ const SESSION_REFETCH_INTERVAL = 10 * 60; // 10 minutos
 /**
  * GlobalLayout - Wrapper que inclui Header e Footer globais
  *
- * Lê o estado de autenticação e passa para o EcossistemaHeader.
+ * Lê o estado de autenticação e passa para o UniversalHeader.
  * O header muda visualmente quando o usuário está logado.
  */
 function GlobalLayout({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
 
-  // Converter sessão NextAuth para formato EcossistemaUser
-  const user: EcossistemaUser | null = session?.user
+  // Converter sessão NextAuth para formato UniversalUser
+  const user: UniversalUser | null = session?.user
     ? {
         id: (session.user as any).id || session.user.email || 'user',
-        nome: session.user.name || session.user.email?.split('@')[0] || 'Usuário',
+        name: session.user.name || session.user.email?.split('@')[0] || 'Usuário',
         email: session.user.email || '',
-        avatar: session.user.image || undefined,
+        image: session.user.image || undefined,
+        is_premium: (session.user as any).is_premium || false,
+        is_founder: (session.user as any).is_founder || false,
+        is_admin: (session.user as any).is_admin || false,
       }
     : null;
 
@@ -54,11 +57,13 @@ function GlobalLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* HEADER GLOBAL - Único ponto de renderização */}
-      <EcossistemaHeader
+      {/* HEADER GLOBAL - Design System v3 */}
+      <UniversalHeader
+        variant="chat"
         user={user}
         isLoading={status === 'loading'}
         onLogout={handleLogout}
+        loginUrl="/login/comunidades"
       />
 
       {/* CONTEÚDO DAS PÁGINAS */}
@@ -66,8 +71,8 @@ function GlobalLayout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
 
-      {/* FOOTER GLOBAL - Único ponto de renderização */}
-      <EcossistemaFooter />
+      {/* FOOTER GLOBAL - Design System v3 */}
+      <UniversalFooter variant="chat" />
     </div>
   );
 }
