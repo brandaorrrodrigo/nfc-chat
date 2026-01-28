@@ -15,7 +15,7 @@
  *
  * NAO ALTERAR ESTE COMPONENTE SEM ATUALIZAR TODOS OS SISTEMAS
  *
- * @version 2.0.2 - Force rebuild 2026-01-27T
+ * @version 2.0.3 - Visual marker + local login fix 2026-01-27
  */
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -39,7 +39,7 @@ const ECOSSISTEMA_URLS = {
   COMUNIDADES: 'https://chat.nutrifitcoach.com.br',
   BLOG: 'https://blog.nutrifitcoach.com.br',
   APP: 'https://app.nutrifitcoach.com.br',
-  LOGIN_HUB: '/login', // Relativo - cada sistema tem seu hub
+  LOGIN_HUB: '/login/comunidades', // CHAT: login local direto
 };
 
 // ========================================
@@ -186,13 +186,13 @@ export default function EcossistemaHeader({ user, isLoading, onLogout }: Ecossis
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const menuItems = [
-    { label: 'Comunidades', href: ECOSSISTEMA_URLS.COMUNIDADES },
+    { label: 'Chat', href: ECOSSISTEMA_URLS.COMUNIDADES },
     { label: 'Blog', href: ECOSSISTEMA_URLS.BLOG },
     { label: 'App', href: ECOSSISTEMA_URLS.APP },
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-zinc-950 border-b border-zinc-800" data-ecossistema="v2.0.2">
+    <header className="sticky top-0 z-50 bg-zinc-950 border-b border-zinc-800" data-ecossistema="v2.0.3">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* 1. LOGO - sempre leva para landing raiz */}
