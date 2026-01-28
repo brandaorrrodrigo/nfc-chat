@@ -114,7 +114,7 @@ function UserMenu({
           flex items-center gap-2 p-1.5 pr-3 rounded-full transition-all
           ${variant === 'app'
             ? 'bg-white/10 hover:bg-white/20 border border-white/10'
-            : 'bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700'
+            : 'bg-gray-100 hover:bg-gray-200 border border-gray-200 hover:border-gray-300'
           }
         `}
       >
@@ -125,11 +125,11 @@ function UserMenu({
           role={getUserRole()}
           showBadge={false}
         />
-        <span className="text-sm text-zinc-300 max-w-[100px] truncate hidden sm:block">
+        <span className={`text-sm max-w-[100px] truncate hidden sm:block ${variant === 'app' ? 'text-white/90' : 'text-gray-700'}`}>
           {user.name.split(' ')[0]}
         </span>
         <ChevronDown
-          className={`w-4 h-4 text-zinc-500 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          className={`w-4 h-4 transition-transform ${variant === 'app' ? 'text-white/60' : 'text-gray-500'} ${isOpen ? 'rotate-180' : ''}`}
         />
       </button>
 
@@ -137,14 +137,11 @@ function UserMenu({
         <div
           className={`
             absolute right-0 top-full mt-2 w-64 rounded-xl shadow-lg overflow-hidden z-50
-            ${variant === 'app'
-              ? 'bg-white border border-gray-200'
-              : 'bg-zinc-900 border border-zinc-800'
-            }
+            bg-white border border-gray-200
           `}
         >
           {/* User Info */}
-          <div className={`p-4 border-b ${variant === 'app' ? 'border-gray-100' : 'border-zinc-800'}`}>
+          <div className="p-4 border-b border-gray-100">
             <div className="flex items-center gap-3">
               <Avatar
                 src={user.image}
@@ -153,10 +150,10 @@ function UserMenu({
                 role={getUserRole()}
               />
               <div className="flex-1 min-w-0">
-                <p className={`text-sm font-semibold truncate ${variant === 'app' ? 'text-gray-900' : 'text-white'}`}>
+                <p className="text-sm font-semibold truncate text-gray-900">
                   {user.name}
                 </p>
-                <p className={`text-xs truncate ${variant === 'app' ? 'text-gray-500' : 'text-zinc-500'}`}>
+                <p className="text-xs truncate text-gray-500">
                   {user.email}
                 </p>
                 {getUserRole() && (
@@ -173,13 +170,7 @@ function UserMenu({
           <div className="py-2">
             <Link
               href="/perfil"
-              className={`
-                flex items-center gap-3 px-4 py-2.5 text-sm transition-colors
-                ${variant === 'app'
-                  ? 'text-gray-700 hover:bg-gray-50'
-                  : 'text-zinc-300 hover:text-white hover:bg-zinc-800'
-                }
-              `}
+              className="flex items-center gap-3 px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50"
               onClick={() => setIsOpen(false)}
             >
               <User className="w-4 h-4" />
@@ -187,13 +178,7 @@ function UserMenu({
             </Link>
             <Link
               href="/configuracoes"
-              className={`
-                flex items-center gap-3 px-4 py-2.5 text-sm transition-colors
-                ${variant === 'app'
-                  ? 'text-gray-700 hover:bg-gray-50'
-                  : 'text-zinc-300 hover:text-white hover:bg-zinc-800'
-                }
-              `}
+              className="flex items-center gap-3 px-4 py-2.5 text-sm transition-colors text-gray-700 hover:bg-gray-50"
               onClick={() => setIsOpen(false)}
             >
               <Settings className="w-4 h-4" />
@@ -202,19 +187,13 @@ function UserMenu({
           </div>
 
           {/* Logout */}
-          <div className={`border-t py-2 ${variant === 'app' ? 'border-gray-100' : 'border-zinc-800'}`}>
+          <div className="border-t py-2 border-gray-100">
             <button
               onClick={() => {
                 setIsOpen(false);
                 onLogout?.();
               }}
-              className={`
-                flex items-center gap-3 w-full px-4 py-2.5 text-sm transition-colors
-                ${variant === 'app'
-                  ? 'text-red-600 hover:bg-red-50'
-                  : 'text-red-400 hover:text-red-300 hover:bg-zinc-800'
-                }
-              `}
+              className="flex items-center gap-3 w-full px-4 py-2.5 text-sm transition-colors text-red-600 hover:bg-red-50"
             >
               <LogOut className="w-4 h-4" />
               Sair
@@ -249,13 +228,16 @@ export default function UniversalHeader({
       navHover: 'hover:bg-white/10',
       loginBg: 'bg-white text-nfc-emerald-600 hover:bg-white/90',
       border: '',
+      useImage: false,
     },
     chat: {
-      bg: 'bg-zinc-950',
-      textColor: 'text-white',
-      navHover: 'hover:bg-zinc-800',
-      loginBg: 'bg-nfc-neon text-black hover:bg-nfc-neon-400',
-      border: 'border-b border-zinc-800',
+      // 💕 Design feminino - Light backdrop blur
+      bg: 'backdrop-blur-xl bg-white/90',
+      textColor: 'text-gray-900',
+      navHover: 'hover:bg-gray-100',
+      loginBg: 'bg-gradient-to-r from-teal-500 via-emerald-500 to-purple-500 text-white hover:shadow-lg',
+      border: 'border-b border-gray-200/50',
+      useImage: true,
     },
     landing: {
       bg: 'bg-white',
@@ -263,6 +245,7 @@ export default function UniversalHeader({
       navHover: 'hover:bg-gray-100',
       loginBg: 'bg-nfc-gradient text-white hover:shadow-nfc-glow',
       border: 'border-b border-gray-100',
+      useImage: true,
     },
   };
 
@@ -276,20 +259,38 @@ export default function UniversalHeader({
 
   return (
     <header
-      className={`sticky top-0 z-50 ${c.bg} ${c.border} ${className}`}
+      className={`fixed top-0 w-full z-50 ${c.bg} ${c.border} ${className}`}
       data-nfc-header={`v3.0.0-${variant}`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           {showLogo && (
-            <a href={URLS.LANDING} className="flex items-center gap-2 group">
-              <div className="w-8 h-8 rounded-lg bg-nfc-gradient flex items-center justify-center shadow-nfc-glow">
-                <span className="text-white font-black text-sm">N</span>
+            <a href={URLS.LANDING} className="flex items-center gap-3 group">
+              {c.useImage ? (
+                <Image
+                  src="/nfc-logo.png"
+                  alt="NutriFitCoach"
+                  width={40}
+                  height={40}
+                  className="transition-transform group-hover:scale-105"
+                  priority
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-lg bg-nfc-gradient flex items-center justify-center shadow-nfc-glow">
+                  <span className="text-white font-black text-lg">N</span>
+                </div>
+              )}
+              <div className="flex flex-col">
+                <span className={`text-xl font-bold ${variant === 'chat' ? 'bg-gradient-to-r from-teal-500 via-emerald-500 to-purple-500 bg-clip-text text-transparent' : c.textColor} group-hover:opacity-80 transition-opacity`}>
+                  NutriFitCoach
+                </span>
+                {variant === 'chat' && (
+                  <span className="text-xs text-gray-500 font-medium">
+                    Chat com IA 💕
+                  </span>
+                )}
               </div>
-              <span className={`font-bold text-lg ${c.textColor} group-hover:opacity-80 transition-opacity`}>
-                NutriFitCoach
-              </span>
             </a>
           )}
 
@@ -301,7 +302,7 @@ export default function UniversalHeader({
                 href={item.href}
                 className={`
                   px-4 py-2 text-sm font-medium rounded-lg transition-all
-                  ${variant === 'landing' ? 'text-gray-600 hover:text-gray-900' : 'text-zinc-400 hover:text-white'}
+                  ${variant === 'app' ? 'text-white/80 hover:text-white' : 'text-gray-600 hover:text-gray-900'}
                   ${c.navHover}
                 `}
               >
@@ -334,7 +335,7 @@ export default function UniversalHeader({
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className={`md:hidden p-2 rounded-lg ${c.navHover} ${variant === 'landing' ? 'text-gray-600' : 'text-zinc-400'}`}
+              className={`md:hidden p-2 rounded-lg ${c.navHover} ${variant === 'app' ? 'text-white' : 'text-gray-600'}`}
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -343,7 +344,7 @@ export default function UniversalHeader({
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className={`md:hidden pb-4 border-t ${variant === 'landing' ? 'border-gray-100' : 'border-zinc-800'} mt-2 pt-4`}>
+          <div className={`md:hidden pb-4 border-t border-gray-100 mt-2 pt-4 ${variant === 'chat' ? 'bg-white/95' : ''}`}>
             <nav className="space-y-1">
               {navItems.map((item) => (
                 <a
@@ -351,7 +352,7 @@ export default function UniversalHeader({
                   href={item.href}
                   className={`
                     block px-4 py-3 text-sm font-medium rounded-lg transition-colors
-                    ${variant === 'landing' ? 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' : 'text-zinc-300 hover:text-white hover:bg-zinc-800'}
+                    ${variant === 'app' ? 'text-white/80 hover:text-white hover:bg-white/10' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}
                   `}
                   onClick={() => setMobileMenuOpen(false)}
                 >
@@ -360,11 +361,11 @@ export default function UniversalHeader({
               ))}
             </nav>
 
-            <div className={`mt-4 pt-4 border-t ${variant === 'landing' ? 'border-gray-100' : 'border-zinc-800'}`}>
+            <div className="mt-4 pt-4 border-t border-gray-100">
               {isLoading ? (
                 <div className="flex items-center gap-2 px-4">
-                  <div className="w-8 h-8 rounded-full bg-zinc-800 animate-pulse" />
-                  <Loader2 className="w-4 h-4 text-zinc-500 animate-spin" />
+                  <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse" />
+                  <Loader2 className="w-4 h-4 text-gray-500 animate-spin" />
                 </div>
               ) : user ? (
                 <div className="space-y-2">
@@ -376,17 +377,17 @@ export default function UniversalHeader({
                       role={user.is_founder ? 'founder' : user.is_premium ? 'premium' : null}
                     />
                     <div>
-                      <p className={`text-sm font-medium ${variant === 'landing' ? 'text-gray-900' : 'text-white'}`}>
+                      <p className={`text-sm font-medium ${variant === 'app' ? 'text-white' : 'text-gray-900'}`}>
                         {user.name}
                       </p>
-                      <p className={`text-xs ${variant === 'landing' ? 'text-gray-500' : 'text-zinc-500'}`}>
+                      <p className="text-xs text-gray-500">
                         {user.email}
                       </p>
                     </div>
                   </div>
                   <Link
                     href="/perfil"
-                    className={`block px-4 py-2 text-sm ${variant === 'landing' ? 'text-gray-600 hover:text-gray-900' : 'text-zinc-300 hover:text-white'}`}
+                    className={`block px-4 py-2 text-sm ${variant === 'app' ? 'text-white/80 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     Perfil
@@ -396,7 +397,7 @@ export default function UniversalHeader({
                       setMobileMenuOpen(false);
                       onLogout?.();
                     }}
-                    className="block w-full text-left px-4 py-2 text-sm text-red-400 hover:text-red-300"
+                    className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:text-red-500"
                   >
                     Sair
                   </button>

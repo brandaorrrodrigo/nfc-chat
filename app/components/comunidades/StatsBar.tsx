@@ -80,7 +80,7 @@ function StatCard({ icon: Icon, value, label, accentColor = '#00ff88' }: StatCar
           bg-gradient-to-br from-[#00ff88]/5 to-transparent
           transition-opacity duration-300
           pointer-events-none
-        "
+        `}
       />
 
       <div className="relative z-10 flex items-center gap-3 sm:gap-4">
@@ -104,7 +104,7 @@ function StatCard({ icon: Icon, value, label, accentColor = '#00ff88' }: StatCar
               text-zinc-400
               group-hover:text-[#00ff88]
               transition-colors duration-300
-            "
+            `}
             strokeWidth={1.5}
           />
 
@@ -125,7 +125,7 @@ function StatCard({ icon: Icon, value, label, accentColor = '#00ff88' }: StatCar
                 bg-[#00ff88]
                 rounded-full
                 animate-ping
-              "
+              `}
             />
           </div>
         </div>
@@ -165,7 +165,7 @@ function StatCard({ icon: Icon, value, label, accentColor = '#00ff88' }: StatCar
           bg-gradient-to-r from-transparent via-zinc-700 to-transparent
           group-hover:via-[#00ff88]/50
           transition-all duration-300
-        "
+        `}
       />
     </div>
   );
