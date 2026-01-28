@@ -21,6 +21,7 @@ export { default as QuickReply, QuickReplyGroup } from './QuickReply';
 // UI Components
 export { default as SuggestionCard, SuggestionChip } from './SuggestionCard';
 export { default as AchievementBadge, StreakBadge, MiniAchievement } from './AchievementBadge';
+export { default as GamificationBadges } from './GamificationBadges';
 export { default as ContextChip } from './ContextChip';
 
 // Types
@@ -29,3 +30,4 @@ export type { Message } from './MessageBubble';
 export type { UserContext } from './ChatHeader';
 export type { UserStats, Achievement, ChecklistItem, Insight } from './ChatSidePanel';
 export type { ChipColor } from './ContextChip';
+export type { Badge, BadgeRarity, GamificationBadgesProps } from './GamificationBadges';

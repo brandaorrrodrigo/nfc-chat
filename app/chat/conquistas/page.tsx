@@ -13,8 +13,8 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import UniversalHeader, { UniversalUser } from '@/components/shared/UniversalHeader';
-import { GamificationBadges } from '../components';
-import type { Badge } from '../components/GamificationBadges';
+import { GamificationBadges } from '@/components/chat';
+import type { Badge } from '@/components/chat';
 
 // Mock badges data
 const mockBadges: Badge[] = [
