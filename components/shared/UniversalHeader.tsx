@@ -266,7 +266,7 @@ export default function UniversalHeader({
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           {showLogo && (
-            <a href={URLS.LANDING} className="flex items-center gap-3 group">
+            <a href={variant === 'chat' ? '/chat' : URLS.LANDING} className="flex items-center gap-3 group">
               {c.useImage ? (
                 <Image
                   src="/nfc-logo.png"
