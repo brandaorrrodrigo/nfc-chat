@@ -101,7 +101,7 @@ export default function ChatInput({
   const canSend = message.trim().length > 0 && !isLoading && !disabled;
 
   return (
-    <div className="border-t border-gray-200 bg-white/80 backdrop-blur-sm p-4">
+    <div className="border-t border-purple-500/30 bg-slate-900/80 backdrop-blur-sm p-4">
       <div className="max-w-3xl mx-auto">
         {/* Suggestions Bar */}
         <div className="flex gap-2 overflow-x-auto pb-3 scrollbar-hide">
@@ -120,30 +120,30 @@ export default function ChatInput({
           {/* Glow Effect */}
           <div
             className={`
-              absolute -inset-1 bg-gradient-to-r from-teal-400 via-emerald-400 to-purple-400
+              absolute -inset-1 bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500
               rounded-2xl blur-lg transition-opacity duration-300
-              ${isFocused ? 'opacity-30' : 'opacity-0'}
+              ${isFocused ? 'opacity-40' : 'opacity-0'}
             `}
           />
 
           {/* Input Box */}
           <div
             className={`
-              relative flex items-end gap-2 bg-white rounded-2xl p-2
+              relative flex items-end gap-2 bg-slate-800/90 backdrop-blur-sm rounded-2xl p-2
               border-2 transition-all duration-200
               ${isFocused
-                ? 'border-transparent ring-2 ring-teal-500 shadow-lg'
-                : 'border-gray-200 hover:border-gray-300'
+                ? 'border-purple-500/50 ring-2 ring-purple-500/30 shadow-[0_0_20px_rgba(168,85,247,0.2)]'
+                : 'border-purple-500/30 hover:border-purple-500/50'
               }
             `}
           >
             {/* Emoji Button */}
             <button
               onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-              className="shrink-0 p-2 hover:bg-gray-100 rounded-xl transition-colors"
+              className="shrink-0 p-2 hover:bg-purple-500/20 rounded-xl transition-colors"
               title="Emojis 😊"
             >
-              <Smile className="w-5 h-5 text-gray-500" />
+              <Smile className="w-5 h-5 text-purple-300" />
             </button>
 
             {/* Textarea */}
@@ -157,7 +157,7 @@ export default function ChatInput({
               placeholder={placeholder}
               disabled={disabled || isLoading}
               rows={1}
-              className="flex-1 resize-none bg-transparent outline-none min-h-[44px] max-h-[120px] py-2.5 text-gray-900 placeholder-gray-500"
+              className="flex-1 resize-none bg-transparent outline-none min-h-[44px] max-h-[120px] py-2.5 text-white placeholder-purple-300/50"
             />
 
             {/* Action Buttons */}
@@ -166,38 +166,38 @@ export default function ChatInput({
               <div className="relative">
                 <button
                   onClick={() => setShowAttachMenu(!showAttachMenu)}
-                  className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+                  className="p-2 hover:bg-purple-500/20 rounded-xl transition-colors"
                   title="Anexar 📎"
                 >
-                  <Paperclip className="w-5 h-5 text-gray-500" />
+                  <Paperclip className="w-5 h-5 text-purple-300" />
                 </button>
 
                 {/* Attach Dropdown */}
                 {showAttachMenu && (
-                  <div className="absolute bottom-full right-0 mb-2 bg-white rounded-xl shadow-xl border border-gray-200 p-2 min-w-[160px] animate-fadeIn">
+                  <div className="absolute bottom-full right-0 mb-2 bg-slate-800/95 backdrop-blur-sm rounded-xl shadow-xl border border-purple-500/30 p-2 min-w-[160px] animate-fadeIn">
                     <button
                       onClick={() => fileInputRef.current?.click()}
-                      className="w-full flex items-center gap-3 px-3 py-2 hover:bg-gray-50 rounded-lg text-sm text-gray-700"
+                      className="w-full flex items-center gap-3 px-3 py-2 hover:bg-purple-500/20 rounded-lg text-sm text-purple-200"
                     >
-                      <Image className="w-4 h-4 text-teal-500" />
+                      <Image className="w-4 h-4 text-cyan-400" />
                       Foto 📷
                     </button>
                     <button
-                      className="w-full flex items-center gap-3 px-3 py-2 hover:bg-gray-50 rounded-lg text-sm text-gray-700"
+                      className="w-full flex items-center gap-3 px-3 py-2 hover:bg-purple-500/20 rounded-lg text-sm text-purple-200"
                     >
-                      <Camera className="w-4 h-4 text-purple-500" />
+                      <Camera className="w-4 h-4 text-purple-400" />
                       Câmera 📸
                     </button>
                     <button
-                      className="w-full flex items-center gap-3 px-3 py-2 hover:bg-gray-50 rounded-lg text-sm text-gray-700"
+                      className="w-full flex items-center gap-3 px-3 py-2 hover:bg-purple-500/20 rounded-lg text-sm text-purple-200"
                     >
-                      <UtensilsCrossed className="w-4 h-4 text-orange-500" />
+                      <UtensilsCrossed className="w-4 h-4 text-orange-400" />
                       Refeição 🍽️
                     </button>
                     <button
-                      className="w-full flex items-center gap-3 px-3 py-2 hover:bg-gray-50 rounded-lg text-sm text-gray-700"
+                      className="w-full flex items-center gap-3 px-3 py-2 hover:bg-purple-500/20 rounded-lg text-sm text-purple-200"
                     >
-                      <Scale className="w-4 h-4 text-pink-500" />
+                      <Scale className="w-4 h-4 text-pink-400" />
                       Peso ⚖️
                     </button>
                   </div>
@@ -207,10 +207,10 @@ export default function ChatInput({
               {/* Voice Button */}
               <button
                 onClick={onVoice}
-                className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+                className="p-2 hover:bg-purple-500/20 rounded-xl transition-colors"
                 title="Mensagem de voz 🎤"
               >
-                <Mic className="w-5 h-5 text-gray-500" />
+                <Mic className="w-5 h-5 text-purple-300" />
               </button>
 
               {/* Send Button */}
@@ -220,8 +220,8 @@ export default function ChatInput({
                 className={`
                   relative p-3 rounded-xl transition-all duration-200
                   ${canSend
-                    ? 'bg-gradient-to-r from-teal-500 via-emerald-500 to-purple-500 text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95'
-                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    ? 'bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 text-white shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] hover:scale-105 active:scale-95'
+                    : 'bg-slate-700 text-slate-500 cursor-not-allowed'
                   }
                 `}
               >
@@ -250,24 +250,24 @@ export default function ChatInput({
         </div>
 
         {/* Credits Display */}
-        <div className="mt-3 flex justify-between items-center text-xs text-gray-500">
+        <div className="mt-3 flex justify-between items-center text-xs text-purple-300/60">
           <span className="flex items-center gap-1">
             {isPremium ? (
               <>
                 <span className="text-base">💎</span>
-                <span className="text-purple-600 font-medium">Premium</span> - Mensagens ilimitadas
+                <span className="text-purple-300 font-medium">Premium</span> - Mensagens ilimitadas
               </>
             ) : (
               <>
                 <span className="text-base">✨</span>
-                <strong className="text-teal-600">{remainingCredits}</strong> mensagens restantes hoje
+                <strong className="text-cyan-400">{remainingCredits}</strong> mensagens restantes hoje
               </>
             )}
           </span>
           {!isPremium && (
             <a
               href="/planos"
-              className="text-teal-600 hover:text-teal-700 font-medium transition-colors flex items-center gap-1"
+              className="text-pink-400 hover:text-pink-300 font-medium transition-colors flex items-center gap-1"
             >
               Fazer upgrade 💕 →
             </a>
@@ -275,21 +275,21 @@ export default function ChatInput({
         </div>
 
         {/* Helper Text */}
-        <p className="text-xs text-gray-400 mt-2 text-center">
+        <p className="text-xs text-purple-400/50 mt-2 text-center">
           Enter para enviar • Shift + Enter para nova linha
         </p>
       </div>
 
       {/* Emoji Picker Overlay */}
       {showEmojiPicker && (
-        <div className="absolute bottom-full left-0 mb-2 p-4 bg-white rounded-2xl shadow-xl border border-gray-200 animate-fadeIn">
+        <div className="absolute bottom-full left-0 mb-2 p-4 bg-slate-800/95 backdrop-blur-sm rounded-2xl shadow-xl border border-purple-500/30 animate-fadeIn">
           <div className="flex justify-between items-center mb-3">
-            <span className="text-sm font-medium text-gray-700">Emojis 😊</span>
+            <span className="text-sm font-medium text-purple-200">Emojis 😊</span>
             <button
               onClick={() => setShowEmojiPicker(false)}
-              className="p-1 hover:bg-gray-100 rounded-lg"
+              className="p-1 hover:bg-purple-500/20 rounded-lg"
             >
-              <X className="w-4 h-4 text-gray-500" />
+              <X className="w-4 h-4 text-purple-300" />
             </button>
           </div>
           <div className="grid grid-cols-8 gap-2">
@@ -300,7 +300,7 @@ export default function ChatInput({
                   setMessage((prev) => prev + emoji);
                   setShowEmojiPicker(false);
                 }}
-                className="text-2xl p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="text-2xl p-2 hover:bg-purple-500/20 rounded-lg transition-colors"
               >
                 {emoji}
               </button>

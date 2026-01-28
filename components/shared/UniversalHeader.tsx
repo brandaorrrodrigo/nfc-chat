@@ -231,13 +231,13 @@ export default function UniversalHeader({
       useImage: false,
     },
     chat: {
-      // 💕 Design feminino - Light backdrop blur
-      bg: 'backdrop-blur-xl bg-white/90',
-      textColor: 'text-gray-900',
-      navHover: 'hover:bg-gray-100',
-      loginBg: 'bg-gradient-to-r from-teal-500 via-emerald-500 to-purple-500 text-white hover:shadow-lg',
-      border: 'border-b border-gray-200/50',
-      useImage: true,
+      // 💕 Design feminino - Dark purple neon theme
+      bg: 'backdrop-blur-xl bg-slate-900/90',
+      textColor: 'text-white',
+      navHover: 'hover:bg-purple-500/20',
+      loginBg: 'bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 text-white hover:shadow-[0_0_20px_rgba(168,85,247,0.4)]',
+      border: 'border-b border-purple-500/30',
+      useImage: false,
     },
     landing: {
       bg: 'bg-white',
@@ -277,16 +277,16 @@ export default function UniversalHeader({
                   priority
                 />
               ) : (
-                <div className="w-10 h-10 rounded-lg bg-nfc-gradient flex items-center justify-center shadow-nfc-glow">
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${variant === 'chat' ? 'bg-gradient-to-br from-pink-500 via-purple-500 to-cyan-500 shadow-[0_0_15px_rgba(168,85,247,0.4)]' : 'bg-nfc-gradient shadow-nfc-glow'}`}>
                   <span className="text-white font-black text-lg">N</span>
                 </div>
               )}
               <div className="flex flex-col">
-                <span className={`text-xl font-bold ${variant === 'chat' ? 'bg-gradient-to-r from-teal-500 via-emerald-500 to-purple-500 bg-clip-text text-transparent' : c.textColor} group-hover:opacity-80 transition-opacity`}>
+                <span className={`text-xl font-bold ${variant === 'chat' ? 'bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent' : c.textColor} group-hover:opacity-80 transition-opacity`}>
                   NutriFitCoach
                 </span>
                 {variant === 'chat' && (
-                  <span className="text-xs text-gray-500 font-medium">
+                  <span className="text-xs text-purple-300/70 font-medium">
                     Chat com IA 💕
                   </span>
                 )}
@@ -344,7 +344,7 @@ export default function UniversalHeader({
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className={`md:hidden pb-4 border-t border-gray-100 mt-2 pt-4 ${variant === 'chat' ? 'bg-white/95' : ''}`}>
+          <div className={`md:hidden pb-4 border-t mt-2 pt-4 ${variant === 'chat' ? 'bg-slate-900/95 border-purple-500/30' : 'border-gray-100'}`}>
             <nav className="space-y-1">
               {navItems.map((item) => (
                 <a

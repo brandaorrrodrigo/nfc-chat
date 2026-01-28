@@ -21,12 +21,12 @@ export interface ContextChipProps {
 }
 
 const colorClasses: Record<ChipColor, string> = {
-  pink: 'bg-pink-50 text-pink-700 border-pink-200 hover:bg-pink-100',
-  teal: 'bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100',
-  blue: 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100',
-  purple: 'bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100',
-  orange: 'bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100',
-  green: 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100',
+  pink: 'bg-pink-500/20 text-pink-300 border-pink-500/30 hover:bg-pink-500/30',
+  teal: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30 hover:bg-cyan-500/30',
+  blue: 'bg-blue-500/20 text-blue-300 border-blue-500/30 hover:bg-blue-500/30',
+  purple: 'bg-purple-500/20 text-purple-300 border-purple-500/30 hover:bg-purple-500/30',
+  orange: 'bg-orange-500/20 text-orange-300 border-orange-500/30 hover:bg-orange-500/30',
+  green: 'bg-green-500/20 text-green-300 border-green-500/30 hover:bg-green-500/30',
 };
 
 export default function ContextChip({ icon: Icon, label, color, onClick }: ContextChipProps) {

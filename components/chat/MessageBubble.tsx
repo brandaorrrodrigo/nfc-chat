@@ -75,45 +75,45 @@ export default function MessageBubble({
         <div className="flex-1 min-w-0">
           {/* Name */}
           <div className="flex items-center gap-2 mb-1">
-            <span className="font-semibold text-gray-900">{aiName}</span>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-gradient-to-r from-teal-500 to-purple-500 text-white font-medium">
+            <span className="font-semibold text-white">{aiName}</span>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 text-white font-medium">
               IA 💕
             </span>
           </div>
 
           {/* Bubble */}
           <div className="relative group">
-            <div className="bg-white rounded-2xl rounded-tl-sm p-4 shadow-sm border border-gray-100">
-              <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">
+            <div className="bg-purple-500/20 backdrop-blur-sm rounded-2xl rounded-tl-sm p-4 border border-purple-500/30 shadow-[0_0_20px_rgba(168,85,247,0.15)]">
+              <p className="text-white leading-relaxed whitespace-pre-wrap">
                 {message.content}
               </p>
             </div>
 
             {/* Actions overlay */}
             {showActions && (
-              <div className="absolute -top-2 right-2 flex items-center gap-1 bg-white rounded-full shadow-lg border border-gray-100 px-2 py-1 animate-fadeIn">
+              <div className="absolute -top-2 right-2 flex items-center gap-1 bg-slate-800/90 backdrop-blur-sm rounded-full shadow-lg border border-purple-500/30 px-2 py-1 animate-fadeIn">
                 <button
                   onClick={handleCopy}
-                  className="p-1.5 hover:bg-gray-100 rounded-full transition-colors"
+                  className="p-1.5 hover:bg-purple-500/20 rounded-full transition-colors"
                   title="Copiar"
                 >
                   {copied ? (
-                    <Check className="w-4 h-4 text-green-500" />
+                    <Check className="w-4 h-4 text-green-400" />
                   ) : (
-                    <Copy className="w-4 h-4 text-gray-500" />
+                    <Copy className="w-4 h-4 text-purple-300" />
                   )}
                 </button>
                 <button
-                  className="p-1.5 hover:bg-gray-100 rounded-full transition-colors"
+                  className="p-1.5 hover:bg-purple-500/20 rounded-full transition-colors"
                   title="Compartilhar"
                 >
-                  <Share2 className="w-4 h-4 text-gray-500" />
+                  <Share2 className="w-4 h-4 text-purple-300" />
                 </button>
                 <button
-                  className="p-1.5 hover:bg-gray-100 rounded-full transition-colors"
+                  className="p-1.5 hover:bg-purple-500/20 rounded-full transition-colors"
                   title="Mais"
                 >
-                  <MoreHorizontal className="w-4 h-4 text-gray-500" />
+                  <MoreHorizontal className="w-4 h-4 text-purple-300" />
                 </button>
               </div>
             )}
@@ -132,24 +132,24 @@ export default function MessageBubble({
             <div className="flex items-center gap-2">
               <button
                 onClick={() => onReaction?.(message.id, 'heart')}
-                className="p-1.5 hover:bg-pink-50 rounded-full transition-colors group"
+                className="p-1.5 hover:bg-pink-500/20 rounded-full transition-colors group"
               >
-                <Heart className="w-4 h-4 text-gray-400 group-hover:text-pink-500 transition-colors" />
+                <Heart className="w-4 h-4 text-purple-400 group-hover:text-pink-400 transition-colors" />
               </button>
               <button
                 onClick={() => onReaction?.(message.id, 'star')}
-                className="p-1.5 hover:bg-amber-50 rounded-full transition-colors group"
+                className="p-1.5 hover:bg-amber-500/20 rounded-full transition-colors group"
               >
-                <Star className="w-4 h-4 text-gray-400 group-hover:text-amber-500 transition-colors" />
+                <Star className="w-4 h-4 text-purple-400 group-hover:text-amber-400 transition-colors" />
               </button>
               <button
                 onClick={() => onReaction?.(message.id, 'thumbs')}
-                className="p-1.5 hover:bg-blue-50 rounded-full transition-colors group"
+                className="p-1.5 hover:bg-cyan-500/20 rounded-full transition-colors group"
               >
-                <ThumbsUp className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors" />
+                <ThumbsUp className="w-4 h-4 text-purple-400 group-hover:text-cyan-400 transition-colors" />
               </button>
             </div>
-            <span className="text-xs text-gray-400">{message.time}</span>
+            <span className="text-xs text-purple-300/60">{message.time}</span>
           </div>
         </div>
       </div>
@@ -165,10 +165,10 @@ export default function MessageBubble({
           <img
             src={userPhoto}
             alt={userName}
-            className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-lg"
+            className="w-10 h-10 rounded-full object-cover border-2 border-purple-400/50 shadow-lg"
           />
         ) : (
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center text-white font-bold shadow-lg">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 via-purple-500 to-cyan-500 flex items-center justify-center text-white font-bold shadow-lg">
             {userName.charAt(0).toUpperCase()}
           </div>
         )}
@@ -176,13 +176,13 @@ export default function MessageBubble({
 
       {/* Bubble */}
       <div>
-        <div className="bg-gradient-to-r from-teal-500 via-emerald-500 to-purple-500 rounded-2xl rounded-tr-sm p-4 text-white shadow-lg">
+        <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 rounded-2xl rounded-tr-sm p-4 text-white shadow-[0_0_20px_rgba(168,85,247,0.3)]">
           <p className="whitespace-pre-wrap leading-relaxed">
             {message.content}
           </p>
         </div>
         <div className="flex justify-end mt-1">
-          <span className="text-xs text-gray-400">{message.time}</span>
+          <span className="text-xs text-purple-300/60">{message.time}</span>
         </div>
       </div>
     </div>
@@ -193,11 +193,11 @@ export default function MessageBubble({
 export function DateSeparator({ date }: { date: string }) {
   return (
     <div className="flex items-center gap-4 my-6">
-      <div className="flex-1 h-px bg-gray-200" />
-      <span className="text-xs text-gray-500 font-medium px-3 py-1 bg-gray-100 rounded-full">
+      <div className="flex-1 h-px bg-purple-500/30" />
+      <span className="text-xs text-purple-300 font-medium px-3 py-1 bg-purple-500/20 backdrop-blur-sm rounded-full border border-purple-500/30">
         {date}
       </span>
-      <div className="flex-1 h-px bg-gray-200" />
+      <div className="flex-1 h-px bg-purple-500/30" />
     </div>
   );
 }
@@ -206,7 +206,7 @@ export function DateSeparator({ date }: { date: string }) {
 export function SystemMessage({ content, emoji }: { content: string; emoji?: string }) {
   return (
     <div className="flex justify-center my-4">
-      <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-50 border border-purple-100 rounded-full text-sm text-purple-700">
+      <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/20 backdrop-blur-sm border border-purple-500/30 rounded-full text-sm text-purple-200">
         {emoji && <span>{emoji}</span>}
         {content}
       </div>

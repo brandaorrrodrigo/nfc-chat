@@ -108,7 +108,7 @@ export function SuggestionChip({
   return (
     <button
       onClick={onClick}
-      className="inline-flex items-center gap-2 px-4 py-2 bg-white hover:bg-gray-50 rounded-full text-sm font-medium text-gray-700 border border-gray-200 hover:border-gray-300 transition-all hover:shadow-sm whitespace-nowrap"
+      className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/20 hover:bg-purple-500/30 rounded-full text-sm font-medium text-purple-200 border border-purple-500/30 hover:border-purple-500/50 transition-all hover:shadow-[0_0_10px_rgba(168,85,247,0.2)] whitespace-nowrap"
     >
       <span className="text-base">{emoji}</span>
       {text}
