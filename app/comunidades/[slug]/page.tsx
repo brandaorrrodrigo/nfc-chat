@@ -14,6 +14,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import {
   ArrowLeft,
   Bot,
@@ -23,16 +24,51 @@ import {
   ChevronDown,
   AlertTriangle,
 } from 'lucide-react';
-import { UserAvatar } from '@/app/components/comunidades/AuthHeader';
-import SmartFAB from '@/app/components/comunidades/SmartFAB';
-import LoginRequiredModal, { useLoginRequiredModal } from '@/app/components/comunidades/LoginRequiredModal';
+import { UserAvatar } from '@/app/components/comunidades/UserAvatar';
+import { useLoginRequiredModal } from '@/app/components/comunidades/LoginRequiredModal';
 import { useComunidadesAuth } from '@/app/components/comunidades/ComunidadesAuthContext';
-import ComposeBox from '@/app/components/comunidades/ComposeBox';
-import ImageGallery, { GalleryImage } from '@/app/components/comunidades/ImageGallery';
-import ReactionPicker from '@/app/components/comunidades/ReactionPicker';
-import FavoriteButton from '@/app/components/comunidades/FavoriteButton';
+import type { GalleryImage } from '@/app/components/comunidades/ImageGallery';
 import { ImagePreview } from '@/hooks/useImageUpload';
-import { IAPerguntaDoDia } from '@/app/components/comunidades/IAInsights';
+
+// ========================================
+// DYNAMIC IMPORTS (Bundle Optimization)
+// Economia estimada: ~55KB do bundle inicial
+// ========================================
+
+const SmartFAB = dynamic(() => import('@/app/components/comunidades/SmartFAB'), {
+  ssr: false,
+});
+
+const LoginRequiredModal = dynamic(
+  () => import('@/app/components/comunidades/LoginRequiredModal').then(mod => ({ default: mod.default })),
+  { ssr: false }
+);
+
+const ComposeBox = dynamic(() => import('@/app/components/comunidades/ComposeBox'), {
+  ssr: false,
+  loading: () => <div className="h-24 bg-zinc-900/50 rounded-xl animate-pulse" />,
+});
+
+const ImageGallery = dynamic(() => import('@/app/components/comunidades/ImageGallery'), {
+  ssr: false,
+});
+
+const ReactionPicker = dynamic(() => import('@/app/components/comunidades/ReactionPicker'), {
+  ssr: false,
+});
+
+const FavoriteButton = dynamic(() => import('@/app/components/comunidades/FavoriteButton'), {
+  ssr: false,
+});
+
+const IAPerguntaDoDia = dynamic(
+  () => import('@/app/components/comunidades/IAInsights').then(mod => ({ default: mod.IAPerguntaDoDia })),
+  { ssr: false }
+);
+
+// ========================================
+// LIB IMPORTS
+// ========================================
 import { getPerguntaDoDia, getFaseAtual } from '@/lib/ia';
 
 // ========================================

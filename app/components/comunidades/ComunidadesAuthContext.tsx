@@ -21,7 +21,7 @@
 import React, { createContext, useContext, useMemo, ReactNode } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
-import type { AuthUser } from './AuthHeader';
+import type { AuthUser } from './UserAvatar';
 
 // ========================================
 // TIPOS
