@@ -26,29 +26,29 @@ export interface AchievementBadgeProps {
 const rarityConfig = {
   common: {
     gradient: 'from-gray-400 to-gray-500',
-    bg: 'bg-gray-50',
-    border: 'border-gray-200',
+    bg: 'bg-slate-800/50',
+    border: 'border-gray-600/50',
     label: 'Comum',
     emoji: '⭐',
   },
   rare: {
     gradient: 'from-blue-400 to-cyan-500',
-    bg: 'bg-blue-50',
-    border: 'border-blue-200',
+    bg: 'bg-blue-500/10',
+    border: 'border-blue-500/30',
     label: 'Raro',
     emoji: '💎',
   },
   epic: {
     gradient: 'from-purple-500 to-pink-500',
-    bg: 'bg-purple-50',
-    border: 'border-purple-200',
+    bg: 'bg-purple-500/10',
+    border: 'border-purple-500/30',
     label: 'Épico',
     emoji: '🌟',
   },
   legendary: {
     gradient: 'from-amber-400 to-orange-500',
-    bg: 'bg-amber-50',
-    border: 'border-amber-200',
+    bg: 'bg-amber-500/10',
+    border: 'border-amber-500/30',
     label: 'Lendário',
     emoji: '👑',
   },
@@ -97,13 +97,13 @@ export default function AchievementBadge({
         {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
-            <p className="font-semibold text-gray-900 truncate">{title}</p>
+            <p className="font-semibold text-white truncate">{title}</p>
             <span className="text-xs">{config.emoji}</span>
           </div>
-          <p className="text-xs text-teal-600 font-medium flex items-center gap-1">
+          <p className="text-xs text-cyan-400 font-medium flex items-center gap-1">
             ✅ Desbloqueado!
             {xpReward && (
-              <span className="ml-1 px-1.5 py-0.5 bg-teal-100 rounded text-teal-700">
+              <span className="ml-1 px-1.5 py-0.5 bg-cyan-500/20 rounded text-cyan-300">
                 +{xpReward} XP
               </span>
             )}
@@ -118,25 +118,25 @@ export default function AchievementBadge({
     <button
       onClick={onClick}
       className={`
-        w-full p-3 rounded-xl bg-gray-50 border border-gray-200
-        hover:bg-gray-100 transition-all duration-200
+        w-full p-3 rounded-xl bg-slate-800/50 border border-purple-500/30
+        hover:bg-purple-500/10 transition-all duration-200
         text-left group
       `}
     >
       <div className="flex items-center gap-3 mb-2">
         {/* Locked icon */}
         <div className="relative shrink-0">
-          <div className="w-12 h-12 rounded-xl bg-gray-200 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-slate-700/50 flex items-center justify-center">
             <span className="text-2xl grayscale opacity-50">{icon}</span>
           </div>
-          <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gray-400 rounded-full flex items-center justify-center">
+          <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gray-600 rounded-full flex items-center justify-center">
             <Lock className="w-3 h-3 text-white" />
           </div>
         </div>
 
         {/* Title */}
         <div className="flex-1 min-w-0">
-          <p className="font-medium text-gray-700 truncate">{title}</p>
+          <p className="font-medium text-gray-300 truncate">{title}</p>
           {description && (
             <p className="text-xs text-gray-500 truncate">{description}</p>
           )}
@@ -146,13 +146,13 @@ export default function AchievementBadge({
       {/* Progress bar */}
       {hasProgress && (
         <div>
-          <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
             <div
               className={`h-full bg-gradient-to-r ${config.gradient} rounded-full transition-all duration-500`}
               style={{ width: `${progressPercent}%` }}
             />
           </div>
-          <p className="text-xs text-gray-500 mt-1 text-right">
+          <p className="text-xs text-gray-400 mt-1 text-right">
             {progress}/{total} {progressPercent >= 80 && '🔥 Quase lá!'}
           </p>
         </div>
@@ -230,13 +230,13 @@ export function MiniAchievement({
   xp: number;
 }) {
   return (
-    <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-200 animate-slideIn">
+    <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-xl border border-amber-500/30 animate-slideIn">
       <div className="text-2xl">{icon}</div>
       <div className="flex-1">
-        <p className="font-semibold text-gray-900">{title}</p>
-        <p className="text-sm text-amber-600 font-medium">+{xp} XP ganhos! 🎉</p>
+        <p className="font-semibold text-white">{title}</p>
+        <p className="text-sm text-amber-400 font-medium">+{xp} XP ganhos! 🎉</p>
       </div>
-      <Trophy className="w-5 h-5 text-amber-500" />
+      <Trophy className="w-5 h-5 text-amber-400" />
     </div>
   );
 }

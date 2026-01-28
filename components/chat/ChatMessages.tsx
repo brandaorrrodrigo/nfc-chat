@@ -36,18 +36,18 @@ function WelcomeMessage({ userName }: { userName?: string }) {
     <div className="text-center py-12 px-6 animate-fadeIn">
       {/* Avatar grande */}
       <div className="relative inline-block mb-6">
-        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-teal-400 to-purple-500 animate-pulse blur-xl opacity-40" />
-        <div className="relative w-24 h-24 rounded-full bg-gradient-to-br from-teal-400 via-emerald-500 to-purple-500 flex items-center justify-center text-4xl shadow-xl">
+        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 animate-pulse blur-xl opacity-40" />
+        <div className="relative w-24 h-24 rounded-full bg-gradient-to-br from-pink-500 via-purple-500 to-cyan-500 flex items-center justify-center text-4xl shadow-xl">
           ✨
         </div>
       </div>
 
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">
+      <h2 className="text-2xl font-bold text-white mb-2">
         Olá{userName ? `, ${userName}` : ''}! 💕
       </h2>
 
-      <p className="text-gray-600 max-w-md mx-auto mb-6 leading-relaxed">
-        Sou a <strong className="text-teal-600">Dra. Sofia</strong>, sua nutricionista virtual.
+      <p className="text-gray-300 max-w-md mx-auto mb-6 leading-relaxed">
+        Sou a <strong className="text-cyan-400">Dra. Sofia</strong>, sua nutricionista virtual.
         Estou aqui para te ajudar a alcançar seus objetivos de saúde e bem-estar! 🌟
       </p>
 
@@ -63,7 +63,7 @@ function WelcomeMessage({ userName }: { userName?: string }) {
         ].map((topic, idx) => (
           <button
             key={idx}
-            className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-gray-50 rounded-full text-sm font-medium text-gray-700 border border-gray-200 hover:border-teal-300 hover:shadow-sm transition-all"
+            className="flex items-center gap-2 px-4 py-2 bg-slate-800/50 hover:bg-purple-500/20 rounded-full text-sm font-medium text-gray-300 border border-purple-500/30 hover:border-purple-500/50 hover:shadow-[0_0_10px_rgba(168,85,247,0.2)] transition-all"
           >
             <span className="text-lg">{topic.emoji}</span>
             {topic.text}
@@ -72,9 +72,9 @@ function WelcomeMessage({ userName }: { userName?: string }) {
       </div>
 
       {/* Tips */}
-      <div className="mt-8 p-4 bg-gradient-to-r from-pink-50 via-purple-50 to-teal-50 rounded-2xl max-w-md mx-auto border border-pink-100">
-        <p className="text-sm text-gray-600">
-          <span className="font-medium text-purple-600">💡 Dica:</span> Quanto mais você conversa comigo,
+      <div className="mt-8 p-4 bg-gradient-to-r from-pink-500/10 via-purple-500/10 to-cyan-500/10 rounded-2xl max-w-md mx-auto border border-purple-500/30">
+        <p className="text-sm text-gray-300">
+          <span className="font-medium text-purple-400">💡 Dica:</span> Quanto mais você conversa comigo,
           mais personalizada fica a sua experiência! Conte-me sobre seus objetivos e rotina.
         </p>
       </div>
@@ -106,7 +106,7 @@ export default function ChatMessages({
   return (
     <div
       ref={containerRef}
-      className="flex-1 overflow-y-auto px-4 md:px-6 py-8 bg-gradient-to-b from-gray-50/50 to-white"
+      className="flex-1 overflow-y-auto px-4 md:px-6 py-8"
     >
       <div className="max-w-3xl mx-auto space-y-6">
         {/* Welcome Message */}
@@ -199,10 +199,10 @@ export function EmptyMessages() {
     <div className="flex-1 flex items-center justify-center p-8">
       <div className="text-center">
         <div className="text-6xl mb-4">💬</div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+        <h3 className="text-lg font-semibold text-white mb-2">
           Nenhuma mensagem ainda
         </h3>
-        <p className="text-gray-500 text-sm max-w-sm">
+        <p className="text-gray-400 text-sm max-w-sm">
           Comece uma conversa com a Dra. Sofia! Ela está pronta para te ajudar 💕
         </p>
       </div>

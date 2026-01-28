@@ -22,24 +22,24 @@ export interface SuggestionCardProps {
 
 const variantClasses = {
   default: {
-    bg: 'bg-gradient-to-br from-white to-gray-50',
-    border: 'border-gray-200',
-    icon: 'from-gray-100 to-gray-200',
+    bg: 'bg-slate-800/50 backdrop-blur-sm',
+    border: 'border-purple-500/30',
+    icon: 'from-slate-700 to-slate-600',
   },
   premium: {
-    bg: 'bg-gradient-to-br from-purple-50 via-pink-50 to-teal-50',
-    border: 'border-purple-200',
-    icon: 'from-purple-100 to-pink-100',
+    bg: 'bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-cyan-500/10',
+    border: 'border-purple-500/30',
+    icon: 'from-purple-500/30 to-pink-500/30',
   },
   success: {
-    bg: 'bg-gradient-to-br from-green-50 to-emerald-50',
-    border: 'border-green-200',
-    icon: 'from-green-100 to-emerald-100',
+    bg: 'bg-gradient-to-br from-green-500/10 to-emerald-500/10',
+    border: 'border-green-500/30',
+    icon: 'from-green-500/30 to-emerald-500/30',
   },
   warning: {
-    bg: 'bg-gradient-to-br from-amber-50 to-orange-50',
-    border: 'border-amber-200',
-    icon: 'from-amber-100 to-orange-100',
+    bg: 'bg-gradient-to-br from-amber-500/10 to-orange-500/10',
+    border: 'border-amber-500/30',
+    icon: 'from-amber-500/30 to-orange-500/30',
   },
 };
 
@@ -63,7 +63,7 @@ export default function SuggestionCard({
       onClick={onClick}
     >
       {/* Decorative sparkles */}
-      <div className="absolute top-2 right-2 text-purple-300 opacity-50">
+      <div className="absolute top-2 right-2 text-purple-400 opacity-50">
         <Sparkles className="w-4 h-4" />
       </div>
 
@@ -75,16 +75,16 @@ export default function SuggestionCard({
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <h4 className="font-semibold text-gray-900 mb-1 flex items-center gap-2">
+          <h4 className="font-semibold text-white mb-1 flex items-center gap-2">
             {title}
             <span className="text-sm">✨</span>
           </h4>
-          <p className="text-sm text-gray-600 leading-relaxed">
+          <p className="text-sm text-gray-300 leading-relaxed">
             {description}
           </p>
 
           {cta && (
-            <button className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-teal-600 hover:text-teal-700 transition-colors group">
+            <button className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-cyan-400 hover:text-cyan-300 transition-colors group">
               {cta}
               <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </button>

@@ -129,15 +129,15 @@ export default function ChatSidePanel({
   const xpProgress = (user.xp / user.xpToNextLevel) * 100;
 
   return (
-    <aside className={`w-80 border-l border-gray-200 bg-white overflow-y-auto ${className}`}>
+    <aside className={`w-80 border-l border-purple-500/30 bg-slate-900/90 backdrop-blur-xl overflow-y-auto ${className}`}>
       <div className="p-6 space-y-6">
         {/* Close button (mobile) */}
         {onClose && (
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-lg lg:hidden"
+            className="absolute top-4 right-4 p-2 hover:bg-purple-500/20 rounded-lg lg:hidden"
           >
-            <X className="w-5 h-5 text-gray-500" />
+            <X className="w-5 h-5 text-gray-400" />
           </button>
         )}
 
@@ -148,30 +148,30 @@ export default function ChatSidePanel({
               <img
                 src={user.photo}
                 alt={user.name}
-                className="w-20 h-20 rounded-full object-cover border-4 border-white shadow-lg"
+                className="w-20 h-20 rounded-full object-cover border-4 border-purple-500/30 shadow-lg"
               />
             ) : (
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center text-white text-2xl font-bold border-4 border-white shadow-lg">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center text-white text-2xl font-bold border-4 border-purple-500/30 shadow-lg">
                 {user.name.charAt(0)}
               </div>
             )}
             {/* Level badge */}
-            <div className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-gradient-to-r from-teal-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold shadow-lg border-2 border-white">
+            <div className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 flex items-center justify-center text-white text-xs font-bold shadow-lg border-2 border-slate-900">
               {user.level}
             </div>
           </div>
-          <h3 className="font-semibold text-gray-900">{user.name} ✨</h3>
-          <p className="text-sm text-gray-500">Nível {user.level} • {stats.streak} dias de jornada 🔥</p>
+          <h3 className="font-semibold text-white">{user.name} ✨</h3>
+          <p className="text-sm text-gray-400">Nível {user.level} • {stats.streak} dias de jornada 🔥</p>
 
           {/* XP Progress */}
           <div className="mt-3">
-            <div className="flex justify-between text-xs text-gray-500 mb-1">
+            <div className="flex justify-between text-xs text-gray-400 mb-1">
               <span>XP</span>
               <span>{user.xp}/{user.xpToNextLevel}</span>
             </div>
-            <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-teal-500 to-purple-500 rounded-full transition-all duration-500"
+                className="h-full bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 rounded-full transition-all duration-500"
                 style={{ width: `${xpProgress}%` }}
               />
             </div>
@@ -205,7 +205,7 @@ export default function ChatSidePanel({
 
         {/* Achievements */}
         <div>
-          <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+          <h4 className="font-semibold text-white mb-3 flex items-center gap-2">
             <Trophy className="w-4 h-4 text-amber-500" />
             Conquistas 🏆
           </h4>
@@ -221,7 +221,7 @@ export default function ChatSidePanel({
               />
             ))}
           </div>
-          <button className="w-full mt-2 text-sm text-teal-600 hover:text-teal-700 font-medium flex items-center justify-center gap-1">
+          <button className="w-full mt-2 text-sm text-cyan-400 hover:text-cyan-300 font-medium flex items-center justify-center gap-1">
             Ver todas as conquistas 💎
             <ChevronRight className="w-4 h-4" />
           </button>
@@ -229,8 +229,8 @@ export default function ChatSidePanel({
 
         {/* Insights */}
         <div>
-          <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-purple-500" />
+          <h4 className="font-semibold text-white mb-3 flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-purple-400" />
             Insights da IA ✨
           </h4>
           <div className="space-y-3">
@@ -242,8 +242,8 @@ export default function ChatSidePanel({
 
         {/* Daily Checklist */}
         <div>
-          <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-            <Target className="w-4 h-4 text-teal-500" />
+          <h4 className="font-semibold text-white mb-3 flex items-center gap-2">
+            <Target className="w-4 h-4 text-cyan-400" />
             Próximos Passos 📝
           </h4>
           <div className="space-y-2">
@@ -255,8 +255,8 @@ export default function ChatSidePanel({
               />
             ))}
           </div>
-          <div className="mt-3 p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-100">
-            <p className="text-xs text-green-700 flex items-center gap-2">
+          <div className="mt-3 p-3 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-xl border border-green-500/30">
+            <p className="text-xs text-green-400 flex items-center gap-2">
               <span className="text-base">✅</span>
               <span>
                 <strong>{localChecklist.filter((i) => i.checked).length}/{localChecklist.length}</strong> tarefas completas hoje!
@@ -266,14 +266,14 @@ export default function ChatSidePanel({
         </div>
 
         {/* Quick Actions */}
-        <div className="pt-4 border-t border-gray-100">
+        <div className="pt-4 border-t border-purple-500/30">
           <div className="grid grid-cols-2 gap-2">
-            <button className="flex items-center justify-center gap-2 px-3 py-2 bg-gradient-to-r from-pink-50 to-purple-50 hover:from-pink-100 hover:to-purple-100 rounded-xl text-sm font-medium text-gray-700 border border-pink-200 transition-all">
-              <Calendar className="w-4 h-4 text-pink-500" />
+            <button className="flex items-center justify-center gap-2 px-3 py-2 bg-gradient-to-r from-pink-500/10 to-purple-500/10 hover:from-pink-500/20 hover:to-purple-500/20 rounded-xl text-sm font-medium text-gray-300 border border-pink-500/30 transition-all">
+              <Calendar className="w-4 h-4 text-pink-400" />
               Agenda 📅
             </button>
-            <button className="flex items-center justify-center gap-2 px-3 py-2 bg-gradient-to-r from-teal-50 to-emerald-50 hover:from-teal-100 hover:to-emerald-100 rounded-xl text-sm font-medium text-gray-700 border border-teal-200 transition-all">
-              <Bell className="w-4 h-4 text-teal-500" />
+            <button className="flex items-center justify-center gap-2 px-3 py-2 bg-gradient-to-r from-cyan-500/10 to-emerald-500/10 hover:from-cyan-500/20 hover:to-emerald-500/20 rounded-xl text-sm font-medium text-gray-300 border border-cyan-500/30 transition-all">
+              <Bell className="w-4 h-4 text-cyan-400" />
               Lembretes 🔔
             </button>
           </div>
@@ -302,10 +302,10 @@ function MiniStatCard({
   emoji: string;
 }) {
   const colorClasses = {
-    orange: 'text-orange-500 bg-orange-50',
-    blue: 'text-blue-500 bg-blue-50',
-    green: 'text-green-500 bg-green-50',
-    pink: 'text-pink-500 bg-pink-50',
+    orange: 'text-orange-400',
+    blue: 'text-blue-400',
+    green: 'text-green-400',
+    pink: 'text-pink-400',
   };
 
   const progressColors = {
@@ -316,16 +316,16 @@ function MiniStatCard({
   };
 
   return (
-    <div className="p-3 rounded-xl bg-gray-50 border border-gray-200">
+    <div className="p-3 rounded-xl bg-slate-800/50 border border-purple-500/30">
       <div className="flex items-center gap-2 mb-2">
-        <Icon className={`w-5 h-5 ${colorClasses[color].split(' ')[0]}`} />
-        <span className="text-xs text-gray-600">{label}</span>
+        <Icon className={`w-5 h-5 ${colorClasses[color]}`} />
+        <span className="text-xs text-gray-400">{label}</span>
         <span className="text-sm">{emoji}</span>
       </div>
-      <p className="text-sm font-semibold text-gray-900 mb-2">
-        {value} <span className="text-gray-500 font-normal">/ {target}</span>
+      <p className="text-sm font-semibold text-white mb-2">
+        {value} <span className="text-gray-400 font-normal">/ {target}</span>
       </p>
-      <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+      <div className="h-1.5 bg-slate-700 rounded-full overflow-hidden">
         <div
           className={`h-full bg-gradient-to-r ${progressColors[color]} rounded-full transition-all duration-500`}
           style={{ width: `${Math.min(progress, 100)}%` }}
@@ -338,9 +338,9 @@ function MiniStatCard({
 // Insight Card Component
 function InsightCard({ type, message, emoji }: Insight) {
   const styles = {
-    success: 'bg-green-50 border-green-200 text-green-800',
-    warning: 'bg-amber-50 border-amber-200 text-amber-800',
-    info: 'bg-purple-50 border-purple-200 text-purple-800',
+    success: 'bg-green-500/10 border-green-500/30 text-green-300',
+    warning: 'bg-amber-500/10 border-amber-500/30 text-amber-300',
+    info: 'bg-purple-500/10 border-purple-500/30 text-purple-300',
   };
 
   return (
@@ -360,24 +360,24 @@ function ChecklistItemComponent({
   onCheck: () => void;
 }) {
   return (
-    <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer group transition-colors">
+    <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-purple-500/10 cursor-pointer group transition-colors">
       <button
         onClick={onCheck}
         className={`
           w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all
           ${item.checked
-            ? 'bg-gradient-to-r from-teal-500 to-purple-500 border-transparent'
-            : 'border-gray-300 group-hover:border-teal-400'
+            ? 'bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 border-transparent'
+            : 'border-gray-600 group-hover:border-purple-400'
           }
         `}
       >
         {item.checked && <Check className="w-3 h-3 text-white" />}
       </button>
-      <span className={`flex-1 text-sm ${item.checked ? 'line-through text-gray-400' : 'text-gray-700'}`}>
+      <span className={`flex-1 text-sm ${item.checked ? 'line-through text-gray-500' : 'text-gray-300'}`}>
         {item.text}
       </span>
       {item.time && (
-        <span className="text-xs text-gray-400">{item.time}</span>
+        <span className="text-xs text-gray-500">{item.time}</span>
       )}
     </label>
   );
@@ -395,16 +395,16 @@ export function ChatSidePanelSheet({
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+        className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 lg:hidden"
         onClick={onClose}
       />
 
       {/* Sheet */}
       <div className="fixed inset-x-0 bottom-0 z-50 lg:hidden animate-slideInUp">
-        <div className="bg-white rounded-t-3xl max-h-[85vh] overflow-y-auto">
+        <div className="bg-slate-900/95 backdrop-blur-xl border-t border-purple-500/30 rounded-t-3xl max-h-[85vh] overflow-y-auto">
           {/* Handle */}
-          <div className="sticky top-0 bg-white pt-3 pb-2 flex justify-center">
-            <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
+          <div className="sticky top-0 bg-slate-900/95 pt-3 pb-2 flex justify-center">
+            <div className="w-12 h-1.5 bg-purple-500/50 rounded-full" />
           </div>
           <ChatSidePanel {...props} onClose={onClose} className="border-0" />
         </div>
