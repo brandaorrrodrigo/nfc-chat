@@ -21,11 +21,12 @@ import {
   Droplets,
   Apple,
   Sparkles,
+  LucideIcon,
 } from 'lucide-react';
 import ContextChip, { ChipColor } from './ContextChip';
 
 export interface UserContext {
-  icon: React.ElementType;
+  icon: LucideIcon;
   label: string;
   color: ChipColor;
 }

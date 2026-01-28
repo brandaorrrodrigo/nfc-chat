@@ -73,10 +73,10 @@ const initialConversations: Conversation[] = [
 const initialMessages: Message[] = [
   {
     id: '1',
-    sender: 'ai',
+    type: 'ai',
     content: 'Olá, Maria! 💕 Bem-vinda de volta! Como você está se sentindo hoje? Vi que você está na fase folicular do seu ciclo - é um ótimo momento para treinos mais intensos! 🔥',
     time: 'Agora',
-    reactions: [{ type: 'heart', count: 1 }],
+    reactions: { hearts: 1, stars: 0, thumbs: 0 },
     quickReplies: [
       { text: 'Estou ótima! 😊', emoji: '💪' },
       { text: 'Um pouco cansada 😴', emoji: '💤' },
@@ -140,7 +140,7 @@ export default function ChatPage() {
     // Adicionar mensagem do usuário
     const userMessage: Message = {
       id: Date.now().toString(),
-      sender: 'user',
+      type: 'user',
       content,
       time: 'Agora',
     };
@@ -157,7 +157,7 @@ export default function ChatPage() {
 
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        sender: 'ai',
+        type: 'ai',
         content: aiResponses[Math.floor(Math.random() * aiResponses.length)],
         time: 'Agora',
         quickReplies: [
@@ -201,19 +201,22 @@ export default function ChatPage() {
     console.log('Check item:', id);
   }, []);
 
-  const handleReaction = useCallback((messageId: string, type: 'heart' | 'star' | 'thumbs') => {
+  const handleReaction = useCallback((messageId: string, reactionType: 'heart' | 'star' | 'thumbs') => {
     setMessages((prev) =>
-      prev.map((msg) =>
-        msg.id === messageId
-          ? {
-              ...msg,
-              reactions: [
-                ...(msg.reactions || []).filter((r) => r.type !== type),
-                { type, count: 1 },
-              ],
-            }
-          : msg
-      )
+      prev.map((msg) => {
+        if (msg.id !== messageId) return msg;
+
+        const currentReactions = msg.reactions || { hearts: 0, stars: 0, thumbs: 0 };
+        const reactionKey = reactionType === 'heart' ? 'hearts' : reactionType === 'star' ? 'stars' : 'thumbs';
+
+        return {
+          ...msg,
+          reactions: {
+            ...currentReactions,
+            [reactionKey]: currentReactions[reactionKey] + 1,
+          },
+        };
+      })
     );
   }, []);
 

@@ -23,7 +23,7 @@ import {
   Calendar,
   Bell,
 } from 'lucide-react';
-import { StreakBadge, AchievementBadge } from './AchievementBadge';
+import AchievementBadge, { StreakBadge } from './AchievementBadge';
 
 export interface UserStats {
   calories: { current: number; target: number };
