@@ -11,7 +11,6 @@
 
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import {
   Activity,
   Syringe,
@@ -401,23 +400,7 @@ export default function ComunidadesPage() {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
 
           {/* ===== HERO SECTION ===== */}
-          <section className="text-center py-12 sm:py-20">
-            {/* Logo */}
-            <div className="flex justify-center mb-8">
-              <div className="relative float-animation">
-                <Image
-                  src="/nfc-logo.png"
-                  alt="NutriFitCoach"
-                  width={180}
-                  height={60}
-                  className="h-14 sm:h-16 w-auto"
-                  priority
-                />
-                {/* Glow atrás da logo */}
-                <div className="absolute inset-0 blur-2xl opacity-50 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 -z-10 scale-150" />
-              </div>
-            </div>
-
+          <section className="text-center py-4 sm:py-8">
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#8b5cf6]/10 border border-[#8b5cf6]/30 rounded-full mb-6">
               <Zap className="w-4 h-4 text-[#8b5cf6]" />
