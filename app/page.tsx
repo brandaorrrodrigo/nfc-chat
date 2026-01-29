@@ -29,6 +29,7 @@ import {
   Zap,
   MessageCircle,
   ChevronRight,
+  Eye,
   LucideIcon,
 } from 'lucide-react';
 import { getLoginUrl, COMUNIDADES_ROUTES } from '@/lib/navigation';
@@ -345,8 +346,8 @@ function CommunityCard({ community }: CommunityCardProps) {
               </span>
             </div>
             <div className="flex items-center gap-1 text-[#00f5ff] font-semibold text-sm group-hover:gap-2 transition-all duration-300">
-              <span>Entrar</span>
-              <ChevronRight className="w-4 h-4" />
+              <Eye className="w-4 h-4" />
+              <span>Visualizar</span>
             </div>
           </div>
         </div>

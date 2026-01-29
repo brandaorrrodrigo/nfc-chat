@@ -28,6 +28,7 @@ import {
   LogOut,
   Settings,
   Loader2,
+  Eye,
 } from 'lucide-react';
 
 // ========================================
@@ -235,9 +236,10 @@ export default function EcossistemaHeader({ user, isLoading, onLogout }: Ecossis
               ) : (
                 <Link
                   href={ECOSSISTEMA_URLS.LOGIN_HUB}
-                  className="px-5 py-2 text-sm font-medium text-black bg-[#00ff88] hover:bg-[#00ff88]/90 rounded-lg transition-colors"
+                  className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-black bg-[#00ff88] hover:bg-[#00ff88]/90 rounded-lg transition-colors"
                 >
-                  Entrar
+                  <Eye className="w-4 h-4" />
+                  <span>Visualizar</span>
                 </Link>
               )}
             </div>
@@ -303,10 +305,11 @@ export default function EcossistemaHeader({ user, isLoading, onLogout }: Ecossis
               ) : (
                 <Link
                   href={ECOSSISTEMA_URLS.LOGIN_HUB}
-                  className="block mx-4 px-4 py-3 text-sm font-medium text-center text-black bg-[#00ff88] rounded-lg"
+                  className="flex items-center justify-center gap-2 mx-4 px-4 py-3 text-sm font-medium text-black bg-[#00ff88] rounded-lg"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Entrar
+                  <Eye className="w-4 h-4" />
+                  <span>Visualizar</span>
                 </Link>
               )}
             </div>

@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
 
     // Buscar mensagens do Supabase
     const { data, error } = await supabase
-      .from('community_messages')
+      .from('nfc_chat_messages')
       .select('*')
       .eq('comunidade_slug', slug)
       .order('created_at', { ascending: true })
@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
 
     // Inserir no Supabase
     const { data, error } = await supabase
-      .from('community_messages')
+      .from('nfc_chat_messages')
       .insert({
         id: messageId,
         comunidade_slug: slug,
@@ -191,30 +191,30 @@ export async function POST(request: NextRequest) {
 const SETUP_SQL = `
 -- Execute no Supabase SQL Editor:
 
--- Tabela de mensagens das comunidades
-CREATE TABLE IF NOT EXISTS community_messages (
+-- Tabela de mensagens das comunidades (prefixo nfc_chat_)
+CREATE TABLE IF NOT EXISTS nfc_chat_messages (
   id TEXT PRIMARY KEY,
   comunidade_slug TEXT NOT NULL,
   user_id TEXT NOT NULL,
   user_name TEXT NOT NULL,
   user_avatar TEXT,
   content TEXT NOT NULL,
-  parent_id TEXT REFERENCES community_messages(id) ON DELETE CASCADE,
+  parent_id TEXT REFERENCES nfc_chat_messages(id) ON DELETE CASCADE,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Índices para performance
-CREATE INDEX IF NOT EXISTS idx_messages_slug ON community_messages(comunidade_slug);
-CREATE INDEX IF NOT EXISTS idx_messages_user ON community_messages(user_id);
-CREATE INDEX IF NOT EXISTS idx_messages_created ON community_messages(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_nfc_chat_messages_slug ON nfc_chat_messages(comunidade_slug);
+CREATE INDEX IF NOT EXISTS idx_nfc_chat_messages_user ON nfc_chat_messages(user_id);
+CREATE INDEX IF NOT EXISTS idx_nfc_chat_messages_created ON nfc_chat_messages(created_at DESC);
 
 -- Habilitar RLS
-ALTER TABLE community_messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE nfc_chat_messages ENABLE ROW LEVEL SECURITY;
 
 -- Policy: leitura pública
-CREATE POLICY "Leitura publica" ON community_messages FOR SELECT USING (true);
+CREATE POLICY "Leitura publica" ON nfc_chat_messages FOR SELECT USING (true);
 
 -- Policy: inserção para todos (a API valida autenticação)
-CREATE POLICY "Insercao permitida" ON community_messages FOR INSERT WITH CHECK (true);
+CREATE POLICY "Insercao permitida" ON nfc_chat_messages FOR INSERT WITH CHECK (true);
 `;

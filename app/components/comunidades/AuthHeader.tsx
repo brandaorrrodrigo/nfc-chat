@@ -15,7 +15,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import {
-  LogIn,
+  Eye,
   UserPlus,
   ChevronDown,
   Settings,
@@ -398,8 +398,8 @@ export default function AuthHeader({ user, isLoading, onLogout }: AuthHeaderProp
                     transition-all
                   `}
                 >
-                  <LogIn className="w-4 h-4" />
-                  <span className="hidden sm:inline">Entrar</span>
+                  <Eye className="w-4 h-4" />
+                  <span className="hidden sm:inline">Visualizar</span>
                 </Link>
 
                 <Link

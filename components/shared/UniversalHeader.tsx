@@ -27,6 +27,7 @@ import {
   Loader2,
   Crown,
   Sparkles,
+  Eye,
 } from '@/lib/icons';
 import Avatar from '@/components/ui/Avatar';
 import Badge from '@/components/ui/Badge';
@@ -325,9 +326,10 @@ export default function UniversalHeader({
               ) : (
                 <Link
                   href={loginUrl}
-                  className={`px-5 py-2 text-sm font-semibold rounded-lg transition-all ${c.loginBg}`}
+                  className={`flex items-center gap-2 px-5 py-2 text-sm font-semibold rounded-lg transition-all ${c.loginBg}`}
                 >
-                  Entrar
+                  <Eye className="w-4 h-4" />
+                  <span>Visualizar</span>
                 </Link>
               )}
             </div>
@@ -405,10 +407,11 @@ export default function UniversalHeader({
               ) : (
                 <Link
                   href={loginUrl}
-                  className={`block mx-4 px-4 py-3 text-sm font-semibold text-center rounded-lg ${c.loginBg}`}
+                  className={`flex items-center justify-center gap-2 mx-4 px-4 py-3 text-sm font-semibold rounded-lg ${c.loginBg}`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Entrar
+                  <Eye className="w-4 h-4" />
+                  <span>Visualizar</span>
                 </Link>
               )}
             </div>
