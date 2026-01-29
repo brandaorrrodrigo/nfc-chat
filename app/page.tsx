@@ -397,16 +397,10 @@ export default function ComunidadesPage() {
         </div>
 
         {/* Main Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-8">
 
           {/* ===== HERO SECTION ===== */}
-          <section className="text-center py-4 sm:py-8">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#8b5cf6]/10 border border-[#8b5cf6]/30 rounded-full mb-6">
-              <Zap className="w-4 h-4 text-[#8b5cf6]" />
-              <span className="text-sm font-semibold text-[#8b5cf6]">Comunidade Exclusiva</span>
-            </div>
-
+          <section className="text-center">
             {/* Título Principal */}
             <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black mb-6 leading-tight">
               <span className="text-white">Hub das</span>
