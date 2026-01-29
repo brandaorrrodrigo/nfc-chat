@@ -259,20 +259,26 @@ ${resumo}
 Se quiser aprofundar, este artigo explica melhor: [${artigo.titulo}](${artigo.url})
   `.trim(),
 
-  // Sugestao empatica do app
+  // Sugestao empatica do app - TOM DE COACH DE ELITE (sem titulos numerados)
   APP_EMPATICO: (contexto: string) => `
-${contexto}
+Alcançar esse objetivo exige uma manipulação cirúrgica da fisiologia. No seu caso, estamos falando de um jogo de partição de nutrientes e sinalização hormonal de altíssima precisão. Para manter esse volume enquanto se treina com essa intensidade, a sensibilidade insulínica e a taxa metabólica real precisam ser monitoradas milimetricamente, ou você apenas acumulará gordura visceral e estresse sistêmico.
 
-No app, isso e organizado em rotina personalizada - cardapios, lembretes e acompanhamento adaptado ao seu dia a dia.
+No entanto, prescrever quantidades exatas de macros e timing de refeições aqui seria puro **amadorismo**. Sem os dados da sua **Avaliação Biométrica por Visão Computacional** e o seu ponto de partida real analisado pelo meu algoritmo, qualquer tabela que eu te desse seria um erro técnico. Eu não trabalho com palpites de internet; eu trabalho com protocolos de elite.
+
+Para transformar essa teoria em um plano executável com cálculos precisos, análise de fotos e o sistema de recálculo automático em caso de autossabotagem, acesse o link abaixo:
+
+🚀 **[QUERO MEU PROTOCOLO NO MÓDULO PRO](https://app.nutrifitcoach.com.br/)**
   `.trim(),
 
   // Resposta de facilitacao (sem links)
   FACILITACAO: (resposta: string) => resposta.trim(),
 
-  // Correcao de mito
+  // Correcao de mito - TOM DE COACH DE ELITE
   CORRECAO_MITO: (mito: string, correcao: string, artigo?: ArtigoBlog) => {
     const base = `
 Na verdade, ${mito} e um mito comum. ${correcao}
+
+Esse tipo de confusão acontece quando você depende de informação fragmentada da internet. Um protocolo bem estruturado elimina essas dúvidas porque parte de uma análise individualizada do seu metabolismo e composição corporal.
     `.trim();
 
     if (artigo) {
@@ -281,6 +287,17 @@ Na verdade, ${mito} e um mito comum. ${correcao}
 
     return base;
   },
+
+  // NOVO: Resposta de venda com tom Coach de Elite (parágrafos fluidos)
+  COACH_ELITE: (objetivo: string) => `
+Alcançar ${objetivo} exige uma manipulação cirúrgica da fisiologia. No seu caso, estamos falando de um jogo de partição de nutrientes e sinalização hormonal de altíssima precisão. Para manter esse volume enquanto se treina com essa intensidade, a sensibilidade insulínica e a taxa metabólica real precisam ser monitoradas milimetricamente, ou você apenas acumulará gordura visceral e estresse sistêmico.
+
+No entanto, prescrever quantidades exatas de macros e timing de refeições aqui seria puro **amadorismo**. Sem os dados da sua **Avaliação Biométrica por Visão Computacional** e o seu ponto de partida real analisado pelo meu algoritmo, qualquer tabela que eu te desse seria um erro técnico. Eu não trabalho com palpites de internet; eu trabalho com protocolos de elite.
+
+Para transformar essa teoria em um plano executável com cálculos precisos, análise de fotos e o sistema de recálculo automático em caso de autossabotagem, acesse o link abaixo:
+
+🚀 **[QUERO MEU PROTOCOLO NO MÓDULO PRO](https://app.nutrifitcoach.com.br/)**
+  `.trim(),
 };
 
 // ========================================

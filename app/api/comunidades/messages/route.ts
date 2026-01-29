@@ -10,7 +10,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth-config';
-import { supabase } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
 // Interface da mensagem no banco
 interface DBMessage {
@@ -30,6 +30,14 @@ interface DBMessage {
  */
 export async function GET(request: NextRequest) {
   try {
+    // Verificar se Supabase está configurado
+    if (!isSupabaseConfigured() || !supabase) {
+      return NextResponse.json(
+        { mensagens: [], warning: 'Database not configured' },
+        { status: 200 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const slug = searchParams.get('slug');
 
@@ -94,6 +102,14 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
+    // Verificar se Supabase está configurado
+    if (!isSupabaseConfigured() || !supabase) {
+      return NextResponse.json(
+        { error: 'Database not configured', success: false },
+        { status: 503 }
+      );
+    }
+
     // Verificar autenticação
     const session = await getServerSession(authOptions);
 
