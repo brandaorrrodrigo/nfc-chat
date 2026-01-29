@@ -98,7 +98,7 @@ const config: Config = {
         'float': 'float 3s ease-in-out infinite',
         'glow': 'glow 2s ease-in-out infinite alternate',
         'bounce-slow': 'bounce 2s ease-in-out infinite',
-        'shimmer': 'shimmer 2s linear infinite',
+        'shimmer': 'shimmer 2s ease-in-out infinite',
         // Chat animations 💕
         'fadeIn': 'fadeIn 0.2s ease-out',
         'slideIn': 'slideIn 0.3s ease-out',
@@ -111,8 +111,8 @@ const config: Config = {
       },
       keyframes: {
         'gradient-x': {
-          '0%, 100%': { 'background-position': '0% 50%' },
-          '50%': { 'background-position': '100% 50%' },
+          '0%, 100%': { 'background-size': '200% 200%', 'background-position': 'left center' },
+          '50%': { 'background-size': '200% 200%', 'background-position': 'right center' },
         },
         'float': {
           '0%, 100%': { transform: 'translateY(0)' },
@@ -123,8 +123,8 @@ const config: Config = {
           '100%': { boxShadow: '0 0 20px rgba(0, 255, 136, 0.4), 0 0 40px rgba(0, 255, 136, 0.2)' },
         },
         'shimmer': {
-          '0%': { transform: 'translateX(-100%)' },
-          '100%': { transform: 'translateX(100%)' },
+          '0%': { 'background-position': '-100% 0' },
+          '100%': { 'background-position': '200% 0' },
         },
         // Chat keyframes 💕
         'fadeIn': {
