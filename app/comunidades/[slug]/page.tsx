@@ -69,6 +69,10 @@ const IAPerguntaDoDia = dynamic(
 // ========================================
 import { getPerguntaDoDia, getFaseAtual } from '@/lib/ia';
 import { useIAFacilitadora } from '@/hooks/useIAFacilitadora';
+import { useFP } from '@/hooks/useFP';
+import { FP_CONFIG } from '@/lib/fp/config';
+import { FPToastManager } from '@/components/chat/FPEarnedToast';
+import { FPDisplayCompact } from '@/components/chat/FPDisplayCompact';
 
 // ========================================
 // TIPOS
@@ -1094,6 +1098,17 @@ export default function PainelVivoPage() {
   const { isOpen, interactionType, openModal, closeModal } = useLoginRequiredModal();
   const { analisarConversa } = useIAFacilitadora();
 
+  // Sistema de FP
+  const {
+    balance: fpBalance,
+    streak: fpStreak,
+    loading: fpLoading,
+    earnFP,
+    claimDailyBonus,
+    lastEarned,
+    clearLastEarned,
+  } = useFP();
+
   const [comunidade, setComunidade] = useState<(ComunidadeData & { mensagens: Mensagem[] }) | null>(null);
   const [mensagens, setMensagens] = useState<Mensagem[]>([]);
   const [novasMensagensCount, setNovasMensagensCount] = useState(0);
@@ -1157,6 +1172,14 @@ export default function PainelVivoPage() {
       }
     }
   }, [mensagens, slug]);
+
+  // Claim daily FP bonus ao acessar comunidade
+  useEffect(() => {
+    if (isAuthenticated && !isLoading) {
+      // Tenta claim do bônus diário (API valida se já foi feito hoje)
+      claimDailyBonus();
+    }
+  }, [isAuthenticated, isLoading, claimDailyBonus]);
 
   // Simular chegada de novas mensagens
   useEffect(() => {
@@ -1224,6 +1247,12 @@ export default function PainelVivoPage() {
   // Handler para enviar mensagem
   const handleEnviarMensagem = async (message: string, images?: ImagePreview[]) => {
     if (!user) return;
+
+    // Ganhar FP por mensagem (background, não bloqueia UI)
+    earnFP(FP_CONFIG.ACTIONS.MESSAGE, {
+      messageLength: message.length,
+      roomId: slug,
+    }).catch(console.error);
 
     const galleryImages: GalleryImage[] | undefined = images?.map(img => ({
       url: img.previewUrl,
@@ -1354,6 +1383,9 @@ export default function PainelVivoPage() {
         background: 'linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #1a0a27 100%)'
       }}
     >
+      {/* FP Toast Notifications */}
+      <FPToastManager lastEarned={lastEarned} onClear={clearLastEarned} />
+
       {/* Background Effects */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         {/* Grid Pattern */}
@@ -1430,6 +1462,14 @@ export default function PainelVivoPage() {
               </div>
 
               <div className="flex items-center gap-2">
+                {/* FP Display */}
+                {isAuthenticated && (
+                  <FPDisplayCompact
+                    balance={fpBalance}
+                    streak={fpStreak}
+                    loading={fpLoading}
+                  />
+                )}
                 <FavoriteButton
                   type="comunidade"
                   slug={slug}

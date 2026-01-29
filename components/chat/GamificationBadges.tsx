@@ -341,7 +341,7 @@ function FPDisplay({ totalFP }: { totalFP: number }) {
             <Zap className="w-7 h-7 text-black" />
           </motion.div>
           <div>
-            <p className="text-sm text-zinc-400">Seus FitPoints</p>
+            <p className="text-sm text-zinc-400">Seu FP</p>
             <p className="text-3xl font-black text-white">{totalFP.toLocaleString()}</p>
           </div>
         </div>
