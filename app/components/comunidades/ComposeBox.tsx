@@ -7,7 +7,7 @@
  * Suporte a upload de imagens (até 5)
  * Antes/Depois para relatos de progresso
  *
- * Estilo: Cyberpunk dark com neon verde
+ * Estilo: Premium Cyberpunk - Cyan (#00f5ff) + Magenta (#ff006e) + Purple (#8b5cf6)
  */
 
 import React, { useState, useRef } from 'react';
@@ -60,7 +60,7 @@ function CompactImagePreview({
 
         {isUploading && (
           <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-            <Loader2 className="w-4 h-4 text-[#00ff88] animate-spin" />
+            <Loader2 className="w-4 h-4 text-[#00f5ff] animate-spin" />
           </div>
         )}
       </div>
@@ -114,15 +114,21 @@ export default function ComposeBox({
   // Se não autenticado, mostrar CTA de login
   if (!isAuthenticated) {
     return (
-      <div className="p-4 bg-zinc-900/80 border-t border-zinc-800">
+      <div
+        className="p-4 border-t backdrop-blur-md"
+        style={{
+          background: 'linear-gradient(135deg, rgba(26, 31, 58, 0.95) 0%, rgba(10, 14, 39, 0.95) 100%)',
+          borderColor: 'rgba(0, 245, 255, 0.1)',
+        }}
+      >
         <button
           onClick={onLoginRequired}
           className={`
             w-full py-3 px-4
-            bg-zinc-800 hover:bg-zinc-700
-            border border-zinc-700 hover:border-[#00ff88]/50
+            bg-[#1a1f3a]/80 hover:bg-[#1a1f3a]
+            border border-[#00f5ff]/20 hover:border-[#00f5ff]/50
             rounded-xl
-            text-zinc-400 hover:text-[#00ff88]
+            text-zinc-400 hover:text-[#00f5ff]
             text-sm
             transition-all
             flex items-center justify-center gap-2
@@ -171,7 +177,14 @@ export default function ComposeBox({
   const canSubmit = (message.trim() || images.length > 0) && !isSubmitting && !isUploading;
 
   return (
-    <form onSubmit={handleSubmit} className="bg-zinc-900/80 border-t border-zinc-800">
+    <form
+      onSubmit={handleSubmit}
+      className="border-t backdrop-blur-md"
+      style={{
+        background: 'linear-gradient(135deg, rgba(26, 31, 58, 0.95) 0%, rgba(10, 14, 39, 0.95) 100%)',
+        borderColor: 'rgba(0, 245, 255, 0.1)',
+      }}
+    >
       {/* Input oculto para seleção de arquivos */}
       <input
         ref={fileInputRef}
@@ -215,8 +228,8 @@ export default function ComposeBox({
             className={`
               p-2.5 rounded-lg transition-colors
               ${canAddMore
-                ? 'bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-[#00ff88]'
-                : 'bg-zinc-800/50 text-zinc-600 cursor-not-allowed'
+                ? 'bg-[#1a1f3a]/80 hover:bg-[#1a1f3a] text-zinc-400 hover:text-[#00f5ff] border border-white/5 hover:border-[#00f5ff]/30'
+                : 'bg-[#1a1f3a]/50 text-zinc-600 cursor-not-allowed border border-white/5'
               }
             `}
             title={canAddMore ? 'Adicionar imagem' : 'Limite de imagens atingido'}
@@ -235,8 +248,8 @@ export default function ComposeBox({
           className={`
             flex-1
             px-4 py-3
-            bg-zinc-800 hover:bg-zinc-700 focus:bg-zinc-700
-            border border-zinc-700 focus:border-[#00ff88]/50
+            bg-[#1a1f3a]/80 hover:bg-[#1a1f3a] focus:bg-[#1a1f3a]
+            border border-white/10 focus:border-[#00f5ff]/50
             rounded-xl
             text-white placeholder-zinc-500
             text-sm
@@ -252,12 +265,12 @@ export default function ComposeBox({
           disabled={!canSubmit || disabled}
           className={`
             px-5 py-3
-            bg-[#00ff88] hover:bg-[#00ff88]/90
-            disabled:bg-zinc-700 disabled:text-zinc-500
+            bg-gradient-to-r from-[#00f5ff] to-[#00b8c4]
+            disabled:bg-zinc-700 disabled:text-zinc-500 disabled:from-zinc-700 disabled:to-zinc-700
             text-black font-semibold
             rounded-xl
             transition-all
-            hover:shadow-[0_0_15px_rgba(0,255,136,0.4)]
+            hover:shadow-[0_0_20px_rgba(0,245,255,0.4)]
             disabled:shadow-none
             disabled:cursor-not-allowed
             flex items-center gap-2

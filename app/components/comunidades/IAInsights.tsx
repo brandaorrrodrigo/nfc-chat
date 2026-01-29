@@ -38,13 +38,13 @@ function IAAvatarMini({ className = '' }: { className?: string }) {
     <div
       className={`
         w-8 h-8 rounded-lg
-        bg-gradient-to-br from-[#00ff88]/20 to-transparent
-        border border-[#00ff88]/20
+        bg-gradient-to-br from-[#00f5ff]/20 to-transparent
+        border border-[#00f5ff]/20
         flex items-center justify-center
         ${className}
       `}
     >
-      <Bot className="w-4 h-4 text-[#00ff88]/70" />
+      <Bot className="w-4 h-4 text-[#00f5ff]/70" />
     </div>
   );
 }
@@ -351,23 +351,27 @@ export function IAPerguntaDoDia({ pergunta, fase, className = '' }: PerguntaDoDi
     <div
       className={`
         relative overflow-hidden p-5 rounded-2xl
-        bg-gradient-to-br from-[#00ff88]/10 via-transparent to-transparent
-        border border-[#00ff88]/20
+        bg-gradient-to-br from-[#8b5cf6]/10 via-[#00f5ff]/5 to-transparent
+        border border-[#8b5cf6]/30
         ${className}
       `}
+      style={{
+        boxShadow: '0 0 30px rgba(139, 92, 246, 0.1)',
+      }}
     >
       {/* Decoracao */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-[#00ff88]/5 rounded-full blur-3xl" />
+      <div className="absolute top-0 right-0 w-32 h-32 bg-[#8b5cf6]/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#00f5ff]/5 rounded-full blur-3xl" />
 
       <div className="relative">
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-8 h-8 rounded-lg bg-[#00ff88]/20 border border-[#00ff88]/30 flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-[#00ff88]" />
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#8b5cf6]/30 to-[#00f5ff]/20 border border-[#8b5cf6]/40 flex items-center justify-center">
+            <Sparkles className="w-4 h-4 text-[#00f5ff]" />
           </div>
           <div>
-            <span className="text-xs text-[#00ff88] font-medium">Pergunta do dia</span>
+            <span className="text-xs text-[#00f5ff] font-medium">Pergunta do dia</span>
             {fase && (
-              <span className="text-[10px] text-zinc-600 ml-2">Fase: {fase}</span>
+              <span className="text-[10px] text-zinc-500 ml-2">Fase: {fase}</span>
             )}
           </div>
         </div>

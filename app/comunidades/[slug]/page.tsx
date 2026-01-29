@@ -1084,11 +1084,6 @@ function ComunidadeNaoEncontrada({ slug }: { slug: string }) {
 // PÁGINA PRINCIPAL - PAINEL VIVO
 // ========================================
 
-// ========================================
-// STORAGE KEY HELPER
-// ========================================
-const getStorageKey = (slug: string) => `nfc-comunidade-mensagens-${slug}`;
-
 export default function PainelVivoPage() {
   // useParams é um hook de Client Component - seguro para usar aqui
   const params = useParams();
@@ -1118,7 +1113,7 @@ export default function PainelVivoPage() {
   const [autoScroll, setAutoScroll] = useState(true);
   const [hasWelcomed, setHasWelcomed] = useState(false);
 
-  // Carregar dados da comunidade + mensagens salvas
+  // Carregar dados da comunidade + mensagens do banco
   useEffect(() => {
     if (!slug) {
       setIsLoading(false);
@@ -1130,48 +1125,35 @@ export default function PainelVivoPage() {
     if (data) {
       setComunidade(data);
 
-      // Tentar carregar mensagens do localStorage
-      try {
-        const savedMessages = localStorage.getItem(getStorageKey(slug));
-        if (savedMessages) {
-          const parsed = JSON.parse(savedMessages);
-          // Mesclar mensagens mock com salvas (evitar duplicatas por ID)
-          const mockIds = new Set(data.mensagens.map(m => m.id));
-          const userMessages = parsed.filter((m: Mensagem) => !mockIds.has(m.id));
-          setMensagens([...data.mensagens, ...userMessages]);
-        } else {
+      // Carregar mensagens da API (banco de dados)
+      const loadMessages = async () => {
+        try {
+          const response = await fetch(`/api/comunidades/messages?slug=${slug}`);
+          const result = await response.json();
+
+          if (result.mensagens && result.mensagens.length > 0) {
+            // Mesclar mensagens do banco com mock (banco tem prioridade)
+            const dbIds = new Set(result.mensagens.map((m: Mensagem) => m.id));
+            const mockMessages = data.mensagens.filter(m => !dbIds.has(m.id));
+            setMensagens([...mockMessages, ...result.mensagens]);
+          } else {
+            // Se não tem mensagens no banco, usa só mock
+            setMensagens(data.mensagens);
+          }
+        } catch (error) {
+          console.error('Erro ao carregar mensagens:', error);
+          // Fallback para mensagens mock
           setMensagens(data.mensagens);
         }
-      } catch {
-        setMensagens(data.mensagens);
-      }
+      };
 
+      loadMessages();
       setNotFound(false);
     } else {
       setNotFound(true);
     }
     setIsLoading(false);
   }, [slug]);
-
-  // Salvar mensagens do usuário no localStorage
-  useEffect(() => {
-    if (!slug || mensagens.length === 0) return;
-
-    // Filtrar apenas mensagens do usuário (não mock)
-    const mockData = COMUNIDADES_DATA[slug];
-    if (!mockData) return;
-
-    const mockIds = new Set(mockData.mensagens.map(m => m.id));
-    const userMessages = mensagens.filter(m => !mockIds.has(m.id));
-
-    if (userMessages.length > 0) {
-      try {
-        localStorage.setItem(getStorageKey(slug), JSON.stringify(userMessages));
-      } catch (e) {
-        console.error('Erro ao salvar mensagens:', e);
-      }
-    }
-  }, [mensagens, slug]);
 
   // Claim daily FP bonus ao acessar comunidade
   useEffect(() => {
@@ -1259,8 +1241,10 @@ export default function PainelVivoPage() {
       metadata: img.metadata,
     }));
 
+    // Criar mensagem temporária para UI imediata
+    const tempId = `user-${Date.now()}`;
     const novaMensagem: Mensagem = {
-      id: `user-${Date.now()}`,
+      id: tempId,
       tipo: 'usuario',
       timestamp: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
       autor: {
@@ -1275,7 +1259,34 @@ export default function PainelVivoPage() {
       imagens: galleryImages,
     };
 
+    // Adicionar à UI imediatamente (otimistic update)
     setMensagens(prev => [...prev, novaMensagem]);
+
+    // Salvar no banco de dados via API
+    try {
+      const response = await fetch('/api/comunidades/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          slug,
+          content: message,
+        }),
+      });
+
+      if (!response.ok) {
+        console.error('Erro ao salvar mensagem no banco');
+      } else {
+        const result = await response.json();
+        // Atualizar ID da mensagem com o ID real do banco
+        if (result.mensagem?.id) {
+          setMensagens(prev =>
+            prev.map(m => m.id === tempId ? { ...m, id: result.mensagem.id } : m)
+          );
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao salvar mensagem:', error);
+    }
 
     // Verificar se é a primeira mensagem do usuário (boas-vindas)
     const isFirstMessage = !hasWelcomed;
