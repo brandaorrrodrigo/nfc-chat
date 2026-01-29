@@ -7,7 +7,7 @@
  * Separado do layout.tsx para manter o layout como Server Component.
  *
  * HEADER/FOOTER GLOBAL:
- * - UniversalHeader e UniversalFooter são renderizados AQUI
+ * - NFCHeader (logo holográfico) e UniversalFooter são renderizados AQUI
  * - NENHUMA página deve renderizar header/footer
  * - Isso garante consistência visual em TODO o ecossistema
  *
@@ -17,13 +17,12 @@
  * - Refetch a cada 10 minutos para renovação suave
  * - Usuário SÓ sai se clicar em "Sair" explicitamente
  *
- * @version 3.0.0 - Design System Unificado
+ * @version 4.0.0 - NFCHeader com logo holográfico
  */
 
-import { SessionProvider, useSession, signOut } from 'next-auth/react';
+import { SessionProvider } from 'next-auth/react';
 import { ComunidadesAuthProvider } from '@/app/components/comunidades/ComunidadesAuthContext';
-import { UniversalHeader, UniversalFooter } from '@/components/shared';
-import type { UniversalUser } from '@/components/shared';
+import { NFCHeader, UniversalFooter } from '@/components/shared';
 
 // Intervalo de refresh em segundos (10 minutos)
 // Mantém a sessão viva e a UI sincronizada
@@ -31,47 +30,19 @@ const SESSION_REFETCH_INTERVAL = 10 * 60; // 10 minutos
 
 /**
  * GlobalLayout - Wrapper que inclui Header e Footer globais
- *
- * Lê o estado de autenticação e passa para o UniversalHeader.
- * O header muda visualmente quando o usuário está logado.
  */
 function GlobalLayout({ children }: { children: React.ReactNode }) {
-  const { data: session, status } = useSession();
-
-  // Converter sessão NextAuth para formato UniversalUser
-  const user: UniversalUser | null = session?.user
-    ? {
-        id: (session.user as any).id || session.user.email || 'user',
-        name: session.user.name || session.user.email?.split('@')[0] || 'Usuário',
-        email: session.user.email || '',
-        image: session.user.image || undefined,
-        is_premium: (session.user as any).is_premium || false,
-        is_founder: (session.user as any).is_founder || false,
-        is_admin: (session.user as any).is_admin || false,
-      }
-    : null;
-
-  const handleLogout = () => {
-    signOut({ callbackUrl: '/' });
-  };
-
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* HEADER GLOBAL - Design System v3 */}
-      <UniversalHeader
-        variant="chat"
-        user={user}
-        isLoading={status === 'loading'}
-        onLogout={handleLogout}
-        loginUrl="/login/comunidades"
-      />
+    <div className="min-h-screen flex flex-col bg-[#0a0a14]">
+      {/* HEADER GLOBAL - NFCHeader com logo holográfico */}
+      <NFCHeader currentPage="chat" />
 
       {/* CONTEÚDO DAS PÁGINAS */}
       <main className="flex-1">
         {children}
       </main>
 
-      {/* FOOTER GLOBAL - Design System v3 */}
+      {/* FOOTER GLOBAL */}
       <UniversalFooter variant="chat" />
     </div>
   );
