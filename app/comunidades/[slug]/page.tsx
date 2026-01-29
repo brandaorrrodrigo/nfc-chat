@@ -750,7 +750,7 @@ const NOVAS_MENSAGENS: Record<string, Mensagem[]> = {
       tipo: 'ia',
       timestamp: '15:02',
       autor: { id: 'ia', nome: 'IA Facilitadora' },
-      conteudo: 'BEM-VINDA LUCIA! Leia as mensagens anteriores sobre dieta anti-inflamatória. 47 membros online prontos para ajudar.',
+      conteudo: 'SEJA BEM-VINDO(A) LUCIA! Leia as mensagens anteriores sobre dieta anti-inflamatória. 47 membros online prontos para ajudar.',
       ia_tipo: 'insight',
       isNew: true,
     },
@@ -1293,7 +1293,7 @@ export default function PainelVivoPage() {
           tipo: 'ia',
           timestamp: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
           autor: { id: 'ia', nome: 'IA Facilitadora' },
-          conteudo: `Bem-vinda à comunidade, ${user.nome}! 💜 Que bom ter você aqui. Fique à vontade para compartilhar suas experiências e tirar dúvidas. Estamos todas juntas nessa jornada!`,
+          conteudo: `Olá, ${user.nome}! 💜 Que bom ter você aqui na comunidade. Fique à vontade para compartilhar suas experiências e tirar dúvidas. Estamos juntos nessa jornada!`,
           ia_tipo: 'insight',
           isNew: true,
         };
@@ -1312,7 +1312,7 @@ export default function PainelVivoPage() {
           tipo: 'ia',
           timestamp: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
           autor: { id: 'ia', nome: 'IA Facilitadora' },
-          conteudo: `Bem-vinda, ${user.nome}! 💜 Sua participação é muito importante para nossa comunidade. Compartilhe suas experiências!`,
+          conteudo: `Olá, ${user.nome}! 💜 Sua participação é muito importante para nossa comunidade. Compartilhe suas experiências!`,
           ia_tipo: 'insight',
           isNew: true,
         };
