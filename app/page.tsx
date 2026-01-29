@@ -1,22 +1,21 @@
 'use client';
 
 /**
- * PÁGINA: HUB DAS ARENAS (Comunidades)
+ * HUB DAS COMUNIDADES - Premium Landing Page
+ * ==========================================
  *
- * Visual: Cyberpunk/Sci-Fi - Arena Digital
- * Estética: Fundo escuro + Verde Neon (#00ff88)
- *
- * IMPORTANTE: Header e Footer são renderizados GLOBALMENTE via providers.tsx
- * Esta página contém APENAS o conteúdo específico.
+ * Visual: Premium Cyberpunk com Neon Glow
+ * Paleta: Cyan (#00f5ff) + Magenta (#ff006e) + Purple (#8b5cf6)
+ * Baseado nos padrões das landing pages NFC
  */
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   Activity,
   Syringe,
   Users,
-  Eye,
   Wifi,
   Dumbbell,
   Heart,
@@ -26,13 +25,18 @@ import {
   Utensils,
   TrendingDown,
   Home,
+  Crown,
+  Star,
+  Zap,
+  MessageCircle,
+  ChevronRight,
   LucideIcon,
 } from 'lucide-react';
 import { getLoginUrl, COMUNIDADES_ROUTES } from '@/lib/navigation';
 import { useComunidadesAuth } from '@/app/components/comunidades/ComunidadesAuthContext';
 
 // ========================================
-// DADOS: 9 COMUNIDADES INICIAIS (FASE 1)
+// DADOS: COMUNIDADES
 // ========================================
 
 const COMMUNITIES = [
@@ -44,7 +48,7 @@ const COMMUNITIES = [
     activeNow: 47,
     slug: "lipedema",
     icon: "Activity",
-    color: "cyan",
+    gradient: "from-cyan-500 to-blue-600",
     lastActivity: "há 2 min",
   },
   {
@@ -55,7 +59,7 @@ const COMMUNITIES = [
     activeNow: 89,
     slug: "deficit-calorico",
     icon: "TrendingDown",
-    color: "orange",
+    gradient: "from-orange-500 to-red-500",
     lastActivity: "há 30s",
   },
   {
@@ -66,8 +70,9 @@ const COMMUNITIES = [
     activeNow: 124,
     slug: "treino-gluteo",
     icon: "Dumbbell",
-    color: "pink",
+    gradient: "from-pink-500 to-rose-600",
     lastActivity: "há 15s",
+    featured: true,
   },
   {
     id: 4,
@@ -77,7 +82,7 @@ const COMMUNITIES = [
     activeNow: 73,
     slug: "canetas",
     icon: "Syringe",
-    color: "emerald",
+    gradient: "from-emerald-500 to-teal-600",
     lastActivity: "há 1 min",
   },
   {
@@ -88,7 +93,7 @@ const COMMUNITIES = [
     activeNow: 56,
     slug: "odeia-treinar",
     icon: "Heart",
-    color: "red",
+    gradient: "from-red-500 to-pink-600",
     lastActivity: "há 3 min",
   },
   {
@@ -99,7 +104,7 @@ const COMMUNITIES = [
     activeNow: 91,
     slug: "ansiedade-alimentacao",
     icon: "Brain",
-    color: "purple",
+    gradient: "from-purple-500 to-violet-600",
     lastActivity: "há 45s",
   },
   {
@@ -110,7 +115,7 @@ const COMMUNITIES = [
     activeNow: 62,
     slug: "emagrecimento-35-mais",
     icon: "Sparkles",
-    color: "amber",
+    gradient: "from-amber-500 to-orange-600",
     lastActivity: "há 2 min",
   },
   {
@@ -121,7 +126,7 @@ const COMMUNITIES = [
     activeNow: 108,
     slug: "antes-depois",
     icon: "Camera",
-    color: "teal",
+    gradient: "from-teal-500 to-cyan-600",
     lastActivity: "há 20s",
   },
   {
@@ -132,7 +137,7 @@ const COMMUNITIES = [
     activeNow: 187,
     slug: "dieta-vida-real",
     icon: "Utensils",
-    color: "lime",
+    gradient: "from-lime-500 to-green-600",
     lastActivity: "há 10s",
     isCore: true,
   },
@@ -144,7 +149,7 @@ const COMMUNITIES = [
     activeNow: 78,
     slug: "treino-casa",
     icon: "Home",
-    color: "indigo",
+    gradient: "from-indigo-500 to-purple-600",
     lastActivity: "há 1 min",
   },
 ];
@@ -166,85 +171,98 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Home,
 };
 
-const COLOR_SCHEMES: Record<string, { accent: string; border: string; glow: string; iconColor: string; iconBg: string }> = {
-  cyan: {
-    accent: 'from-cyan-500/20 to-blue-500/20',
-    border: 'hover:border-cyan-400',
-    glow: 'hover:shadow-[0_0_20px_rgba(34,211,238,0.3)]',
-    iconColor: 'text-cyan-400',
-    iconBg: 'group-hover:bg-cyan-400/10',
-  },
-  orange: {
-    accent: 'from-orange-500/20 to-amber-500/20',
-    border: 'hover:border-orange-400',
-    glow: 'hover:shadow-[0_0_20px_rgba(251,146,60,0.3)]',
-    iconColor: 'text-orange-400',
-    iconBg: 'group-hover:bg-orange-400/10',
-  },
-  pink: {
-    accent: 'from-pink-500/20 to-rose-500/20',
-    border: 'hover:border-pink-400',
-    glow: 'hover:shadow-[0_0_20px_rgba(244,114,182,0.3)]',
-    iconColor: 'text-pink-400',
-    iconBg: 'group-hover:bg-pink-400/10',
-  },
-  emerald: {
-    accent: 'from-emerald-500/20 to-green-500/20',
-    border: 'hover:border-[#00ff88]',
-    glow: 'hover:shadow-[0_0_20px_rgba(0,255,136,0.3)]',
-    iconColor: 'text-[#00ff88]',
-    iconBg: 'group-hover:bg-[#00ff88]/10',
-  },
-  red: {
-    accent: 'from-red-500/20 to-rose-500/20',
-    border: 'hover:border-red-400',
-    glow: 'hover:shadow-[0_0_20px_rgba(248,113,113,0.3)]',
-    iconColor: 'text-red-400',
-    iconBg: 'group-hover:bg-red-400/10',
-  },
-  purple: {
-    accent: 'from-purple-500/20 to-violet-500/20',
-    border: 'hover:border-purple-400',
-    glow: 'hover:shadow-[0_0_20px_rgba(192,132,252,0.3)]',
-    iconColor: 'text-purple-400',
-    iconBg: 'group-hover:bg-purple-400/10',
-  },
-  amber: {
-    accent: 'from-amber-500/20 to-yellow-500/20',
-    border: 'hover:border-amber-400',
-    glow: 'hover:shadow-[0_0_20px_rgba(251,191,36,0.3)]',
-    iconColor: 'text-amber-400',
-    iconBg: 'group-hover:bg-amber-400/10',
-  },
-  teal: {
-    accent: 'from-teal-500/20 to-cyan-500/20',
-    border: 'hover:border-teal-400',
-    glow: 'hover:shadow-[0_0_20px_rgba(45,212,191,0.3)]',
-    iconColor: 'text-teal-400',
-    iconBg: 'group-hover:bg-teal-400/10',
-  },
-  lime: {
-    accent: 'from-lime-500/20 to-green-500/20',
-    border: 'hover:border-lime-400',
-    glow: 'hover:shadow-[0_0_20px_rgba(163,230,53,0.3)]',
-    iconColor: 'text-lime-400',
-    iconBg: 'group-hover:bg-lime-400/10',
-  },
-  indigo: {
-    accent: 'from-indigo-500/20 to-blue-500/20',
-    border: 'hover:border-indigo-400',
-    glow: 'hover:shadow-[0_0_20px_rgba(129,140,248,0.3)]',
-    iconColor: 'text-indigo-400',
-    iconBg: 'group-hover:bg-indigo-400/10',
-  },
-};
-
 // ========================================
-// COMPONENTE: Card da Arena
+// ESTILOS CSS CUSTOMIZADOS
 // ========================================
 
-interface ArenaCardProps {
-  comunidade: {
+const customStyles = `
+  @keyframes heroGlow {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.1); }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(0, 245, 255, 0.3); }
+    50% { box-shadow: 0 0 40px rgba(0, 245, 255, 0.6); }
+  }
+
+  .hero-glow {
+    animation: heroGlow 4s ease-in-out infinite;
+  }
+
+  .float-animation {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .shimmer-text {
+    background: linear-gradient(
+      90deg,
+      #00f5ff 0%,
+      #ff006e 25%,
+      #8b5cf6 50%,
+      #ff006e 75%,
+      #00f5ff 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s linear infinite;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #00f5ff 0%, #8b5cf6 50%, #ff006e 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .card-premium {
+    background: linear-gradient(135deg, rgba(26, 31, 58, 0.8) 0%, rgba(10, 14, 39, 0.9) 100%);
+    border: 1px solid rgba(0, 245, 255, 0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-premium:hover {
+    border-color: rgba(0, 245, 255, 0.5);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(0, 245, 255, 0.15);
+    transform: translateY(-8px);
+  }
+
+  .cta-button {
+    background: linear-gradient(135deg, #00f5ff 0%, #00b8c4 100%);
+    box-shadow: 0 4px 20px rgba(0, 245, 255, 0.4);
+    transition: all 0.3s ease;
+  }
+
+  .cta-button:hover {
+    box-shadow: 0 6px 30px rgba(0, 245, 255, 0.6);
+    transform: translateY(-2px);
+  }
+
+  .stats-card {
+    background: rgba(26, 31, 58, 0.6);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    backdrop-filter: blur(10px);
+  }
+`;
+
+// ========================================
+// COMPONENTE: Card da Comunidade Premium
+// ========================================
+
+interface CommunityCardProps {
+  community: {
     id: number;
     title: string;
     description: string;
@@ -252,96 +270,84 @@ interface ArenaCardProps {
     activeNow: number;
     slug: string;
     icon: string;
-    color: string;
+    gradient: string;
     lastActivity: string;
     isCore?: boolean;
+    featured?: boolean;
   };
 }
 
-function ArenaCard({ comunidade }: ArenaCardProps) {
-  const IconComponent = ICON_MAP[comunidade.icon] || Activity;
-  const colorScheme = COLOR_SCHEMES[comunidade.color] || COLOR_SCHEMES.emerald;
+function CommunityCard({ community }: CommunityCardProps) {
+  const IconComponent = ICON_MAP[community.icon] || Activity;
 
   return (
-    <Link href={`/comunidades/${comunidade.slug}`}>
-      <div
-        className={`
-          group relative overflow-hidden
-          bg-zinc-900/50 backdrop-blur-sm
-          border border-zinc-800
-          rounded-xl p-6
-          transition-all duration-300
-          ${colorScheme.border}
-          ${colorScheme.glow}
-          hover:scale-[1.02]
-          cursor-pointer
-          ${comunidade.isCore ? 'ring-1 ring-[#00ff88]/30' : ''}
-        `}
-      >
-        {/* Core Badge */}
-        {comunidade.isCore && (
-          <div className="absolute top-3 right-3 px-2 py-0.5 bg-[#00ff88]/10 border border-[#00ff88]/30 rounded text-[10px] font-mono text-[#00ff88] uppercase tracking-wider">
-            NFC Core
+    <Link href={`/comunidades/${community.slug}`}>
+      <div className="card-premium group relative overflow-hidden rounded-2xl p-6 cursor-pointer">
+        {/* Glow de fundo no hover */}
+        <div
+          className={`absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500 bg-gradient-to-br ${community.gradient}`}
+        />
+
+        {/* Badge Core */}
+        {community.isCore && (
+          <div className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/40 rounded-full">
+            <Crown className="w-3.5 h-3.5 text-amber-400" />
+            <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">Core</span>
           </div>
         )}
 
-        {/* Background Gradient */}
-        <div
-          className={`
-            absolute inset-0 opacity-0 group-hover:opacity-100
-            bg-gradient-to-br ${colorScheme.accent}
-            transition-opacity duration-300
-          `}
-        />
+        {/* Badge Featured */}
+        {community.featured && (
+          <div className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-pink-500/20 to-rose-500/20 border border-pink-500/40 rounded-full">
+            <Star className="w-3.5 h-3.5 text-pink-400" />
+            <span className="text-xs font-bold text-pink-400 uppercase tracking-wider">Popular</span>
+          </div>
+        )}
 
-        {/* Content */}
+        {/* Conteúdo */}
         <div className="relative z-10">
+          {/* Header com ícone */}
           <div className="flex items-start gap-4 mb-4">
-            <div className={`p-3 rounded-lg bg-zinc-800/50 ${colorScheme.iconBg} transition-colors duration-300`}>
-              <IconComponent className={`w-6 h-6 ${colorScheme.iconColor}`} strokeWidth={1.5} />
+            <div className={`p-3 rounded-xl bg-gradient-to-br ${community.gradient} shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+              <IconComponent className="w-6 h-6 text-white" strokeWidth={2} />
             </div>
-            <div className="flex-1">
-              <h3 className="text-xl font-bold text-white mb-1 group-hover:text-[#00ff88] transition-colors duration-300">
-                {comunidade.title}
+            <div className="flex-1 min-w-0">
+              <h3 className="text-xl font-bold text-white mb-1 group-hover:text-[#00f5ff] transition-colors duration-300 line-clamp-1">
+                {community.title}
               </h3>
-
-              <div className="flex items-center gap-3 text-xs">
-                <span className="flex items-center gap-1.5 text-zinc-400">
-                  <Users className="w-3.5 h-3.5" />
-                  <span className="font-mono font-bold">{comunidade.members.toLocaleString()}</span>
-                  <span className="text-zinc-600">membros</span>
+              <div className="flex items-center gap-3 text-sm">
+                <span className="flex items-center gap-1.5 text-gray-400">
+                  <Users className="w-4 h-4" />
+                  <span className="font-semibold text-white">{community.members.toLocaleString()}</span>
                 </span>
-                <span className="w-1 h-1 rounded-full bg-zinc-700" />
                 <span className="flex items-center gap-1.5 text-emerald-400">
                   <div className="relative">
-                    <Wifi className="w-3.5 h-3.5" />
-                    <div className="absolute inset-0 animate-ping opacity-50">
-                      <Wifi className="w-3.5 h-3.5" />
-                    </div>
+                    <div className="w-2 h-2 rounded-full bg-emerald-400" />
+                    <div className="absolute inset-0 w-2 h-2 rounded-full bg-emerald-400 animate-ping opacity-75" />
                   </div>
-                  <span className="font-mono font-bold">{comunidade.activeNow}</span>
+                  <span className="font-semibold">{community.activeNow}</span>
                   <span className="text-emerald-400/70">online</span>
                 </span>
               </div>
             </div>
           </div>
 
-          <p className="text-sm text-zinc-400 leading-relaxed mb-4">
-            {comunidade.description}
+          {/* Descrição */}
+          <p className="text-sm text-gray-400 leading-relaxed mb-4 line-clamp-2">
+            {community.description}
           </p>
 
-          <div className="flex items-center justify-between">
+          {/* Footer */}
+          <div className="flex items-center justify-between pt-4 border-t border-white/5">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-mono text-zinc-600 uppercase tracking-wider">
-                Última atividade:
-              </span>
-              <span className="text-xs font-mono text-[#00ff88]">
-                {comunidade.lastActivity}
+              <MessageCircle className="w-4 h-4 text-gray-500" />
+              <span className="text-xs text-gray-500">
+                Atividade {community.lastActivity}
               </span>
             </div>
-            <div className="flex items-center gap-1.5 text-sm text-[#00ff88]">
-              <Eye className="w-4 h-4" />
-              <span className="font-semibold">Ver Arena</span>
+            <div className="flex items-center gap-1 text-[#00f5ff] font-semibold text-sm group-hover:gap-2 transition-all duration-300">
+              <span>Entrar</span>
+              <ChevronRight className="w-4 h-4" />
             </div>
           </div>
         </div>
@@ -357,79 +363,250 @@ function ArenaCard({ comunidade }: ArenaCardProps) {
 export default function ComunidadesPage() {
   const { isAuthenticated } = useComunidadesAuth();
 
+  // Stats totais
+  const totalMembers = COMMUNITIES.reduce((acc, c) => acc + c.members, 0);
+  const totalOnline = COMMUNITIES.reduce((acc, c) => acc + c.activeNow, 0);
+
   return (
-    <div className="relative bg-black">
-      {/* Background Grid Pattern */}
+    <>
+      <style dangerouslySetInnerHTML={{ __html: customStyles }} />
+
       <div
-        className="fixed inset-0 opacity-[0.02] pointer-events-none"
+        className="min-h-screen relative"
         style={{
-          backgroundImage: `
-            linear-gradient(#00ff88 1px, transparent 1px),
-            linear-gradient(90deg, #00ff88 1px, transparent 1px)
-          `,
-          backgroundSize: '50px 50px',
+          background: 'linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #1a0a27 100%)'
         }}
-      />
+      >
+        {/* Background Effects */}
+        <div className="fixed inset-0 pointer-events-none overflow-hidden">
+          {/* Grid Pattern */}
+          <div
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage: `
+                linear-gradient(rgba(0, 245, 255, 0.5) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 245, 255, 0.5) 1px, transparent 1px)
+              `,
+              backgroundSize: '60px 60px',
+            }}
+          />
 
-      {/* Container Principal */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        {/* Header Section */}
-        <div className="mb-8">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-2 h-2 rounded-full bg-[#00ff88] animate-pulse" />
-            <span className="text-xs font-mono text-zinc-500 uppercase tracking-widest">
-              Sistema / Comunidades
-            </span>
-          </div>
+          {/* Glow orbs */}
+          <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-[#00f5ff] rounded-full filter blur-[150px] opacity-10 hero-glow" />
+          <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-[#ff006e] rounded-full filter blur-[150px] opacity-10 hero-glow" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-[#8b5cf6] rounded-full filter blur-[150px] opacity-5 hero-glow" style={{ animationDelay: '1s' }} />
+        </div>
 
-          <h1
-            className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-3 tracking-tight"
-            style={{ textShadow: '0 0 30px rgba(0, 255, 136, 0.3)' }}
-          >
-            ARENAS DISPONÍVEIS
-          </h1>
+        {/* Main Content */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
 
-          <p className="text-base sm:text-lg text-zinc-400 font-light max-w-2xl">
-            Selecione seu protocolo de operação. Conecte-se com outros agentes, compartilhe estratégias e
-            maximize seus resultados.
-          </p>
-
-          {/* Banner de Login */}
-          <div className="mt-6 p-4 bg-zinc-900/50 border border-zinc-800 rounded-xl flex items-center justify-between gap-4 flex-wrap">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-[#00ff88]/10 border border-[#00ff88]/30 flex items-center justify-center">
-                <Users className="w-5 h-5 text-[#00ff88]" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-white">Leitura livre, participação exclusiva</p>
-                <p className="text-xs text-zinc-500">Faça login para interagir nas comunidades</p>
+          {/* ===== HERO SECTION ===== */}
+          <section className="text-center py-12 sm:py-20">
+            {/* Logo */}
+            <div className="flex justify-center mb-8">
+              <div className="relative float-animation">
+                <Image
+                  src="/nfc-logo.png"
+                  alt="NutriFitCoach"
+                  width={180}
+                  height={60}
+                  className="h-14 sm:h-16 w-auto"
+                  priority
+                />
+                {/* Glow atrás da logo */}
+                <div className="absolute inset-0 blur-2xl opacity-50 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 -z-10 scale-150" />
               </div>
             </div>
-            <a
-              href={getLoginUrl(COMUNIDADES_ROUTES.HOME)}
-              className="px-4 py-2 bg-[#00ff88] hover:bg-[#00ff88]/90 text-black font-semibold text-sm rounded-lg transition-all hover:shadow-[0_0_15px_rgba(0,255,136,0.4)]"
-            >
-              Entrar agora
-            </a>
-          </div>
 
-          <div className="mt-6 h-[1px] bg-gradient-to-r from-transparent via-[#00ff88]/30 to-transparent" />
-        </div>
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#8b5cf6]/10 border border-[#8b5cf6]/30 rounded-full mb-6">
+              <Zap className="w-4 h-4 text-[#8b5cf6]" />
+              <span className="text-sm font-semibold text-[#8b5cf6]">Comunidade Exclusiva</span>
+            </div>
 
-        {/* Arenas Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-          {COMMUNITIES.map((comunidade) => (
-            <ArenaCard key={comunidade.id} comunidade={comunidade} />
-          ))}
-        </div>
+            {/* Título Principal */}
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black mb-6 leading-tight">
+              <span className="text-white">Hub das</span>
+              <br />
+              <span className="shimmer-text">Comunidades</span>
+            </h1>
 
-        {/* Footer Info */}
-        <div className="mt-12 text-center">
-          <p className="text-xs text-zinc-600 font-mono">
-            &gt; NOVOS PROTOCOLOS SERÃO ATIVADOS CONFORME DEMANDA DE AGENTES
-          </p>
+            {/* Subtítulo */}
+            <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+              Conecte-se com <span className="text-[#00f5ff] font-semibold">{totalMembers.toLocaleString()}+ mulheres</span> que
+              estão transformando suas vidas. Compartilhe experiências, tire dúvidas e evolua junto.
+            </p>
+
+            {/* Stats Cards */}
+            <div className="flex flex-wrap justify-center gap-4 mb-10">
+              <div className="stats-card px-6 py-4 rounded-2xl">
+                <div className="text-3xl font-black text-white mb-1">{COMMUNITIES.length}</div>
+                <div className="text-sm text-gray-400">Comunidades</div>
+              </div>
+              <div className="stats-card px-6 py-4 rounded-2xl">
+                <div className="text-3xl font-black gradient-text mb-1">{totalMembers.toLocaleString()}</div>
+                <div className="text-sm text-gray-400">Membros</div>
+              </div>
+              <div className="stats-card px-6 py-4 rounded-2xl">
+                <div className="flex items-center gap-2 text-3xl font-black text-emerald-400 mb-1">
+                  <div className="relative">
+                    <div className="w-3 h-3 rounded-full bg-emerald-400" />
+                    <div className="absolute inset-0 w-3 h-3 rounded-full bg-emerald-400 animate-ping opacity-75" />
+                  </div>
+                  {totalOnline}
+                </div>
+                <div className="text-sm text-gray-400">Online agora</div>
+              </div>
+            </div>
+
+            {/* CTA Buttons */}
+            {!isAuthenticated && (
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a
+                  href={getLoginUrl(COMUNIDADES_ROUTES.HOME)}
+                  className="cta-button px-8 py-4 rounded-xl text-black font-bold text-lg flex items-center gap-2"
+                >
+                  <Sparkles className="w-5 h-5" />
+                  Entrar na Comunidade
+                </a>
+                <Link
+                  href="#comunidades"
+                  className="px-8 py-4 rounded-xl border border-white/20 text-white font-semibold hover:bg-white/5 transition-all"
+                >
+                  Ver Comunidades
+                </Link>
+              </div>
+            )}
+          </section>
+
+          {/* Divider */}
+          <div className="h-px bg-gradient-to-r from-transparent via-[#00f5ff]/30 to-transparent my-8" />
+
+          {/* ===== COMUNIDADES SECTION ===== */}
+          <section id="comunidades" className="py-8">
+            {/* Section Header */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+                  Escolha sua <span className="gradient-text">Comunidade</span>
+                </h2>
+                <p className="text-gray-400">
+                  Leitura livre para todos. Participe ativamente fazendo login.
+                </p>
+              </div>
+
+              {/* Login prompt */}
+              {!isAuthenticated && (
+                <a
+                  href={getLoginUrl(COMUNIDADES_ROUTES.HOME)}
+                  className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-sm text-white font-medium transition-all"
+                >
+                  <Users className="w-4 h-4 text-[#00f5ff]" />
+                  Fazer login para participar
+                </a>
+              )}
+            </div>
+
+            {/* Communities Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {COMMUNITIES.map((community) => (
+                <CommunityCard key={community.id} community={community} />
+              ))}
+            </div>
+          </section>
+
+          {/* ===== BENEFITS SECTION ===== */}
+          <section className="py-16">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+                Por que participar das <span className="gradient-text">Comunidades NFC?</span>
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                {
+                  icon: Users,
+                  title: "Apoio Real",
+                  description: "Conecte-se com mulheres que entendem sua jornada",
+                  gradient: "from-cyan-500 to-blue-600",
+                },
+                {
+                  icon: MessageCircle,
+                  title: "Troca de Experiências",
+                  description: "Compartilhe e aprenda com histórias reais",
+                  gradient: "from-purple-500 to-violet-600",
+                },
+                {
+                  icon: Zap,
+                  title: "Conteúdo Exclusivo",
+                  description: "Dicas e insights direto das especialistas NFC",
+                  gradient: "from-pink-500 to-rose-600",
+                },
+                {
+                  icon: Heart,
+                  title: "Sem Julgamento",
+                  description: "Ambiente seguro e acolhedor para todas",
+                  gradient: "from-emerald-500 to-teal-600",
+                },
+              ].map((benefit, index) => (
+                <div
+                  key={index}
+                  className="card-premium p-6 rounded-2xl text-center group"
+                >
+                  <div className={`w-14 h-14 mx-auto mb-4 rounded-xl bg-gradient-to-br ${benefit.gradient} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+                    <benefit.icon className="w-7 h-7 text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2">{benefit.title}</h3>
+                  <p className="text-sm text-gray-400">{benefit.description}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* ===== FINAL CTA ===== */}
+          {!isAuthenticated && (
+            <section className="py-16">
+              <div
+                className="relative overflow-hidden rounded-3xl p-8 sm:p-12 text-center"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(0, 245, 255, 0.1) 0%, rgba(139, 92, 246, 0.1) 50%, rgba(255, 0, 110, 0.1) 100%)',
+                  border: '1px solid rgba(139, 92, 246, 0.3)',
+                }}
+              >
+                {/* Glow effect */}
+                <div className="absolute inset-0 opacity-30">
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[300px] bg-[#8b5cf6] rounded-full filter blur-[100px]" />
+                </div>
+
+                <div className="relative z-10">
+                  <Crown className="w-12 h-12 text-amber-400 mx-auto mb-6" />
+                  <h2 className="text-2xl sm:text-4xl font-bold text-white mb-4">
+                    Pronta para fazer parte?
+                  </h2>
+                  <p className="text-gray-400 max-w-xl mx-auto mb-8">
+                    Junte-se a milhares de mulheres que estão transformando suas vidas com apoio, conhecimento e comunidade.
+                  </p>
+                  <a
+                    href={getLoginUrl(COMUNIDADES_ROUTES.HOME)}
+                    className="cta-button inline-flex items-center gap-2 px-8 py-4 rounded-xl text-black font-bold text-lg"
+                  >
+                    <Sparkles className="w-5 h-5" />
+                    Começar Agora
+                  </a>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* Footer */}
+          <footer className="py-8 text-center border-t border-white/5">
+            <p className="text-sm text-gray-500">
+              © {new Date().getFullYear()} NutriFitCoach. Todos os direitos reservados.
+            </p>
+          </footer>
         </div>
       </div>
-    </div>
+    </>
   );
 }
