@@ -5,7 +5,7 @@
  *
  * Visual: Feed contínuo estilo aeroporto/bolsa de valores
  * Leitura sem cliques - fluxo contínuo de mensagens
- * Estética: Cyberpunk Dark + Verde Neon (#00ff88)
+ * Estética: Premium Cyberpunk - Cyan (#00f5ff) + Magenta (#ff006e) + Purple (#8b5cf6)
  *
  * IMPORTANTE: Header e Footer são renderizados GLOBALMENTE via providers.tsx
  * Esta página contém APENAS o conteúdo específico.
@@ -35,9 +35,7 @@ import { ImagePreview } from '@/hooks/useImageUpload';
 // Economia estimada: ~55KB do bundle inicial
 // ========================================
 
-const SmartFAB = dynamic(() => import('@/app/components/comunidades/SmartFAB'), {
-  ssr: false,
-});
+// SmartFAB removido - input fixo no rodapé é suficiente
 
 const LoginRequiredModal = dynamic(
   () => import('@/app/components/comunidades/LoginRequiredModal').then(mod => ({ default: mod.default })),
@@ -70,6 +68,7 @@ const IAPerguntaDoDia = dynamic(
 // LIB IMPORTS
 // ========================================
 import { getPerguntaDoDia, getFaseAtual } from '@/lib/ia';
+import { useIAFacilitadora } from '@/hooks/useIAFacilitadora';
 
 // ========================================
 // TIPOS
@@ -856,10 +855,10 @@ function StatusIndicator() {
   return (
     <div className="flex items-center gap-2">
       <div className="relative">
-        <div className="w-2.5 h-2.5 rounded-full bg-[#00ff88]" />
-        <div className="absolute inset-0 w-2.5 h-2.5 rounded-full bg-[#00ff88] animate-ping" />
+        <div className="w-2.5 h-2.5 rounded-full bg-[#00f5ff]" />
+        <div className="absolute inset-0 w-2.5 h-2.5 rounded-full bg-[#00f5ff] animate-ping" />
       </div>
-      <span className="text-xs font-mono text-[#00ff88] uppercase tracking-wider font-bold">
+      <span className="text-xs font-mono text-[#00f5ff] uppercase tracking-wider font-bold">
         Painel Ativo
       </span>
     </div>
@@ -873,7 +872,7 @@ function StatusIndicator() {
 function MensagemAvatar({ autor, isIA }: { autor: Mensagem['autor']; isIA: boolean }) {
   if (isIA) {
     return (
-      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-[#00ff88] flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.4)]">
+      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#8b5cf6] to-[#00f5ff] flex items-center justify-center shadow-[0_0_20px_rgba(139,92,246,0.4)]">
         <Bot className="w-5 h-5 text-white" />
       </div>
     );
@@ -912,23 +911,23 @@ function MensagemItem({
   const isIA = mensagem.tipo === 'ia';
 
   const iaColors = {
-    resumo: 'from-purple-500/20 to-purple-500/5 border-purple-500/50',
-    insight: 'from-[#00ff88]/20 to-[#00ff88]/5 border-[#00ff88]/50',
-    pergunta: 'from-cyan-500/20 to-cyan-500/5 border-cyan-500/50',
+    resumo: 'from-[#8b5cf6]/20 to-[#8b5cf6]/5 border-[#8b5cf6]/50',
+    insight: 'from-[#00f5ff]/20 to-[#00f5ff]/5 border-[#00f5ff]/50',
+    pergunta: 'from-[#ff006e]/20 to-[#ff006e]/5 border-[#ff006e]/50',
     destaque: 'from-amber-500/20 to-amber-500/5 border-amber-500/50',
   };
 
   const iaTextColors = {
-    resumo: 'text-purple-300',
-    insight: 'text-[#00ff88]',
-    pergunta: 'text-cyan-300',
+    resumo: 'text-[#8b5cf6]',
+    insight: 'text-[#00f5ff]',
+    pergunta: 'text-[#ff006e]',
     destaque: 'text-amber-300',
   };
 
   const iaGlow = {
-    resumo: '0 0 30px rgba(168, 85, 247, 0.3)',
-    insight: '0 0 30px rgba(0, 255, 136, 0.3)',
-    pergunta: '0 0 30px rgba(34, 211, 238, 0.3)',
+    resumo: '0 0 30px rgba(139, 92, 246, 0.3)',
+    insight: '0 0 30px rgba(0, 245, 255, 0.3)',
+    pergunta: '0 0 30px rgba(255, 0, 110, 0.3)',
     destaque: '0 0 30px rgba(245, 158, 11, 0.3)',
   };
 
@@ -937,7 +936,7 @@ function MensagemItem({
       className={`
         flex items-start gap-3 px-4 py-3
         transition-all duration-500 ease-out
-        ${isNew ? 'animate-slideDown bg-[#00ff88]/5' : ''}
+        ${isNew ? 'animate-slideDown bg-[#00f5ff]/5' : ''}
         ${isIA
           ? `bg-gradient-to-r ${iaColors[mensagem.ia_tipo || 'insight']} border-l-2`
           : 'hover:bg-zinc-900/50 border-l-2 border-transparent hover:border-zinc-700'
@@ -1027,16 +1026,16 @@ function NovasMensagensIndicator({ count, onClick }: { count: number; onClick: (
         flex items-center gap-2
         px-4 py-2
         bg-zinc-900/95 backdrop-blur-md
-        border border-[#00ff88]/50
+        border border-[#00f5ff]/50
         rounded-full
-        shadow-[0_0_20px_rgba(0,255,136,0.3)]
+        shadow-[0_0_20px_rgba(0,245,255,0.3)]
         hover:bg-zinc-800
         transition-all
         animate-bounce
       `}
     >
-      <ChevronDown className="w-4 h-4 text-[#00ff88]" />
-      <span className="text-sm font-medium text-[#00ff88]">
+      <ChevronDown className="w-4 h-4 text-[#00f5ff]" />
+      <span className="text-sm font-medium text-[#00f5ff]">
         {count} nova{count > 1 ? 's' : ''} mensagem{count > 1 ? 'ns' : ''}
       </span>
     </button>
@@ -1049,7 +1048,12 @@ function NovasMensagensIndicator({ count, onClick }: { count: number; onClick: (
 
 function ComunidadeNaoEncontrada({ slug }: { slug: string }) {
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-4">
+    <div
+      className="min-h-screen flex items-center justify-center p-4"
+      style={{
+        background: 'linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #1a0a27 100%)'
+      }}
+    >
       <div className="text-center max-w-md">
         <div className="w-16 h-16 mx-auto mb-6 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center">
           <AlertTriangle className="w-8 h-8 text-amber-400" />
@@ -1058,11 +1062,11 @@ function ComunidadeNaoEncontrada({ slug }: { slug: string }) {
           Comunidade não encontrada
         </h1>
         <p className="text-zinc-400 mb-6">
-          A comunidade <span className="text-[#00ff88] font-mono">&quot;{slug}&quot;</span> não existe ou foi removida.
+          A comunidade <span className="text-[#00f5ff] font-mono">&quot;{slug}&quot;</span> não existe ou foi removida.
         </p>
         <Link
           href="/"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-[#00ff88] hover:bg-[#00ff88]/90 text-black font-semibold rounded-lg transition-all"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#00f5ff] to-[#00b8c4] hover:shadow-[0_0_30px_rgba(0,245,255,0.4)] text-black font-semibold rounded-lg transition-all"
         >
           <ArrowLeft className="w-4 h-4" />
           Voltar para Arenas
@@ -1076,6 +1080,11 @@ function ComunidadeNaoEncontrada({ slug }: { slug: string }) {
 // PÁGINA PRINCIPAL - PAINEL VIVO
 // ========================================
 
+// ========================================
+// STORAGE KEY HELPER
+// ========================================
+const getStorageKey = (slug: string) => `nfc-comunidade-mensagens-${slug}`;
+
 export default function PainelVivoPage() {
   // useParams é um hook de Client Component - seguro para usar aqui
   const params = useParams();
@@ -1083,6 +1092,7 @@ export default function PainelVivoPage() {
 
   const { user, isAuthenticated } = useComunidadesAuth();
   const { isOpen, interactionType, openModal, closeModal } = useLoginRequiredModal();
+  const { analisarConversa } = useIAFacilitadora();
 
   const [comunidade, setComunidade] = useState<(ComunidadeData & { mensagens: Mensagem[] }) | null>(null);
   const [mensagens, setMensagens] = useState<Mensagem[]>([]);
@@ -1091,8 +1101,9 @@ export default function PainelVivoPage() {
   const [notFound, setNotFound] = useState(false);
   const feedRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
+  const [hasWelcomed, setHasWelcomed] = useState(false);
 
-  // Carregar dados da comunidade
+  // Carregar dados da comunidade + mensagens salvas
   useEffect(() => {
     if (!slug) {
       setIsLoading(false);
@@ -1103,13 +1114,49 @@ export default function PainelVivoPage() {
     const data = COMUNIDADES_DATA[slug];
     if (data) {
       setComunidade(data);
-      setMensagens(data.mensagens);
+
+      // Tentar carregar mensagens do localStorage
+      try {
+        const savedMessages = localStorage.getItem(getStorageKey(slug));
+        if (savedMessages) {
+          const parsed = JSON.parse(savedMessages);
+          // Mesclar mensagens mock com salvas (evitar duplicatas por ID)
+          const mockIds = new Set(data.mensagens.map(m => m.id));
+          const userMessages = parsed.filter((m: Mensagem) => !mockIds.has(m.id));
+          setMensagens([...data.mensagens, ...userMessages]);
+        } else {
+          setMensagens(data.mensagens);
+        }
+      } catch {
+        setMensagens(data.mensagens);
+      }
+
       setNotFound(false);
     } else {
       setNotFound(true);
     }
     setIsLoading(false);
   }, [slug]);
+
+  // Salvar mensagens do usuário no localStorage
+  useEffect(() => {
+    if (!slug || mensagens.length === 0) return;
+
+    // Filtrar apenas mensagens do usuário (não mock)
+    const mockData = COMUNIDADES_DATA[slug];
+    if (!mockData) return;
+
+    const mockIds = new Set(mockData.mensagens.map(m => m.id));
+    const userMessages = mensagens.filter(m => !mockIds.has(m.id));
+
+    if (userMessages.length > 0) {
+      try {
+        localStorage.setItem(getStorageKey(slug), JSON.stringify(userMessages));
+      } catch (e) {
+        console.error('Erro ao salvar mensagens:', e);
+      }
+    }
+  }, [mensagens, slug]);
 
   // Simular chegada de novas mensagens
   useEffect(() => {
@@ -1175,7 +1222,7 @@ export default function PainelVivoPage() {
   };
 
   // Handler para enviar mensagem
-  const handleEnviarMensagem = (message: string, images?: ImagePreview[]) => {
+  const handleEnviarMensagem = async (message: string, images?: ImagePreview[]) => {
     if (!user) return;
 
     const galleryImages: GalleryImage[] | undefined = images?.map(img => ({
@@ -1200,14 +1247,95 @@ export default function PainelVivoPage() {
     };
 
     setMensagens(prev => [...prev, novaMensagem]);
+
+    // Verificar se é a primeira mensagem do usuário (boas-vindas)
+    const isFirstMessage = !hasWelcomed;
+
+    // Chamar IA para analisar e potencialmente responder
+    try {
+      // Converter mensagens para formato da IA
+      const mensagensParaIA = [...mensagens, novaMensagem].slice(-10).map(m => ({
+        id: m.id,
+        texto: m.conteudo,
+        autorId: m.autor.id,
+        autorNome: m.autor.nome,
+        isIA: m.tipo === 'ia',
+        timestamp: new Date().toISOString(),
+      }));
+
+      const respostaIA = await analisarConversa(
+        mensagensParaIA,
+        comunidade?.titulo || '',
+        slug
+      );
+
+      // Se a IA decidiu responder
+      if (respostaIA) {
+        const mensagemIA: Mensagem = {
+          id: `ia-${Date.now()}`,
+          tipo: 'ia',
+          timestamp: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+          autor: { id: 'ia', nome: 'IA Facilitadora' },
+          conteudo: respostaIA.texto,
+          ia_tipo: respostaIA.tipo === 'blog' ? 'insight' :
+                   respostaIA.tipo === 'correcao' ? 'destaque' : 'pergunta',
+          isNew: true,
+        };
+
+        // Delay para parecer mais natural
+        setTimeout(() => {
+          setMensagens(prev => [...prev, mensagemIA]);
+        }, 1500);
+      } else if (isFirstMessage) {
+        // Se é primeira mensagem e IA não respondeu, dar boas-vindas
+        const boasVindas: Mensagem = {
+          id: `ia-welcome-${Date.now()}`,
+          tipo: 'ia',
+          timestamp: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+          autor: { id: 'ia', nome: 'IA Facilitadora' },
+          conteudo: `Bem-vinda à comunidade, ${user.nome}! 💜 Que bom ter você aqui. Fique à vontade para compartilhar suas experiências e tirar dúvidas. Estamos todas juntas nessa jornada!`,
+          ia_tipo: 'insight',
+          isNew: true,
+        };
+
+        setTimeout(() => {
+          setMensagens(prev => [...prev, boasVindas]);
+          setHasWelcomed(true);
+        }, 1500);
+      }
+    } catch (error) {
+      console.error('Erro ao chamar IA:', error);
+      // Se falhou mas é primeira mensagem, ainda dar boas-vindas
+      if (isFirstMessage) {
+        const boasVindas: Mensagem = {
+          id: `ia-welcome-${Date.now()}`,
+          tipo: 'ia',
+          timestamp: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+          autor: { id: 'ia', nome: 'IA Facilitadora' },
+          conteudo: `Bem-vinda, ${user.nome}! 💜 Sua participação é muito importante para nossa comunidade. Compartilhe suas experiências!`,
+          ia_tipo: 'insight',
+          isNew: true,
+        };
+
+        setTimeout(() => {
+          setMensagens(prev => [...prev, boasVindas]);
+          setHasWelcomed(true);
+        }, 1500);
+      }
+    }
   };
 
   // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{
+          background: 'linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #1a0a27 100%)'
+        }}
+      >
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-[#00ff88] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <div className="w-8 h-8 border-2 border-[#00f5ff] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-zinc-500 font-mono text-sm">Carregando painel...</p>
         </div>
       </div>
@@ -1220,96 +1348,109 @@ export default function PainelVivoPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-black flex flex-col overflow-hidden">
-      {/* Background Grid */}
-      <div
-        className="fixed inset-0 opacity-[0.02] pointer-events-none"
-        style={{
-          backgroundImage: `
-            linear-gradient(#00ff88 1px, transparent 1px),
-            linear-gradient(90deg, #00ff88 1px, transparent 1px)
-          `,
-          backgroundSize: '40px 40px',
-        }}
-      />
+    <div
+      className="min-h-[calc(100vh-64px)] flex flex-col overflow-hidden relative"
+      style={{
+        background: 'linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #1a0a27 100%)'
+      }}
+    >
+      {/* Background Effects */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        {/* Grid Pattern */}
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(0, 245, 255, 0.5) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(0, 245, 255, 0.5) 1px, transparent 1px)
+            `,
+            backgroundSize: '60px 60px',
+          }}
+        />
 
-      {/* Scanline Effect */}
-      <div
-        className="fixed inset-0 pointer-events-none opacity-[0.03]"
-        style={{
-          background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,136,0.03) 2px, rgba(0,255,136,0.03) 4px)',
-        }}
-      />
+        {/* Glow orbs */}
+        <div className="absolute top-0 left-1/4 w-[400px] h-[400px] bg-[#00f5ff] rounded-full filter blur-[150px] opacity-5" />
+        <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] bg-[#ff006e] rounded-full filter blur-[150px] opacity-5" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[250px] h-[250px] bg-[#8b5cf6] rounded-full filter blur-[150px] opacity-5" />
+      </div>
 
       {/* ===== BARRA DE INFO DA COMUNIDADE (Header global via providers.tsx) ===== */}
-      <div className="flex-shrink-0 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800 z-40">
-        {/* Top Bar */}
-        <div className="border-b border-zinc-900">
-          <div className="max-w-4xl mx-auto px-4 py-2 flex items-center justify-between">
-            <Link
-              href="/"
-              className="flex items-center gap-2 text-xs text-zinc-500 hover:text-[#00ff88] transition-colors group"
-            >
-              <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
-              <span className="font-mono">VOLTAR</span>
-            </Link>
-
-            <div className="flex items-center gap-4 text-xs">
-              <div className="flex items-center gap-1.5 text-zinc-500">
-                <div className="relative">
-                  <Users className="w-3.5 h-3.5" />
-                  <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-[#00ff88] rounded-full" />
-                </div>
-                <span className="font-mono text-[#00ff88]">{comunidade.membrosOnline}</span>
-                <span className="text-zinc-600">online</span>
-              </div>
-
-              <div className="w-[1px] h-3 bg-zinc-800" />
-
-              <div className="flex items-center gap-1.5 text-zinc-500">
-                <MessageSquare className="w-3.5 h-3.5" />
-                <span className="font-mono">{comunidade.totalMensagens.toLocaleString('pt-BR')}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Header */}
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <div className="mb-2">
-                <StatusIndicator />
-              </div>
-              <h1
-                className="text-xl sm:text-2xl font-black text-white tracking-tight"
-                style={{ textShadow: '0 0 30px rgba(0, 255, 136, 0.3)' }}
+      <div className="flex-shrink-0 relative z-40">
+        <div
+          className="backdrop-blur-md border-b"
+          style={{
+            background: 'linear-gradient(135deg, rgba(26, 31, 58, 0.95) 0%, rgba(10, 14, 39, 0.95) 100%)',
+            borderColor: 'rgba(0, 245, 255, 0.1)',
+          }}
+        >
+          {/* Top Bar */}
+          <div className="border-b border-white/5">
+            <div className="max-w-4xl mx-auto px-4 py-2 flex items-center justify-between">
+              <Link
+                href="/"
+                className="flex items-center gap-2 text-xs text-zinc-500 hover:text-[#00f5ff] transition-colors group"
               >
-                {comunidade.titulo}
-              </h1>
-            </div>
+                <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
+                <span className="font-mono">VOLTAR</span>
+              </Link>
 
-            <div className="flex items-center gap-2">
-              <FavoriteButton
-                type="comunidade"
-                slug={slug}
-                variant="icon"
-                onLoginRequired={() => openModal('favoritar')}
-              />
-              <div className="flex-shrink-0 hidden sm:flex items-center gap-2 px-3 py-2 bg-purple-500/10 border border-purple-500/30 rounded-lg">
-                <Bot className="w-4 h-4 text-purple-400" />
-                <span className="text-xs text-purple-400 font-mono">IA Ativa</span>
+              <div className="flex items-center gap-4 text-xs">
+                <div className="flex items-center gap-1.5 text-zinc-500">
+                  <div className="relative">
+                    <Users className="w-3.5 h-3.5" />
+                    <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-emerald-400 rounded-full" />
+                  </div>
+                  <span className="font-mono text-emerald-400">{comunidade.membrosOnline}</span>
+                  <span className="text-zinc-600">online</span>
+                </div>
+
+                <div className="w-[1px] h-3 bg-white/10" />
+
+                <div className="flex items-center gap-1.5 text-zinc-500">
+                  <MessageSquare className="w-3.5 h-3.5" />
+                  <span className="font-mono">{comunidade.totalMensagens.toLocaleString('pt-BR')}</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Activity Bar */}
-        <div className="h-0.5 bg-zinc-900 relative overflow-hidden">
-          <div
-            className="absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-transparent via-[#00ff88]/50 to-transparent"
-            style={{ animation: 'slideRight 2s ease-in-out infinite' }}
-          />
+          {/* Main Header */}
+          <div className="max-w-4xl mx-auto px-4 py-4">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <div className="mb-2">
+                  <StatusIndicator />
+                </div>
+                <h1
+                  className="text-xl sm:text-2xl font-black text-white tracking-tight"
+                  style={{ textShadow: '0 0 30px rgba(0, 245, 255, 0.3)' }}
+                >
+                  {comunidade.titulo}
+                </h1>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <FavoriteButton
+                  type="comunidade"
+                  slug={slug}
+                  variant="icon"
+                  onLoginRequired={() => openModal('favoritar')}
+                />
+                <div className="flex-shrink-0 hidden sm:flex items-center gap-2 px-3 py-2 bg-[#8b5cf6]/10 border border-[#8b5cf6]/30 rounded-lg">
+                  <Bot className="w-4 h-4 text-[#8b5cf6]" />
+                  <span className="text-xs text-[#8b5cf6] font-mono">IA Ativa</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Activity Bar */}
+          <div className="h-0.5 bg-white/5 relative overflow-hidden">
+            <div
+              className="absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-transparent via-[#00f5ff]/50 to-transparent"
+              style={{ animation: 'slideRight 2s ease-in-out infinite' }}
+            />
+          </div>
         </div>
       </div>
 
@@ -1328,7 +1469,7 @@ export default function PainelVivoPage() {
             />
           </div>
 
-          <div className="space-y-0 divide-y divide-zinc-900/50">
+          <div className="space-y-0 divide-y divide-white/5">
             {mensagens.map((mensagem, index) => (
               <MensagemItem
                 key={`${mensagem.id}-${index}`}
@@ -1341,13 +1482,13 @@ export default function PainelVivoPage() {
           </div>
 
           <div className="flex items-center justify-center gap-3 py-8">
-            <div className="h-[1px] w-16 bg-gradient-to-r from-transparent to-zinc-800" />
+            <div className="h-[1px] w-16 bg-gradient-to-r from-transparent to-white/10" />
             <div className="relative">
-              <div className="w-2 h-2 rounded-full bg-[#00ff88]" />
-              <div className="absolute inset-0 w-2 h-2 rounded-full bg-[#00ff88] animate-ping" />
+              <div className="w-2 h-2 rounded-full bg-[#00f5ff]" />
+              <div className="absolute inset-0 w-2 h-2 rounded-full bg-[#00f5ff] animate-ping" />
             </div>
-            <span className="text-xs font-mono text-zinc-700">ATUALIZANDO</span>
-            <div className="h-[1px] w-16 bg-gradient-to-l from-transparent to-zinc-800" />
+            <span className="text-xs font-mono text-zinc-500">ATUALIZANDO</span>
+            <div className="h-[1px] w-16 bg-gradient-to-l from-transparent to-white/10" />
           </div>
         </div>
       </main>
@@ -1362,13 +1503,7 @@ export default function PainelVivoPage() {
       {/* Indicador de novas mensagens */}
       <NovasMensagensIndicator count={novasMensagensCount} onClick={scrollToBottom} />
 
-      {/* Smart FAB */}
-      <SmartFAB
-        isAuthenticated={isAuthenticated}
-        variant="responder"
-        onResponder={handleResponder}
-        onLoginRequired={() => openModal('responder')}
-      />
+      {/* Smart FAB removido - input fixo no rodapé é suficiente */}
 
       {/* Modal de Login Necessário */}
       <LoginRequiredModal
@@ -1395,6 +1530,11 @@ export default function PainelVivoPage() {
           }
         }
 
+        @keyframes heroGlow {
+          0%, 100% { opacity: 0.05; }
+          50% { opacity: 0.1; }
+        }
+
         .animate-slideDown {
           animation: slideDown 0.5s ease-out forwards;
         }
@@ -1406,11 +1546,11 @@ export default function PainelVivoPage() {
           background: transparent;
         }
         .scrollbar-thin::-webkit-scrollbar-thumb {
-          background: #27272a;
+          background: rgba(139, 92, 246, 0.3);
           border-radius: 3px;
         }
         .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-          background: #3f3f46;
+          background: rgba(139, 92, 246, 0.5);
         }
       `}</style>
     </div>
