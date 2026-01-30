@@ -76,8 +76,8 @@ const COMMUNITIES = [
   },
   {
     id: 3,
-    title: "Treino de Glúteo Feminino",
-    description: "Treino de glúteo com olhar feminino: genética, dor, carga, repetição, constância e resultado real.",
+    title: "Treino de Glúteo",
+    description: "Treino de glúteo com foco em resultado: genética, dor, carga, repetição, constância e evolução real.",
     members: 3156,
     activeNow: 124,
     slug: "treino-gluteo",
@@ -436,7 +436,7 @@ export default function ComunidadesPage() {
 
             {/* Subtítulo */}
             <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-              Conecte-se com <span className="text-[#00f5ff] font-semibold">{totalMembers.toLocaleString()}+ mulheres</span> que
+              Conecte-se com <span className="text-[#00f5ff] font-semibold">{totalMembers.toLocaleString()}+ pessoas</span> que
               estão transformando suas vidas. Compartilhe experiências, tire dúvidas e evolua junto.
             </p>
 
@@ -645,7 +645,7 @@ export default function ComunidadesPage() {
                 {
                   icon: Users,
                   title: "Apoio Real",
-                  description: "Conecte-se com mulheres que entendem sua jornada",
+                  description: "Conecte-se com pessoas que entendem sua jornada",
                   gradient: "from-cyan-500 to-blue-600",
                 },
                 {
@@ -663,7 +663,7 @@ export default function ComunidadesPage() {
                 {
                   icon: Heart,
                   title: "Sem Julgamento",
-                  description: "Ambiente seguro e acolhedor para todas",
+                  description: "Ambiente seguro e acolhedor para todos",
                   gradient: "from-emerald-500 to-teal-600",
                 },
               ].map((benefit, index) => (
@@ -699,10 +699,10 @@ export default function ComunidadesPage() {
                 <div className="relative z-10">
                   <Crown className="w-12 h-12 text-amber-400 mx-auto mb-6" />
                   <h2 className="text-2xl sm:text-4xl font-bold text-white mb-4">
-                    Pronta para fazer parte?
+                    Quer fazer parte?
                   </h2>
                   <p className="text-gray-400 max-w-xl mx-auto mb-8">
-                    Junte-se a milhares de mulheres que estão transformando suas vidas com apoio, conhecimento e comunidade.
+                    Junte-se a milhares de pessoas que estão transformando suas vidas com apoio, conhecimento e comunidade.
                   </p>
                   <a
                     href={getLoginUrl(COMUNIDADES_ROUTES.HOME)}
