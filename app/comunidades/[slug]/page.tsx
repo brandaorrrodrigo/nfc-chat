@@ -1401,7 +1401,7 @@ export default function PainelVivoPage() {
 
   const { user, isAuthenticated } = useComunidadesAuth();
   const { isOpen, interactionType, openModal, closeModal } = useLoginRequiredModal();
-  const { analisarConversa } = useIAFacilitadora();
+  const { analisarConversa, notificarRespostaUsuario } = useIAFacilitadora();
 
   // Sistema de FP
   const {
@@ -1605,6 +1605,14 @@ export default function PainelVivoPage() {
 
     // Chamar IA para analisar e potencialmente responder
     try {
+      // Notificar que usuário enviou mensagem (para tracking de respostas às perguntas da IA)
+      notificarRespostaUsuario(
+        user.id,
+        slug,
+        message,
+        tempId
+      ).catch(console.error); // Fire and forget, não bloqueia UI
+
       // Converter mensagens para formato da IA
       const mensagensParaIA = [...mensagens, novaMensagem].slice(-10).map(m => ({
         id: m.id,
@@ -1615,11 +1623,14 @@ export default function PainelVivoPage() {
         timestamp: new Date().toISOString(),
       }));
 
-      const respostaIA = await analisarConversa(
+      const resultadoIA = await analisarConversa(
         mensagensParaIA,
         comunidade?.titulo || '',
-        slug
+        slug,
+        user.id
       );
+
+      const respostaIA = resultadoIA.resposta;
 
       // Se a IA decidiu responder
       if (respostaIA) {

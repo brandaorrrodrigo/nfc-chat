@@ -27,6 +27,17 @@ interface RespostaIA {
   tipo: 'facilitacao' | 'blog' | 'app' | 'correcao';
   temLink: boolean;
   linkTipo?: 'blog' | 'app';
+  followUpQuestion?: string;
+}
+
+interface AnalisarConversaResult {
+  resposta: RespostaIA | null;
+  interventionId?: string;
+  antiSpamStats?: {
+    adjustedProbability?: number;
+    canIntervene?: boolean;
+    reason?: string;
+  };
 }
 
 interface StatusIA {
@@ -42,15 +53,23 @@ interface UseIAFacilitadoraReturn {
   error: string | null;
   ultimaResposta: RespostaIA | null;
   statusIA: StatusIA | null;
+  ultimaInterventionId: string | null;
 
   // Acoes
   analisarConversa: (
     mensagens: Mensagem[],
     topicoTitulo: string,
-    comunidadeSlug: string
-  ) => Promise<RespostaIA | null>;
+    comunidadeSlug: string,
+    userId: string
+  ) => Promise<AnalisarConversaResult>;
   obterStatus: () => Promise<StatusIA | null>;
-  obterRespostaContextual: (categoria: string) => Promise<string | null>;
+  obterRespostaContextual: (categoria: string, userId: string) => Promise<string | null>;
+  notificarRespostaUsuario: (
+    userId: string,
+    comunidadeSlug: string,
+    mensagem: string,
+    messageId: string
+  ) => Promise<boolean>;
 
   // Controle
   limparResposta: () => void;
@@ -68,19 +87,22 @@ export function useIAFacilitadora(): UseIAFacilitadoraReturn {
   const [ultimaResposta, setUltimaResposta] = useState<RespostaIA | null>(null);
   const [statusIA, setStatusIA] = useState<StatusIA | null>(null);
   const [linksEnviadosHoje, setLinksEnviadosHoje] = useState(0);
+  const [ultimaInterventionId, setUltimaInterventionId] = useState<string | null>(null);
 
   // Ref para controlar ultima intervencao
   const ultimaIntervencaoRef = useRef<Date | null>(null);
 
   /**
    * Analisa conversa e obtem resposta da IA se necessario
+   * Agora com suporte a anti-spam e tracking de intervencoes
    */
   const analisarConversa = useCallback(
     async (
       mensagens: Mensagem[],
       topicoTitulo: string,
-      comunidadeSlug: string
-    ): Promise<RespostaIA | null> => {
+      comunidadeSlug: string,
+      userId: string
+    ): Promise<AnalisarConversaResult> => {
       setIsLoading(true);
       setError(null);
 
@@ -94,6 +116,7 @@ export function useIAFacilitadora(): UseIAFacilitadoraReturn {
             comunidadeSlug,
             ultimaIntervencaoIA: ultimaIntervencaoRef.current?.toISOString(),
             linksEnviadosHoje,
+            userId,
           }),
         });
 
@@ -107,19 +130,31 @@ export function useIAFacilitadora(): UseIAFacilitadoraReturn {
           setUltimaResposta(data.resposta);
           ultimaIntervencaoRef.current = new Date();
 
+          // Salvar ID da intervencao para tracking
+          if (data.interventionId) {
+            setUltimaInterventionId(data.interventionId);
+          }
+
           // Incrementar contador de links se resposta tem link
           if (data.resposta.temLink) {
             setLinksEnviadosHoje((prev) => prev + 1);
           }
 
-          return data.resposta;
+          return {
+            resposta: data.resposta,
+            interventionId: data.interventionId,
+            antiSpamStats: data.antiSpam,
+          };
         }
 
-        return null;
+        return {
+          resposta: null,
+          antiSpamStats: data.antiSpam,
+        };
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Erro ao analisar conversa';
         setError(message);
-        return null;
+        return { resposta: null };
       } finally {
         setIsLoading(false);
       }
@@ -151,7 +186,7 @@ export function useIAFacilitadora(): UseIAFacilitadoraReturn {
    * Obtem resposta contextual por categoria
    */
   const obterRespostaContextual = useCallback(
-    async (categoria: string): Promise<string | null> => {
+    async (categoria: string, userId: string): Promise<string | null> => {
       try {
         const response = await fetch('/api/comunidades/ia', {
           method: 'POST',
@@ -161,6 +196,7 @@ export function useIAFacilitadora(): UseIAFacilitadoraReturn {
             topicoTitulo: '',
             comunidadeSlug: '',
             categoria,
+            userId,
           }),
         });
 
@@ -174,6 +210,39 @@ export function useIAFacilitadora(): UseIAFacilitadoraReturn {
       } catch (err) {
         console.error('[useIAFacilitadora] Erro ao obter resposta contextual:', err);
         return null;
+      }
+    },
+    []
+  );
+
+  /**
+   * Notifica o sistema quando o usuario responde a uma intervencao da IA
+   * Usado para marcar perguntas como respondidas e atualizar probabilidades
+   */
+  const notificarRespostaUsuario = useCallback(
+    async (
+      userId: string,
+      comunidadeSlug: string,
+      mensagem: string,
+      messageId: string
+    ): Promise<boolean> => {
+      try {
+        const response = await fetch('/api/comunidades/ia/resposta', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId,
+            comunidadeSlug,
+            mensagem,
+            messageId,
+          }),
+        });
+
+        const data = await response.json();
+        return data.success && data.wasResponse;
+      } catch (err) {
+        console.error('[useIAFacilitadora] Erro ao notificar resposta:', err);
+        return false;
       }
     },
     []
@@ -200,11 +269,13 @@ export function useIAFacilitadora(): UseIAFacilitadoraReturn {
     error,
     ultimaResposta,
     statusIA,
+    ultimaInterventionId,
 
     // Acoes
     analisarConversa,
     obterStatus,
     obterRespostaContextual,
+    notificarRespostaUsuario,
 
     // Controle
     limparResposta,

@@ -12,6 +12,12 @@
  * - Misturar blog e app na mesma resposta
  * - Usar linguagem de marketing
  * - Interromper conversas desnecessariamente
+ *
+ * ANTI-SPAM (v2):
+ * - 8+ mensagens humanas antes de intervir
+ * - Cooldown de 10 minutos
+ * - Maximo 2 intervencoes/dia/usuario
+ * - Probabilidade ajustavel por comportamento
  */
 
 import {
@@ -22,6 +28,30 @@ import {
   CONFIG_INTERVENCAO,
   ArtigoBlog,
 } from '@/app/comunidades/config/ia-facilitadora';
+
+import {
+  checkAntiSpam,
+  ANTI_SPAM_CONFIG,
+  type AntiSpamResult,
+  type MensagemRecente,
+} from './anti-spam';
+
+import {
+  gerarFollowUpQuestion,
+  formatarRespostaComFollowUp,
+  detectarTopico,
+  gerarFollowUpMito,
+  gerarFollowUpBlog,
+  gerarFollowUpApp,
+  type FollowUpContext,
+} from './follow-up-generator';
+
+import {
+  saveIntervention,
+  detectResponseToIntervention,
+  checkIgnoredQuestions,
+  type InterventionRecord,
+} from './intervention-tracker';
 
 // ========================================
 // TIPOS
@@ -367,3 +397,207 @@ export function getRespostaContextual(categoria: string): string | null {
   const indice = Math.floor(Math.random() * respostas.length);
   return respostas[indice];
 }
+
+// ========================================
+// NOVA FUNCAO: decidirEResponder (v2)
+// Integra Anti-Spam + Follow-Up
+// ========================================
+
+export interface DecisaoCompleta {
+  deveResponder: boolean;
+  resposta?: string;
+  followUpQuestion?: string;
+  interventionId?: string;
+  tipo?: TipoResposta;
+  antiSpamResult: AntiSpamResult | null;
+  motivo: string;
+}
+
+export interface ContextoCompletoConversa extends ContextoConversa {
+  userId: string;
+  supabaseUrl?: string;
+  supabaseKey?: string;
+}
+
+/**
+ * Funcao principal que integra anti-spam, decisao e geracao de resposta com follow-up
+ * Retorna resposta ja formatada com pergunta de follow-up obrigatoria
+ */
+export async function decidirEResponder(
+  contexto: ContextoCompletoConversa
+): Promise<DecisaoCompleta> {
+  const {
+    mensagens,
+    topicoTitulo,
+    comunidadeSlug,
+    ultimaIntervencaoIA,
+    linksEnviadosHoje,
+    userId,
+    supabaseUrl,
+    supabaseKey,
+  } = contexto;
+
+  // Sem mensagens = nada a fazer
+  if (mensagens.length === 0) {
+    return {
+      deveResponder: false,
+      antiSpamResult: null,
+      motivo: 'Sem mensagens para analisar',
+    };
+  }
+
+  // Ultima mensagem
+  const ultimaMensagem = mensagens[mensagens.length - 1];
+
+  // Nao responder a si mesma
+  if (ultimaMensagem.isIA) {
+    return {
+      deveResponder: false,
+      antiSpamResult: null,
+      motivo: 'Ultima mensagem e da propria IA',
+    };
+  }
+
+  // Converter mensagens para formato anti-spam
+  const mensagensRecentes: MensagemRecente[] = mensagens.map((m) => ({
+    id: m.id,
+    autorId: m.autorId,
+    isIA: m.isIA,
+    timestamp: m.timestamp,
+  }));
+
+  // PASSO 1: Verificar anti-spam
+  const antiSpamResult = await checkAntiSpam(
+    userId,
+    comunidadeSlug,
+    mensagensRecentes,
+    supabaseUrl,
+    supabaseKey
+  );
+
+  if (!antiSpamResult.canIntervene) {
+    return {
+      deveResponder: false,
+      antiSpamResult,
+      motivo: antiSpamResult.reason || 'Bloqueado pelo anti-spam',
+    };
+  }
+
+  // PASSO 2: Verificar se usuario esta respondendo a uma pergunta pendente
+  if (supabaseUrl && supabaseKey) {
+    const isResponse = await detectResponseToIntervention(
+      userId,
+      comunidadeSlug,
+      ultimaMensagem.texto,
+      ultimaMensagem.id,
+      supabaseUrl,
+      supabaseKey
+    );
+
+    if (isResponse) {
+      // Usuario respondeu a uma pergunta pendente - registrar mas nao intervir novamente
+      console.log('[IA] Usuario respondeu a pergunta pendente');
+    }
+
+    // Verificar perguntas ignoradas em background
+    checkIgnoredQuestions(
+      comunidadeSlug,
+      mensagens.map((m) => ({
+        id: m.id,
+        texto: m.texto,
+        autorId: m.autorId,
+        timestamp: m.timestamp,
+      })),
+      supabaseUrl,
+      supabaseKey
+    ).catch(console.error);
+  }
+
+  // PASSO 3: Decidir se deve intervir (logica existente)
+  const decisao = decidirIntervencao({
+    mensagens,
+    topicoTitulo,
+    comunidadeSlug,
+    ultimaIntervencaoIA,
+    linksEnviadosHoje,
+  });
+
+  if (!decisao.deveIntervir) {
+    return {
+      deveResponder: false,
+      antiSpamResult,
+      motivo: decisao.motivo,
+    };
+  }
+
+  // PASSO 4: Gerar resposta base
+  const respostaBase = gerarResposta(decisao, ultimaMensagem.texto);
+
+  if (!respostaBase) {
+    return {
+      deveResponder: false,
+      antiSpamResult,
+      motivo: 'Nao foi possivel gerar resposta adequada',
+    };
+  }
+
+  // PASSO 5: Gerar follow-up question baseado no tipo de intervencao
+  let followUpQuestion: string;
+  const topico = detectarTopico(ultimaMensagem.texto);
+
+  switch (decisao.tipo) {
+    case 'correcao':
+      followUpQuestion = gerarFollowUpMito();
+      break;
+    case 'blog':
+      followUpQuestion = gerarFollowUpBlog();
+      break;
+    case 'app':
+      followUpQuestion = gerarFollowUpApp();
+      break;
+    default:
+      followUpQuestion = gerarFollowUpQuestion({
+        topico,
+        ultimaMensagem: ultimaMensagem.texto,
+        autorNome: ultimaMensagem.autorNome,
+      });
+  }
+
+  // PASSO 6: Formatar resposta final com follow-up
+  const respostaFinal = formatarRespostaComFollowUp(
+    respostaBase.texto,
+    followUpQuestion
+  );
+
+  // PASSO 7: Salvar intervencao no banco (se configurado)
+  let interventionId: string | undefined;
+  if (supabaseUrl && supabaseKey) {
+    const record: InterventionRecord = {
+      comunidadeSlug,
+      userId,
+      triggerMessageId: ultimaMensagem.id,
+      interventionType: decisao.tipo,
+      interventionText: respostaBase.texto,
+      followUpQuestion,
+    };
+
+    const savedId = await saveIntervention(record, supabaseUrl, supabaseKey);
+    if (savedId) {
+      interventionId = savedId;
+    }
+  }
+
+  return {
+    deveResponder: true,
+    resposta: respostaFinal,
+    followUpQuestion,
+    interventionId,
+    tipo: respostaBase.tipo,
+    antiSpamResult,
+    motivo: decisao.motivo,
+  };
+}
+
+// Re-export tipos para uso externo
+export type { AntiSpamResult, MensagemRecente } from './anti-spam';
+export { ANTI_SPAM_CONFIG } from './anti-spam';

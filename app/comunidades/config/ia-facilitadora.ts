@@ -305,18 +305,27 @@ Para transformar essa teoria em um plano executável com cálculos precisos, an�
 // ========================================
 
 export const CONFIG_INTERVENCAO = {
-  // Minimo de mensagens antes da IA intervir
-  MIN_MENSAGENS_ANTES_INTERVENCAO: 3,
+  // Minimo de mensagens humanas antes da IA intervir novamente
+  MIN_MENSAGENS_ANTES_INTERVENCAO: 8,
 
-  // Probabilidade de intervencao espontanea (0-1)
-  PROBABILIDADE_INTERVENCAO: 0.15,
+  // Probabilidade de intervencao (0-1) - base 40%
+  PROBABILIDADE_INTERVENCAO: 0.4,
 
-  // Tempo minimo entre intervencoes (ms)
-  INTERVALO_MINIMO_MS: 5 * 60 * 1000, // 5 minutos
+  // Tempo minimo entre intervencoes (ms) - 10 minutos
+  INTERVALO_MINIMO_MS: 10 * 60 * 1000,
+
+  // Maximo de intervencoes por dia por usuario
+  MAX_INTERVENCOES_DIA_USUARIO: 2,
 
   // Horarios de pico (maior atividade da IA)
   HORARIOS_PICO: [7, 8, 12, 13, 18, 19, 20, 21],
 
   // Limite de links por dia por usuario
   MAX_LINKS_DIA_USUARIO: 2,
+
+  // Penalidade quando usuario ignora pergunta (reduz 50%)
+  IGNORE_PENALTY: 0.5,
+
+  // Probabilidade minima apos penalidades
+  MIN_PROBABILITY: 0.1,
 };

@@ -94,3 +94,51 @@ export type {
   MensagemConversa,
   RespostaIA,
 } from './decision-engine';
+
+// ========================================
+// NOVO SISTEMA v2 - Anti-Spam + Follow-Up
+// ========================================
+
+export {
+  decidirEResponder,
+  ANTI_SPAM_CONFIG,
+} from './decision-engine';
+
+export type {
+  DecisaoCompleta,
+  ContextoCompletoConversa,
+  AntiSpamResult,
+  MensagemRecente,
+} from './decision-engine';
+
+// Anti-Spam
+export {
+  checkAntiSpam,
+  updateUserProbability,
+} from './anti-spam';
+
+// Follow-Up Generator
+export {
+  gerarFollowUpQuestion,
+  formatarRespostaComFollowUp,
+  detectarTopico,
+  FOLLOW_UP_TEMPLATES,
+} from './follow-up-generator';
+
+export type {
+  FollowUpContext,
+} from './follow-up-generator';
+
+// Intervention Tracker
+export {
+  saveIntervention,
+  markInterventionAnswered,
+  getLastUnansweredIntervention,
+  checkIgnoredQuestions,
+  detectResponseToIntervention,
+} from './intervention-tracker';
+
+export type {
+  InterventionRecord,
+  SavedIntervention,
+} from './intervention-tracker';
