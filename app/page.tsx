@@ -477,83 +477,79 @@ export default function ComunidadesPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Destaque 1: Lipedema */}
-              <div className="card-premium p-6 rounded-2xl group hover:border-cyan-500/50">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600">
-                    <Activity className="w-5 h-5 text-white" />
+              <Link
+                href="/comunidades/lipedema"
+                className="card-premium p-6 rounded-2xl group hover:border-cyan-500/50 block cursor-pointer"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600">
+                      <Activity className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-xs font-mono text-cyan-400 uppercase tracking-wider">Lipedema</span>
                   </div>
-                  <span className="text-xs font-mono text-cyan-400 uppercase tracking-wider">Lipedema</span>
+                  <span className="text-[10px] font-bold text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full border border-emerald-400/30">GRÁTIS</span>
                 </div>
                 <h3 className="text-lg font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors">
-                  Lipedema e o Paradoxo do Cardio
+                  Protocolo Lipedema
                 </h3>
                 <p className="text-sm text-gray-400 leading-relaxed mb-4">
-                  Macrófagos M1, HIF-1α e por que o HIIT inflama o tecido doente. A ciência por trás do AEJ + Compressão como protocolo anti-inflamatório.
+                  Espaço para mulheres que convivem com lipedema compartilharem sintomas, estratégias, frustrações e avanços reais no dia a dia.
                 </p>
-                <Link
-                  href="/comunidades/lipedema"
-                  className="inline-flex items-center gap-1 text-sm font-semibold text-cyan-400 hover:text-cyan-300 transition-colors"
-                >
-                  Ver discussão <ChevronRight className="w-4 h-4" />
-                </Link>
-              </div>
+                <div className="inline-flex items-center gap-1 text-sm font-semibold text-cyan-400 group-hover:text-cyan-300 transition-colors">
+                  Entrar na discussão <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </Link>
 
-              {/* Destaque 2: Trembolona */}
-              <div className="card-premium p-6 rounded-2xl group hover:border-pink-500/50">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600">
-                    <Sparkles className="w-5 h-5 text-white" />
+              {/* Destaque 2: Treino de Glúteo */}
+              <Link
+                href="/comunidades/treino-gluteo"
+                className="card-premium p-6 rounded-2xl group hover:border-pink-500/50 block cursor-pointer"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600">
+                      <Dumbbell className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-xs font-mono text-pink-400 uppercase tracking-wider">Treino</span>
                   </div>
-                  <span className="text-xs font-mono text-pink-400 uppercase tracking-wider">Performance</span>
+                  <span className="text-[10px] font-bold text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full border border-emerald-400/30">GRÁTIS</span>
                 </div>
                 <h3 className="text-lg font-bold text-white mb-3 group-hover:text-pink-400 transition-colors">
-                  Trembolona e a Verdade sobre o Reparticionamento
+                  Treino de Glúteo Feminino
                 </h3>
                 <p className="text-sm text-gray-400 leading-relaxed mb-4">
-                  Antagonismo do Receptor de Glicocorticoide e inibição da lipogênese via IGF-1 local. Como queimar gordura em superávit calórico.
+                  Treino de glúteo com olhar feminino: genética, dor, carga, repetição, constância e resultado real.
                 </p>
-                <Link
-                  href="/comunidades/treino-gluteo"
-                  className="inline-flex items-center gap-1 text-sm font-semibold text-pink-400 hover:text-pink-300 transition-colors"
-                >
-                  Ver discussão <ChevronRight className="w-4 h-4" />
-                </Link>
-              </div>
-
-              {/* Destaque 3: Peptídeos */}
-              <div className="card-premium p-6 rounded-2xl group hover:border-purple-500/50">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-gradient-to-br from-purple-500 to-violet-600">
-                    <Syringe className="w-5 h-5 text-white" />
-                  </div>
-                  <span className="text-xs font-mono text-purple-400 uppercase tracking-wider">Biohacking</span>
+                <div className="inline-flex items-center gap-1 text-sm font-semibold text-pink-400 group-hover:text-pink-300 transition-colors">
+                  Entrar na discussão <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-3 group-hover:text-purple-400 transition-colors">
-                  Fragment 176-191 + AEJ: O Erro do Jejum
+              </Link>
+
+              {/* Destaque 3: Canetas */}
+              <Link
+                href="/comunidades/canetas"
+                className="card-premium p-6 rounded-2xl group hover:border-emerald-500/50 block cursor-pointer"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600">
+                      <Syringe className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-xs font-mono text-emerald-400 uppercase tracking-wider">Canetas</span>
+                  </div>
+                  <span className="text-[10px] font-bold text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full border border-emerald-400/30">GRÁTIS</span>
+                </div>
+                <h3 className="text-lg font-bold text-white mb-3 group-hover:text-emerald-400 transition-colors">
+                  Canetas Emagrecedoras
                 </h3>
                 <p className="text-sm text-gray-400 leading-relaxed mb-4">
-                  O Fragment apenas mobiliza AGLs, mas a oxidação depende do cardio em jejum. Entenda por que usar fora do protocolo é jogar dinheiro fora.
+                  Relatos reais sobre uso de Ozempic, Wegovy, Mounjaro: efeitos colaterais, expectativas e adaptações no estilo de vida.
                 </p>
-                <Link
-                  href="/comunidades/canetas"
-                  className="inline-flex items-center gap-1 text-sm font-semibold text-purple-400 hover:text-purple-300 transition-colors"
-                >
-                  Ver discussão <ChevronRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </div>
-
-            {/* CTA para PRO */}
-            <div className="mt-8 text-center">
-              <a
-                href="https://app.nutrifitcoach.com.br/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-xl shadow-lg hover:shadow-purple-500/25 transition-all"
-              >
-                <Crown className="w-5 h-5" />
-                Acessar Módulo PRO
-              </a>
+                <div className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-400 group-hover:text-emerald-300 transition-colors">
+                  Entrar na discussão <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </Link>
             </div>
           </section>
 
