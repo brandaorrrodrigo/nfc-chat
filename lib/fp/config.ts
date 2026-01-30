@@ -1,22 +1,42 @@
 /**
  * Configuração do Sistema de FP
- * FP = moeda de engajamento do NutriFitCoach
+ *
+ * FP = sistema de INCENTIVO DE PARTICIPAÇÃO REAL NO CHAT
+ *
+ * PRINCÍPIOS:
+ * - FP NÃO é recompensa por passividade
+ * - FP NÃO deve ser fácil de farmar
+ * - FP exige ação social, cognitiva e participativa
+ * - FP gera DESCONTO no APP, logo precisa ser escasso e meritocrático
+ *
+ * LOOP: Chat → Conhecimento → App → Resultados → Chat → Desconto → App
  */
 
 export const FP_CONFIG = {
   // ==========================================
-  // CHAT - Valores baixos (engajamento)
+  // AÇÕES BÁSICAS (Chat)
   // ==========================================
-  CHAT_MESSAGE: 2,              // Mensagem enviada
-  CHAT_MESSAGE_LONG: 5,         // Mensagem >100 chars
-  CHAT_QUESTION_TECH: 8,        // Pergunta técnica detectada
-  DAILY_ACCESS: 10,             // Primeiro acesso do dia
-  STREAK_DAILY_BONUS: 5,        // Bônus por dia de streak
-  STREAK_MILESTONE_7: 20,       // Bônus ao completar 7 dias
-  STREAK_MILESTONE_30: 100,     // Bônus ao completar 30 dias
+  DAILY_ACCESS: 1,              // Abrir o chat no dia (1x/dia, presença mínima)
+  CHAT_MESSAGE: 2,              // Enviar mensagem comum
+  CHAT_QUESTION: 5,             // Fazer PERGUNTA (termina com "?") - estimula curiosidade
+  CHAT_MESSAGE_LONG_BONUS: 3,   // Bônus adicional para mensagem 100+ chars
 
   // ==========================================
-  // APP - Valores altos (resultados)
+  // AÇÕES DE ALTO VALOR
+  // ==========================================
+  CREATE_ARENA: 20,             // Criar NOVA ARENA (ação rara, exige iniciativa)
+
+  // ==========================================
+  // STREAK / CONSTÂNCIA
+  // ==========================================
+  // NÃO existe bônus diário de streak
+  // NÃO existe FP por "ficar logado parado"
+  // Dia ativo = ao menos 1 interação válida
+  STREAK_30_DAYS_BONUS: 30,     // Bônus ÚNICO ao completar 30 dias consecutivos
+  // ❗ NÃO é recorrente - se quebrar, recomeça do zero
+
+  // ==========================================
+  // APP - Resultados (valores altos)
   // ==========================================
   APP_WEEK_COMPLETE: 50,        // Completar semana de treino
   APP_MONTH_COMPLETE: 150,      // Completar ciclo mensal
@@ -25,16 +45,19 @@ export const FP_CONFIG = {
   APP_REFERRAL: 200,            // Indicar amigo que assina
 
   // ==========================================
-  // CONVERSÃO - Desconto
+  // CONVERSÃO - Desconto no APP
   // ==========================================
+  // FP é CONSUMIDO ao gerar desconto
+  // Desconto aplicado no checkout do APP
   FP_PER_PERCENT: 20,           // 20 FP = 1% de desconto
   MAX_DISCOUNT_PERCENT: 30,     // Máximo 30% de desconto
   MIN_FP_TO_REDEEM: 100,        // Mínimo para resgatar (5%)
+  // Exemplo: 100 FP → 5%, 200 FP → 10%, 300 FP → 15%
 
   // ==========================================
   // LIMITES - Anti-exploit
   // ==========================================
-  MAX_FP_PER_DAY_CHAT: 50,      // Máximo de FP por dia no chat
+  MAX_FP_PER_DAY_CHAT: 30,      // Máximo de FP por dia no chat (reduzido)
   MESSAGE_COOLDOWN_MS: 60000,   // 1 min entre mensagens que dão FP
   MIN_MESSAGE_LENGTH: 5,        // Mínimo de chars para ganhar FP
   INACTIVITY_DAYS: 90,          // Dias sem atividade para zerar FP
@@ -43,13 +66,17 @@ export const FP_CONFIG = {
   // AÇÕES - Tipos
   // ==========================================
   ACTIONS: {
-    // Chat
-    MESSAGE: 'message',
-    MESSAGE_LONG: 'message_long',
-    QUESTION_TECH: 'question_tech',
-    DAILY_ACCESS: 'daily_access',
-    STREAK_BONUS: 'streak_bonus',
-    STREAK_MILESTONE: 'streak_milestone',
+    // Chat - Básicas
+    DAILY_ACCESS: 'daily_access',       // Abrir chat (+1)
+    MESSAGE: 'message',                 // Mensagem comum (+2)
+    QUESTION: 'question',               // Pergunta com "?" (+5)
+    MESSAGE_LONG: 'message_long',       // Mensagem longa (+3 adicional)
+
+    // Chat - Alto valor
+    CREATE_ARENA: 'create_arena',       // Criar nova arena (+20)
+
+    // Streak
+    STREAK_30_BONUS: 'streak_30_bonus', // 30 dias consecutivos (+30, único)
 
     // App
     WEEK_COMPLETE: 'week_complete',
@@ -86,6 +113,7 @@ export interface UserFP {
   total_spent: number;
   streak_current: number;
   streak_best: number;
+  streak_30_claimed: boolean;         // Bônus de 30 dias já foi dado? (único, não recorrente)
   last_activity_at: Date | null;
   last_daily_bonus_at: string | null; // DATE format YYYY-MM-DD
   fp_earned_today: number;

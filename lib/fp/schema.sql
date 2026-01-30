@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS nfc_chat_user_fp (
   total_spent INT DEFAULT 0 CHECK (total_spent >= 0),
   streak_current INT DEFAULT 0 CHECK (streak_current >= 0),
   streak_best INT DEFAULT 0 CHECK (streak_best >= 0),
+  streak_30_claimed BOOLEAN DEFAULT false,  -- Bônus de 30 dias já foi dado? (único)
   last_activity_at TIMESTAMPTZ,
   last_daily_bonus_at DATE,
   fp_earned_today INT DEFAULT 0 CHECK (fp_earned_today >= 0),
@@ -21,6 +22,10 @@ CREATE TABLE IF NOT EXISTS nfc_chat_user_fp (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- MIGRAÇÃO: Adicionar coluna streak_30_claimed se tabela já existe
+-- Execute isso separadamente se a tabela já foi criada:
+-- ALTER TABLE nfc_chat_user_fp ADD COLUMN IF NOT EXISTS streak_30_claimed BOOLEAN DEFAULT false;
 
 -- Tabela de histórico de transações (auditoria)
 CREATE TABLE IF NOT EXISTS nfc_chat_fp_transactions (

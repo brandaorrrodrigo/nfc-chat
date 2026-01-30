@@ -1459,8 +1459,10 @@ export default function PainelVivoPage() {
     if (!user) return;
 
     // Ganhar FP por mensagem (background, não bloqueia UI)
+    // API detecta automaticamente: pergunta (+5) ou mensagem (+2) + bônus longa (+3)
     earnFP(FP_CONFIG.ACTIONS.MESSAGE, {
       messageLength: message.length,
+      messageContent: message,  // Para detectar perguntas (termina com "?")
       roomId: slug,
     }).catch(console.error);
 

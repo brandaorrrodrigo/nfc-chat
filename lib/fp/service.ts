@@ -1,23 +1,31 @@
 /**
  * Serviço de FP - Operações principais
+ *
+ * PRINCÍPIOS:
+ * - FP NÃO é recompensa por passividade
+ * - FP exige ação social, cognitiva e participativa
+ * - Quem só entra e sai → quase não ganha FP
+ * - Quem pergunta, conversa e cria → evolui rápido
  */
 
 import { db } from '../db';
 import { FP_CONFIG, FPAction, UserFP, FPStats, FPTransaction } from './config';
 
 // ==========================================
-// INICIALIZAÇÃO
+// TABELAS (prefixo nfc_chat_ para não conflitar com APP)
 // ==========================================
 
-// Nome das tabelas com prefixo (evita conflito com APP)
 const TABLE_USER_FP = 'nfc_chat_user_fp';
 const TABLE_FP_TRANSACTIONS = 'nfc_chat_fp_transactions';
+
+// ==========================================
+// INICIALIZAÇÃO
+// ==========================================
 
 /**
  * Garante que o usuário tem registro na tabela nfc_chat_user_fp
  */
 export async function ensureUserFP(userId: string): Promise<UserFP> {
-  // Tenta buscar existente
   const existing = await db.query<UserFP>(
     `SELECT * FROM ${TABLE_USER_FP} WHERE user_id = $1`,
     [userId]
@@ -27,10 +35,10 @@ export async function ensureUserFP(userId: string): Promise<UserFP> {
     return existing.rows[0];
   }
 
-  // Cria novo registro
+  // Cria novo registro (streak_30_claimed = false por padrão)
   const result = await db.query<UserFP>(
-    `INSERT INTO ${TABLE_USER_FP} (user_id, balance, total_earned, total_spent, streak_current, streak_best, fp_earned_today)
-     VALUES ($1, 0, 0, 0, 0, 0, 0)
+    `INSERT INTO ${TABLE_USER_FP} (user_id, balance, total_earned, total_spent, streak_current, streak_best, streak_30_claimed, fp_earned_today)
+     VALUES ($1, 0, 0, 0, 0, 0, false, 0)
      ON CONFLICT (user_id) DO NOTHING
      RETURNING *`,
     [userId]
@@ -104,6 +112,14 @@ interface AwardResult {
 
 /**
  * Credita FP para o usuário
+ *
+ * Regras:
+ * - Abrir chat: +1 FP (1x/dia)
+ * - Mensagem comum: +2 FP
+ * - Pergunta (?): +5 FP
+ * - Mensagem longa (100+): +3 FP adicional
+ * - Criar arena: +20 FP
+ * - 30 dias consecutivos: +30 FP (único, não recorrente)
  */
 export async function awardFP(
   userId: string,
@@ -142,8 +158,8 @@ export async function awardFP(
     }
   }
 
-  // 2. Verifica cooldown de mensagem
-  if (action === FP_CONFIG.ACTIONS.MESSAGE || action === FP_CONFIG.ACTIONS.MESSAGE_LONG) {
+  // 2. Verifica cooldown de mensagem (exceto para daily_access)
+  if (action === FP_CONFIG.ACTIONS.MESSAGE || action === FP_CONFIG.ACTIONS.QUESTION || action === FP_CONFIG.ACTIONS.MESSAGE_LONG) {
     if (userFP.last_message_fp_at) {
       const timeSinceLastMessage = now.getTime() - new Date(userFP.last_message_fp_at).getTime();
       if (timeSinceLastMessage < FP_CONFIG.MESSAGE_COOLDOWN_MS) {
@@ -158,7 +174,7 @@ export async function awardFP(
     }
   }
 
-  // 3. Verifica bônus diário único
+  // 3. Verifica acesso diário único
   if (action === FP_CONFIG.ACTIONS.DAILY_ACCESS) {
     if (userFP.last_daily_bonus_at === today) {
       return {
@@ -166,17 +182,20 @@ export async function awardFP(
         fpEarned: 0,
         newBalance: userFP.balance,
         streak: userFP.streak_current,
-        reason: 'daily_bonus_already_claimed'
+        reason: 'daily_access_already_claimed'
       };
     }
   }
 
   // ==========================================
-  // ATUALIZA STREAK
+  // ATUALIZA STREAK (nova lógica)
   // ==========================================
+  // - NÃO existe bônus diário de streak
+  // - Apenas bônus ÚNICO ao completar 30 dias
 
   let newStreak = userFP.streak_current;
-  let streakBonus = 0;
+  let streak30Bonus = 0;
+  let shouldClaimStreak30 = false;
 
   if (action === FP_CONFIG.ACTIONS.DAILY_ACCESS) {
     const yesterday = new Date(now);
@@ -186,21 +205,19 @@ export async function awardFP(
     if (userFP.last_daily_bonus_at === yesterdayStr) {
       // Continuando streak
       newStreak = userFP.streak_current + 1;
-      streakBonus = FP_CONFIG.STREAK_DAILY_BONUS;
 
-      // Milestones
-      if (newStreak === 7) {
-        streakBonus += FP_CONFIG.STREAK_MILESTONE_7;
-      } else if (newStreak === 30) {
-        streakBonus += FP_CONFIG.STREAK_MILESTONE_30;
+      // Bônus de 30 dias (ÚNICO - só se nunca foi dado)
+      if (newStreak === 30 && !userFP.streak_30_claimed) {
+        streak30Bonus = FP_CONFIG.STREAK_30_DAYS_BONUS;
+        shouldClaimStreak30 = true;
       }
     } else if (userFP.last_daily_bonus_at !== today) {
-      // Reinicia streak
+      // Reinicia streak (quebrou sequência)
       newStreak = 1;
     }
   }
 
-  const totalAmount = amount + streakBonus;
+  const totalAmount = amount + streak30Bonus;
   const newBalance = userFP.balance + totalAmount;
   const newStreakBest = Math.max(userFP.streak_best, newStreak);
 
@@ -213,23 +230,28 @@ export async function awardFP(
   try {
     await client.query('BEGIN');
 
-    // Atualiza nfc_chat_user_fp
-    const updateQuery = action === FP_CONFIG.ACTIONS.DAILY_ACCESS
-      ? `UPDATE ${TABLE_USER_FP} SET
+    // Atualiza nfc_chat_user_fp baseado no tipo de ação
+    if (action === FP_CONFIG.ACTIONS.DAILY_ACCESS) {
+      await client.query(
+        `UPDATE ${TABLE_USER_FP} SET
            balance = $2,
            total_earned = total_earned + $3,
            streak_current = $4,
            streak_best = $5,
+           streak_30_claimed = CASE WHEN $6 THEN true ELSE streak_30_claimed END,
            last_activity_at = NOW(),
-           last_daily_bonus_at = $6,
+           last_daily_bonus_at = $7,
            fp_earned_today = CASE
              WHEN DATE(last_activity_at) = CURRENT_DATE THEN fp_earned_today + $3
              ELSE $3
            END,
            updated_at = NOW()
-         WHERE user_id = $1`
-      : action === FP_CONFIG.ACTIONS.MESSAGE || action === FP_CONFIG.ACTIONS.MESSAGE_LONG
-      ? `UPDATE ${TABLE_USER_FP} SET
+         WHERE user_id = $1`,
+        [userId, newBalance, totalAmount, newStreak, newStreakBest, shouldClaimStreak30, today]
+      );
+    } else if (action === FP_CONFIG.ACTIONS.MESSAGE || action === FP_CONFIG.ACTIONS.QUESTION || action === FP_CONFIG.ACTIONS.MESSAGE_LONG) {
+      await client.query(
+        `UPDATE ${TABLE_USER_FP} SET
            balance = $2,
            total_earned = total_earned + $3,
            last_activity_at = NOW(),
@@ -239,19 +261,20 @@ export async function awardFP(
              ELSE $3
            END,
            updated_at = NOW()
-         WHERE user_id = $1`
-      : `UPDATE ${TABLE_USER_FP} SET
+         WHERE user_id = $1`,
+        [userId, newBalance, totalAmount]
+      );
+    } else {
+      await client.query(
+        `UPDATE ${TABLE_USER_FP} SET
            balance = $2,
            total_earned = total_earned + $3,
            last_activity_at = NOW(),
            updated_at = NOW()
-         WHERE user_id = $1`;
-
-    const params = action === FP_CONFIG.ACTIONS.DAILY_ACCESS
-      ? [userId, newBalance, totalAmount, newStreak, newStreakBest, today]
-      : [userId, newBalance, totalAmount];
-
-    await client.query(updateQuery, params);
+         WHERE user_id = $1`,
+        [userId, newBalance, totalAmount]
+      );
+    }
 
     // Registra transação principal
     await client.query(
@@ -260,17 +283,17 @@ export async function awardFP(
       [userId, amount, action, description, JSON.stringify(metadata || {})]
     );
 
-    // Registra bônus de streak separadamente
-    if (streakBonus > 0) {
+    // Registra bônus de 30 dias separadamente (se aplicável)
+    if (streak30Bonus > 0) {
       await client.query(
         `INSERT INTO ${TABLE_FP_TRANSACTIONS} (user_id, amount, type, action, description, metadata)
          VALUES ($1, $2, 'earn', $3, $4, $5)`,
         [
           userId,
-          streakBonus,
-          FP_CONFIG.ACTIONS.STREAK_BONUS,
-          `Bônus de streak: ${newStreak} dias`,
-          JSON.stringify({ streak: newStreak })
+          streak30Bonus,
+          FP_CONFIG.ACTIONS.STREAK_30_BONUS,
+          '30 dias consecutivos (bônus único)',
+          JSON.stringify({ streak: newStreak, unique_bonus: true })
         ]
       );
     }
@@ -305,7 +328,8 @@ interface SpendResult {
 }
 
 /**
- * Gasta FP para obter desconto
+ * Gasta FP para obter desconto no APP
+ * FP é CONSUMIDO ao gerar desconto
  */
 export async function spendFP(
   userId: string,
@@ -360,7 +384,7 @@ export async function spendFP(
         userId,
         -amount,
         FP_CONFIG.ACTIONS.REDEEM,
-        `Resgate: ${discountPercent}% de desconto`,
+        `Desconto: ${discountPercent}% no APP`,
         JSON.stringify({ discount_percent: discountPercent, coupon_code: couponCode })
       ]
     );
@@ -388,6 +412,7 @@ export async function spendFP(
 
 /**
  * Calcula % de desconto baseado no FP
+ * 20 FP = 1%, máximo 30%
  */
 export function calculateDiscount(fpBalance: number): number {
   const rawPercent = Math.floor(fpBalance / FP_CONFIG.FP_PER_PERCENT);
@@ -409,20 +434,27 @@ export function generateCouponCode(userId: string, discountPercent: number): str
 
 function isChatAction(action: FPAction): boolean {
   const chatActions: string[] = [
-    FP_CONFIG.ACTIONS.MESSAGE,
-    FP_CONFIG.ACTIONS.MESSAGE_LONG,
-    FP_CONFIG.ACTIONS.QUESTION_TECH,
     FP_CONFIG.ACTIONS.DAILY_ACCESS,
+    FP_CONFIG.ACTIONS.MESSAGE,
+    FP_CONFIG.ACTIONS.QUESTION,
+    FP_CONFIG.ACTIONS.MESSAGE_LONG,
+    FP_CONFIG.ACTIONS.CREATE_ARENA,
   ];
   return chatActions.includes(action);
 }
 
 function getAmountForAction(action: FPAction): number {
   const amounts: Record<string, number> = {
-    [FP_CONFIG.ACTIONS.MESSAGE]: FP_CONFIG.CHAT_MESSAGE,
-    [FP_CONFIG.ACTIONS.MESSAGE_LONG]: FP_CONFIG.CHAT_MESSAGE_LONG,
-    [FP_CONFIG.ACTIONS.QUESTION_TECH]: FP_CONFIG.CHAT_QUESTION_TECH,
-    [FP_CONFIG.ACTIONS.DAILY_ACCESS]: FP_CONFIG.DAILY_ACCESS,
+    // Chat - Básicas
+    [FP_CONFIG.ACTIONS.DAILY_ACCESS]: FP_CONFIG.DAILY_ACCESS,           // +1
+    [FP_CONFIG.ACTIONS.MESSAGE]: FP_CONFIG.CHAT_MESSAGE,                // +2
+    [FP_CONFIG.ACTIONS.QUESTION]: FP_CONFIG.CHAT_QUESTION,              // +5
+    [FP_CONFIG.ACTIONS.MESSAGE_LONG]: FP_CONFIG.CHAT_MESSAGE_LONG_BONUS, // +3 (adicional)
+
+    // Chat - Alto valor
+    [FP_CONFIG.ACTIONS.CREATE_ARENA]: FP_CONFIG.CREATE_ARENA,           // +20
+
+    // App
     [FP_CONFIG.ACTIONS.WEEK_COMPLETE]: FP_CONFIG.APP_WEEK_COMPLETE,
     [FP_CONFIG.ACTIONS.MONTH_COMPLETE]: FP_CONFIG.APP_MONTH_COMPLETE,
     [FP_CONFIG.ACTIONS.RESULT_LOGGED]: FP_CONFIG.APP_RESULT_LOGGED,
@@ -434,18 +466,21 @@ function getAmountForAction(action: FPAction): number {
 
 function getDescriptionForAction(action: FPAction): string {
   const descriptions: Record<string, string> = {
-    [FP_CONFIG.ACTIONS.MESSAGE]: 'Mensagem enviada',
-    [FP_CONFIG.ACTIONS.MESSAGE_LONG]: 'Mensagem detalhada',
-    [FP_CONFIG.ACTIONS.QUESTION_TECH]: 'Pergunta técnica',
+    // Chat
     [FP_CONFIG.ACTIONS.DAILY_ACCESS]: 'Acesso diário',
-    [FP_CONFIG.ACTIONS.STREAK_BONUS]: 'Bônus de streak',
-    [FP_CONFIG.ACTIONS.STREAK_MILESTONE]: 'Marco de streak',
-    [FP_CONFIG.ACTIONS.WEEK_COMPLETE]: 'Semana completa no app',
+    [FP_CONFIG.ACTIONS.MESSAGE]: 'Mensagem enviada',
+    [FP_CONFIG.ACTIONS.QUESTION]: 'Pergunta feita',
+    [FP_CONFIG.ACTIONS.MESSAGE_LONG]: 'Mensagem detalhada',
+    [FP_CONFIG.ACTIONS.CREATE_ARENA]: 'Nova arena criada',
+    [FP_CONFIG.ACTIONS.STREAK_30_BONUS]: '30 dias consecutivos',
+
+    // App
+    [FP_CONFIG.ACTIONS.WEEK_COMPLETE]: 'Semana completa no APP',
     [FP_CONFIG.ACTIONS.MONTH_COMPLETE]: 'Ciclo mensal completo',
     [FP_CONFIG.ACTIONS.RESULT_LOGGED]: 'Resultado registrado',
     [FP_CONFIG.ACTIONS.ACHIEVEMENT]: 'Conquista desbloqueada',
     [FP_CONFIG.ACTIONS.REFERRAL]: 'Indicação convertida',
-    [FP_CONFIG.ACTIONS.REDEEM]: 'Resgate de desconto',
+    [FP_CONFIG.ACTIONS.REDEEM]: 'Desconto resgatado',
   };
   return descriptions[action] || action;
 }
