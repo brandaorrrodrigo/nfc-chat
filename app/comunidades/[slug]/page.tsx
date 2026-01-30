@@ -106,6 +106,7 @@ interface ComunidadeData {
 // DADOS MOCK - MENSAGENS DO FEED
 // ========================================
 
+// Arena original: Protocolo Lipedema (conversas gerais)
 const MENSAGENS_LIPEDEMA: Mensagem[] = [
   {
     id: '1',
@@ -157,6 +158,133 @@ const MENSAGENS_LIPEDEMA: Mensagem[] = [
     timestamp: '14:47',
     autor: { id: 'dr-carla', nome: 'Dra. Carla', is_founder: true },
     conteudo: 'Ótima discussão! A drenagem manual por profissional capacitado é diferente de aparelhos.',
+  },
+];
+
+// Arena de destaque: Lipedema - Paradoxo do Cardio (conversas técnicas)
+const MENSAGENS_LIPEDEMA_PARADOXO: Mensagem[] = [
+  {
+    id: '1',
+    tipo: 'ia',
+    timestamp: '14:00',
+    autor: { id: 'ia', nome: 'IA Facilitadora' },
+    conteudo: 'PROTOCOLO EM DESTAQUE: Lipedema e o Paradoxo do Cardio — Por que HIIT pode estar piorando sua condição.',
+    ia_tipo: 'destaque',
+  },
+  {
+    id: '2',
+    tipo: 'usuario',
+    timestamp: '14:10',
+    autor: { id: 'dr-carla', nome: 'Dra. Carla', is_founder: true },
+    conteudo: 'Pessoal, vamos falar sobre o PARADOXO DO CARDIO no Lipedema. Você faz HIIT achando que vai "derreter" a gordura das pernas? Senta que essa doeu: você está INFLAMANDO o tecido doente e acelerando a progressão da doença.',
+  },
+  {
+    id: '3',
+    tipo: 'usuario',
+    timestamp: '14:18',
+    autor: { id: 'maria-silva', nome: 'Maria Silva', is_premium: true },
+    conteudo: 'Dra. Carla, sério isso? Minha endócrino mandou eu fazer HIIT 3x por semana! Estou piorando então?',
+  },
+  {
+    id: '4',
+    tipo: 'usuario',
+    timestamp: '14:25',
+    autor: { id: 'dr-carla', nome: 'Dra. Carla', is_founder: true },
+    conteudo: 'Maria, deixa eu explicar a bioquímica. O tecido adiposo no Lipedema NÃO é gordura comum. É um tecido HIPÓXICO, FIBROSADO, com drenagem linfática comprometida e infiltrado de macrófagos pró-inflamatórios (M1).',
+  },
+  {
+    id: '5',
+    tipo: 'usuario',
+    timestamp: '14:32',
+    autor: { id: 'ana-costa', nome: 'Ana Costa' },
+    conteudo: 'E o que acontece quando fazemos cardio intenso nesse tecido?',
+  },
+  {
+    id: '6',
+    tipo: 'usuario',
+    timestamp: '14:40',
+    autor: { id: 'dr-carla', nome: 'Dra. Carla', is_founder: true },
+    conteudo: 'Ana, quando você faz cardio de alto impacto: 1) O estresse mecânico repetitivo causa MICROTRAUMA no tecido já fragilizado. 2) A hipóxia local dispara HIF-1α (fator induzido por hipóxia), que ativa cascatas inflamatórias via NF-κB. 3) O sistema linfático, que já opera com 30-50% MENOS eficiência, não consegue drenar o excesso de fluido e mediadores inflamatórios (IL-6, TNF-α).',
+  },
+  {
+    id: '7',
+    tipo: 'ia',
+    timestamp: '14:41',
+    autor: { id: 'ia', nome: 'IA Facilitadora' },
+    conteudo: 'INSIGHT: Discussão técnica sobre mecanismos inflamatórios no Lipedema. HIF-1α, NF-κB, macrófagos M1.',
+    ia_tipo: 'insight',
+  },
+  {
+    id: '8',
+    tipo: 'usuario',
+    timestamp: '14:48',
+    autor: { id: 'juliana-santos', nome: 'Juliana Santos' },
+    conteudo: 'Meu Deus, então o resultado do HIIT é MAIS edema, MAIS fibrose, MAIS dor? Estou correndo pra trás?',
+  },
+  {
+    id: '9',
+    tipo: 'usuario',
+    timestamp: '14:55',
+    autor: { id: 'dr-carla', nome: 'Dra. Carla', is_founder: true },
+    conteudo: 'Exatamente, Juliana. Mas calma, tem solução! A chave-mestra é: AEJ de BAIXÍSSIMA intensidade + compressão graduada.',
+  },
+  {
+    id: '10',
+    tipo: 'usuario',
+    timestamp: '15:02',
+    autor: { id: 'maria-silva', nome: 'Maria Silva', is_premium: true },
+    conteudo: 'Por que isso funciona e o HIIT não?',
+  },
+  {
+    id: '11',
+    tipo: 'usuario',
+    timestamp: '15:10',
+    autor: { id: 'dr-carla', nome: 'Dra. Carla', is_founder: true },
+    conteudo: 'Maria, por 3 razões: 1) A contração muscular RÍTMICA em baixa intensidade funciona como bomba linfática auxiliar, facilitando drenagem SEM gerar microtrauma. 2) A compressão externa (20-30mmHg) cria gradiente de pressão que potencializa o retorno linfático em até 40%. 3) Em jejum, você opera com insulina basal baixa, maximizando lipólise via HSL SEM depender de adrenalina alta, que piora a inflamação.',
+  },
+  {
+    id: '12',
+    tipo: 'ia',
+    timestamp: '15:11',
+    autor: { id: 'ia', nome: 'IA Facilitadora' },
+    conteudo: 'PROTOCOLO DESTAQUE: Caminhada 5-6 km/h + Meia de compressão 20-30mmHg + Jejum. 40-60 minutos. Simples. Eficaz. Anti-inflamatório.',
+    ia_tipo: 'destaque',
+  },
+  {
+    id: '13',
+    tipo: 'usuario',
+    timestamp: '15:18',
+    autor: { id: 'ana-costa', nome: 'Ana Costa' },
+    conteudo: 'Então o protocolo é: esteira a 5-6 km/h, com meia de compressão, em jejum, por 40-60 minutos?',
+  },
+  {
+    id: '14',
+    tipo: 'usuario',
+    timestamp: '15:22',
+    autor: { id: 'dr-carla', nome: 'Dra. Carla', is_founder: true },
+    conteudo: 'Isso, Ana! Simples assim. Nada de HIIT, nada de impacto alto. A ciência é clara: no Lipedema, menos é mais.',
+  },
+  {
+    id: '15',
+    tipo: 'usuario',
+    timestamp: '15:30',
+    autor: { id: 'juliana-santos', nome: 'Juliana Santos' },
+    conteudo: 'Vou começar amanhã! E a dieta anti-inflamatória ajuda também?',
+  },
+  {
+    id: '16',
+    tipo: 'usuario',
+    timestamp: '15:38',
+    autor: { id: 'dr-carla', nome: 'Dra. Carla', is_founder: true },
+    conteudo: 'Com certeza, Juliana! Eliminar processados, aumentar ômega-3 e vegetais crucíferos. A combinação AEJ + compressão + dieta anti-inflamatória é o tripé do protocolo Lipedema.',
+  },
+  {
+    id: '17',
+    tipo: 'ia',
+    timestamp: '15:39',
+    autor: { id: 'ia', nome: 'IA Facilitadora' },
+    conteudo: 'RESUMO: Protocolo Lipedema = AEJ baixa intensidade + Compressão 20-30mmHg + Dieta anti-inflamatória. HIIT = contraindicado (inflama tecido doente).',
+    ia_tipo: 'resumo',
   },
 ];
 
@@ -662,17 +790,13 @@ const MENSAGENS_DIETA_VIDA_REAL: Mensagem[] = [
 // MENSAGENS: PERFORMANCE & BIOHACKING
 // ========================================
 
-// ========================================
-// MENSAGENS: TREMBOLONA & REPARTICIONAMENTO
-// ========================================
-
-const MENSAGENS_TREMBOLONA: Mensagem[] = [
+const MENSAGENS_PERFORMANCE_BIOHACKING: Mensagem[] = [
   {
     id: '1',
     tipo: 'ia',
     timestamp: '09:00',
     autor: { id: 'ia', nome: 'IA Facilitadora' },
-    conteudo: 'BEM-VINDOS à Arena Trembolona & Reparticionamento. Aqui discutimos mecanismos de ação, monitoramento de colaterais e estratégias de redução de danos. Ciência aplicada sem filtro.',
+    conteudo: 'BEM-VINDOS à Arena Performance & Biohacking. Aqui discutimos protocolos de elite, farmacologia avançada e estratégias de redução de danos. Ciência aplicada sem filtro.',
     ia_tipo: 'destaque',
   },
   {
@@ -701,7 +825,7 @@ const MENSAGENS_TREMBOLONA: Mensagem[] = [
     tipo: 'ia',
     timestamp: '09:31',
     autor: { id: 'ia', nome: 'IA Facilitadora' },
-    conteudo: 'INSIGHT: Discussão técnica sobre mecanismos de reparticionamento. 21 membros online acompanhando.',
+    conteudo: 'INSIGHT: Discussão técnica sobre mecanismos de reparticionamento. 34 membros online acompanhando.',
     ia_tipo: 'insight',
   },
   {
@@ -722,159 +846,72 @@ const MENSAGENS_TREMBOLONA: Mensagem[] = [
     id: '8',
     tipo: 'usuario',
     timestamp: '10:00',
-    autor: { id: 'thiago-santos', nome: 'Thiago Santos', is_premium: true },
-    conteudo: 'Dr. Marcus, qual a diferença entre Trembolona Acetato e Enantato em termos de hepatotoxicidade? O Acetato é mais agressivo pro fígado?',
+    autor: { id: 'lucas-ferreira', nome: 'Lucas Ferreira', is_premium: true },
+    conteudo: 'Mudando de assunto: comprei Fragment 176-191 mas não vi resultado nenhum. Aplicava sempre de manhã depois do café. Onde errei?',
   },
   {
     id: '9',
     tipo: 'usuario',
     timestamp: '10:08',
     autor: { id: 'dr-marcus', nome: 'Dr. Marcus', is_founder: true },
-    conteudo: 'Thiago, a hepatotoxicidade da Trembolona é relativamente baixa comparada a orais 17-alfa-alquilados. A diferença entre Acetato e Enantato está na meia-vida, não na toxicidade. Acetato: meia-vida curta (~3 dias), ajustes mais rápidos. Enantato: meia-vida longa (~10 dias), níveis mais estáveis.',
+    conteudo: 'Lucas, aí está seu erro. Fragment é o segmento C-terminal do GH (aminoácidos 176-191). Ele apenas MOBILIZA gordura via ativação da HSL, mas NÃO OXIDA. Se aplicou pós-refeição com insulina alta, a insulina INIBIU a HSL via fosforilação inibitória. O Fragment nem conseguiu agir.',
   },
   {
     id: '10',
     tipo: 'usuario',
     timestamp: '10:15',
-    autor: { id: 'bruno-costa', nome: 'Bruno Costa' },
-    conteudo: 'E a famosa "tren cough"? Já tive episódios bem intensos. Isso é perigoso?',
+    autor: { id: 'lucas-ferreira', nome: 'Lucas Ferreira', is_premium: true },
+    conteudo: 'Então qual o protocolo correto?',
   },
   {
     id: '11',
     tipo: 'usuario',
     timestamp: '10:22',
     autor: { id: 'dr-marcus', nome: 'Dr. Marcus', is_founder: true },
-    conteudo: 'Bruno, a "tren cough" ocorre quando pequena quantidade do óleo atinge a circulação pulmonar. É uma irritação transitória, não é perigosa em si, mas assustadora. Técnica de injeção adequada e aspiração prévia minimizam a ocorrência.',
-  },
-  {
-    id: '12',
-    tipo: 'ia',
-    timestamp: '10:23',
-    autor: { id: 'ia', nome: 'IA Facilitadora' },
-    conteudo: 'RESUMO: Trembolona — meia-vida (Acetato vs Enantato), monitoramento de hematócrito/lipidograma, e manejo de efeitos colaterais como "tren cough".',
-    ia_tipo: 'resumo',
-  },
-];
-
-// ========================================
-// MENSAGENS: PEPTÍDEOS & GH
-// ========================================
-
-const MENSAGENS_PEPTIDEOS: Mensagem[] = [
-  {
-    id: '1',
-    tipo: 'ia',
-    timestamp: '08:00',
-    autor: { id: 'ia', nome: 'IA Facilitadora' },
-    conteudo: 'BEM-VINDOS à Arena Peptídeos & GH. Aqui discutimos Fragment 176-191, BPC-157, TB-500, Ipamorelin e outros peptídeos. Protocolos, timing, sinergias e ciência aplicada.',
-    ia_tipo: 'destaque',
-  },
-  {
-    id: '2',
-    tipo: 'usuario',
-    timestamp: '08:15',
-    autor: { id: 'lucas-ferreira', nome: 'Lucas Ferreira', is_premium: true },
-    conteudo: 'Pessoal, comprei Fragment 176-191 mas não vi resultado nenhum. Aplicava sempre de manhã depois do café. Onde errei?',
-  },
-  {
-    id: '3',
-    tipo: 'usuario',
-    timestamp: '08:22',
-    autor: { id: 'dra-julia', nome: 'Dra. Julia', is_founder: true },
-    conteudo: 'Lucas, aí está seu erro. Fragment é o segmento C-terminal do GH (aminoácidos 176-191). Ele apenas MOBILIZA gordura via ativação da HSL, mas NÃO OXIDA. Se aplicou pós-refeição com insulina alta, a insulina INIBIU a HSL via fosforilação inibitória. O Fragment nem conseguiu agir.',
-  },
-  {
-    id: '4',
-    tipo: 'usuario',
-    timestamp: '08:30',
-    autor: { id: 'lucas-ferreira', nome: 'Lucas Ferreira', is_premium: true },
-    conteudo: 'Então qual o protocolo correto?',
-  },
-  {
-    id: '5',
-    tipo: 'usuario',
-    timestamp: '08:38',
-    autor: { id: 'dra-julia', nome: 'Dra. Julia', is_founder: true },
     conteudo: 'Protocolo que funciona: 1) Aplicação subcutânea em jejum prolongado (8-12h sem comer). 2) Aguardar 15-20min para pico plasmático. 3) AEJ de baixa-média intensidade (60-70% FC máx) por 30-45min. 4) NÃO comer carboidrato imediatamente após.',
   },
   {
-    id: '6',
+    id: '12',
     tipo: 'usuario',
-    timestamp: '08:45',
+    timestamp: '10:30',
     autor: { id: 'lucas-ferreira', nome: 'Lucas Ferreira', is_premium: true },
     conteudo: 'Então sem o cardio em jejum, os ácidos graxos liberados simplesmente voltam pro adipócito?',
   },
   {
-    id: '7',
+    id: '13',
     tipo: 'usuario',
-    timestamp: '08:52',
-    autor: { id: 'dra-julia', nome: 'Dra. Julia', is_founder: true },
+    timestamp: '10:35',
+    autor: { id: 'dr-marcus', nome: 'Dr. Marcus', is_founder: true },
     conteudo: 'Exatamente. Re-esterificação. Ciclo inútil. Você pagou caro por uma injeção que não fez nada. O Fragment MOBILIZA, o cardio OXIDA. A sinergia é OBRIGATÓRIA. Sem cardio em jejum = dinheiro jogado fora.',
   },
   {
-    id: '8',
+    id: '14',
     tipo: 'ia',
-    timestamp: '08:53',
+    timestamp: '10:36',
     autor: { id: 'ia', nome: 'IA Facilitadora' },
     conteudo: 'RESUMO: Protocolo Fragment 176-191 = Jejum 8-12h + Aplicação + Espera 15min + AEJ 60-70% FC por 30-45min. Sem cardio = ciclo inútil de mobilização/re-esterificação.',
     ia_tipo: 'resumo',
   },
   {
-    id: '9',
-    tipo: 'usuario',
-    timestamp: '09:05',
-    autor: { id: 'amanda-costa', nome: 'Amanda Costa' },
-    conteudo: 'Dra. Julia, e sobre BPC-157 pra recuperação de lesão? Estou com tendinite crônica há 6 meses.',
-  },
-  {
-    id: '10',
-    tipo: 'usuario',
-    timestamp: '09:12',
-    autor: { id: 'dra-julia', nome: 'Dra. Julia', is_founder: true },
-    conteudo: 'Amanda, BPC-157 é um pentadecapeptídeo derivado de proteína gástrica. Promove angiogênese, aumenta expressão de GH receptors e acelera cicatrização de tendão/ligamento. Protocolo comum: 250-500mcg 2x/dia, subcutâneo próximo à lesão. Duração: 4-6 semanas. Combinação com TB-500 potencializa.',
-  },
-  {
-    id: '11',
-    tipo: 'usuario',
-    timestamp: '09:20',
-    autor: { id: 'pedro-costa', nome: 'Pedro Costa', is_premium: true },
-    conteudo: 'Alguém já combinou BPC-157 com TB-500? Qual a dosagem de cada?',
-  },
-  {
-    id: '12',
-    tipo: 'usuario',
-    timestamp: '09:28',
-    autor: { id: 'dra-julia', nome: 'Dra. Julia', is_founder: true },
-    conteudo: 'Pedro, protocolo comum: BPC-157 250mcg + TB-500 2mg, ambos 2x/semana. O BPC atua localmente no tecido lesionado, TB-500 tem ação sistêmica na regeneração celular. A combinação cobre tanto reparo local quanto modulação sistêmica.',
-  },
-  {
-    id: '13',
-    tipo: 'ia',
-    timestamp: '09:29',
-    autor: { id: 'ia', nome: 'IA Facilitadora' },
-    conteudo: 'INSIGHT: Discussão sobre stack BPC-157 + TB-500 para recuperação de lesões. 18 membros online acompanhando.',
-    ia_tipo: 'insight',
-  },
-  {
-    id: '14',
-    tipo: 'usuario',
-    timestamp: '09:40',
-    autor: { id: 'marina-silva', nome: 'Marina Silva', is_premium: true },
-    conteudo: 'E Ipamorelin? Ouvi falar que é um dos peptídeos mais seguros pra liberação de GH.',
-  },
-  {
     id: '15',
     tipo: 'usuario',
-    timestamp: '09:48',
-    autor: { id: 'dra-julia', nome: 'Dra. Julia', is_founder: true },
-    conteudo: 'Marina, Ipamorelin é um GHRP (GH releasing peptide) com perfil de segurança excelente. Não aumenta cortisol nem prolactina significativamente. Dosagem típica: 100-300mcg antes de dormir. Potencializa a liberação natural de GH durante o sono.',
+    timestamp: '10:45',
+    autor: { id: 'amanda-costa', nome: 'Amanda Costa' },
+    conteudo: 'Dr. Marcus, e sobre BPC-157 pra recuperação de lesão? Estou com tendinite crônica há 6 meses.',
   },
   {
     id: '16',
+    tipo: 'usuario',
+    timestamp: '10:52',
+    autor: { id: 'dr-marcus', nome: 'Dr. Marcus', is_founder: true },
+    conteudo: 'Amanda, BPC-157 é um pentadecapeptídeo derivado de proteína gástrica. Promove angiogênese, aumenta expressão de GH receptors e acelera cicatrização de tendão/ligamento. Protocolo comum: 250-500mcg 2x/dia, subcutâneo próximo à lesão. Duração: 4-6 semanas. Combinação com TB-500 potencializa.',
+  },
+  {
+    id: '17',
     tipo: 'ia',
-    timestamp: '09:49',
+    timestamp: '10:53',
     autor: { id: 'ia', nome: 'IA Facilitadora' },
-    conteudo: 'NOVO TÓPICO: Peptídeos liberadores de GH — Ipamorelin, GHRP-6, CJC-1295. Compartilhem suas experiências!',
+    conteudo: 'NOVO TÓPICO: Peptídeos para recuperação — BPC-157 e TB-500. Compartilhe suas experiências.',
     ia_tipo: 'insight',
   },
 ];
@@ -890,6 +927,13 @@ const COMUNIDADES_DATA: Record<string, ComunidadeData & { mensagens: Mensagem[] 
     membrosOnline: 47,
     totalMensagens: 1842,
     mensagens: MENSAGENS_LIPEDEMA,
+  },
+  'lipedema-paradoxo': {
+    titulo: 'Lipedema — Paradoxo do Cardio',
+    descricao: 'Por que HIIT pode piorar o lipedema? Discussão técnica sobre o protocolo AEJ + compressão',
+    membrosOnline: 28,
+    totalMensagens: 634,
+    mensagens: MENSAGENS_LIPEDEMA_PARADOXO,
   },
   'deficit-calorico': {
     titulo: 'Déficit Calórico na Vida Real',
@@ -954,19 +998,12 @@ const COMUNIDADES_DATA: Record<string, ComunidadeData & { mensagens: Mensagem[] 
     totalMensagens: 3247,
     mensagens: MENSAGENS_TREINO_CASA,
   },
-  'trembolona': {
-    titulo: 'Trembolona & Reparticionamento',
-    descricao: 'Mecanismos de reparticionamento, antagonismo GR, monitoramento de colaterais e redução de danos',
-    membrosOnline: 21,
-    totalMensagens: 892,
-    mensagens: MENSAGENS_TREMBOLONA,
-  },
-  'peptideos': {
-    titulo: 'Peptídeos & GH',
-    descricao: 'Fragment 176-191, BPC-157, TB-500 e outros peptídeos. Protocolos, timing e sinergias',
-    membrosOnline: 18,
-    totalMensagens: 654,
-    mensagens: MENSAGENS_PEPTIDEOS,
+  'performance-biohacking': {
+    titulo: 'Performance & Biohacking',
+    descricao: 'Protocolos de elite, farmacologia avançada e estratégias de redução de danos',
+    membrosOnline: 34,
+    totalMensagens: 1256,
+    mensagens: MENSAGENS_PERFORMANCE_BIOHACKING,
   },
 };
 
@@ -991,6 +1028,25 @@ const NOVAS_MENSAGENS: Record<string, Mensagem[]> = {
       autor: { id: 'ia', nome: 'IA Facilitadora' },
       conteudo: 'SEJA BEM-VINDO(A) LUCIA! Leia as mensagens anteriores sobre dieta anti-inflamatória. 47 membros online prontos para ajudar.',
       ia_tipo: 'insight',
+      isNew: true,
+    },
+  ],
+  'lipedema-paradoxo': [
+    {
+      id: 'new-1',
+      tipo: 'usuario',
+      timestamp: '15:45',
+      autor: { id: 'fernanda-alves', nome: 'Fernanda Alves', is_premium: true },
+      conteudo: 'Fiz 2 semanas de AEJ com compressão e a diferença no inchaço é absurda! Obrigada pelas dicas técnicas.',
+      isNew: true,
+    },
+    {
+      id: 'new-2',
+      tipo: 'ia',
+      timestamp: '15:46',
+      autor: { id: 'ia', nome: 'IA Facilitadora' },
+      conteudo: 'DESTAQUE: Fernanda relatou melhora com protocolo AEJ + compressão. 28 membros online acompanhando.',
+      ia_tipo: 'destaque',
       isNew: true,
     },
   ],
@@ -1084,40 +1140,21 @@ const NOVAS_MENSAGENS: Record<string, Mensagem[]> = {
       isNew: true,
     },
   ],
-  'trembolona': [
+  'performance-biohacking': [
     {
       id: 'new-1',
       tipo: 'usuario',
-      timestamp: '11:00',
-      autor: { id: 'andre-lima', nome: 'André Lima', is_premium: true },
-      conteudo: 'Pessoal, qual a dosagem mínima efetiva de Trembolona Acetato pra quem está começando? 200mg/semana é suficiente?',
+      timestamp: '11:20',
+      autor: { id: 'pedro-costa', nome: 'Pedro Costa', is_premium: true },
+      conteudo: 'Alguém já usou BPC-157 pra recuperação de lesão? Estou com tendinite crônica e queria saber se vale a pena.',
       isNew: true,
     },
     {
       id: 'new-2',
       tipo: 'ia',
-      timestamp: '11:01',
+      timestamp: '11:21',
       autor: { id: 'ia', nome: 'IA Facilitadora' },
-      conteudo: 'NOVO TÓPICO: Dosagens e protocolos de Trembolona. 21 membros online prontos para compartilhar experiências.',
-      ia_tipo: 'insight',
-      isNew: true,
-    },
-  ],
-  'peptideos': [
-    {
-      id: 'new-1',
-      tipo: 'usuario',
-      timestamp: '10:00',
-      autor: { id: 'carla-mendes', nome: 'Carla Mendes', is_premium: true },
-      conteudo: 'Alguém já usou Ipamorelin pra melhorar qualidade do sono? Vi que libera GH durante a noite.',
-      isNew: true,
-    },
-    {
-      id: 'new-2',
-      tipo: 'ia',
-      timestamp: '10:01',
-      autor: { id: 'ia', nome: 'IA Facilitadora' },
-      conteudo: 'NOVO TÓPICO: Peptídeos e qualidade do sono. 18 membros online prontos para compartilhar experiências.',
+      conteudo: 'NOVO TÓPICO: Peptídeos para recuperação de lesões. 34 membros online prontos para compartilhar experiências.',
       ia_tipo: 'insight',
       isNew: true,
     },

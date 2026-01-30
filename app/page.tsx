@@ -52,6 +52,18 @@ const COMMUNITIES = [
     lastActivity: "há 2 min",
   },
   {
+    id: 13,
+    title: "Lipedema — Paradoxo do Cardio",
+    description: "Por que HIIT pode piorar o lipedema? Discussão técnica sobre HIF-1α, NF-κB, macrófagos M1 e o protocolo AEJ + compressão.",
+    members: 634,
+    activeNow: 28,
+    slug: "lipedema-paradoxo",
+    icon: "Activity",
+    gradient: "from-cyan-500 to-teal-600",
+    lastActivity: "há 3 min",
+    featured: true,
+  },
+  {
     id: 2,
     title: "Déficit Calórico na Vida Real",
     description: "Nem sempre o déficit funciona como nos cálculos. Aqui falamos do que acontece na prática, no corpo e na rotina.",
@@ -154,26 +166,14 @@ const COMMUNITIES = [
   },
   {
     id: 11,
-    title: "Trembolona & Reparticionamento",
-    description: "Discussão técnica sobre Trembolona: mecanismos de reparticionamento, antagonismo GR, monitoramento de colaterais e redução de danos.",
-    members: 567,
-    activeNow: 21,
-    slug: "trembolona",
+    title: "Performance & Biohacking",
+    description: "Protocolos de elite, farmacologia avançada e estratégias de redução de danos. Ciência aplicada sem filtro.",
+    members: 892,
+    activeNow: 34,
+    slug: "performance-biohacking",
     icon: "Zap",
     gradient: "from-violet-500 to-purple-600",
     lastActivity: "há 5 min",
-    featured: true,
-  },
-  {
-    id: 12,
-    title: "Peptídeos & GH",
-    description: "Fragment 176-191, BPC-157, TB-500 e outros peptídeos. Protocolos, timing, sinergias e ciência aplicada.",
-    members: 423,
-    activeNow: 18,
-    slug: "peptideos",
-    icon: "Syringe",
-    gradient: "from-pink-500 to-rose-600",
-    lastActivity: "há 8 min",
     featured: true,
   },
 ];
@@ -503,7 +503,7 @@ export default function ComunidadesPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Destaque 1: Lipedema e o Paradoxo do Cardio */}
               <Link
-                href="/comunidades/lipedema"
+                href="/comunidades/lipedema-paradoxo"
                 className="card-premium p-6 rounded-2xl group hover:border-cyan-500/50 block cursor-pointer relative overflow-hidden"
               >
                 {/* Glow effect */}
@@ -533,7 +533,7 @@ export default function ComunidadesPage() {
 
               {/* Destaque 2: Trembolona e a Oxidação Lipídica */}
               <Link
-                href="/comunidades/trembolona"
+                href="/comunidades/performance-biohacking"
                 className="card-premium p-6 rounded-2xl group hover:border-purple-500/50 block cursor-pointer relative overflow-hidden"
               >
                 {/* Glow effect */}
@@ -563,7 +563,7 @@ export default function ComunidadesPage() {
 
               {/* Destaque 3: Fragment 176-191 + AEJ */}
               <Link
-                href="/comunidades/peptideos"
+                href="/comunidades/performance-biohacking"
                 className="card-premium p-6 rounded-2xl group hover:border-pink-500/50 block cursor-pointer relative overflow-hidden"
               >
                 {/* Glow effect */}
