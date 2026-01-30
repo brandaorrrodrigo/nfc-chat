@@ -6,9 +6,11 @@
  * - FP exige ação social, cognitiva e participativa
  * - Quem só entra e sai → quase não ganha FP
  * - Quem pergunta, conversa e cria → evolui rápido
+ *
+ * ATUALIZADO: Usa Supabase REST API (não pg direto)
  */
 
-import { db } from '../db';
+import { getSupabase } from '../supabase';
 import { FP_CONFIG, FPAction, UserFP, FPStats, FPTransaction } from './config';
 
 // ==========================================
@@ -26,34 +28,47 @@ const TABLE_FP_TRANSACTIONS = 'nfc_chat_fp_transactions';
  * Garante que o usuário tem registro na tabela nfc_chat_user_fp
  */
 export async function ensureUserFP(userId: string): Promise<UserFP> {
-  const existing = await db.query<UserFP>(
-    `SELECT * FROM ${TABLE_USER_FP} WHERE user_id = $1`,
-    [userId]
-  );
+  const supabase = getSupabase();
 
-  if (existing.rows.length > 0) {
-    return existing.rows[0];
+  // Tenta buscar existente
+  const { data: existing, error: selectError } = await supabase
+    .from(TABLE_USER_FP)
+    .select('*')
+    .eq('user_id', userId)
+    .single();
+
+  if (existing && !selectError) {
+    return existing as UserFP;
   }
 
-  // Cria novo registro (streak_30_claimed = false por padrão)
-  const result = await db.query<UserFP>(
-    `INSERT INTO ${TABLE_USER_FP} (user_id, balance, total_earned, total_spent, streak_current, streak_best, streak_30_claimed, fp_earned_today)
-     VALUES ($1, 0, 0, 0, 0, 0, false, 0)
-     ON CONFLICT (user_id) DO NOTHING
-     RETURNING *`,
-    [userId]
-  );
+  // Cria novo registro
+  const { data: inserted, error: insertError } = await supabase
+    .from(TABLE_USER_FP)
+    .insert({
+      user_id: userId,
+      balance: 0,
+      total_earned: 0,
+      total_spent: 0,
+      streak_current: 0,
+      streak_best: 0,
+      streak_30_claimed: false,
+      fp_earned_today: 0,
+    })
+    .select()
+    .single();
 
-  if (result.rows.length > 0) {
-    return result.rows[0];
+  if (inserted && !insertError) {
+    return inserted as UserFP;
   }
 
   // Race condition: busca novamente
-  const retry = await db.query<UserFP>(
-    `SELECT * FROM ${TABLE_USER_FP} WHERE user_id = $1`,
-    [userId]
-  );
-  return retry.rows[0];
+  const { data: retry } = await supabase
+    .from(TABLE_USER_FP)
+    .select('*')
+    .eq('user_id', userId)
+    .single();
+
+  return retry as UserFP;
 }
 
 // ==========================================
@@ -88,14 +103,21 @@ export async function getTransactionHistory(
   userId: string,
   limit = 50
 ): Promise<FPTransaction[]> {
-  const result = await db.query<FPTransaction>(
-    `SELECT * FROM ${TABLE_FP_TRANSACTIONS}
-     WHERE user_id = $1
-     ORDER BY created_at DESC
-     LIMIT $2`,
-    [userId, limit]
-  );
-  return result.rows;
+  const supabase = getSupabase();
+
+  const { data, error } = await supabase
+    .from(TABLE_FP_TRANSACTIONS)
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error('[FP] Error fetching transactions:', error);
+    return [];
+  }
+
+  return data as FPTransaction[];
 }
 
 // ==========================================
@@ -127,13 +149,14 @@ export async function awardFP(
   customAmount?: number,
   metadata?: Record<string, unknown>
 ): Promise<AwardResult> {
+  const supabase = getSupabase();
   const userFP = await ensureUserFP(userId);
   const now = new Date();
   const today = now.toISOString().split('T')[0];
 
   // Calcula amount baseado na ação
   let amount = customAmount ?? getAmountForAction(action);
-  let description = getDescriptionForAction(action);
+  const description = getDescriptionForAction(action);
 
   // ==========================================
   // VALIDAÇÕES ANTI-EXPLOIT
@@ -190,8 +213,6 @@ export async function awardFP(
   // ==========================================
   // ATUALIZA STREAK (nova lógica)
   // ==========================================
-  // - NÃO existe bônus diário de streak
-  // - Apenas bônus ÚNICO ao completar 30 dias
 
   let newStreak = userFP.streak_current;
   let streak30Bonus = 0;
@@ -222,83 +243,73 @@ export async function awardFP(
   const newStreakBest = Math.max(userFP.streak_best, newStreak);
 
   // ==========================================
-  // PERSISTE
+  // PERSISTE - Usando Supabase REST
   // ==========================================
 
-  const client = await db.getClient();
-
   try {
-    await client.query('BEGIN');
+    // Determina se é novo dia para resetar fp_earned_today
+    const lastActivityDate = userFP.last_activity_at
+      ? new Date(userFP.last_activity_at).toISOString().split('T')[0]
+      : null;
+    const isNewDay = lastActivityDate !== today;
 
-    // Atualiza nfc_chat_user_fp baseado no tipo de ação
+    // Prepara update baseado no tipo de ação
+    const updateData: Record<string, unknown> = {
+      balance: newBalance,
+      total_earned: userFP.total_earned + totalAmount,
+      last_activity_at: now.toISOString(),
+      fp_earned_today: isNewDay ? totalAmount : userFP.fp_earned_today + totalAmount,
+      updated_at: now.toISOString(),
+    };
+
     if (action === FP_CONFIG.ACTIONS.DAILY_ACCESS) {
-      await client.query(
-        `UPDATE ${TABLE_USER_FP} SET
-           balance = $2,
-           total_earned = total_earned + $3,
-           streak_current = $4,
-           streak_best = $5,
-           streak_30_claimed = CASE WHEN $6 THEN true ELSE streak_30_claimed END,
-           last_activity_at = NOW(),
-           last_daily_bonus_at = $7,
-           fp_earned_today = CASE
-             WHEN DATE(last_activity_at) = CURRENT_DATE THEN fp_earned_today + $3
-             ELSE $3
-           END,
-           updated_at = NOW()
-         WHERE user_id = $1`,
-        [userId, newBalance, totalAmount, newStreak, newStreakBest, shouldClaimStreak30, today]
-      );
-    } else if (action === FP_CONFIG.ACTIONS.MESSAGE || action === FP_CONFIG.ACTIONS.QUESTION || action === FP_CONFIG.ACTIONS.MESSAGE_LONG) {
-      await client.query(
-        `UPDATE ${TABLE_USER_FP} SET
-           balance = $2,
-           total_earned = total_earned + $3,
-           last_activity_at = NOW(),
-           last_message_fp_at = NOW(),
-           fp_earned_today = CASE
-             WHEN DATE(last_activity_at) = CURRENT_DATE THEN fp_earned_today + $3
-             ELSE $3
-           END,
-           updated_at = NOW()
-         WHERE user_id = $1`,
-        [userId, newBalance, totalAmount]
-      );
-    } else {
-      await client.query(
-        `UPDATE ${TABLE_USER_FP} SET
-           balance = $2,
-           total_earned = total_earned + $3,
-           last_activity_at = NOW(),
-           updated_at = NOW()
-         WHERE user_id = $1`,
-        [userId, newBalance, totalAmount]
-      );
+      updateData.streak_current = newStreak;
+      updateData.streak_best = newStreakBest;
+      updateData.last_daily_bonus_at = today;
+      if (shouldClaimStreak30) {
+        updateData.streak_30_claimed = true;
+      }
+    }
+
+    if (action === FP_CONFIG.ACTIONS.MESSAGE || action === FP_CONFIG.ACTIONS.QUESTION || action === FP_CONFIG.ACTIONS.MESSAGE_LONG) {
+      updateData.last_message_fp_at = now.toISOString();
+    }
+
+    // Update user FP
+    const { error: updateError } = await supabase
+      .from(TABLE_USER_FP)
+      .update(updateData)
+      .eq('user_id', userId);
+
+    if (updateError) {
+      throw updateError;
     }
 
     // Registra transação principal
-    await client.query(
-      `INSERT INTO ${TABLE_FP_TRANSACTIONS} (user_id, amount, type, action, description, metadata)
-       VALUES ($1, $2, 'earn', $3, $4, $5)`,
-      [userId, amount, action, description, JSON.stringify(metadata || {})]
-    );
+    await supabase
+      .from(TABLE_FP_TRANSACTIONS)
+      .insert({
+        user_id: userId,
+        amount: amount,
+        type: 'earn',
+        action: action,
+        description: description,
+        metadata: metadata || {},
+      });
 
     // Registra bônus de 30 dias separadamente (se aplicável)
     if (streak30Bonus > 0) {
-      await client.query(
-        `INSERT INTO ${TABLE_FP_TRANSACTIONS} (user_id, amount, type, action, description, metadata)
-         VALUES ($1, $2, 'earn', $3, $4, $5)`,
-        [
-          userId,
-          streak30Bonus,
-          FP_CONFIG.ACTIONS.STREAK_30_BONUS,
-          '30 dias consecutivos (bônus único)',
-          JSON.stringify({ streak: newStreak, unique_bonus: true })
-        ]
-      );
+      await supabase
+        .from(TABLE_FP_TRANSACTIONS)
+        .insert({
+          user_id: userId,
+          amount: streak30Bonus,
+          type: 'earn',
+          action: FP_CONFIG.ACTIONS.STREAK_30_BONUS,
+          description: '30 dias consecutivos (bônus único)',
+          metadata: { streak: newStreak, unique_bonus: true },
+        });
     }
-
-    await client.query('COMMIT');
 
     return {
       success: true,
@@ -307,10 +318,8 @@ export async function awardFP(
       streak: newStreak,
     };
   } catch (error) {
-    await client.query('ROLLBACK');
+    console.error('[FP] Error awarding FP:', error);
     throw error;
-  } finally {
-    client.release();
   }
 }
 
@@ -335,6 +344,7 @@ export async function spendFP(
   userId: string,
   amount: number
 ): Promise<SpendResult> {
+  const supabase = getSupabase();
   const userFP = await ensureUserFP(userId);
 
   // Validações
@@ -362,34 +372,32 @@ export async function spendFP(
   const newBalance = userFP.balance - amount;
   const couponCode = generateCouponCode(userId, discountPercent);
 
-  // Persiste
-  const client = await db.getClient();
-
   try {
-    await client.query('BEGIN');
+    // Update user FP
+    const { error: updateError } = await supabase
+      .from(TABLE_USER_FP)
+      .update({
+        balance: newBalance,
+        total_spent: userFP.total_spent + amount,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('user_id', userId);
 
-    await client.query(
-      `UPDATE ${TABLE_USER_FP} SET
-         balance = $2,
-         total_spent = total_spent + $3,
-         updated_at = NOW()
-       WHERE user_id = $1`,
-      [userId, newBalance, amount]
-    );
+    if (updateError) {
+      throw updateError;
+    }
 
-    await client.query(
-      `INSERT INTO ${TABLE_FP_TRANSACTIONS} (user_id, amount, type, action, description, metadata)
-       VALUES ($1, $2, 'spend', $3, $4, $5)`,
-      [
-        userId,
-        -amount,
-        FP_CONFIG.ACTIONS.REDEEM,
-        `Desconto: ${discountPercent}% no APP`,
-        JSON.stringify({ discount_percent: discountPercent, coupon_code: couponCode })
-      ]
-    );
-
-    await client.query('COMMIT');
+    // Registra transação
+    await supabase
+      .from(TABLE_FP_TRANSACTIONS)
+      .insert({
+        user_id: userId,
+        amount: -amount,
+        type: 'spend',
+        action: FP_CONFIG.ACTIONS.REDEEM,
+        description: `Desconto: ${discountPercent}% no APP`,
+        metadata: { discount_percent: discountPercent, coupon_code: couponCode },
+      });
 
     return {
       success: true,
@@ -399,10 +407,8 @@ export async function spendFP(
       couponCode,
     };
   } catch (error) {
-    await client.query('ROLLBACK');
+    console.error('[FP] Error spending FP:', error);
     throw error;
-  } finally {
-    client.release();
   }
 }
 
