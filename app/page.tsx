@@ -460,6 +460,106 @@ export default function ComunidadesPage() {
           {/* Divider */}
           <div className="h-px bg-gradient-to-r from-transparent via-[#00f5ff]/30 to-transparent my-8" />
 
+          {/* ===== DESTAQUES TÉCNICOS - CONTEÚDO UNDERGROUND ===== */}
+          <section className="py-8">
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-full mb-4">
+                <Zap className="w-4 h-4 text-purple-400" />
+                <span className="text-sm font-bold text-purple-300 uppercase tracking-wider">Underground Científico</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+                Destaques <span className="gradient-text">Técnicos</span>
+              </h2>
+              <p className="text-gray-400 max-w-2xl mx-auto">
+                Conteúdo de alta densidade para quem quer ir além do básico. Fisiologia aplicada sem filtro.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Destaque 1: Lipedema */}
+              <div className="card-premium p-6 rounded-2xl group hover:border-cyan-500/50">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600">
+                    <Activity className="w-5 h-5 text-white" />
+                  </div>
+                  <span className="text-xs font-mono text-cyan-400 uppercase tracking-wider">Lipedema</span>
+                </div>
+                <h3 className="text-lg font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors">
+                  Lipedema e o Paradoxo do Cardio
+                </h3>
+                <p className="text-sm text-gray-400 leading-relaxed mb-4">
+                  Macrófagos M1, HIF-1α e por que o HIIT inflama o tecido doente. A ciência por trás do AEJ + Compressão como protocolo anti-inflamatório.
+                </p>
+                <Link
+                  href="/comunidades/lipedema"
+                  className="inline-flex items-center gap-1 text-sm font-semibold text-cyan-400 hover:text-cyan-300 transition-colors"
+                >
+                  Ver discussão <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
+
+              {/* Destaque 2: Trembolona */}
+              <div className="card-premium p-6 rounded-2xl group hover:border-pink-500/50">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600">
+                    <Sparkles className="w-5 h-5 text-white" />
+                  </div>
+                  <span className="text-xs font-mono text-pink-400 uppercase tracking-wider">Performance</span>
+                </div>
+                <h3 className="text-lg font-bold text-white mb-3 group-hover:text-pink-400 transition-colors">
+                  Trembolona e a Verdade sobre o Reparticionamento
+                </h3>
+                <p className="text-sm text-gray-400 leading-relaxed mb-4">
+                  Antagonismo do Receptor de Glicocorticoide e inibição da lipogênese via IGF-1 local. Como queimar gordura em superávit calórico.
+                </p>
+                <Link
+                  href="/comunidades/treino-gluteo"
+                  className="inline-flex items-center gap-1 text-sm font-semibold text-pink-400 hover:text-pink-300 transition-colors"
+                >
+                  Ver discussão <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
+
+              {/* Destaque 3: Peptídeos */}
+              <div className="card-premium p-6 rounded-2xl group hover:border-purple-500/50">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 rounded-lg bg-gradient-to-br from-purple-500 to-violet-600">
+                    <Syringe className="w-5 h-5 text-white" />
+                  </div>
+                  <span className="text-xs font-mono text-purple-400 uppercase tracking-wider">Biohacking</span>
+                </div>
+                <h3 className="text-lg font-bold text-white mb-3 group-hover:text-purple-400 transition-colors">
+                  Fragment 176-191 + AEJ: O Erro do Jejum
+                </h3>
+                <p className="text-sm text-gray-400 leading-relaxed mb-4">
+                  O Fragment apenas mobiliza AGLs, mas a oxidação depende do cardio em jejum. Entenda por que usar fora do protocolo é jogar dinheiro fora.
+                </p>
+                <Link
+                  href="/comunidades/canetas"
+                  className="inline-flex items-center gap-1 text-sm font-semibold text-purple-400 hover:text-purple-300 transition-colors"
+                >
+                  Ver discussão <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+
+            {/* CTA para PRO */}
+            <div className="mt-8 text-center">
+              <a
+                href="https://app.nutrifitcoach.com.br/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-xl shadow-lg hover:shadow-purple-500/25 transition-all"
+              >
+                <Crown className="w-5 h-5" />
+                Acessar Módulo PRO
+              </a>
+            </div>
+          </section>
+
+          {/* Divider */}
+          <div className="h-px bg-gradient-to-r from-transparent via-[#ff006e]/30 to-transparent my-8" />
+
           {/* ===== COMUNIDADES SECTION ===== */}
           <section id="comunidades" className="py-8">
             {/* Section Header */}
