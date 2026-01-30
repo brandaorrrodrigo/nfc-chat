@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(npm run build:*)",
-      "Bash(vercel --prod:*)"
+      "Bash(vercel --prod:*)",
+      "Bash(git add:*)"
     ]
   }
 }
