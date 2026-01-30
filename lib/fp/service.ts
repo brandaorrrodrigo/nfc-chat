@@ -9,13 +9,17 @@ import { FP_CONFIG, FPAction, UserFP, FPStats, FPTransaction } from './config';
 // INICIALIZAÇÃO
 // ==========================================
 
+// Nome das tabelas com prefixo (evita conflito com APP)
+const TABLE_USER_FP = 'nfc_chat_user_fp';
+const TABLE_FP_TRANSACTIONS = 'nfc_chat_fp_transactions';
+
 /**
- * Garante que o usuário tem registro na tabela user_fp
+ * Garante que o usuário tem registro na tabela nfc_chat_user_fp
  */
 export async function ensureUserFP(userId: string): Promise<UserFP> {
   // Tenta buscar existente
   const existing = await db.query<UserFP>(
-    'SELECT * FROM user_fp WHERE user_id = $1',
+    `SELECT * FROM ${TABLE_USER_FP} WHERE user_id = $1`,
     [userId]
   );
 
@@ -25,7 +29,7 @@ export async function ensureUserFP(userId: string): Promise<UserFP> {
 
   // Cria novo registro
   const result = await db.query<UserFP>(
-    `INSERT INTO user_fp (user_id, balance, total_earned, total_spent, streak_current, streak_best, fp_earned_today)
+    `INSERT INTO ${TABLE_USER_FP} (user_id, balance, total_earned, total_spent, streak_current, streak_best, fp_earned_today)
      VALUES ($1, 0, 0, 0, 0, 0, 0)
      ON CONFLICT (user_id) DO NOTHING
      RETURNING *`,
@@ -38,7 +42,7 @@ export async function ensureUserFP(userId: string): Promise<UserFP> {
 
   // Race condition: busca novamente
   const retry = await db.query<UserFP>(
-    'SELECT * FROM user_fp WHERE user_id = $1',
+    `SELECT * FROM ${TABLE_USER_FP} WHERE user_id = $1`,
     [userId]
   );
   return retry.rows[0];
@@ -77,7 +81,7 @@ export async function getTransactionHistory(
   limit = 50
 ): Promise<FPTransaction[]> {
   const result = await db.query<FPTransaction>(
-    `SELECT * FROM fp_transactions
+    `SELECT * FROM ${TABLE_FP_TRANSACTIONS}
      WHERE user_id = $1
      ORDER BY created_at DESC
      LIMIT $2`,
@@ -209,9 +213,9 @@ export async function awardFP(
   try {
     await client.query('BEGIN');
 
-    // Atualiza user_fp
+    // Atualiza nfc_chat_user_fp
     const updateQuery = action === FP_CONFIG.ACTIONS.DAILY_ACCESS
-      ? `UPDATE user_fp SET
+      ? `UPDATE ${TABLE_USER_FP} SET
            balance = $2,
            total_earned = total_earned + $3,
            streak_current = $4,
@@ -225,7 +229,7 @@ export async function awardFP(
            updated_at = NOW()
          WHERE user_id = $1`
       : action === FP_CONFIG.ACTIONS.MESSAGE || action === FP_CONFIG.ACTIONS.MESSAGE_LONG
-      ? `UPDATE user_fp SET
+      ? `UPDATE ${TABLE_USER_FP} SET
            balance = $2,
            total_earned = total_earned + $3,
            last_activity_at = NOW(),
@@ -236,7 +240,7 @@ export async function awardFP(
            END,
            updated_at = NOW()
          WHERE user_id = $1`
-      : `UPDATE user_fp SET
+      : `UPDATE ${TABLE_USER_FP} SET
            balance = $2,
            total_earned = total_earned + $3,
            last_activity_at = NOW(),
@@ -251,7 +255,7 @@ export async function awardFP(
 
     // Registra transação principal
     await client.query(
-      `INSERT INTO fp_transactions (user_id, amount, type, action, description, metadata)
+      `INSERT INTO ${TABLE_FP_TRANSACTIONS} (user_id, amount, type, action, description, metadata)
        VALUES ($1, $2, 'earn', $3, $4, $5)`,
       [userId, amount, action, description, JSON.stringify(metadata || {})]
     );
@@ -259,7 +263,7 @@ export async function awardFP(
     // Registra bônus de streak separadamente
     if (streakBonus > 0) {
       await client.query(
-        `INSERT INTO fp_transactions (user_id, amount, type, action, description, metadata)
+        `INSERT INTO ${TABLE_FP_TRANSACTIONS} (user_id, amount, type, action, description, metadata)
          VALUES ($1, $2, 'earn', $3, $4, $5)`,
         [
           userId,
@@ -341,7 +345,7 @@ export async function spendFP(
     await client.query('BEGIN');
 
     await client.query(
-      `UPDATE user_fp SET
+      `UPDATE ${TABLE_USER_FP} SET
          balance = $2,
          total_spent = total_spent + $3,
          updated_at = NOW()
@@ -350,7 +354,7 @@ export async function spendFP(
     );
 
     await client.query(
-      `INSERT INTO fp_transactions (user_id, amount, type, action, description, metadata)
+      `INSERT INTO ${TABLE_FP_TRANSACTIONS} (user_id, amount, type, action, description, metadata)
        VALUES ($1, $2, 'spend', $3, $4, $5)`,
       [
         userId,
