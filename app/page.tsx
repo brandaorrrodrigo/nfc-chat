@@ -525,8 +525,9 @@ export default function ComunidadesPage() {
                   <p className="text-sm text-gray-400 leading-relaxed mb-4">
                     Você faz HIIT achando que vai "derreter" a gordura das pernas? Você está inflamando o tecido doente. Macrófagos M1, HIF-1α e a ciência do AEJ + Compressão.
                   </p>
-                  <div className="inline-flex items-center gap-1 text-sm font-semibold text-cyan-400 group-hover:text-cyan-300 transition-colors">
-                    Ler Protocolo Completo <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <div className="flex items-center gap-1 text-cyan-400 font-semibold text-sm group-hover:gap-2 transition-all duration-300">
+                    <Eye className="w-4 h-4" />
+                    <span>Visualizar</span>
                   </div>
                 </div>
               </Link>
@@ -555,8 +556,9 @@ export default function ComunidadesPage() {
                   <p className="text-sm text-gray-400 leading-relaxed mb-4">
                     Como queimar gordura em superávit calórico? Antagonismo do Receptor de Glicocorticoide, inibição da lipogênese via IGF-1 local e ativação de ARs no adipócito.
                   </p>
-                  <div className="inline-flex items-center gap-1 text-sm font-semibold text-purple-400 group-hover:text-purple-300 transition-colors">
-                    Ler Protocolo Completo <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <div className="flex items-center gap-1 text-purple-400 font-semibold text-sm group-hover:gap-2 transition-all duration-300">
+                    <Eye className="w-4 h-4" />
+                    <span>Visualizar</span>
                   </div>
                 </div>
               </Link>
@@ -585,8 +587,9 @@ export default function ComunidadesPage() {
                   <p className="text-sm text-gray-400 leading-relaxed mb-4">
                     Aplicou após o café da manhã? Você jogou dinheiro fora. O Fragment mobiliza, mas NÃO oxida. Sem cardio em jejum = injeção que não fez nada.
                   </p>
-                  <div className="inline-flex items-center gap-1 text-sm font-semibold text-pink-400 group-hover:text-pink-300 transition-colors">
-                    Ler Protocolo Completo <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <div className="flex items-center gap-1 text-pink-400 font-semibold text-sm group-hover:gap-2 transition-all duration-300">
+                    <Eye className="w-4 h-4" />
+                    <span>Visualizar</span>
                   </div>
                 </div>
               </Link>
