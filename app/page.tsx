@@ -154,14 +154,26 @@ const COMMUNITIES = [
   },
   {
     id: 11,
-    title: "Performance & Biohacking",
-    description: "Protocolos de elite, farmacologia avançada e estratégias de redução de danos. Ciência aplicada sem filtro.",
-    members: 892,
-    activeNow: 34,
-    slug: "performance-biohacking",
+    title: "Trembolona & Reparticionamento",
+    description: "Discussão técnica sobre Trembolona: mecanismos de reparticionamento, antagonismo GR, monitoramento de colaterais e redução de danos.",
+    members: 567,
+    activeNow: 21,
+    slug: "trembolona",
     icon: "Zap",
     gradient: "from-violet-500 to-purple-600",
     lastActivity: "há 5 min",
+    featured: true,
+  },
+  {
+    id: 12,
+    title: "Peptídeos & GH",
+    description: "Fragment 176-191, BPC-157, TB-500 e outros peptídeos. Protocolos, timing, sinergias e ciência aplicada.",
+    members: 423,
+    activeNow: 18,
+    slug: "peptideos",
+    icon: "Syringe",
+    gradient: "from-pink-500 to-rose-600",
+    lastActivity: "há 8 min",
     featured: true,
   },
 ];
@@ -521,7 +533,7 @@ export default function ComunidadesPage() {
 
               {/* Destaque 2: Trembolona e a Oxidação Lipídica */}
               <Link
-                href="/comunidades/performance-biohacking"
+                href="/comunidades/trembolona"
                 className="card-premium p-6 rounded-2xl group hover:border-purple-500/50 block cursor-pointer relative overflow-hidden"
               >
                 {/* Glow effect */}
@@ -551,7 +563,7 @@ export default function ComunidadesPage() {
 
               {/* Destaque 3: Fragment 176-191 + AEJ */}
               <Link
-                href="/comunidades/performance-biohacking"
+                href="/comunidades/peptideos"
                 className="card-premium p-6 rounded-2xl group hover:border-pink-500/50 block cursor-pointer relative overflow-hidden"
               >
                 {/* Glow effect */}
