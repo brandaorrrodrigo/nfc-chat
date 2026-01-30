@@ -152,6 +152,18 @@ const COMMUNITIES = [
     gradient: "from-indigo-500 to-purple-600",
     lastActivity: "há 1 min",
   },
+  {
+    id: 11,
+    title: "Performance & Biohacking",
+    description: "Protocolos de elite, farmacologia avançada e estratégias de redução de danos. Ciência aplicada sem filtro.",
+    members: 892,
+    activeNow: 34,
+    slug: "performance-biohacking",
+    icon: "Zap",
+    gradient: "from-violet-500 to-purple-600",
+    lastActivity: "há 5 min",
+    featured: true,
+  },
 ];
 
 // ========================================
@@ -169,6 +181,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Camera,
   Utensils,
   Home,
+  Zap,
 };
 
 // ========================================
@@ -476,78 +489,93 @@ export default function ComunidadesPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Destaque 1: Lipedema */}
+              {/* Destaque 1: Lipedema e o Paradoxo do Cardio */}
               <Link
                 href="/comunidades/lipedema"
-                className="card-premium p-6 rounded-2xl group hover:border-cyan-500/50 block cursor-pointer"
+                className="card-premium p-6 rounded-2xl group hover:border-cyan-500/50 block cursor-pointer relative overflow-hidden"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600">
-                      <Activity className="w-5 h-5 text-white" />
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/30">
+                        <Activity className="w-5 h-5 text-white" />
+                      </div>
+                      <span className="text-xs font-mono text-cyan-400 uppercase tracking-wider">Lipedema</span>
                     </div>
-                    <span className="text-xs font-mono text-cyan-400 uppercase tracking-wider">Lipedema</span>
+                    <span className="text-[10px] font-bold text-amber-400 bg-amber-400/10 px-2 py-1 rounded-full border border-amber-400/30">PRO</span>
                   </div>
-                  <span className="text-[10px] font-bold text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full border border-emerald-400/30">GRÁTIS</span>
-                </div>
-                <h3 className="text-lg font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors">
-                  Protocolo Lipedema
-                </h3>
-                <p className="text-sm text-gray-400 leading-relaxed mb-4">
-                  Espaço para mulheres que convivem com lipedema compartilharem sintomas, estratégias, frustrações e avanços reais no dia a dia.
-                </p>
-                <div className="inline-flex items-center gap-1 text-sm font-semibold text-cyan-400 group-hover:text-cyan-300 transition-colors">
-                  Entrar na discussão <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <h3 className="text-lg font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors">
+                    Lipedema e o "Paradoxo do Cardio"
+                  </h3>
+                  <p className="text-sm text-gray-400 leading-relaxed mb-4">
+                    Você faz HIIT achando que vai "derreter" a gordura das pernas? Você está inflamando o tecido doente. Macrófagos M1, HIF-1α e a ciência do AEJ + Compressão.
+                  </p>
+                  <div className="inline-flex items-center gap-1 text-sm font-semibold text-cyan-400 group-hover:text-cyan-300 transition-colors">
+                    Ler Protocolo Completo <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </div>
               </Link>
 
-              {/* Destaque 2: Treino de Glúteo */}
+              {/* Destaque 2: Trembolona e a Oxidação Lipídica */}
               <Link
-                href="/comunidades/treino-gluteo"
-                className="card-premium p-6 rounded-2xl group hover:border-pink-500/50 block cursor-pointer"
+                href="/comunidades/performance-biohacking"
+                className="card-premium p-6 rounded-2xl group hover:border-purple-500/50 block cursor-pointer relative overflow-hidden"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600">
-                      <Dumbbell className="w-5 h-5 text-white" />
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-gradient-to-br from-purple-500 to-violet-600 shadow-lg shadow-purple-500/30">
+                        <Zap className="w-5 h-5 text-white" />
+                      </div>
+                      <span className="text-xs font-mono text-purple-400 uppercase tracking-wider">Performance</span>
                     </div>
-                    <span className="text-xs font-mono text-pink-400 uppercase tracking-wider">Treino</span>
+                    <span className="text-[10px] font-bold text-amber-400 bg-amber-400/10 px-2 py-1 rounded-full border border-amber-400/30">PRO</span>
                   </div>
-                  <span className="text-[10px] font-bold text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full border border-emerald-400/30">GRÁTIS</span>
-                </div>
-                <h3 className="text-lg font-bold text-white mb-3 group-hover:text-pink-400 transition-colors">
-                  Treino de Glúteo Feminino
-                </h3>
-                <p className="text-sm text-gray-400 leading-relaxed mb-4">
-                  Treino de glúteo com olhar feminino: genética, dor, carga, repetição, constância e resultado real.
-                </p>
-                <div className="inline-flex items-center gap-1 text-sm font-semibold text-pink-400 group-hover:text-pink-300 transition-colors">
-                  Entrar na discussão <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <h3 className="text-lg font-bold text-white mb-3 group-hover:text-purple-400 transition-colors">
+                    Trembolona e a Verdade sobre o Reparticionamento
+                  </h3>
+                  <p className="text-sm text-gray-400 leading-relaxed mb-4">
+                    Como queimar gordura em superávit calórico? Antagonismo do Receptor de Glicocorticoide, inibição da lipogênese via IGF-1 local e ativação de ARs no adipócito.
+                  </p>
+                  <div className="inline-flex items-center gap-1 text-sm font-semibold text-purple-400 group-hover:text-purple-300 transition-colors">
+                    Ler Protocolo Completo <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </div>
               </Link>
 
-              {/* Destaque 3: Canetas */}
+              {/* Destaque 3: Fragment 176-191 + AEJ */}
               <Link
-                href="/comunidades/canetas"
-                className="card-premium p-6 rounded-2xl group hover:border-emerald-500/50 block cursor-pointer"
+                href="/comunidades/performance-biohacking"
+                className="card-premium p-6 rounded-2xl group hover:border-pink-500/50 block cursor-pointer relative overflow-hidden"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600">
-                      <Syringe className="w-5 h-5 text-white" />
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600 shadow-lg shadow-pink-500/30">
+                        <Syringe className="w-5 h-5 text-white" />
+                      </div>
+                      <span className="text-xs font-mono text-pink-400 uppercase tracking-wider">Peptídeos</span>
                     </div>
-                    <span className="text-xs font-mono text-emerald-400 uppercase tracking-wider">Canetas</span>
+                    <span className="text-[10px] font-bold text-amber-400 bg-amber-400/10 px-2 py-1 rounded-full border border-amber-400/30">PRO</span>
                   </div>
-                  <span className="text-[10px] font-bold text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full border border-emerald-400/30">GRÁTIS</span>
-                </div>
-                <h3 className="text-lg font-bold text-white mb-3 group-hover:text-emerald-400 transition-colors">
-                  Canetas Emagrecedoras
-                </h3>
-                <p className="text-sm text-gray-400 leading-relaxed mb-4">
-                  Relatos reais sobre uso de Ozempic, Wegovy, Mounjaro: efeitos colaterais, expectativas e adaptações no estilo de vida.
-                </p>
-                <div className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-400 group-hover:text-emerald-300 transition-colors">
-                  Entrar na discussão <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <h3 className="text-lg font-bold text-white mb-3 group-hover:text-pink-400 transition-colors">
+                    Fragment 176-191 + AEJ
+                  </h3>
+                  <p className="text-sm text-gray-400 leading-relaxed mb-4">
+                    Aplicou após o café da manhã? Você jogou dinheiro fora. O Fragment mobiliza, mas NÃO oxida. Sem cardio em jejum = injeção que não fez nada.
+                  </p>
+                  <div className="inline-flex items-center gap-1 text-sm font-semibold text-pink-400 group-hover:text-pink-300 transition-colors">
+                    Ler Protocolo Completo <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </div>
               </Link>
             </div>

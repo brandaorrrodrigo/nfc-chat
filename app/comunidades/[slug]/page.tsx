@@ -659,7 +659,123 @@ const MENSAGENS_DIETA_VIDA_REAL: Mensagem[] = [
 ];
 
 // ========================================
-// DADOS DAS COMUNIDADES (9 COMUNIDADES - FASE 1)
+// MENSAGENS: PERFORMANCE & BIOHACKING
+// ========================================
+
+const MENSAGENS_PERFORMANCE_BIOHACKING: Mensagem[] = [
+  {
+    id: '1',
+    tipo: 'ia',
+    timestamp: '09:00',
+    autor: { id: 'ia', nome: 'IA Facilitadora' },
+    conteudo: 'PROTOCOLO EM DESTAQUE: Lipedema e o Paradoxo do Cardio — Por que HIIT inflama o tecido doente e como o AEJ + Compressão é o protocolo anti-inflamatório correto.',
+    ia_tipo: 'destaque',
+  },
+  {
+    id: '2',
+    tipo: 'usuario',
+    timestamp: '09:15',
+    autor: { id: 'dr-marcus', nome: 'Dr. Marcus', is_founder: true },
+    conteudo: 'Pessoal, vamos falar de Trembolona e reparticionamento. A pergunta que sempre recebo: "Como queimar gordura em superávit calórico?" A resposta está no antagonismo do Receptor de Glicocorticoide.',
+  },
+  {
+    id: '3',
+    tipo: 'usuario',
+    timestamp: '09:22',
+    autor: { id: 'rafael-santos', nome: 'Rafael Santos', is_premium: true },
+    conteudo: 'Dr. Marcus, pode explicar melhor esse mecanismo? Vi que a Trembolona ocupa o GR e impede o cortisol de agir. Isso realmente reduz a deposição visceral?',
+  },
+  {
+    id: '4',
+    tipo: 'usuario',
+    timestamp: '09:30',
+    autor: { id: 'dr-marcus', nome: 'Dr. Marcus', is_founder: true },
+    conteudo: 'Rafael, exato. São 3 mecanismos simultâneos: 1) Antagonismo do GR - menos cortisol ativo = menos lipogênese visceral. 2) Aumento de IGF-1 local que sequestra nutrientes pro músculo. 3) Upregulation de receptores β-adrenérgicos no adipócito aumentando lipólise basal.',
+  },
+  {
+    id: '5',
+    tipo: 'ia',
+    timestamp: '09:31',
+    autor: { id: 'ia', nome: 'IA Facilitadora' },
+    conteudo: 'INSIGHT: Discussão técnica sobre mecanismos de reparticionamento. 34 membros online acompanhando.',
+    ia_tipo: 'insight',
+  },
+  {
+    id: '6',
+    tipo: 'usuario',
+    timestamp: '09:45',
+    autor: { id: 'lucas-ferreira', nome: 'Lucas Ferreira', is_premium: true },
+    conteudo: 'E sobre peptídeos? Comprei Fragment 176-191 mas não vi resultado nenhum. Aplicava sempre de manhã depois do café.',
+  },
+  {
+    id: '7',
+    tipo: 'usuario',
+    timestamp: '09:52',
+    autor: { id: 'dr-marcus', nome: 'Dr. Marcus', is_founder: true },
+    conteudo: 'Lucas, aí está seu erro. Fragment apenas MOBILIZA gordura (ativa HSL), mas NÃO OXIDA. Se você aplicou pós-refeição com insulina alta, a insulina INIBIU a HSL via fosforilação inibitória. O protocolo correto: jejum prolongado (8-12h), aplicar, esperar 15-20min, e fazer AEJ 60-70% FC máx por 30-45min.',
+  },
+  {
+    id: '8',
+    tipo: 'usuario',
+    timestamp: '10:00',
+    autor: { id: 'lucas-ferreira', nome: 'Lucas Ferreira', is_premium: true },
+    conteudo: 'Caramba, faz total sentido. Então sem o cardio em jejum, os ácidos graxos liberados simplesmente voltam pro adipócito?',
+  },
+  {
+    id: '9',
+    tipo: 'usuario',
+    timestamp: '10:05',
+    autor: { id: 'dr-marcus', nome: 'Dr. Marcus', is_founder: true },
+    conteudo: 'Exatamente. Re-esterificação. Ciclo inútil. Você pagou caro por uma injeção que não fez nada. O Fragment mobiliza, o cardio oxida. A sinergia é OBRIGATÓRIA.',
+  },
+  {
+    id: '10',
+    tipo: 'ia',
+    timestamp: '10:06',
+    autor: { id: 'ia', nome: 'IA Facilitadora' },
+    conteudo: 'RESUMO: Protocolo Fragment 176-191 correto = Jejum + Aplicação + Espera 15min + AEJ. Sem cardio = dinheiro jogado fora.',
+    ia_tipo: 'resumo',
+  },
+  {
+    id: '11',
+    tipo: 'usuario',
+    timestamp: '10:15',
+    autor: { id: 'amanda-silva', nome: 'Amanda Silva' },
+    conteudo: 'Dr. Marcus, e sobre Lipedema? Minha médica disse pra fazer HIIT, mas li aqui que inflama mais. Qual a verdade?',
+  },
+  {
+    id: '12',
+    tipo: 'usuario',
+    timestamp: '10:22',
+    autor: { id: 'dr-marcus', nome: 'Dr. Marcus', is_founder: true },
+    conteudo: 'Amanda, o tecido adiposo no Lipedema é HIPÓXICO, FIBROSADO, com drenagem linfática comprometida. HIIT causa microtrauma, dispara HIF-1α, ativa NF-κB, e o sistema linfático (já 30-50% menos eficiente) não drena os mediadores inflamatórios. Resultado: mais edema, mais fibrose, mais dor. Você está correndo pra trás.',
+  },
+  {
+    id: '13',
+    tipo: 'usuario',
+    timestamp: '10:30',
+    autor: { id: 'amanda-silva', nome: 'Amanda Silva' },
+    conteudo: 'Então qual o protocolo correto?',
+  },
+  {
+    id: '14',
+    tipo: 'usuario',
+    timestamp: '10:35',
+    autor: { id: 'dr-marcus', nome: 'Dr. Marcus', is_founder: true },
+    conteudo: 'AEJ de BAIXÍSSIMA intensidade (5-6km/h) + compressão graduada (20-30mmHg). A contração muscular rítmica funciona como bomba linfática auxiliar. A compressão cria gradiente de pressão que potencializa retorno linfático em até 40%. Em jejum, insulina baixa maximiza lipólise via HSL sem depender de adrenalina alta (que piora inflamação).',
+  },
+  {
+    id: '15',
+    tipo: 'ia',
+    timestamp: '10:36',
+    autor: { id: 'ia', nome: 'IA Facilitadora' },
+    conteudo: 'PROTOCOLO DESTAQUE: Lipedema = Caminhada 5-6km/h + Meia de compressão 20-30mmHg + Jejum. 40-60 min. Simples. Eficaz. Anti-inflamatório.',
+    ia_tipo: 'destaque',
+  },
+];
+
+// ========================================
+// DADOS DAS COMUNIDADES (11 COMUNIDADES - FASE 2)
 // ========================================
 
 const COMUNIDADES_DATA: Record<string, ComunidadeData & { mensagens: Mensagem[] }> = {
@@ -732,6 +848,13 @@ const COMUNIDADES_DATA: Record<string, ComunidadeData & { mensagens: Mensagem[] 
     membrosOnline: 78,
     totalMensagens: 3247,
     mensagens: MENSAGENS_TREINO_CASA,
+  },
+  'performance-biohacking': {
+    titulo: 'Performance & Biohacking',
+    descricao: 'Protocolos de elite, farmacologia avançada e estratégias de redução de danos',
+    membrosOnline: 34,
+    totalMensagens: 1256,
+    mensagens: MENSAGENS_PERFORMANCE_BIOHACKING,
   },
 };
 
@@ -846,6 +969,25 @@ const NOVAS_MENSAGENS: Record<string, Mensagem[]> = {
       timestamp: '08:15',
       autor: { id: 'raquel-ferreira', nome: 'Raquel Ferreira', is_premium: true },
       conteudo: 'Alguém tem sugestão de elástico bom pra comprar? Quero começar a usar mas não sei qual resistência escolher.',
+      isNew: true,
+    },
+  ],
+  'performance-biohacking': [
+    {
+      id: 'new-1',
+      tipo: 'usuario',
+      timestamp: '11:20',
+      autor: { id: 'pedro-costa', nome: 'Pedro Costa', is_premium: true },
+      conteudo: 'Alguém já usou BPC-157 pra recuperação de lesão? Estou com tendinite crônica e queria saber se vale a pena.',
+      isNew: true,
+    },
+    {
+      id: 'new-2',
+      tipo: 'ia',
+      timestamp: '11:21',
+      autor: { id: 'ia', nome: 'IA Facilitadora' },
+      conteudo: 'NOVO TÓPICO: Peptídeos para recuperação de lesões. 34 membros online prontos para compartilhar experiências.',
+      ia_tipo: 'insight',
       isNew: true,
     },
   ],
