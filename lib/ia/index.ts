@@ -142,3 +142,61 @@ export type {
   InterventionRecord,
   SavedIntervention,
 } from './intervention-tracker';
+
+// ========================================
+// SISTEMA DE MODERACAO v3 - Acolhimento
+// ========================================
+
+// User Detector
+export {
+  isNewUser,
+  getUserStats,
+  getUserLevel,
+  shouldWelcomeUser,
+  findSimilarUsers,
+} from './user-detector';
+
+export type {
+  UserStats,
+  UserLevel,
+} from './user-detector';
+
+// Sentiment Detector
+export {
+  detectSentiment,
+  extractMainTopic,
+  analyzeContent,
+  getMisinformationCorrection,
+  classifyMessageType,
+} from './sentiment-detector';
+
+export type {
+  SentimentAnalysis,
+  TopicAnalysis,
+  ContentAnalysis,
+} from './sentiment-detector';
+
+// Response Templates
+export {
+  AI_RESPONSE_TEMPLATES,
+  generateResponse,
+  calculateFPReward,
+} from './response-templates';
+
+export type {
+  TemplateContext,
+} from './response-templates';
+
+// AI Moderator
+export {
+  moderateMessage,
+  celebrateStreak,
+  celebrateFPMilestone,
+  DEFAULT_MODERATION_CONFIG,
+} from './moderator';
+
+export type {
+  ModerationInput,
+  ModerationResult,
+  ModerationConfig,
+} from './moderator';
