@@ -14,7 +14,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth-config';
 import { moderateMessage, celebrateStreak, celebrateFPMilestone } from '@/lib/ia/moderator';
 import { getUserStats } from '@/lib/ia/user-detector';
-import { earnFP, type EarnFPInput } from '@/lib/fp/service';
+// FP é concedido pelo sistema principal no frontend (useFP hook)
+// Evitamos duplicação não importando/chamando awardFP aqui
 
 // ========================================
 // GET - Status do Sistema
@@ -88,20 +89,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     });
 
     // 2. CONCEDER FP (se configurado)
+    // Nota: FP já é concedido pelo sistema principal de FP no frontend
+    // Aqui só logamos para debugging
     if (result.fpAwarded > 0) {
-      try {
-        const fpInput: EarnFPInput = {
-          userId: body.userId,
-          comunidadeSlug: body.communitySlug,
-          action: mapActionToFPAction(result.action),
-          messageId: body.messageId,
-        };
-
-        await earnFP(fpInput);
-      } catch (fpError) {
-        console.error('[AI Moderate] Erro ao conceder FP:', fpError);
-        // Continua mesmo se FP falhar
-      }
+      console.log(`[AI Moderate] FP sugerido: ${result.fpAwarded} para ${body.userId} (ação: ${result.action})`);
+      // O sistema principal de FP (useFP hook) já cuida da concessão de FP
+      // Evitamos duplicação não chamando awardFP aqui
     }
 
     // 3. VERIFICAR STREAK (se solicitado)
@@ -161,24 +154,3 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 }
 
-// ========================================
-// FUNCOES AUXILIARES
-// ========================================
-
-/**
- * Mapeia acao do moderador para acao de FP
- */
-function mapActionToFPAction(action: string): 'message' | 'question' | 'daily_access' | 'create_arena' | 'message_long' {
-  const mapping: Record<string, 'message' | 'question' | 'daily_access' | 'create_arena' | 'message_long'> = {
-    'welcome_new_user': 'daily_access',
-    'emotional_support': 'message_long',
-    'misinformation': 'message',
-    'question': 'question',
-    'achievement': 'message_long',
-    'engagement': 'message',
-    'regular': 'message',
-    'short_message': 'message',
-  };
-
-  return mapping[action] || 'message';
-}

@@ -29,6 +29,7 @@ import { useLoginRequiredModal } from '@/app/components/comunidades/LoginRequire
 import { useComunidadesAuth } from '@/app/components/comunidades/ComunidadesAuthContext';
 import type { GalleryImage } from '@/app/components/comunidades/ImageGallery';
 import { ImagePreview } from '@/hooks/useImageUpload';
+import { useAIModerator, useCelebrations } from '@/hooks/useAIModerator';
 
 // ========================================
 // DYNAMIC IMPORTS (Bundle Optimization)
@@ -1403,6 +1404,15 @@ export default function PainelVivoPage() {
   const { isOpen, interactionType, openModal, closeModal } = useLoginRequiredModal();
   const { analisarConversa, notificarRespostaUsuario } = useIAFacilitadora();
 
+  // Sistema de Moderação IA v3 - Acolhimento
+  const { moderatePost, isProcessing: isModerating } = useAIModerator();
+  const {
+    currentCelebration,
+    dismissCelebration,
+    processModerationResult,
+    hasCelebrations,
+  } = useCelebrations();
+
   // Sistema de FP
   const {
     balance: fpBalance,
@@ -1575,6 +1585,7 @@ export default function PainelVivoPage() {
     setMensagens(prev => [...prev, novaMensagem]);
 
     // Salvar no banco de dados via API
+    let realMessageId = tempId;
     try {
       const response = await fetch('/api/comunidades/messages', {
         method: 'POST',
@@ -1591,6 +1602,7 @@ export default function PainelVivoPage() {
         const result = await response.json();
         // Atualizar ID da mensagem com o ID real do banco
         if (result.mensagem?.id) {
+          realMessageId = result.mensagem.id;
           setMensagens(prev =>
             prev.map(m => m.id === tempId ? { ...m, id: result.mensagem.id } : m)
           );
@@ -1600,7 +1612,64 @@ export default function PainelVivoPage() {
       console.error('Erro ao salvar mensagem:', error);
     }
 
-    // Verificar se é a primeira mensagem do usuário (boas-vindas)
+    // ========================================
+    // SISTEMA DE MODERAÇÃO IA v3 - Acolhimento
+    // Prioridade: welcome > emotional > misinformation
+    // ========================================
+    try {
+      const moderationResult = await moderatePost({
+        userId: user.id,
+        userName: user.nome,
+        content: message,
+        communitySlug: slug,
+        communityName: comunidade?.titulo,
+        messageId: realMessageId,
+        checkStreak: true,
+        checkFPMilestone: true,
+      });
+
+      if (moderationResult) {
+        // Processar celebrações (streak, FP milestone)
+        processModerationResult(moderationResult);
+
+        // Se moderação decidiu responder (welcome, emotional support, misinformation)
+        if (moderationResult.moderation.shouldRespond && moderationResult.moderation.response) {
+          const mensagemModerador: Mensagem = {
+            id: moderationResult.moderation.interventionId || `ia-mod-${Date.now()}`,
+            tipo: 'ia',
+            timestamp: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+            autor: { id: 'ia', nome: 'IA Facilitadora' },
+            conteudo: moderationResult.moderation.response,
+            ia_tipo: moderationResult.moderation.responseType === 'welcome' ? 'insight' :
+                     moderationResult.moderation.responseType === 'emotional_support' ? 'destaque' :
+                     moderationResult.moderation.responseType === 'misinformation' ? 'destaque' :
+                     moderationResult.moderation.responseType === 'achievement' ? 'destaque' : 'pergunta',
+            isNew: true,
+          };
+
+          // Delay para parecer mais natural
+          setTimeout(() => {
+            setMensagens(prev => [...prev, mensagemModerador]);
+            if (moderationResult.moderation.responseType === 'welcome') {
+              setHasWelcomed(true);
+            }
+          }, 1500);
+
+          // Se moderação já respondeu, não precisa da IA legacy
+          return;
+        }
+      }
+    } catch (error) {
+      console.error('[Moderação] Erro:', error);
+      // Continua com IA legacy se moderação falhar
+    }
+
+    // ========================================
+    // IA LEGACY - Facilitadora (perguntas, técnico, blog)
+    // Só executa se moderação não respondeu
+    // ========================================
+
+    // Verificar se é a primeira mensagem do usuário (boas-vindas fallback)
     const isFirstMessage = !hasWelcomed;
 
     // Chamar IA para analisar e potencialmente responder
@@ -1719,6 +1788,44 @@ export default function PainelVivoPage() {
     >
       {/* FP Toast Notifications */}
       <FPToastManager lastEarned={lastEarned} onClear={clearLastEarned} />
+
+      {/* Celebration Toast (Streak / FP Milestone) */}
+      {hasCelebrations && currentCelebration && (
+        <div className="fixed top-20 right-4 z-50 animate-slideDown">
+          <div
+            className={`
+              p-4 rounded-xl border backdrop-blur-md shadow-lg max-w-sm
+              ${currentCelebration.type === 'streak'
+                ? 'bg-orange-500/10 border-orange-500/30'
+                : 'bg-purple-500/10 border-purple-500/30'
+              }
+            `}
+          >
+            <div className="flex items-start gap-3">
+              <div className={`text-2xl ${currentCelebration.type === 'streak' ? 'animate-pulse' : ''}`}>
+                {currentCelebration.type === 'streak' ? '🔥' : '🏆'}
+              </div>
+              <div className="flex-1">
+                <p className="text-sm text-white whitespace-pre-line">
+                  {currentCelebration.response}
+                </p>
+                {currentCelebration.fpBonus && (
+                  <p className="text-xs text-emerald-400 mt-1 font-semibold">
+                    +{currentCelebration.fpBonus} FP bônus!
+                  </p>
+                )}
+              </div>
+              <button
+                onClick={dismissCelebration}
+                className="text-zinc-400 hover:text-white transition-colors"
+              >
+                <span className="sr-only">Fechar</span>
+                ✕
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Background Effects */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">

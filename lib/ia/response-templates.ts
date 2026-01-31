@@ -347,7 +347,9 @@ export function generateResponse(
   }
 
   try {
-    return template(context);
+    // Cast seguro: cada template usa apenas os campos que precisa
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (template as (ctx: any) => string)(context);
   } catch (error) {
     console.error(`[ResponseTemplates] Erro ao gerar resposta:`, error);
     return '';
