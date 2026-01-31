@@ -9,7 +9,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Star, Flame, Target, Gift, X, Sparkles } from 'lucide-react';
+import { Trophy, Star, Flame, Target, Gift, X, Sparkles, Zap } from 'lucide-react';
 import { FPIcon } from './FPIcon';
 
 // Tipos de conquistas e suas configuracoes

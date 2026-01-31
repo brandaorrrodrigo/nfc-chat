@@ -22,6 +22,11 @@ interface DBMessage {
   content: string;
   created_at: string;
   parent_id: string | null;
+  // Campos de edição/exclusão
+  is_edited?: boolean;
+  edited_at?: string | null;
+  is_deleted?: boolean;
+  deleted_at?: string | null;
 }
 
 /**
@@ -48,11 +53,12 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Buscar mensagens do Supabase
+    // Buscar mensagens do Supabase (excluir deletadas)
     const { data, error } = await supabase
       .from('nfc_chat_messages')
       .select('*')
       .eq('comunidade_slug', slug)
+      .or('is_deleted.is.null,is_deleted.eq.false') // Filtrar mensagens não deletadas
       .order('created_at', { ascending: true })
       .limit(500);
 
@@ -81,6 +87,10 @@ export async function GET(request: NextRequest) {
         hour: '2-digit',
         minute: '2-digit',
       }),
+      // Campos para edição
+      createdAt: row.created_at,
+      isEdited: row.is_edited || false,
+      editedAt: row.edited_at || null,
       respostas: [],
       reacoes: [],
     }));
@@ -188,6 +198,10 @@ export async function POST(request: NextRequest) {
         hour: '2-digit',
         minute: '2-digit',
       }),
+      // Campos para edição
+      createdAt: data.created_at,
+      isEdited: false,
+      editedAt: null,
       respostas: [],
       reacoes: [],
     };
@@ -217,13 +231,21 @@ CREATE TABLE IF NOT EXISTS nfc_chat_messages (
   content TEXT NOT NULL,
   parent_id TEXT REFERENCES nfc_chat_messages(id) ON DELETE CASCADE,
   created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  -- Campos de edição
+  is_edited BOOLEAN DEFAULT FALSE,
+  edited_at TIMESTAMPTZ,
+  original_content TEXT,
+  -- Campos de exclusão (soft delete)
+  is_deleted BOOLEAN DEFAULT FALSE,
+  deleted_at TIMESTAMPTZ
 );
 
 -- Índices para performance
 CREATE INDEX IF NOT EXISTS idx_nfc_chat_messages_slug ON nfc_chat_messages(comunidade_slug);
 CREATE INDEX IF NOT EXISTS idx_nfc_chat_messages_user ON nfc_chat_messages(user_id);
 CREATE INDEX IF NOT EXISTS idx_nfc_chat_messages_created ON nfc_chat_messages(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_nfc_chat_messages_deleted ON nfc_chat_messages(is_deleted) WHERE is_deleted = FALSE;
 
 -- Habilitar RLS
 ALTER TABLE nfc_chat_messages ENABLE ROW LEVEL SECURITY;
@@ -233,4 +255,7 @@ CREATE POLICY "Leitura publica" ON nfc_chat_messages FOR SELECT USING (true);
 
 -- Policy: inserção para todos (a API valida autenticação)
 CREATE POLICY "Insercao permitida" ON nfc_chat_messages FOR INSERT WITH CHECK (true);
+
+-- Policy: atualização para todos (a API valida autenticação)
+CREATE POLICY "Update permitido" ON nfc_chat_messages FOR UPDATE USING (true);
 `;

@@ -65,6 +65,14 @@ const IAPerguntaDoDia = dynamic(
   { ssr: false }
 );
 
+const MessageActions = dynamic(() => import('@/app/components/comunidades/MessageActions'), {
+  ssr: false,
+});
+
+const EditableMessage = dynamic(() => import('@/app/components/comunidades/EditableMessage'), {
+  ssr: false,
+});
+
 // ========================================
 // LIB IMPORTS
 // ========================================
@@ -94,6 +102,10 @@ interface Mensagem {
   ia_tipo?: 'resumo' | 'insight' | 'pergunta' | 'destaque';
   isNew?: boolean;
   imagens?: GalleryImage[];
+  // Campos para edição/exclusão
+  createdAt?: string;
+  isEdited?: boolean;
+  editedAt?: string | null;
 }
 
 interface ComunidadeData {
@@ -788,6 +800,122 @@ const MENSAGENS_DIETA_VIDA_REAL: Mensagem[] = [
 ];
 
 // ========================================
+// MENSAGENS: PEPTÍDEOS RESEARCH
+// ========================================
+
+const MENSAGENS_PEPTIDEOS_RESEARCH: Mensagem[] = [
+  {
+    id: '1',
+    tipo: 'ia',
+    timestamp: '08:00',
+    autor: { id: 'ia', nome: 'IA Facilitadora' },
+    conteudo: 'BEM-VINDOS à Arena Peptídeos Research. Aqui discutimos peptídeos de pesquisa: Fragment 176-191, BPC-157, TB-500, Ipamorelin e outros. Foco em ciência, protocolos e redução de danos.',
+    ia_tipo: 'destaque',
+  },
+  {
+    id: '2',
+    tipo: 'usuario',
+    timestamp: '08:15',
+    autor: { id: 'dr-lucas', nome: 'Dr. Lucas', is_founder: true },
+    conteudo: 'Vamos começar pelo mais mal-usado: Fragment 176-191. Esse peptídeo é o fragmento lipolítico do HGH (aminoácidos 176-191). Ele MOBILIZA gordura, mas NÃO oxida. Entenderam a diferença?',
+  },
+  {
+    id: '3',
+    tipo: 'usuario',
+    timestamp: '08:22',
+    autor: { id: 'thiago-costa', nome: 'Thiago Costa', is_premium: true },
+    conteudo: 'Dr. Lucas, então por isso meu Fragment não funcionou? Eu aplicava de manhã depois do café da manhã...',
+  },
+  {
+    id: '4',
+    tipo: 'usuario',
+    timestamp: '08:30',
+    autor: { id: 'dr-lucas', nome: 'Dr. Lucas', is_founder: true },
+    conteudo: 'Thiago, você jogou dinheiro fora. O Fragment MOBILIZA ácidos graxos para a corrente sanguínea. Se você não faz cardio em jejum logo após, esses ácidos graxos são REESTERIFICADOS de volta ao tecido adiposo. Protocolo correto: Fragment + 40min AEJ em jejum.',
+  },
+  {
+    id: '5',
+    tipo: 'ia',
+    timestamp: '08:31',
+    autor: { id: 'ia', nome: 'IA Facilitadora' },
+    conteudo: 'INSIGHT: Fragment 176-191 mobiliza, mas NÃO oxida. Sem cardio em jejum = injeção que não fez nada.',
+    ia_tipo: 'insight',
+  },
+  {
+    id: '6',
+    tipo: 'usuario',
+    timestamp: '08:40',
+    autor: { id: 'marina-silva', nome: 'Marina Silva', is_premium: true },
+    conteudo: 'E o BPC-157? Ouvi falar que é milagroso pra lesões. Qual a ciência por trás?',
+  },
+  {
+    id: '7',
+    tipo: 'usuario',
+    timestamp: '08:48',
+    autor: { id: 'dr-lucas', nome: 'Dr. Lucas', is_founder: true },
+    conteudo: 'Marina, BPC-157 é um peptídeo gástrico que upregula fatores de crescimento (VEGF, EGF) e modula óxido nítrico. Acelera cicatrização de tendões, músculos e até mucosa gástrica. Protocolo comum: 250-500mcg/dia, subcutâneo próximo à lesão. Estudos em humanos ainda são limitados, mas relatos anedóticos são consistentes.',
+  },
+  {
+    id: '8',
+    tipo: 'usuario',
+    timestamp: '09:00',
+    autor: { id: 'ricardo-mendes', nome: 'Ricardo Mendes', is_premium: true },
+    conteudo: 'Alguém já combinou BPC-157 com TB-500? Ouvi que a sinergia é absurda pra recuperação.',
+  },
+  {
+    id: '9',
+    tipo: 'usuario',
+    timestamp: '09:10',
+    autor: { id: 'dr-lucas', nome: 'Dr. Lucas', is_founder: true },
+    conteudo: 'Ricardo, sim! TB-500 (Timosina Beta-4) regula actina, promove angiogênese e reduz inflamação. Combinado com BPC-157 você tem: regeneração tecidual (BPC) + vascularização e mobilidade celular (TB-500). Stack clássico pra lesões crônicas.',
+  },
+  {
+    id: '10',
+    tipo: 'ia',
+    timestamp: '09:11',
+    autor: { id: 'ia', nome: 'IA Facilitadora' },
+    conteudo: 'PROTOCOLO DESTAQUE: BPC-157 (250-500mcg) + TB-500 (2-5mg 2x/semana) = Stack regenerativo. Aplicação próxima à lesão.',
+    ia_tipo: 'destaque',
+  },
+  {
+    id: '11',
+    tipo: 'usuario',
+    timestamp: '09:20',
+    autor: { id: 'thiago-costa', nome: 'Thiago Costa', is_premium: true },
+    conteudo: 'E Ipamorelin? É melhor que o HGH sintético?',
+  },
+  {
+    id: '12',
+    tipo: 'usuario',
+    timestamp: '09:28',
+    autor: { id: 'dr-lucas', nome: 'Dr. Lucas', is_founder: true },
+    conteudo: 'Thiago, Ipamorelin é um secretagogo — ele estimula sua própria hipófise a liberar GH. Vantagem: pulso mais fisiológico, menos dessensibilização. Desvantagem: depende da sua capacidade de produção. Dose comum: 200-300mcg antes de dormir. Combina bem com CJC-1295 (sem DAC) pra potencializar.',
+  },
+  {
+    id: '13',
+    tipo: 'usuario',
+    timestamp: '09:40',
+    autor: { id: 'marina-silva', nome: 'Marina Silva', is_premium: true },
+    conteudo: 'Qual a procedência confiável? Tenho medo de comprar peptídeo degradado ou falso.',
+  },
+  {
+    id: '14',
+    tipo: 'usuario',
+    timestamp: '09:48',
+    autor: { id: 'dr-lucas', nome: 'Dr. Lucas', is_founder: true },
+    conteudo: 'Marina, pontos importantes: 1) Peptídeos são FRÁGEIS — exigem refrigeração. 2) Compre de fornecedores com COA (Certificate of Analysis) de laboratório terceirizado. 3) Reconstituição com água bacteriostática, não soro. 4) Armazenar reconstituído na geladeira, usar em até 30 dias.',
+  },
+  {
+    id: '15',
+    tipo: 'ia',
+    timestamp: '09:49',
+    autor: { id: 'ia', nome: 'IA Facilitadora' },
+    conteudo: 'ALERTA: Peptídeos exigem armazenamento refrigerado e reconstituição correta. Sempre exija COA do fornecedor.',
+    ia_tipo: 'pergunta',
+  },
+];
+
+// ========================================
 // MENSAGENS: PERFORMANCE & BIOHACKING
 // ========================================
 
@@ -1006,6 +1134,13 @@ const COMUNIDADES_DATA: Record<string, ComunidadeData & { mensagens: Mensagem[] 
     totalMensagens: 1256,
     mensagens: MENSAGENS_PERFORMANCE_BIOHACKING,
   },
+  'peptideos-research': {
+    titulo: 'Peptídeos Research',
+    descricao: 'Fragment 176-191, BPC-157, TB-500, Ipamorelin e outros peptídeos de pesquisa. Ciência, protocolos e redução de danos.',
+    membrosOnline: 23,
+    totalMensagens: 847,
+    mensagens: MENSAGENS_PEPTIDEOS_RESEARCH,
+  },
 };
 
 // ========================================
@@ -1160,6 +1295,25 @@ const NOVAS_MENSAGENS: Record<string, Mensagem[]> = {
       isNew: true,
     },
   ],
+  'peptideos-research': [
+    {
+      id: 'new-1',
+      tipo: 'usuario',
+      timestamp: '14:35',
+      autor: { id: 'rafael-costa', nome: 'Rafael Costa', is_premium: true },
+      conteudo: 'Pessoal, qual a melhor hora pra aplicar Fragment antes do AEJ? 30 min antes ou menos?',
+      isNew: true,
+    },
+    {
+      id: 'new-2',
+      tipo: 'ia',
+      timestamp: '14:36',
+      autor: { id: 'ia', nome: 'IA Facilitadora' },
+      conteudo: 'NOVO TÓPICO: Timing de aplicação do Fragment 176-191. 23 membros online discutindo protocolos.',
+      ia_tipo: 'insight',
+      isNew: true,
+    },
+  ],
 };
 
 // ========================================
@@ -1216,12 +1370,24 @@ function MensagemItem({
   mensagem,
   isNew,
   communitySlug,
-  onLoginRequired
+  currentUserId,
+  isEditing,
+  onLoginRequired,
+  onStartEdit,
+  onCancelEdit,
+  onSaveEdit,
+  onDelete,
 }: {
   mensagem: Mensagem;
   isNew?: boolean;
   communitySlug: string;
+  currentUserId?: string;
+  isEditing?: boolean;
   onLoginRequired?: () => void;
+  onStartEdit?: () => void;
+  onCancelEdit?: () => void;
+  onSaveEdit?: (newContent: string) => Promise<void>;
+  onDelete?: () => void;
 }) {
   const isIA = mensagem.tipo === 'ia';
 
@@ -1268,59 +1434,94 @@ function MensagemItem({
       </div>
 
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-1 flex-wrap">
-          <span
-            className={`
-              text-sm font-semibold
-              ${isIA
-                ? iaTextColors[mensagem.ia_tipo || 'insight']
-                : 'text-white'
-              }
-            `}
-          >
-            {mensagem.autor.nome}
-          </span>
-
-          {isIA && (
-            <span className="px-1.5 py-0.5 text-[10px] bg-purple-500/30 text-purple-300 rounded flex items-center gap-1 font-mono">
-              <Sparkles className="w-2.5 h-2.5" />
-              {mensagem.ia_tipo?.toUpperCase()}
+        <div className="flex items-center justify-between mb-1">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span
+              className={`
+                text-sm font-semibold
+                ${isIA
+                  ? iaTextColors[mensagem.ia_tipo || 'insight']
+                  : 'text-white'
+                }
+              `}
+            >
+              {mensagem.autor.nome}
             </span>
-          )}
 
-          {!isIA && mensagem.autor.is_founder && (
-            <span className="px-1.5 py-0.5 text-[10px] bg-yellow-500/20 text-yellow-400 rounded font-bold">
-              FOUNDER
-            </span>
-          )}
+            {isIA && (
+              <span className="px-1.5 py-0.5 text-[10px] bg-purple-500/30 text-purple-300 rounded flex items-center gap-1 font-mono">
+                <Sparkles className="w-2.5 h-2.5" />
+                {mensagem.ia_tipo?.toUpperCase()}
+              </span>
+            )}
 
-          {!isIA && mensagem.autor.is_premium && !mensagem.autor.is_founder && (
-            <span className="px-1.5 py-0.5 text-[10px] bg-purple-500/20 text-purple-400 rounded">
-              Premium
-            </span>
+            {!isIA && mensagem.autor.is_founder && (
+              <span className="px-1.5 py-0.5 text-[10px] bg-yellow-500/20 text-yellow-400 rounded font-bold">
+                FOUNDER
+              </span>
+            )}
+
+            {!isIA && mensagem.autor.is_premium && !mensagem.autor.is_founder && (
+              <span className="px-1.5 py-0.5 text-[10px] bg-purple-500/20 text-purple-400 rounded">
+                Premium
+              </span>
+            )}
+
+            {/* Indicador de editado */}
+            {!isIA && mensagem.isEdited && (
+              <span className="text-[10px] text-zinc-500 italic">
+                (editado)
+              </span>
+            )}
+          </div>
+
+          {/* Botão de ações (editar/excluir) */}
+          {!isIA && currentUserId && onStartEdit && onDelete && (
+            <MessageActions
+              messageId={mensagem.id}
+              authorId={mensagem.autor.id}
+              currentUserId={currentUserId}
+              createdAt={mensagem.createdAt || new Date().toISOString()}
+              onEdit={onStartEdit}
+              onDelete={onDelete}
+            />
           )}
         </div>
 
-        <p
-          className={`
-            text-sm leading-relaxed
-            ${isIA ? iaTextColors[mensagem.ia_tipo || 'insight'] : 'text-zinc-300'}
-          `}
-        >
-          {mensagem.conteudo}
-        </p>
+        {/* Conteúdo da mensagem ou editor */}
+        {isEditing && onSaveEdit && onCancelEdit ? (
+          <EditableMessage
+            messageId={mensagem.id}
+            initialContent={mensagem.conteudo}
+            onSave={onSaveEdit}
+            onCancel={onCancelEdit}
+          />
+        ) : (
+          <>
+            <p
+              className={`
+                text-sm leading-relaxed
+                ${isIA ? iaTextColors[mensagem.ia_tipo || 'insight'] : 'text-zinc-300'}
+              `}
+            >
+              {mensagem.conteudo}
+            </p>
 
-        {mensagem.imagens && mensagem.imagens.length > 0 && (
-          <ImageGallery images={mensagem.imagens} />
+            {mensagem.imagens && mensagem.imagens.length > 0 && (
+              <ImageGallery images={mensagem.imagens} />
+            )}
+          </>
         )}
 
-        <div className="mt-2 pt-2">
-          <ReactionPicker
-            messageId={mensagem.id}
-            communitySlug={communitySlug}
-            onLoginRequired={onLoginRequired}
-          />
-        </div>
+        {!isEditing && (
+          <div className="mt-2 pt-2">
+            <ReactionPicker
+              messageId={mensagem.id}
+              communitySlug={communitySlug}
+              onLoginRequired={onLoginRequired}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -1432,6 +1633,58 @@ export default function PainelVivoPage() {
   const feedRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
   const [hasWelcomed, setHasWelcomed] = useState(false);
+  const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
+
+  // Handlers para edição e exclusão de mensagens
+  const handleEditMessage = async (messageId: string, newContent: string) => {
+    try {
+      const response = await fetch(`/api/comunidades/messages/${messageId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: newContent }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Erro ao editar mensagem');
+      }
+
+      // Atualizar mensagem localmente
+      setMensagens(prev =>
+        prev.map(m =>
+          m.id === messageId
+            ? { ...m, conteudo: newContent, isEdited: true, editedAt: new Date().toISOString() }
+            : m
+        )
+      );
+
+      setEditingMessageId(null);
+    } catch (error: any) {
+      console.error('Erro ao editar mensagem:', error);
+      throw error;
+    }
+  };
+
+  const handleDeleteMessage = async (messageId: string) => {
+    try {
+      const response = await fetch(`/api/comunidades/messages/${messageId}`, {
+        method: 'DELETE',
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Erro ao excluir mensagem');
+      }
+
+      // Remover mensagem da lista
+      setMensagens(prev => prev.filter(m => m.id !== messageId));
+    } catch (error: any) {
+      console.error('Erro ao excluir mensagem:', error);
+      alert('Erro ao excluir mensagem. Tente novamente.');
+    }
+  };
 
   // Carregar dados da comunidade + mensagens do banco
   useEffect(() => {
@@ -1565,6 +1818,7 @@ export default function PainelVivoPage() {
 
     // Criar mensagem temporária para UI imediata
     const tempId = `user-${Date.now()}`;
+    const createdAt = new Date().toISOString();
     const novaMensagem: Mensagem = {
       id: tempId,
       tipo: 'usuario',
@@ -1579,6 +1833,9 @@ export default function PainelVivoPage() {
       conteudo: message,
       isNew: true,
       imagens: galleryImages,
+      createdAt,
+      isEdited: false,
+      editedAt: null,
     };
 
     // Adicionar à UI imediatamente (otimistic update)
@@ -1604,7 +1861,11 @@ export default function PainelVivoPage() {
         if (result.mensagem?.id) {
           realMessageId = result.mensagem.id;
           setMensagens(prev =>
-            prev.map(m => m.id === tempId ? { ...m, id: result.mensagem.id } : m)
+            prev.map(m => m.id === tempId ? {
+              ...m,
+              id: result.mensagem.id,
+              createdAt: result.mensagem.createdAt || m.createdAt,
+            } : m)
           );
         }
       }
@@ -1957,7 +2218,13 @@ export default function PainelVivoPage() {
                 mensagem={mensagem}
                 isNew={mensagem.isNew}
                 communitySlug={slug}
+                currentUserId={user?.id}
+                isEditing={editingMessageId === mensagem.id}
                 onLoginRequired={() => openModal('reagir')}
+                onStartEdit={() => setEditingMessageId(mensagem.id)}
+                onCancelEdit={() => setEditingMessageId(null)}
+                onSaveEdit={(newContent) => handleEditMessage(mensagem.id, newContent)}
+                onDelete={() => handleDeleteMessage(mensagem.id)}
               />
             ))}
           </div>

@@ -565,7 +565,7 @@ export default function ComunidadesPage() {
 
               {/* Destaque 3: Fragment 176-191 + AEJ */}
               <Link
-                href="/comunidades/performance-biohacking"
+                href="/comunidades/peptideos-research"
                 className="card-premium p-6 rounded-2xl group hover:border-pink-500/50 block cursor-pointer relative overflow-hidden"
               >
                 {/* Glow effect */}

@@ -9,7 +9,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, HelpCircle, Trophy, Flame, Star, Target } from 'lucide-react';
+import { MessageSquare, HelpCircle, Trophy, Flame, Star, Target, Zap } from 'lucide-react';
 import { FPIcon } from './FPIcon';
 
 // Tipos de acao e suas configuracoes visuais
