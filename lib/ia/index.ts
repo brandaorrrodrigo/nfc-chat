@@ -200,3 +200,41 @@ export type {
   ModerationResult,
   ModerationConfig,
 } from './moderator';
+
+// ========================================
+// SISTEMA DE INVESTIGACAO PROGRESSIVA
+// ========================================
+
+export {
+  generateInvestigativeResponse,
+} from '@/lib/ai/investigative-response';
+
+export type {
+  InvestigativeResponseResult,
+  InvestigativeContext,
+} from '@/lib/ai/investigative-response';
+
+export {
+  INVESTIGATION_FLOWS,
+  getInvestigationFlow,
+  isInvestigableQuestion,
+} from '@/lib/ai/investigation-templates';
+
+export type {
+  InvestigationQuestion,
+} from '@/lib/ai/investigation-templates';
+
+export {
+  saveInvestigationState,
+  getInvestigationState,
+  getActiveInvestigations,
+  completeInvestigation,
+  shouldAskNextQuestion,
+  getNextQuestion,
+  isReadyForDiagnosis,
+  createNewInvestigationState,
+} from '@/lib/ai/investigation-state';
+
+export type {
+  InvestigationState,
+} from '@/lib/ai/investigation-state';

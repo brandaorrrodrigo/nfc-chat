@@ -30,6 +30,11 @@ import {
   type TemplateContext,
 } from './response-templates';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import {
+  generateInvestigativeResponse,
+  type InvestigativeContext,
+  type InvestigativeResponseResult,
+} from '@/lib/ai/investigative-response';
 
 // ========================================
 // TIPOS
@@ -47,12 +52,14 @@ export interface ModerationInput {
 export interface ModerationResult {
   shouldRespond: boolean;
   response?: string;
-  responseType?: 'welcome' | 'emotional_support' | 'misinformation' | 'question' | 'achievement' | 'engagement' | 'regular';
+  responseType?: 'welcome' | 'emotional_support' | 'misinformation' | 'question' | 'achievement' | 'engagement' | 'regular' | 'investigation_start' | 'investigation_question' | 'investigation_diagnosis';
   fpAwarded: number;
   action: string;
   analysis?: ContentAnalysis;
   userStats?: UserStats;
   interventionId?: string;
+  investigationId?: string;
+  questionsRemaining?: number;
 }
 
 export interface ModerationConfig {
@@ -60,6 +67,7 @@ export interface ModerationConfig {
   enableEmotionalSupport: boolean;
   enableMisinformationCorrection: boolean;
   enableAchievementCelebration: boolean;
+  enableInvestigativeResponse: boolean;
   minMessageLengthForAnalysis: number;
   cooldownMinutes: number;
 }
@@ -73,6 +81,7 @@ export const DEFAULT_MODERATION_CONFIG: ModerationConfig = {
   enableEmotionalSupport: true,
   enableMisinformationCorrection: true,
   enableAchievementCelebration: true,
+  enableInvestigativeResponse: true,
   minMessageLengthForAnalysis: 10,
   cooldownMinutes: 5,
 };
@@ -243,12 +252,50 @@ export async function moderateMessage(
         }
         break;
 
-      // PERGUNTA
+      // PERGUNTA - Sistema de Investigacao Progressiva
       case 'question':
-        fpAwarded = calculateFPReward('question', analysis.isLongMessage);
+        if (cfg.enableInvestigativeResponse) {
+          // Usar sistema de investigacao progressiva
+          const investigativeContext: InvestigativeContext = {
+            userId: input.userId,
+            userName: input.userName,
+            messageId: input.messageId || `msg_${Date.now()}`,
+            comunidadeSlug: input.communitySlug,
+            content: input.content,
+            isReplyToIA: false,
+          };
 
-        // Por enquanto, perguntas sao tratadas pelo sistema existente de IA
-        // Aqui so calculamos FP
+          const investigativeResult = await generateInvestigativeResponse(investigativeContext);
+
+          if (investigativeResult.shouldRespond && investigativeResult.response) {
+            fpAwarded = investigativeResult.fpAwarded;
+            response = investigativeResult.response;
+
+            interventionId = await saveModeratorIntervention({
+              userId: input.userId,
+              communitySlug: input.communitySlug,
+              type: investigativeResult.responseType,
+              responseText: response,
+              messageId: input.messageId,
+            });
+
+            return {
+              shouldRespond: true,
+              response,
+              responseType: investigativeResult.responseType as any,
+              fpAwarded,
+              action: investigativeResult.responseType,
+              analysis,
+              userStats,
+              interventionId,
+              investigationId: investigativeResult.investigationId,
+              questionsRemaining: investigativeResult.questionsRemaining,
+            };
+          }
+        }
+
+        // Fallback: apenas calcular FP se investigacao nao responder
+        fpAwarded = calculateFPReward('question', analysis.isLongMessage);
         break;
 
       // ENGAJAMENTO / REGULAR

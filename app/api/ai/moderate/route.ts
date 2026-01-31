@@ -127,6 +127,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         responseType: result.responseType,
         action: result.action,
         interventionId: result.interventionId,
+        investigationId: result.investigationId,
+        questionsRemaining: result.questionsRemaining,
       },
       fp: {
         awarded: result.fpAwarded,

@@ -56,6 +56,8 @@ export interface ModerationResponse {
     responseType?: string;
     action: string;
     interventionId?: string;
+    investigationId?: string;
+    questionsRemaining?: number;
   };
   fp: {
     awarded: number;
