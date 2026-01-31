@@ -35,6 +35,7 @@ import {
   type InvestigativeContext,
   type InvestigativeResponseResult,
 } from '@/lib/ai/investigative-response';
+import { checkAndUnlockBadges, type BadgeCheckResult } from '@/lib/badges';
 
 // ========================================
 // TIPOS
@@ -60,6 +61,7 @@ export interface ModerationResult {
   interventionId?: string;
   investigationId?: string;
   questionsRemaining?: number;
+  newBadges?: BadgeCheckResult;
 }
 
 export interface ModerationConfig {
@@ -304,6 +306,19 @@ export async function moderateMessage(
         break;
     }
 
+    // VERIFICAR BADGES (em background para nao bloquear)
+    let newBadges: BadgeCheckResult | undefined;
+    try {
+      newBadges = await checkAndUnlockBadges(input.userId);
+      if (newBadges.newBadges.length > 0) {
+        console.log(`[Moderator] Novas badges para ${input.userId}:`, newBadges.newBadges.map(b => b.name));
+        // Adicionar FP das badges ao total
+        fpAwarded += newBadges.totalFPRewarded;
+      }
+    } catch (badgeError) {
+      console.error('[Moderator] Erro ao verificar badges:', badgeError);
+    }
+
     return {
       shouldRespond: !!response,
       response,
@@ -313,6 +328,7 @@ export async function moderateMessage(
       analysis,
       userStats,
       interventionId,
+      newBadges,
     };
 
   } catch (error) {

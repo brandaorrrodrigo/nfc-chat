@@ -145,6 +145,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         streak: streakCelebration,
         fpMilestone: fpMilestoneResult,
       },
+      badges: result.newBadges ? {
+        newBadges: result.newBadges.newBadges.map(b => ({
+          id: b.id,
+          name: b.name,
+          description: b.description,
+          icon: b.icon,
+          rarity: b.rarity,
+          fpReward: b.fpReward,
+        })),
+        totalFPRewarded: result.newBadges.totalFPRewarded,
+      } : null,
     });
 
   } catch (error: any) {
