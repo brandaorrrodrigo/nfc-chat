@@ -18,13 +18,14 @@
  * - Refetch a cada 10 minutos para renovação suave
  * - Usuário SÓ sai se clicar em "Sair" explicitamente
  *
- * @version 4.1.0 - NFCHeader + AuthHeader
+ * @version 4.2.0 - NFCHeader + AuthHeader + FP Gamification
  */
 
 import React from 'react';
 import { SessionProvider } from 'next-auth/react';
 import { ComunidadesAuthProvider, useComunidadesAuth } from '@/app/components/comunidades/ComunidadesAuthContext';
 import { NFCHeader, UniversalFooter } from '@/components/shared';
+import { FPProvider } from '@/contexts/FPContext';
 
 // Intervalo de refresh em segundos (10 minutos)
 // Mantém a sessão viva e a UI sincronizada
@@ -154,6 +155,19 @@ function GlobalLayout({ children }: { children: React.ReactNode }) {
   );
 }
 
+/**
+ * FPWrapper - Wrapper que conecta FPProvider com o usuario autenticado
+ */
+function FPWrapper({ children }: { children: React.ReactNode }) {
+  const { user } = useComunidadesAuth();
+
+  return (
+    <FPProvider userId={user?.id} showWidget={!!user}>
+      {children}
+    </FPProvider>
+  );
+}
+
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider
@@ -167,9 +181,11 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       // Importante para persistência após F5/reload
     >
       <ComunidadesAuthProvider>
-        <GlobalLayout>
-          {children}
-        </GlobalLayout>
+        <FPWrapper>
+          <GlobalLayout>
+            {children}
+          </GlobalLayout>
+        </FPWrapper>
       </ComunidadesAuthProvider>
     </SessionProvider>
   );
