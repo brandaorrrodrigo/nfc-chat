@@ -9,7 +9,8 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Zap, MessageSquare, HelpCircle, Trophy, Flame, Star, Gift, Target } from 'lucide-react';
+import { MessageSquare, HelpCircle, Trophy, Flame, Star, Target } from 'lucide-react';
+import { FPIcon } from './FPIcon';
 
 // Tipos de acao e suas configuracoes visuais
 const ACTION_CONFIG: Record<string, {
@@ -61,7 +62,7 @@ const ACTION_CONFIG: Record<string, {
     shadowColor: 'shadow-orange-500/40',
   },
   default: {
-    icon: <Zap className="w-4 h-4" />,
+    icon: <Star className="w-4 h-4" />,
     label: 'FP ganho',
     gradient: 'from-amber-400 to-orange-500',
     shadowColor: 'shadow-orange-500/40',
@@ -121,13 +122,15 @@ export function FPToast({
             ${isAchievement ? 'min-w-[280px]' : ''}
           `}
         >
-          {/* Icone com animacao de pulse */}
+          {/* Moeda FP com animacao */}
           <motion.div
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{ duration: 0.5, repeat: isAchievement ? 2 : 1 }}
-            className="flex items-center justify-center w-10 h-10 rounded-lg bg-white/20"
+            animate={{ scale: [1, 1.15, 1], rotate: [0, 5, -5, 0] }}
+            transition={{ duration: 0.6, repeat: isAchievement ? 2 : 1 }}
+            className="relative flex-shrink-0"
           >
-            {isAchievement ? <Trophy className="w-5 h-5" /> : config.icon}
+            {/* Glow effect */}
+            <div className="absolute inset-0 bg-yellow-400 rounded-full blur-md opacity-50" />
+            <FPIcon size={44} animated glow />
           </motion.div>
 
           {/* Conteudo */}

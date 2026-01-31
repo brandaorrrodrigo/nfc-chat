@@ -9,7 +9,8 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Star, Flame, Zap, Target, Gift, X, Sparkles } from 'lucide-react';
+import { Trophy, Star, Flame, Target, Gift, X, Sparkles } from 'lucide-react';
+import { FPIcon } from './FPIcon';
 
 // Tipos de conquistas e suas configuracoes
 const ACHIEVEMENT_CONFIG: Record<string, {
@@ -55,7 +56,7 @@ const ACHIEVEMENT_CONFIG: Record<string, {
     description: 'Voce criou sua primeira arena de discussao!',
   },
   fp_100: {
-    icon: <Zap className="w-12 h-12" />,
+    icon: <FPIcon size={48} animated glow />,
     gradient: 'from-amber-400 to-orange-500',
     bgGradient: 'from-amber-950/90 to-orange-950/90',
     title: 'Centuriao!',
@@ -277,7 +278,7 @@ export function FPAchievementModal({
                     transition={{ delay: 0.5, type: 'spring' }}
                     className="inline-flex items-center gap-2 px-6 py-3 mb-6 rounded-full bg-white/10"
                   >
-                    <Zap className="w-5 h-5 text-amber-400" />
+                    <FPIcon size={24} glow />
                     <span className="text-xl font-bold text-white">
                       +{fpAwarded} FP
                     </span>

@@ -9,10 +9,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Zap, Flame, Gift, ChevronUp, ChevronDown, Trophy, Info } from 'lucide-react';
+import { Flame, Gift, ChevronUp, Trophy, Info } from 'lucide-react';
 import Link from 'next/link';
 import { useFP } from '@/hooks/useFP';
 import { FP_CONFIG } from '@/lib/fp/config';
+import { FPIcon } from './FPIcon';
 
 interface FPWidgetProps {
   initialExpanded?: boolean;
@@ -90,19 +91,19 @@ export function FPWidget({
               onClick={() => setIsExpanded(!isExpanded)}
               className="w-full flex items-center gap-3 px-4 py-3 hover:bg-zinc-800/50 transition-colors"
             >
-              {/* Icone FP animado */}
+              {/* Moeda FP animada */}
               <motion.div
                 animate={{
-                  rotate: loading ? [0, 360] : 0,
                   scale: loading ? 1 : [1, 1.05, 1],
                 }}
                 transition={{
-                  rotate: { duration: 1, repeat: loading ? Infinity : 0 },
                   scale: { duration: 2, repeat: Infinity },
                 }}
-                className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-orange-500/30"
+                className="relative"
               >
-                <Zap className="w-5 h-5 text-black" />
+                {/* Glow */}
+                <div className="absolute inset-0 bg-yellow-500 rounded-full blur-md opacity-30" />
+                <FPIcon size={44} animated={!loading} spin={loading} />
               </motion.div>
 
               {/* Saldo */}
@@ -230,9 +231,7 @@ export function FPWidgetMini({ onClick }: FPWidgetMiniProps) {
     >
       {/* FP */}
       <div className="flex items-center gap-1.5">
-        <div className="w-5 h-5 rounded-md bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
-          <Zap className="w-3 h-3 text-black" />
-        </div>
+        <FPIcon size={24} />
         <span className="text-sm font-bold text-white">
           {loading ? '...' : balance.toLocaleString()}
         </span>

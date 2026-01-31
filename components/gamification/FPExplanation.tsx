@@ -10,7 +10,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import {
-  Zap,
   MessageSquare,
   HelpCircle,
   Target,
@@ -23,10 +22,10 @@ import {
   ArrowRight,
   AlertTriangle,
   Calendar,
-  Trophy,
   Star,
 } from 'lucide-react';
 import { FP_CONFIG } from '@/lib/fp/config';
+import { FPIcon } from './FPIcon';
 
 // Configuracao das acoes com valores do config
 const ACTIONS = [
@@ -136,7 +135,7 @@ export function FPExplanation({ currentBalance = 0, currentStreak = 0 }: FPExpla
         className="text-center"
       >
         <div className="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg shadow-orange-500/30">
-          <Zap className="w-10 h-10 text-black" />
+          <FPIcon size={48} animated glow />
         </div>
         <h1 className="text-3xl font-bold text-white mb-4">
           Sistema de <span className="text-amber-400">Fitness Points</span>
@@ -233,7 +232,7 @@ export function FPExplanation({ currentBalance = 0, currentStreak = 0 }: FPExpla
           {/* Formula */}
           <div className="flex flex-wrap items-center justify-center gap-4 mb-8 p-4 rounded-xl bg-zinc-800/50">
             <div className="flex items-center gap-2">
-              <Zap className="w-5 h-5 text-amber-400" />
+              <FPIcon size={24} />
               <span className="text-lg font-bold text-white">{FP_CONFIG.FP_PER_PERCENT} FP</span>
             </div>
             <ArrowRight className="w-5 h-5 text-zinc-500" />
