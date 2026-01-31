@@ -50,6 +50,8 @@ const USER_LEVELS: UserLevel[] = [
 
 /**
  * Verifica se e o primeiro post do usuario na comunidade
+ * NOTA: Esta funcao é chamada APÓS a mensagem já ter sido salva,
+ * portanto consideramos "novo" se count <= 1 (apenas a mensagem atual)
  */
 export async function isNewUser(
   userId: string,
@@ -77,7 +79,8 @@ export async function isNewUser(
       return false;
     }
 
-    return (count ?? 0) === 0;
+    // count <= 1 porque a mensagem atual JÁ foi salva antes de chamar moderatePost
+    return (count ?? 0) <= 1;
   } catch (error) {
     console.error('[UserDetector] Erro inesperado:', error);
     return false;
@@ -162,7 +165,7 @@ export async function getUserStats(
       streakDays,
       firstPostAt: firstPost,
       lastActiveAt: lastPost,
-      isNew: count === 0,
+      isNew: count <= 1, // <= 1 porque a mensagem atual JÁ foi salva
       isActive: count >= 5 && count < 100,
       isVeteran: count >= 100 || fpTotal >= 500,
       isSuperActive: count >= 20 && streakDays >= 7,
