@@ -1046,6 +1046,54 @@ const MENSAGENS_PERFORMANCE_BIOHACKING: Mensagem[] = [
 ];
 
 // ========================================
+// NOVAS ARENAS (FASE 3) - MENSAGENS INICIAIS
+// ========================================
+
+const MENSAGENS_RECEITAS_SAUDAVEIS: Mensagem[] = [
+  {
+    id: '1',
+    tipo: 'ia',
+    timestamp: '10:00',
+    autor: { id: 'ia', nome: 'IA Facilitadora' },
+    conteudo: '🥗 **Bem-vindo(a) à Arena Receitas Saudáveis!**\n\nCompartilhe suas receitas fit favoritas e receba análise nutricional completa da IA:\n\n✓ Calorias por porção\n✓ Proteínas, carboidratos e gorduras\n✓ Classificação da dieta (Low Carb, Cetogênica, Balanceada)\n✓ Horário ideal de consumo\n✓ Sugestões de variações\n\nPoste sua receita detalhando ingredientes e modo de preparo. A IA vai analisar automaticamente! 🎯',
+    ia_tipo: 'destaque',
+  },
+];
+
+const MENSAGENS_EXERCICIOS_QUE_AMA: Mensagem[] = [
+  {
+    id: '1',
+    tipo: 'ia',
+    timestamp: '10:00',
+    autor: { id: 'ia', nome: 'IA Facilitadora' },
+    conteudo: '🏋️ **Bem-vindo(a) à Arena Exercícios que Ama!**\n\nCompartilhe exercícios que você AMA fazer e receba análise biomecânica da IA:\n\n✓ Músculos ativados (primários e secundários)\n✓ Padrão de movimento (empurrar, puxar, agachar, etc)\n✓ Dificuldade e equipamento necessário\n✓ Variações progressivas e regressivas\n✓ Alternativas para diferentes objetivos\n\nDescreva o exercício e a IA vai detalhar tudo! 💪',
+    ia_tipo: 'destaque',
+  },
+];
+
+const MENSAGENS_SINAL_VERMELHO: Mensagem[] = [
+  {
+    id: '1',
+    tipo: 'ia',
+    timestamp: '10:00',
+    autor: { id: 'ia', nome: 'IA Facilitadora' },
+    conteudo: '🚨 **Bem-vindo(a) à Arena Sinal Vermelho!**\n\nSentindo DOR ou DESCONFORTO em algum exercício? A IA vai investigar:\n\n**Como funciona:**\n1. Você descreve a dor (exercício, onde dói, quando dói, intensidade)\n2. IA faz 3-5 perguntas específicas\n3. Você recebe diagnóstico com recomendações\n\n**O que identificamos:**\n✓ Ajustes de técnica (80% dos casos)\n✓ Questões musculares/anatômicas (15%)\n✓ Sinais de alerta para médico (5%)\n\n⚠️ **Baseado em literatura científica, mas NÃO substitui avaliação médica.**\n\nDescreva sua dor em detalhes e vamos investigar! 🎯',
+    ia_tipo: 'destaque',
+  },
+];
+
+const MENSAGENS_ASPIRACIONAL_ESTETICA: Mensagem[] = [
+  {
+    id: '1',
+    tipo: 'ia',
+    timestamp: '10:00',
+    autor: { id: 'ia', nome: 'IA Facilitadora' },
+    conteudo: '💎 **Bem-vindo(a) à Arena Aspiracional & Estética!**\n\nCompartilhe seus sonhos estéticos com base científica e responsabilidade.\n\n**A IA vai orientar sobre:**\n📚 Anatomia do procedimento (Tratados SBCP, Netter, Moore)\n🏋️ Preparo físico necessário\n🍽️ Nutrição pré/pós-operatória\n⚕️ Quando procurar avaliação médica\n⚠️ Riscos e contraindicações\n\n**IMPORTANTE:**\n✅ Compartilhe motivações genuínas\n✅ Aceite que a IA vai questionar preparo\n❌ Não peça indicação de cirurgião\n❌ Decisões impulsivas serão questionadas\n\n**Cirurgia é COMPLEMENTO de estilo de vida saudável, não substituto de treino e dieta.**\n\nCompartilhe seu sonho com maturidade! 💚',
+    ia_tipo: 'destaque',
+  },
+];
+
+// ========================================
 // DADOS DAS COMUNIDADES (11 COMUNIDADES - FASE 2)
 // ========================================
 
@@ -1143,31 +1191,31 @@ const COMUNIDADES_DATA: Record<string, ComunidadeData & { mensagens: Mensagem[] 
   },
   'receitas-saudaveis': {
     titulo: 'Receitas Saudáveis',
-    descricao: 'Compartilhe receitas fit e receba análise nutricional automática da IA: calorias, proteínas, carboidratos e gorduras por porção.',
-    membrosOnline: 0,
-    totalMensagens: 0,
-    mensagens: [],
+    descricao: 'Compartilhe receitas fit e receba análise nutricional automática da IA',
+    membrosOnline: 12,
+    totalMensagens: 45,
+    mensagens: MENSAGENS_RECEITAS_SAUDAVEIS,
   },
   'exercicios-que-ama': {
     titulo: 'Exercícios que Ama',
-    descricao: 'Compartilhe exercícios que você AMA fazer e receba análise biomecânica da IA: músculos ativados, padrão de movimento e variações.',
-    membrosOnline: 0,
-    totalMensagens: 0,
-    mensagens: [],
+    descricao: 'Compartilhe exercícios que você AMA fazer e receba análise biomecânica da IA',
+    membrosOnline: 18,
+    totalMensagens: 67,
+    mensagens: MENSAGENS_EXERCICIOS_QUE_AMA,
   },
   'sinal-vermelho': {
     titulo: 'Sinal Vermelho 🚨',
-    descricao: 'Investigação inteligente de dores e desconfortos em exercícios. A IA faz perguntas progressivas e sugere ajustes ou encaminha ao médico.',
-    membrosOnline: 0,
-    totalMensagens: 0,
-    mensagens: [],
+    descricao: 'Investigação inteligente de dores e desconfortos em exercícios',
+    membrosOnline: 8,
+    totalMensagens: 23,
+    mensagens: MENSAGENS_SINAL_VERMELHO,
   },
   'aspiracional-estetica': {
     titulo: '💎 Aspiracional & Estética',
-    descricao: 'Sonhos estéticos com base científica e responsabilidade. IA educadora sobre procedimentos com preparo físico, nutricional e psicológico.',
-    membrosOnline: 0,
-    totalMensagens: 0,
-    mensagens: [],
+    descricao: 'Sonhos estéticos com base científica e responsabilidade',
+    membrosOnline: 14,
+    totalMensagens: 38,
+    mensagens: MENSAGENS_ASPIRACIONAL_ESTETICA,
   },
 };
 
