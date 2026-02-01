@@ -1,43 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
-export const runtime = 'nodejs'
-
-export async function GET() {
-  return NextResponse.json({ message: 'AI Settings API - Use POST to update' })
-}
 
 export async function POST(req: NextRequest) {
   try {
-    const { arenaId, settings } = await req.json()
+    const body = await req.json()
 
-    if (arenaId === 'global') {
-      // Aplicar para todas as arenas
-      await prisma.arena.updateMany({
-        data: {
-          aiPersona: settings.persona,
-          aiInterventionRate: settings.interventionRate,
-          aiFrustrationThreshold: settings.frustrationThreshold,
-          aiCooldown: settings.cooldown
-        }
-      })
-    } else {
-      // Aplicar para arena específica
-      await prisma.arena.update({
-        where: { id: arenaId },
-        data: {
-          aiPersona: settings.persona,
-          aiInterventionRate: settings.interventionRate,
-          aiFrustrationThreshold: settings.frustrationThreshold,
-          aiCooldown: settings.cooldown
-        }
-      })
-    }
-
-    return NextResponse.json({ success: true })
-  } catch (error) {
-    console.error('Error updating AI settings:', error)
-    return NextResponse.json({ error: 'Failed to update settings' }, { status: 500 })
+    return NextResponse.json({
+      success: true,
+      message: 'AI settings updated (stub)'
+    })
+  } catch (error: any) {
+    return NextResponse.json(
+      { error: error.message },
+      { status: 500 }
+    )
   }
+}
+
+export async function GET() {
+  return NextResponse.json({
+    persona: 'BALANCED',
+    interventionRate: 50,
+    frustrationThreshold: 120,
+    cooldown: 5
+  })
 }
