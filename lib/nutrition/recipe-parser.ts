@@ -437,14 +437,43 @@ export function looksLikeRecipe(content: string): boolean {
     'como fazer',
     'rende',
     'porções',
+    'porcao',
+    'receita',
+    'bolo',
+    'torta',
+    'panqueca',
+    'omelete',
+    'sopa',
+    'salada',
+    'shake',
+    'smoothie',
+    'vitamina',
+    'frango',
+    'carne',
+    'peixe',
+    'batata',
+    'arroz',
   ];
 
   const hasKeyword = recipeKeywords.some(k => lower.includes(k));
 
-  // Verificar se tem números + unidades
-  const hasQuantity = /\d+\s*(g|kg|ml|xicara|colher|un|ovo)/i.test(content);
+  // Verificar se tem números + unidades (expandido)
+  const hasQuantity = /\d+\s*(g|gr|gramas?|kg|kilo|ml|l|litros?|xicara|xíc|colher|colheres|cs|cc|un|unidades?|ovo|ovos|fatias?|pedaços?|dentes?|scoop)/i.test(content);
 
-  return hasKeyword || hasQuantity;
+  // Verificar se tem múltiplas linhas com vírgulas ou quebras (formato lista de ingredientes)
+  const hasMultipleItems = (content.match(/\n/g) || []).length >= 2 || (content.match(/,/g) || []).length >= 2;
+
+  const result = hasKeyword || hasQuantity || (hasMultipleItems && hasQuantity);
+
+  console.log('[looksLikeRecipe]', {
+    hasKeyword,
+    hasQuantity,
+    hasMultipleItems,
+    result,
+    contentPreview: content.substring(0, 100) + '...'
+  });
+
+  return result;
 }
 
 export default {

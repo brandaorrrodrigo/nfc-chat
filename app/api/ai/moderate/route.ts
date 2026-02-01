@@ -156,9 +156,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const isRecipeCommunity = RECIPE_COMMUNITY_SLUGS.includes(body.communitySlug.toLowerCase());
     const contentLooksLikeRecipe = looksLikeRecipe(body.content);
 
+    console.log(`[AI Moderate] Arena: ${body.communitySlug}, isRecipeCommunity: ${isRecipeCommunity}, contentLooksLikeRecipe: ${contentLooksLikeRecipe}`);
+
     // Se for comunidade de receitas E parecer uma receita → análise nutricional
     if (isRecipeCommunity && contentLooksLikeRecipe) {
-      console.log(`[AI Moderate] Detectada receita em ${body.communitySlug} por ${body.userName}`);
+      console.log(`[AI Moderate] ✅ Detectada receita em ${body.communitySlug} por ${body.userName}`);
 
       try {
         // 1. Parse da receita
@@ -219,6 +221,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         console.error('[AI Moderate] Erro ao analisar receita:', recipeError.message);
         // Fallback para moderação normal em caso de erro
       }
+    } else if (isRecipeCommunity && !contentLooksLikeRecipe) {
+      console.log(`[AI Moderate] ⚠️ Post em arena de receitas MAS não parece receita. Conteúdo: "${body.content.substring(0, 100)}..."`);
     }
 
     // ========================================

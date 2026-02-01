@@ -3,7 +3,11 @@
     "allow": [
       "Bash(npm run build:*)",
       "Bash(vercel --prod:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git push:*)",
+      "Bash(git show:*)",
+      "Bash(git checkout:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
