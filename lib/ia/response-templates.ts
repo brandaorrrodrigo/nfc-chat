@@ -40,11 +40,11 @@ export const AI_RESPONSE_TEMPLATES = {
    * Boas-vindas para primeiro post na comunidade
    */
   WELCOME_NEW_USER: (ctx: TemplateContext) => `
-Bem-vinda a Arena ${ctx.communityName ? `de ${ctx.communityName}` : ''}, ${ctx.userName}!
+Olá ${ctx.userName}, bem-vindo(a) à Arena ${ctx.communityName ? `de ${ctx.communityName}` : ''}!
 
-Adoramos ter voce aqui. Este e um espaco seguro onde voce pode compartilhar suas duvidas, vitorias e frustracoes sem julgamento.
+Adoramos ter você aqui. Este é um espaço seguro onde você pode compartilhar suas dúvidas, vitórias e frustrações sem julgamento.
 
-**Dica rapida:** As pessoas aqui sao MUITO ativas e solidarias. Nao hesite em comentar nos posts de outras tambem - quanto mais voce participa, mais FP acumula!
+**Dica rápida:** As pessoas aqui são MUITO ativas e solidárias. Não hesite em comentar nos posts de outras também - quanto mais você participa, mais FP acumula!
 
 **+${ctx.fpAwarded || 2} FP** pelo seu primeiro post!
 `.trim(),
@@ -65,11 +65,11 @@ Adoramos ter voce aqui. Este e um espaco seguro onde voce pode compartilhar suas
       : '';
 
     return `
-Oi, ${ctx.userName}! Seja muito bem-vinda!
+Oi, ${ctx.userName}! Seja muito bem-vindo(a)!
 
 ${specificMessage}
 
-Seu primeiro passo foi o mais importante: estar aqui. Agora e so continuar participando!
+Seu primeiro passo foi o mais importante: estar aqui. Agora é só continuar participando!
 
 **+${ctx.fpAwarded || 2} FP** de boas-vindas!
 `.trim();

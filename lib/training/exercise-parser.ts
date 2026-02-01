@@ -282,21 +282,39 @@ function extractEquipment(content: string): string | undefined {
 export function looksLikeExercise(content: string): boolean {
   const lower = content.toLowerCase();
 
-  // Palavras-chave de exercício
+  // Palavras-chave de exercício (expandidas)
   const exerciseKeywords = [
     'exercício',
     'exercicio',
     'treino',
     'sinto trabalhando',
     'músculos',
+    'musculo',
     'carga',
     'reps',
     'séries',
+    'series',
     'sets',
     'kg',
     'execução',
+    'execucao',
     'amo fazer',
+    'gosto de fazer',
     'meu favorito',
+    'agachamento',
+    'supino',
+    'levantamento',
+    'remada',
+    'avanço',
+    'avanco',
+    'afundo',
+    'rosca',
+    'pulldown',
+    'leg press',
+    'stiff',
+    'crucifixo',
+    'elevação',
+    'elevacao',
   ];
 
   const hasKeyword = exerciseKeywords.some(k => lower.includes(k));
@@ -306,10 +324,26 @@ export function looksLikeExercise(content: string): boolean {
     lower.includes(kw.toLowerCase())
   );
 
+  // Verificar se menciona equipamento
+  const hasEquipment = Object.values(EQUIPMENT_KEYWORDS).flat().some(kw =>
+    lower.includes(kw.toLowerCase())
+  );
+
   // Verificar se tem carga
   const hasLoad = /\d+\s*kg/i.test(content) || /\d+\s*(?:reps?|repetições?)/i.test(content);
 
-  return hasKeyword || hasMuscle || hasLoad;
+  const result = hasKeyword || hasMuscle || hasEquipment || hasLoad;
+
+  console.log('[looksLikeExercise]', {
+    hasKeyword,
+    hasMuscle,
+    hasEquipment,
+    hasLoad,
+    result,
+    contentPreview: content.substring(0, 100) + '...'
+  });
+
+  return result;
 }
 
 export default {
