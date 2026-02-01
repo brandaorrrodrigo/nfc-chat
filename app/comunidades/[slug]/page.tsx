@@ -1141,6 +1141,34 @@ const COMUNIDADES_DATA: Record<string, ComunidadeData & { mensagens: Mensagem[] 
     totalMensagens: 847,
     mensagens: MENSAGENS_PEPTIDEOS_RESEARCH,
   },
+  'receitas-saudaveis': {
+    titulo: 'Receitas Saudáveis',
+    descricao: 'Compartilhe receitas fit e receba análise nutricional automática da IA: calorias, proteínas, carboidratos e gorduras por porção.',
+    membrosOnline: 0,
+    totalMensagens: 0,
+    mensagens: [],
+  },
+  'exercicios-que-ama': {
+    titulo: 'Exercícios que Ama',
+    descricao: 'Compartilhe exercícios que você AMA fazer e receba análise biomecânica da IA: músculos ativados, padrão de movimento e variações.',
+    membrosOnline: 0,
+    totalMensagens: 0,
+    mensagens: [],
+  },
+  'sinal-vermelho': {
+    titulo: 'Sinal Vermelho 🚨',
+    descricao: 'Investigação inteligente de dores e desconfortos em exercícios. A IA faz perguntas progressivas e sugere ajustes ou encaminha ao médico.',
+    membrosOnline: 0,
+    totalMensagens: 0,
+    mensagens: [],
+  },
+  'aspiracional-estetica': {
+    titulo: '💎 Aspiracional & Estética',
+    descricao: 'Sonhos estéticos com base científica e responsabilidade. IA educadora sobre procedimentos com preparo físico, nutricional e psicológico.',
+    membrosOnline: 0,
+    totalMensagens: 0,
+    mensagens: [],
+  },
 };
 
 // ========================================
