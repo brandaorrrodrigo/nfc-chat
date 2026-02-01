@@ -1897,14 +1897,6 @@ export default function PainelVivoPage() {
   const handleEnviarMensagem = async (message: string, images?: ImagePreview[]) => {
     if (!user) return;
 
-    // Ganhar FP por mensagem (background, não bloqueia UI)
-    // API detecta automaticamente: pergunta (+5) ou mensagem (+2) + bônus longa (+3)
-    earnFP(FP_CONFIG.ACTIONS.MESSAGE, {
-      messageLength: message.length,
-      messageContent: message,  // Para detectar perguntas (termina com "?")
-      roomId: slug,
-    }).catch(console.error);
-
     const galleryImages: GalleryImage[] | undefined = images?.map(img => ({
       url: img.previewUrl,
       metadata: img.metadata,
@@ -1966,6 +1958,15 @@ export default function PainelVivoPage() {
     } catch (error) {
       console.error('Erro ao salvar mensagem:', error);
     }
+
+    // Ganhar FP por mensagem APÓS salvar (para ter messageId correto)
+    // API detecta automaticamente: pergunta (+5) ou mensagem (+2) + bônus longa (+3)
+    earnFP(FP_CONFIG.ACTIONS.MESSAGE, {
+      messageLength: message.length,
+      messageContent: message,  // Para detectar perguntas (termina com "?")
+      roomId: slug,
+      messageId: realMessageId,  // ID real da mensagem para rastrear FP
+    }).catch(console.error);
 
     // ========================================
     // SISTEMA DE MODERAÇÃO IA v3 - Acolhimento

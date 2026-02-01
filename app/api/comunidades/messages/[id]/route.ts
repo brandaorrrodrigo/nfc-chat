@@ -162,6 +162,8 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 /**
  * DELETE /api/comunidades/messages/[id]
  * Exclui uma mensagem (soft delete)
+ *
+ * ANTI-EXPLOIT: Remove FP ganho pela mensagem deletada
  */
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
@@ -215,6 +217,67 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       );
     }
 
+    // ==========================================
+    // ANTI-EXPLOIT: Remover FP ganho pela mensagem
+    // ==========================================
+
+    // Buscar transações de FP relacionadas a esta mensagem
+    const { data: fpTransactions } = await supabase
+      .from('nfc_chat_fp_transactions')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('type', 'earn')
+      .or(`metadata->>messageId.eq.${messageId},metadata->>message_id.eq.${messageId}`)
+      .gte('created_at', existingMessage.created_at); // Só transações após criação da mensagem
+
+    let fpToRemove = 0;
+
+    if (fpTransactions && fpTransactions.length > 0) {
+      // Soma FP ganho por esta mensagem
+      fpToRemove = fpTransactions.reduce((sum, tx) => sum + tx.amount, 0);
+
+      console.log(`[DELETE Message] Removendo ${fpToRemove} FP do usuário ${userId} por deletar mensagem ${messageId}`);
+
+      // Buscar saldo atual do usuário
+      const { data: userFP } = await supabase
+        .from('nfc_chat_user_fp')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (userFP && fpToRemove > 0) {
+        const newBalance = Math.max(0, userFP.balance - fpToRemove);
+        const newTotalEarned = Math.max(0, userFP.total_earned - fpToRemove);
+
+        // Atualizar saldo
+        await supabase
+          .from('nfc_chat_user_fp')
+          .update({
+            balance: newBalance,
+            total_earned: newTotalEarned,
+            fp_earned_today: Math.max(0, (userFP.fp_earned_today || 0) - fpToRemove),
+            updated_at: new Date().toISOString(),
+          })
+          .eq('user_id', userId);
+
+        // Registrar transação de remoção
+        await supabase
+          .from('nfc_chat_fp_transactions')
+          .insert({
+            user_id: userId,
+            amount: -fpToRemove,
+            type: 'spend',
+            action: 'admin_adjust',
+            description: 'FP removido por deletar mensagem',
+            metadata: {
+              reason: 'message_deleted',
+              message_id: messageId,
+              deleted_at: new Date().toISOString(),
+            },
+          });
+      }
+    }
+
     // Soft delete
     const { error: deleteError } = await supabase
       .from('nfc_chat_messages')
@@ -233,6 +296,10 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({
       success: true,
       messageId,
+      fpRemoved: fpToRemove,
+      message: fpToRemove > 0
+        ? `Mensagem deletada. ${fpToRemove} FP foi removido do seu saldo.`
+        : 'Mensagem deletada.',
     });
   } catch (error: any) {
     console.error('[DELETE Message Error]', error);
