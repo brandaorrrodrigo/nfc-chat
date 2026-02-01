@@ -165,6 +165,7 @@ const config: Config = {
     },
   },
   plugins: [
+    require('@tailwindcss/typography'),
     // Custom scrollbar plugin
     function({ addUtilities }: { addUtilities: Function }) {
       addUtilities({

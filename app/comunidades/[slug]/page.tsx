@@ -30,6 +30,8 @@ import { useComunidadesAuth } from '@/app/components/comunidades/ComunidadesAuth
 import type { GalleryImage } from '@/app/components/comunidades/ImageGallery';
 import { ImagePreview } from '@/hooks/useImageUpload';
 import { useAIModerator, useCelebrations } from '@/hooks/useAIModerator';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 // ========================================
 // DYNAMIC IMPORTS (Bundle Optimization)
@@ -1574,14 +1576,27 @@ function MensagemItem({
           />
         ) : (
           <>
-            <p
-              className={`
-                text-sm leading-relaxed
-                ${isIA ? iaTextColors[mensagem.ia_tipo || 'insight'] : 'text-zinc-300'}
-              `}
-            >
-              {mensagem.conteudo}
-            </p>
+            {isIA ? (
+              <div
+                className={`
+                  text-sm leading-relaxed prose prose-invert prose-sm max-w-none
+                  ${iaTextColors[mensagem.ia_tipo || 'insight']}
+                  prose-headings:${iaTextColors[mensagem.ia_tipo || 'insight']}
+                  prose-strong:${iaTextColors[mensagem.ia_tipo || 'insight']}
+                  prose-ul:text-zinc-300
+                  prose-li:text-zinc-300
+                  prose-p:text-zinc-300
+                `}
+              >
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {mensagem.conteudo}
+                </ReactMarkdown>
+              </div>
+            ) : (
+              <p className="text-sm leading-relaxed text-zinc-300">
+                {mensagem.conteudo}
+              </p>
+            )}
 
             {mensagem.imagens && mensagem.imagens.length > 0 && (
               <ImageGallery images={mensagem.imagens} />
