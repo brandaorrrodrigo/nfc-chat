@@ -1972,6 +1972,8 @@ export default function PainelVivoPage() {
     // Prioridade: welcome > emotional > misinformation
     // ========================================
     try {
+      console.log('[Moderação] Chamando moderatePost para:', { slug, message: message.substring(0, 100) });
+
       const moderationResult = await moderatePost({
         userId: user.id,
         userName: user.nome,
@@ -1983,12 +1985,16 @@ export default function PainelVivoPage() {
         checkFPMilestone: true,
       });
 
+      console.log('[Moderação] Resultado:', moderationResult);
+
       if (moderationResult) {
         // Processar celebrações (streak, FP milestone)
         processModerationResult(moderationResult);
 
-        // Se moderação decidiu responder (welcome, emotional support, misinformation)
+        // Se moderação decidiu responder (welcome, emotional support, misinformation, nutrition, exercise, etc)
         if (moderationResult.moderation.shouldRespond && moderationResult.moderation.response) {
+          console.log('[Moderação] IA vai responder! Tipo:', moderationResult.moderation.responseType);
+
           const mensagemModerador: Mensagem = {
             id: moderationResult.moderation.interventionId || `ia-mod-${Date.now()}`,
             tipo: 'ia',
@@ -1998,7 +2004,11 @@ export default function PainelVivoPage() {
             ia_tipo: moderationResult.moderation.responseType === 'welcome' ? 'insight' :
                      moderationResult.moderation.responseType === 'emotional_support' ? 'destaque' :
                      moderationResult.moderation.responseType === 'misinformation' ? 'destaque' :
-                     moderationResult.moderation.responseType === 'achievement' ? 'destaque' : 'pergunta',
+                     moderationResult.moderation.responseType === 'achievement' ? 'destaque' :
+                     moderationResult.moderation.responseType === 'nutrition_analysis' ? 'destaque' :
+                     moderationResult.moderation.responseType === 'biomechanics_analysis' ? 'destaque' :
+                     moderationResult.moderation.responseType === 'investigation_question' ? 'pergunta' :
+                     moderationResult.moderation.responseType === 'aesthetic_education' ? 'insight' : 'pergunta',
             isNew: true,
           };
 
