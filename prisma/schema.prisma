@@ -1,14 +1,435 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../lib/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// USUÁRIOS E AUTENTICAÇÃO
+// ============================================
+
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  name              String
+  password          String?
+  role              Role      @default(USER)
+
+  // 2FA
+  twoFactorEnabled  Boolean   @default(false)
+  twoFactorSecret   String?
+
+  // FP
+  fpTotal           Int       @default(0)
+  fpAvailable       Int       @default(0)
+  currentStreak     Int       @default(0)
+  longestStreak     Int       @default(0)
+  lastActiveDate    DateTime?
+
+  // Flags de moderação
+  isMuted           Boolean   @default(false)
+  mutedUntil        DateTime?
+  isBanned          Boolean   @default(false)
+  bannedAt          DateTime?
+  bannedReason      String?
+  spamScore         Int       @default(0)
+
+  // Relações
+  posts             Post[]
+  comments          Comment[]
+  fpTransactions    FPTransaction[]
+  badges            UserBadge[]
+  moderationActions ModerationAction[]
+  auditLogs         AuditLog[]
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([role])
+  @@index([fpTotal])
+  @@index([isBanned])
+  @@index([email])
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  FOUNDER
+  MODERATOR
+  USER
+}
+
+// ============================================
+// ARENAS (COMUNIDADES)
+// ============================================
+
+model Arena {
+  id                String    @id @default(cuid())
+  slug              String    @unique
+  name              String
+  description       String    @db.Text
+  icon              String
+  color             String
+  category          String
+
+  // Configurações
+  isActive          Boolean   @default(true)
+  isPaused          Boolean   @default(false)
+  allowImages       Boolean   @default(true)
+  allowLinks        Boolean   @default(true)
+  allowVideos       Boolean   @default(false)
+
+  // IA Settings
+  aiPersona         AIPersona @default(BALANCED)
+  aiInterventionRate Int      @default(50) // 0-100%
+  aiFrustrationThreshold Int  @default(120) // minutos
+  aiCooldown        Int       @default(5) // minutos entre respostas
+
+  // Métricas
+  totalPosts        Int       @default(0)
+  totalComments     Int       @default(0)
+  dailyActiveUsers  Int       @default(0)
+  status            ArenaStatus @default(COLD)
+
+  // Relações
+  posts             Post[]
+  tags              ArenaTag[]
+  founders          ArenaFounder[]
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([slug])
+  @@index([isActive])
+  @@index([status])
+}
+
+enum AIPersona {
+  SCIENTIFIC    // Citações diretas, formal
+  MOTIVATIONAL  // Acolhedor, simples
+  SUSTAINING    // Responde tudo, mantém conversa
+  BALANCED      // Mix dos três
+}
+
+enum ArenaStatus {
+  HOT      // >10 posts/dia
+  WARM     // 3-10 posts/dia
+  COLD     // <3 posts/dia
+  ARCHIVED // Desativada
+}
+
+model ArenaTag {
+  id      String @id @default(cuid())
+  arenaId String
+  tag     String
+
+  arena   Arena  @relation(fields: [arenaId], references: [id], onDelete: Cascade)
+
+  @@unique([arenaId, tag])
+  @@index([arenaId])
+}
+
+model ArenaFounder {
+  id        String @id @default(cuid())
+  arenaId   String
+  userId    String
+
+  arena     Arena  @relation(fields: [arenaId], references: [id], onDelete: Cascade)
+
+  @@unique([arenaId, userId])
+  @@index([arenaId])
+  @@index([userId])
+}
+
+// ============================================
+// POSTS E COMENTÁRIOS
+// ============================================
+
+model Post {
+  id              String    @id @default(cuid())
+  arenaId         String
+  userId          String
+  content         String    @db.Text
+
+  // Status
+  isPublished     Boolean   @default(true)
+  isPinned        Boolean   @default(false)
+  isOfficial      Boolean   @default(false) // Post da equipe
+  isAIResponse    Boolean   @default(false)
+
+  // Moderação
+  isUnderReview   Boolean   @default(false)
+  reviewedAt      DateTime?
+  reviewedBy      String?
+  isApproved      Boolean   @default(true)
+  rejectionReason String?
+
+  // Métricas
+  viewCount       Int       @default(0)
+  likeCount       Int       @default(0)
+  commentCount    Int       @default(0)
+
+  // Soft delete
+  isDeleted       Boolean   @default(false)
+  deletedAt       DateTime?
+
+  // Relações
+  arena           Arena     @relation(fields: [arenaId], references: [id])
+  user            User      @relation(fields: [userId], references: [id])
+  comments        Comment[]
+  aiMetadata      AIMetadata?
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([arenaId])
+  @@index([userId])
+  @@index([isUnderReview])
+  @@index([createdAt])
+  @@index([isPublished])
+}
+
+model Comment {
+  id              String    @id @default(cuid())
+  postId          String
+  userId          String
+  content         String    @db.Text
+
+  // Status
+  isAIResponse    Boolean   @default(false)
+
+  // Moderação
+  isUnderReview   Boolean   @default(false)
+  isApproved      Boolean   @default(true)
+
+  // Soft delete
+  isDeleted       Boolean   @default(false)
+  deletedAt       DateTime?
+
+  // Relações
+  post            Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user            User      @relation(fields: [userId], references: [id])
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([postId])
+  @@index([userId])
+  @@index([isUnderReview])
+}
+
+// ============================================
+// METADADOS DA IA (RAG)
+// ============================================
+
+model AIMetadata {
+  id              String   @id @default(cuid())
+  postId          String   @unique
+
+  // RAG Info
+  chunksUsed      Json     // Array de chunks consultados
+  booksReferenced Json     // Livros citados
+  confidenceScore Float    // 0-1
+
+  // Shadow Mode
+  wasApproved     Boolean  @default(true)
+  approvedBy      String?
+  editedContent   String?  @db.Text
+
+  // Relações
+  post            Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  createdAt       DateTime @default(now())
+
+  @@index([postId])
+}
+
+// ============================================
+// SISTEMA DE FP
+// ============================================
+
+model FPTransaction {
+  id          String   @id @default(cuid())
+  userId      String
+  amount      Int      // Pode ser negativo (punição)
+  action      String   // "post_created", "helpful_comment", "spam_detected"
+  description String
+
+  // Metadata
+  metadata    Json?    // Detalhes extras (post_id, etc)
+
+  // Relações
+  user        User     @relation(fields: [userId], references: [id])
+
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([action])
+}
+
+model FPRule {
+  id          String   @id @default(cuid())
+  action      String   @unique // "post_created", "comment_helpful"
+  fpValue     Int
+  dailyCap    Int?     // Máximo de FP por essa ação/dia
+  cooldown    Int?     // Minutos entre ações
+  isActive    Boolean  @default(true)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([action])
+}
+
+model UserBadge {
+  id        String   @id @default(cuid())
+  userId    String
+  badgeType String
+  name      String
+  icon      String
+  earnedAt  DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([badgeType])
+}
+
+// ============================================
+// MODERAÇÃO
+// ============================================
+
+model ModerationQueue {
+  id              String   @id @default(cuid())
+  postId          String?
+  commentId       String?
+  userId          String   // Autor do conteúdo
+
+  // Detecção
+  detectedBy      String   // "AI", "USER_REPORT", "MANUAL"
+  reason          String   // "SPAM", "OFFENSIVE", "COMMERCIAL"
+  flagScore       Int      // 0-100
+
+  // Status
+  status          ModerationStatus @default(PENDING)
+  reviewedBy      String?
+  reviewedAt      DateTime?
+  decision        String?  // "APPROVE", "REJECT", "EDIT"
+
+  createdAt       DateTime @default(now())
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([userId])
+}
+
+enum ModerationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  EDITED
+}
+
+model ModerationAction {
+  id          String   @id @default(cuid())
+  moderatorId String
+  targetId    String   // User ID ou Post ID
+  targetType  String   // "USER", "POST", "COMMENT"
+  action      String   // "MUTE", "BAN", "DELETE", "APPROVE"
+  reason      String
+  duration    Int?     // Em minutos (para mute/ban temporário)
+
+  moderator   User     @relation(fields: [moderatorId], references: [id])
+
+  createdAt   DateTime @default(now())
+
+  @@index([moderatorId])
+  @@index([createdAt])
+  @@index([targetType, targetId])
+}
+
+model SpamFilter {
+  id          String   @id @default(cuid())
+  type        String   // "KEYWORD", "LINK", "PATTERN"
+  value       String
+  isActive    Boolean  @default(true)
+  severity    Int      // 1-10
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([type])
+  @@index([isActive])
+}
+
+// ============================================
+// AUDITORIA (LOGS IMUTÁVEIS)
+// ============================================
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String   // Quem fez a ação
+  action      String   // "UPDATE_ARENA", "BAN_USER", "CHANGE_FP"
+  targetType  String   // "ARENA", "USER", "POST"
+  targetId    String
+
+  // Dados da ação
+  before      Json?    // Estado anterior
+  after       Json?    // Estado novo
+
+  // Metadata
+  ipAddress   String?
+  userAgent   String?
+
+  // Relações
+  user        User     @relation(fields: [userId], references: [id])
+
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([targetType, targetId])
+  @@index([createdAt])
+  @@index([action])
+}
+
+// ============================================
+// ANALYTICS
+// ============================================
+
+model DailyMetrics {
+  id              String   @id @default(cuid())
+  date            DateTime @unique @db.Date
+
+  // Usuários
+  dau             Int      @default(0)
+  newUsers        Int      @default(0)
+  activeUsers     Int      @default(0)
+
+  // Conteúdo
+  postsCreated    Int      @default(0)
+  commentsCreated Int      @default(0)
+
+  // IA
+  aiResponses     Int      @default(0)
+  aiApprovalRate  Float    @default(0)
+
+  // FP
+  fpIssued        Int      @default(0)
+  fpConsumed      Int      @default(0)
+
+  // Moderação
+  spamDetected    Int      @default(0)
+  contentRemoved  Int      @default(0)
+
+  createdAt       DateTime @default(now())
+
+  @@index([date])
 }

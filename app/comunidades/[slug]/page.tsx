@@ -30,8 +30,6 @@ import { useComunidadesAuth } from '@/app/components/comunidades/ComunidadesAuth
 import type { GalleryImage } from '@/app/components/comunidades/ImageGallery';
 import { ImagePreview } from '@/hooks/useImageUpload';
 import { useAIModerator, useCelebrations } from '@/hooks/useAIModerator';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 
 // ========================================
 // DYNAMIC IMPORTS (Bundle Optimization)
@@ -60,6 +58,11 @@ const ReactionPicker = dynamic(() => import('@/app/components/comunidades/Reacti
 
 const FavoriteButton = dynamic(() => import('@/app/components/comunidades/FavoriteButton'), {
   ssr: false,
+});
+
+const ReactMarkdown = dynamic(() => import('react-markdown'), {
+  ssr: false,
+  loading: () => <div className="animate-pulse">Carregando...</div>,
 });
 
 const IAPerguntaDoDia = dynamic(
@@ -1588,7 +1591,7 @@ function MensagemItem({
                   prose-p:text-zinc-300
                 `}
               >
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                <ReactMarkdown>
                   {mensagem.conteudo}
                 </ReactMarkdown>
               </div>
