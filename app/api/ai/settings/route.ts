@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+
+export async function GET() {
+  return NextResponse.json({ message: 'AI Settings API - Use POST to update' })
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { arenaId, settings } = await req.json()
@@ -34,5 +41,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Failed to update settings' }, { status: 500 })
   }
 }
-
-export const dynamic = 'force-dynamic'
