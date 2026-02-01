@@ -1987,15 +1987,19 @@ export default function PainelVivoPage() {
         checkFPMilestone: true,
       });
 
-      console.log('[Moderação] Resultado:', moderationResult);
+      console.log('✅ [Moderação] Resultado completo:', JSON.stringify(moderationResult, null, 2));
 
       if (moderationResult) {
+        console.log('🔵 [Moderação] moderationResult existe');
+        console.log('🔵 [Moderação] shouldRespond:', moderationResult.moderation?.shouldRespond);
+        console.log('🔵 [Moderação] response:', moderationResult.moderation?.response ? 'SIM (tem resposta)' : 'NÃO (sem resposta)');
+
         // Processar celebrações (streak, FP milestone)
         processModerationResult(moderationResult);
 
         // Se moderação decidiu responder (welcome, emotional support, misinformation, nutrition, exercise, etc)
-        if (moderationResult.moderation.shouldRespond && moderationResult.moderation.response) {
-          console.log('[Moderação] IA vai responder! Tipo:', moderationResult.moderation.responseType);
+        if (moderationResult.moderation?.shouldRespond && moderationResult.moderation?.response) {
+          console.log('✅ [Moderação] IA vai responder! Tipo:', moderationResult.moderation.responseType);
 
           const mensagemModerador: Mensagem = {
             id: moderationResult.moderation.interventionId || `ia-mod-${Date.now()}`,
@@ -2015,7 +2019,13 @@ export default function PainelVivoPage() {
           };
 
           // Delay para parecer mais natural
+          console.log('🎯 [Moderação] Agendando mensagem da IA com delay de 1.5s');
           setTimeout(() => {
+            console.log('💬 [Moderação] ADICIONANDO mensagem da IA ao chat:', {
+              id: mensagemModerador.id,
+              tipo: mensagemModerador.ia_tipo,
+              preview: mensagemModerador.conteudo.substring(0, 100),
+            });
             setMensagens(prev => [...prev, mensagemModerador]);
             if (moderationResult.moderation.responseType === 'welcome') {
               setHasWelcomed(true);
@@ -2024,10 +2034,19 @@ export default function PainelVivoPage() {
 
           // Se moderação já respondeu, não precisa da IA legacy
           return;
+        } else {
+          console.log('⚠️ [Moderação] IA NÃO vai responder:', {
+            temModerationResult: !!moderationResult,
+            temModeration: !!moderationResult?.moderation,
+            shouldRespond: moderationResult?.moderation?.shouldRespond,
+            temResponse: !!moderationResult?.moderation?.response,
+          });
         }
+      } else {
+        console.log('⚠️ [Moderação] moderationResult é NULL ou undefined');
       }
     } catch (error) {
-      console.error('[Moderação] Erro:', error);
+      console.error('🔴 [Moderação] Erro:', error);
       // Continua com IA legacy se moderação falhar
     }
 

@@ -110,6 +110,12 @@ export function useAIModerator(): UseAIModeratorReturn {
     setIsProcessing(true);
     setError(null);
 
+    console.log('🔵 [useAIModerator] Iniciando moderação:', {
+      communitySlug: input.communitySlug,
+      userName: input.userName,
+      contentPreview: input.content.substring(0, 100),
+    });
+
     try {
       const response = await fetch('/api/ai/moderate', {
         method: 'POST',
@@ -119,18 +125,28 @@ export function useAIModerator(): UseAIModeratorReturn {
         body: JSON.stringify(input),
       });
 
+      console.log('🔵 [useAIModerator] Resposta HTTP:', response.status, response.statusText);
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
+        console.error('🔴 [useAIModerator] Erro na API:', errorData);
         throw new Error(errorData.error || `HTTP ${response.status}`);
       }
 
       const data: ModerationResponse = await response.json();
 
+      console.log('✅ [useAIModerator] Moderação concluída:', {
+        success: data.success,
+        shouldRespond: data.moderation?.shouldRespond,
+        responseType: data.moderation?.responseType,
+        fpAwarded: data.fp?.awarded,
+      });
+
       setLastResult(data);
       return data;
 
     } catch (err: any) {
-      console.error('[useAIModerator] Erro:', err);
+      console.error('🔴 [useAIModerator] Erro:', err);
       setError(err.message || 'Erro ao processar moderacao');
       return null;
 
