@@ -1972,6 +1972,7 @@ export default function PainelVivoPage() {
     // Prioridade: welcome > emotional > misinformation
     // ========================================
     try {
+      console.log('🚀 [VERSÃO DEBUG v1.0] Moderação iniciada');
       console.log('[Moderação] Chamando moderatePost para:', { slug, message: message.substring(0, 100) });
 
       const moderationResult = await moderatePost({
