@@ -6,6 +6,8 @@
  * Atualiza o tracking de intervencoes e probabilidades.
  */
 
+export const dynamic = 'force-dynamic';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { detectResponseToIntervention } from '@/lib/ia';
 

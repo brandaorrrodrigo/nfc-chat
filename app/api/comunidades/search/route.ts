@@ -6,6 +6,8 @@
  * SEMPRE retorna JSON válido.
  */
 
+export const dynamic = 'force-dynamic';
+
 import { NextRequest, NextResponse } from 'next/server';
 
 /**

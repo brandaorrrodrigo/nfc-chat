@@ -17,6 +17,8 @@
  * - Probabilidade ajustavel (40% base, reduz se ignora perguntas)
  */
 
+export const dynamic = 'force-dynamic';
+
 import { NextRequest, NextResponse } from 'next/server';
 import {
   decidirEResponder,

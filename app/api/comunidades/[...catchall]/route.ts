@@ -6,6 +6,8 @@
  * NUNCA retorna 404 HTML.
  */
 
+export const dynamic = 'force-dynamic';
+
 import { NextRequest, NextResponse } from 'next/server';
 
 function handleRequest(request: NextRequest): NextResponse {
