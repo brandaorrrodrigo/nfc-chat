@@ -1,8 +1,22 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { MetricCard } from '@/components/dashboard/MetricCard'
-import { GPUMonitor } from '@/components/dashboard/GPUMonitor'
+
+// Dynamic import para evitar problemas de SSR
+const GPUMonitor = dynamic(
+  () => import('@/components/dashboard/GPUMonitor').then(mod => mod.GPUMonitor),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl border border-slate-700 p-6">
+        <h3 className="text-lg font-bold text-white mb-4">🎮 Monitoramento de GPU</h3>
+        <div className="text-center py-8 text-gray-400">Carregando...</div>
+      </div>
+    )
+  }
+)
 
 export default function DashboardPage() {
   const [metrics, setMetrics] = useState({
