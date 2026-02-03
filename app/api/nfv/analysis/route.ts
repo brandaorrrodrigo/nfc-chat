@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
 import { getMovementAnalysisPrompt } from '@/lib/biomechanics/movement-patterns';
+import { analyzeExerciseVideo, checkVisionModelAvailable } from '@/lib/vision/video-analysis';
 
 const TABLE = 'nfc_chat_video_analyses';
 
@@ -39,40 +40,66 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Analise ja foi processada' }, { status: 400 });
     }
 
-    // Gerar prompt para IA baseado no padrao de movimento
-    const prompt = getMovementAnalysisPrompt(
-      analysis.movement_pattern,
-      analysis.user_description || ''
-    );
+    // Verificar se Vision Model está disponível
+    const visionAvailable = await checkVisionModelAvailable();
 
-    // Simular analise da IA (em producao, integrar com LLaVA/Ollama)
-    const aiAnalysis = {
-      movement_pattern: analysis.movement_pattern,
-      analysis_type: 'automated',
-      timestamp: new Date().toISOString(),
-      prompt_used: prompt,
+    let aiAnalysis: any;
 
-      // Pontos de analise baseados no padrao
-      key_observations: [
-        'Analise automatica do padrao de movimento',
-        'Verificar alinhamento articular',
-        'Avaliar cadeia cinetica',
-      ],
+    if (visionAvailable && analysis.video_path) {
+      // 🎥 ANÁLISE REAL COM VISION MODEL
+      console.log('🎥 Starting vision-based analysis...');
 
-      // Sugestoes gerais
-      suggestions: [
-        'Manter alinhamento neutro da coluna',
-        'Verificar ativacao muscular correta',
-        'Observar compensacoes durante o movimento',
-      ],
+      try {
+        const visionResult = await analyzeExerciseVideo({
+          videoPath: analysis.video_path,
+          exerciseType: analysis.movement_pattern,
+          focusAreas: ['técnica', 'postura', 'amplitude', 'compensações'],
+          framesCount: 6,
+        });
 
-      // Flags para revisao humana
-      requires_attention: [],
-      confidence_level: 'medium',
+        aiAnalysis = {
+          movement_pattern: analysis.movement_pattern,
+          analysis_type: 'vision_model',
+          timestamp: new Date().toISOString(),
+          model: 'llama3.2-vision',
 
-      // Nota: em producao, a IA analisaria frames do video
-      note: 'Pre-analise automatica. Revisao humana pendente.',
-    };
+          // Dados da análise de vídeo
+          overall_score: visionResult.overallScore,
+          summary: visionResult.summary,
+          key_observations: visionResult.technicalIssues.slice(0, 5),
+          suggestions: visionResult.recommendations,
+          requires_attention: visionResult.technicalIssues.filter(i =>
+            i.toLowerCase().includes('grave') || i.toLowerCase().includes('severo')
+          ),
+
+          // Análise frame-by-frame
+          frames_analyzed: visionResult.frames.length,
+          frame_scores: visionResult.frames.map(f => f.score),
+          confidence_level: visionResult.overallScore >= 7 ? 'high' : 'medium',
+
+          // Detalhes técnicos
+          technical_details: {
+            lowest_score_frame: Math.min(...visionResult.frames.map(f => f.score)),
+            highest_score_frame: Math.max(...visionResult.frames.map(f => f.score)),
+            total_issues: visionResult.technicalIssues.length,
+          },
+        };
+
+        console.log(`✅ Vision analysis complete (score: ${visionResult.overallScore.toFixed(1)}/10)`);
+      } catch (visionError) {
+        console.error('Vision analysis failed, using fallback:', visionError);
+        aiAnalysis = createFallbackAnalysis(analysis);
+      }
+    } else {
+      // FALLBACK: Análise baseada em prompt
+      console.log('⚠️ Vision model not available, using prompt-based analysis');
+      aiAnalysis = createFallbackAnalysis(analysis);
+    }
+
+    // Calcular confiança baseada no tipo de análise
+    const aiConfidence = aiAnalysis.analysis_type === 'vision_model'
+      ? aiAnalysis.overall_score / 10
+      : 0.5;
 
     // Atualizar registro
     const { data: updated, error: updateError } = await supabase
@@ -80,7 +107,7 @@ export async function POST(req: NextRequest) {
       .update({
         ai_analysis: aiAnalysis,
         ai_analyzed_at: new Date().toISOString(),
-        ai_confidence: 0.6,
+        ai_confidence: aiConfidence,
         status: 'AI_ANALYZED',
       })
       .eq('id', analysisId)
@@ -101,4 +128,42 @@ export async function POST(req: NextRequest) {
     console.error('[NFV] Analysis POST error:', error);
     return NextResponse.json({ error: 'Erro interno' }, { status: 500 });
   }
+}
+
+/**
+ * Cria análise fallback quando Vision Model não está disponível
+ */
+function createFallbackAnalysis(analysis: any) {
+  const prompt = getMovementAnalysisPrompt(
+    analysis.movement_pattern,
+    analysis.user_description || ''
+  );
+
+  return {
+    movement_pattern: analysis.movement_pattern,
+    analysis_type: 'prompt_based',
+    timestamp: new Date().toISOString(),
+    prompt_used: prompt,
+
+    // Pontos de análise baseados no padrão
+    key_observations: [
+      'Análise automática do padrão de movimento',
+      'Verificar alinhamento articular',
+      'Avaliar cadeia cinética',
+    ],
+
+    // Sugestões gerais
+    suggestions: [
+      'Manter alinhamento neutro da coluna',
+      'Verificar ativação muscular correta',
+      'Observar compensações durante o movimento',
+    ],
+
+    // Flags para revisão humana
+    requires_attention: [],
+    confidence_level: 'low',
+
+    // Nota
+    note: 'Pré-análise baseada em prompt. Recomenda-se análise com Vision Model para maior precisão.',
+  };
 }
