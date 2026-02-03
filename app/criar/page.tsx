@@ -5,12 +5,29 @@
  *
  * Visual: Formulário cyberpunk para criação de comunidade
  * Estética: Dark mode + Verde Neon
+ * Funcionalidades:
+ *  - Busca arenas similares ao digitar título (debounce 500ms)
+ *  - Campo de categoria obrigatório
+ *  - Submissão real via POST /api/arenas
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Zap, Lock, Globe, Users } from 'lucide-react';
+import {
+  ArrowLeft,
+  Zap,
+  Lock,
+  Globe,
+  Users,
+  AlertTriangle,
+  MessageSquare,
+  ArrowRight,
+  Loader2,
+  Search,
+} from 'lucide-react';
+import type { ArenaWithTags, ArenaCategoria } from '@/types/arena';
+import { CATEGORIA_LABELS, CATEGORIA_ORDER, STATUS_CONFIG } from '@/lib/arena-utils';
 
 // ========================================
 // PÁGINA PRINCIPAL
@@ -19,25 +36,118 @@ import { ArrowLeft, Zap, Lock, Globe, Users } from 'lucide-react';
 export default function CriarComunidadePage() {
   const router = useRouter();
   const [criando, setCriando] = useState(false);
+  const [erro, setErro] = useState('');
 
   const [formData, setFormData] = useState({
     titulo: '',
     descricao_curta: '',
     descricao_completa: '',
     visibilidade: 'publica' as 'publica' | 'privada' | 'somente_convidados',
+    categoria: '' as ArenaCategoria | '',
     tags: '',
   });
 
   const [enviado, setEnviado] = useState(false);
+  const [novaArenaSlug, setNovaArenaSlug] = useState('');
+
+  // Similar arenas state
+  const [similares, setSimilares] = useState<ArenaWithTags[]>([]);
+  const [buscandoSimilares, setBuscandoSimilares] = useState(false);
+  const [showSimilares, setShowSimilares] = useState(false);
+  const debounceRef = useRef<NodeJS.Timeout>();
+
+  // Search for similar arenas when title changes
+  const buscarSimilares = useCallback(async (titulo: string) => {
+    if (titulo.trim().length < 3) {
+      setSimilares([]);
+      setShowSimilares(false);
+      return;
+    }
+
+    setBuscandoSimilares(true);
+    try {
+      const res = await fetch(
+        `/api/arenas/search?q=${encodeURIComponent(titulo)}&limit=5`
+      );
+      const data = await res.json();
+      const found = data.arenas || [];
+      setSimilares(found);
+      setShowSimilares(found.length > 0);
+    } catch {
+      setSimilares([]);
+    } finally {
+      setBuscandoSimilares(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+    debounceRef.current = setTimeout(() => {
+      buscarSimilares(formData.titulo);
+    }, 500);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [formData.titulo, buscarSimilares]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErro('');
+
+    if (!formData.titulo.trim()) {
+      setErro('Título é obrigatório.');
+      return;
+    }
+    if (!formData.categoria) {
+      setErro('Selecione uma categoria.');
+      return;
+    }
+
     setCriando(true);
-    // MVP: Simula envio
-    setTimeout(() => {
-      setCriando(false);
+
+    try {
+      const tagsArray = formData.tags
+        .split(',')
+        .map((t) => t.trim().toLowerCase())
+        .filter(Boolean);
+
+      const slug = formData.titulo
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+
+      const res = await fetch('/api/arenas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.titulo.trim(),
+          slug,
+          description: formData.descricao_curta || formData.descricao_completa || formData.titulo,
+          categoria: formData.categoria,
+          criadaPor: 'USER',
+          tags: tagsArray,
+          icon: '💬',
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Erro ao criar arena');
+      }
+
+      const data = await res.json();
+      setNovaArenaSlug(data.arena?.slug || slug);
       setEnviado(true);
-    }, 1000);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Erro ao criar arena. Tente novamente.';
+      setErro(msg);
+    } finally {
+      setCriando(false);
+    }
   };
 
   if (enviado) {
@@ -62,16 +172,24 @@ export default function CriarComunidadePage() {
               Arena Criada!
             </h1>
             <p className="text-zinc-400 mb-8 max-w-md mx-auto">
-              <span className="text-yellow-400 font-mono">[MVP DEMO]</span> Em produção, sua arena seria ativada.
-              Por enquanto, estamos em fase de demonstração.
+              Sua nova arena foi criada com sucesso. Agora é só convidar os membros e começar as discussões.
             </p>
-            <Link
-              href="/comunidades"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-[#00ff88] text-black font-bold rounded-lg hover:bg-[#00ff88]/80 transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Voltar para Arenas
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                href={`/comunidades/${novaArenaSlug}`}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#00ff88] text-black font-bold rounded-lg hover:bg-[#00ff88]/80 transition-colors"
+              >
+                <ArrowRight className="w-4 h-4" />
+                Ir para Arena
+              </Link>
+              <Link
+                href="/comunidades"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-zinc-900 border border-zinc-700 text-white font-semibold rounded-lg hover:border-zinc-600 transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Voltar para Arenas
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -131,7 +249,7 @@ export default function CriarComunidadePage() {
           </h1>
 
           <p className="text-base text-zinc-400 font-light">
-            Estabeleça um novo protocolo de operação para reunir agentes com interesses em comum.
+            Antes de criar, verifique se já existe uma arena similar. Buscar é mais fácil que criar.
           </p>
         </div>
 
@@ -142,22 +260,113 @@ export default function CriarComunidadePage() {
             <label className="block text-sm font-semibold text-white mb-2">
               Título da Arena *
             </label>
-            <input
-              type="text"
-              value={formData.titulo}
-              onChange={(e) => setFormData({ ...formData, titulo: e.target.value })}
-              placeholder="Ex: Protocolo Lipedema"
+            <div className="relative">
+              <input
+                type="text"
+                value={formData.titulo}
+                onChange={(e) => setFormData({ ...formData, titulo: e.target.value })}
+                placeholder="Ex: Protocolo Lipedema"
+                required
+                className={`
+                  w-full px-4 py-3
+                  bg-zinc-900/50 backdrop-blur-sm
+                  border border-zinc-800
+                  rounded-lg
+                  text-white placeholder-zinc-600
+                  focus:outline-none focus:border-[#00ff88]/50
+                  transition-colors duration-200
+                `}
+              />
+              {buscandoSimilares && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <Loader2 className="w-4 h-4 text-[#00ff88] animate-spin" />
+                </div>
+              )}
+            </div>
+
+            {/* Similar arenas panel */}
+            {showSimilares && similares.length > 0 && (
+              <div className="mt-3 bg-amber-500/5 border border-amber-500/20 rounded-lg overflow-hidden">
+                <div className="flex items-center gap-2 px-4 py-3 border-b border-amber-500/10">
+                  <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                  <p className="text-sm text-amber-300 font-medium">
+                    Arenas similares encontradas
+                  </p>
+                  <Search className="w-3.5 h-3.5 text-amber-500/60 ml-auto" />
+                </div>
+
+                <div className="divide-y divide-amber-500/10">
+                  {similares.map((arena) => {
+                    const statusCfg = STATUS_CONFIG[arena.status] || STATUS_CONFIG.COLD;
+                    const catLabel = CATEGORIA_LABELS[arena.categoria] || 'Comunidade';
+
+                    return (
+                      <div
+                        key={arena.id}
+                        className="flex items-center gap-3 px-4 py-2.5 hover:bg-amber-500/5 transition-colors"
+                      >
+                        <div className={`w-2 h-2 rounded-full flex-shrink-0 ${statusCfg.dotColor}`} />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm text-white truncate">{arena.name}</p>
+                          <div className="flex items-center gap-2 text-xs text-zinc-500">
+                            <span className="text-amber-400/70">{catLabel}</span>
+                            <span>·</span>
+                            <MessageSquare className="w-3 h-3" />
+                            <span>{arena.totalPosts.toLocaleString()} posts</span>
+                          </div>
+                        </div>
+                        <Link
+                          href={`/comunidades/${arena.slug}`}
+                          className="flex-shrink-0 text-xs font-medium text-[#00ff88] hover:text-[#00ff88]/80 transition-colors flex items-center gap-1"
+                        >
+                          Ir para Arena
+                          <ArrowRight className="w-3 h-3" />
+                        </Link>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="px-4 py-2.5 bg-amber-500/5 border-t border-amber-500/10">
+                  <p className="text-xs text-zinc-500">
+                    Tem certeza que quer criar uma nova? Considere participar de uma arena existente.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Categoria */}
+          <div>
+            <label className="block text-sm font-semibold text-white mb-2">
+              Categoria *
+            </label>
+            <select
+              value={formData.categoria}
+              onChange={(e) =>
+                setFormData({ ...formData, categoria: e.target.value as ArenaCategoria })
+              }
               required
               className={`
                 w-full px-4 py-3
                 bg-zinc-900/50 backdrop-blur-sm
                 border border-zinc-800
                 rounded-lg
-                text-white placeholder-zinc-600
+                text-white
                 focus:outline-none focus:border-[#00ff88]/50
                 transition-colors duration-200
+                ${!formData.categoria ? 'text-zinc-600' : ''}
               `}
-            />
+            >
+              <option value="" disabled>
+                Selecione a categoria...
+              </option>
+              {CATEGORIA_ORDER.map((cat) => (
+                <option key={cat} value={cat} className="bg-zinc-900 text-white">
+                  {CATEGORIA_LABELS[cat]}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* Descrição Curta */}
@@ -238,7 +447,7 @@ export default function CriarComunidadePage() {
                   value="publica"
                   checked={formData.visibilidade === 'publica'}
                   onChange={(e) =>
-                    setFormData({ ...formData, visibilidade: e.target.value as any })
+                    setFormData({ ...formData, visibilidade: e.target.value as 'publica' | 'privada' | 'somente_convidados' })
                   }
                   className="mt-1"
                 />
@@ -274,7 +483,7 @@ export default function CriarComunidadePage() {
                   value="privada"
                   checked={formData.visibilidade === 'privada'}
                   onChange={(e) =>
-                    setFormData({ ...formData, visibilidade: e.target.value as any })
+                    setFormData({ ...formData, visibilidade: e.target.value as 'publica' | 'privada' | 'somente_convidados' })
                   }
                   className="mt-1"
                 />
@@ -310,7 +519,7 @@ export default function CriarComunidadePage() {
                   value="somente_convidados"
                   checked={formData.visibilidade === 'somente_convidados'}
                   onChange={(e) =>
-                    setFormData({ ...formData, visibilidade: e.target.value as any })
+                    setFormData({ ...formData, visibilidade: e.target.value as 'publica' | 'privada' | 'somente_convidados' })
                   }
                   className="mt-1"
                 />
@@ -350,12 +559,12 @@ export default function CriarComunidadePage() {
             />
           </div>
 
-          {/* MVP Notice */}
-          <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
-            <p className="text-sm text-yellow-400 font-mono">
-              [MVP DEMO] Este formulário é uma demonstração. Em produção, sua arena seria criada e ativada.
-            </p>
-          </div>
+          {/* Error message */}
+          {erro && (
+            <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
+              <p className="text-sm text-red-400">{erro}</p>
+            </div>
+          )}
 
           {/* Botões */}
           <div className="flex gap-4 pt-6">
@@ -376,7 +585,7 @@ export default function CriarComunidadePage() {
 
             <button
               type="submit"
-              disabled={!formData.titulo || criando}
+              disabled={!formData.titulo || !formData.categoria || criando}
               className={`
                 flex-1 px-6 py-3
                 bg-[#00ff88] hover:bg-[#00ff88]/80
@@ -390,7 +599,11 @@ export default function CriarComunidadePage() {
                 flex items-center justify-center gap-2
               `}
             >
-              <Zap className="w-4 h-4" />
+              {criando ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Zap className="w-4 h-4" />
+              )}
               <span>{criando ? 'Criando Arena...' : 'Ativar Arena'}</span>
             </button>
           </div>

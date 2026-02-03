@@ -1,0 +1,32 @@
+
+> nfc-comunidades@1.0.0 build
+> prisma generate && next build
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma config detected, skipping environment variable loading.
+Prisma schema loaded from prisma\schema.prisma
+
+Ô£ö Generated Prisma Client (v6.19.2) to .\lib\generated\prisma in 94ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to turn off tips and other hints? https://pris.ly/tip-4-nohints
+
+  Ôû▓ Next.js 14.2.35
+  - Environments: .env.local, .env
+
+   Creating an optimized production build ...
+glob error [Error: EPERM: operation not permitted, scandir 'C:\Users\NFC\Ambiente de Impress├úo'] {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'scandir',
+  path: 'C:\\Users\\NFC\\Ambiente de Impress├úo'
+}
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'D:\NUTRIFITCOACH_MASTER\nfc-comunidades\.next\cache\webpack\server-production\0.pack_' -> 'D:\NUTRIFITCOACH_MASTER\nfc-comunidades\.next\cache\webpack\server-production\0.pack'
+Failed to compile.
+
+Error: EPERM: operation not permitted, scandir 'C:\Users\NFC\Ambiente de Impress├úo'
+
+
+> Build failed because of webpack errors

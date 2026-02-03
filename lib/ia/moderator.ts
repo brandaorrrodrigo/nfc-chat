@@ -36,6 +36,13 @@ import {
   type InvestigativeResponseResult,
 } from '@/lib/ai/investigative-response';
 import { checkAndUnlockBadges, type BadgeCheckResult } from '@/lib/badges';
+import { isNFVArena } from '@/lib/biomechanics/nfv-config';
+import {
+  detectBiomechanicsRedFlags,
+  detectMovementPattern,
+  getRandomFollowUp,
+  BIOMECHANICS_TEMPLATES,
+} from '@/lib/biomechanics/ai-biomechanics-persona';
 
 // ========================================
 // TIPOS
@@ -109,6 +116,11 @@ export async function moderateMessage(
   };
 
   try {
+    // 0. VERIFICAR SE E ARENA BIOMECANICA (NFV)
+    if (isNFVArena(input.communitySlug)) {
+      return handleBiomechanicsModeration(input, cfg);
+    }
+
     // 1. VERIFICAR SE E NOVATO (BOAS-VINDAS)
     if (cfg.enableWelcomeMessages) {
       const welcomeCheck = await shouldWelcomeUser(input.userId, input.communitySlug);
@@ -481,6 +493,107 @@ export function celebrateFPMilestone(
   });
 
   return { response, milestone };
+}
+
+// ========================================
+// NFV - HANDLER BIOMECANICO
+// ========================================
+
+/**
+ * Handler especializado para arenas NFV (biomecanica)
+ * Detecta padrao de movimento, red flags, gera respostas com follow-up
+ */
+async function handleBiomechanicsModeration(
+  input: ModerationInput,
+  cfg: ModerationConfig
+): Promise<ModerationResult> {
+  const defaultResult: ModerationResult = {
+    shouldRespond: false,
+    fpAwarded: 2,
+    action: 'biomechanics_message',
+  };
+
+  // Mensagem curta - FP basico
+  if (input.content.length < 10) {
+    return defaultResult;
+  }
+
+  // Verificar cooldown
+  const canIntervene = await checkModerationCooldown(
+    input.userId,
+    input.communitySlug,
+    cfg.cooldownMinutes
+  );
+
+  // Detectar red flags (sempre responde, mesmo com cooldown)
+  const redFlag = detectBiomechanicsRedFlags(input.content);
+  if (redFlag) {
+    const response = BIOMECHANICS_TEMPLATES.RED_FLAG_DETECTED(redFlag);
+
+    const interventionId = await saveModeratorIntervention({
+      userId: input.userId,
+      communitySlug: input.communitySlug,
+      type: 'biomechanics_red_flag',
+      responseText: response,
+      messageId: input.messageId,
+    });
+
+    return {
+      shouldRespond: true,
+      response,
+      responseType: 'emotional_support',
+      fpAwarded: 5,
+      action: 'biomechanics_red_flag',
+      interventionId,
+    };
+  }
+
+  if (!canIntervene) {
+    return {
+      ...defaultResult,
+      fpAwarded: input.content.length > 100 ? 5 : 2,
+      action: 'biomechanics_cooldown',
+    };
+  }
+
+  // Detectar padrao de movimento e gerar follow-up
+  const pattern = detectMovementPattern(input.content);
+  const followUp = getRandomFollowUp(pattern);
+
+  // Analisar conteudo
+  const analysis = analyzeContent(input.content);
+  const classification = classifyMessageType(analysis);
+
+  // Perguntas sobre tecnica/biomecanica -> resposta especializada
+  if (classification.type === 'question' || pattern !== 'geral') {
+    const response = `${followUp}`;
+
+    const interventionId = await saveModeratorIntervention({
+      userId: input.userId,
+      communitySlug: input.communitySlug,
+      type: 'biomechanics_followup',
+      responseText: response,
+      messageId: input.messageId,
+    });
+
+    return {
+      shouldRespond: true,
+      response,
+      responseType: 'question',
+      fpAwarded: classification.type === 'question' ? 5 : 3,
+      action: 'biomechanics_followup',
+      analysis,
+      interventionId,
+    };
+  }
+
+  // Mensagem regular no hub - FP padrao
+  return {
+    shouldRespond: false,
+    fpAwarded: analysis.isLongMessage ? 5 : 2,
+    action: 'biomechanics_message',
+    analysis,
+  };
 }
 
 // ========================================

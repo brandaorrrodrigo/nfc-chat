@@ -38,6 +38,13 @@ export const CHAT_ROUTES = {
   TOPICO: (comunidadeSlug: string, topicoSlug: string) => `/comunidades/${comunidadeSlug}/${topicoSlug}`,
   ADMIN: (slug: string) => `/comunidades/${slug}/admin`,
   CRIAR_TOPICO: (slug: string) => `/comunidades/${slug}/criar-topico`,
+
+  // NFV - Analise Biomecanica
+  NFV_HUB: '/comunidades/hub-biomecanico',
+  NFV_ANALISE: (slug: string) => `/comunidades/${slug}/analise`,
+  NFV_VIDEOS: (slug: string) => `/comunidades/${slug}/videos`,
+  NFV_VIDEO: (slug: string, videoId: string) => `/comunidades/${slug}/videos/${videoId}`,
+  NFV_ADMIN_QUEUE: (slug: string) => `/comunidades/${slug}/admin/fila-analise`,
 } as const;
 
 // Legacy alias

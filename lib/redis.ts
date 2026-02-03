@@ -189,6 +189,19 @@ export const safeRedis = {
     }
   },
 
+  async del(...keys: string[]): Promise<void> {
+    if (isOfflineMode || !redis.isOpen) {
+      return
+    }
+
+    try {
+      await redis.del(keys)
+    } catch (err) {
+      console.error(`[Redis] DEL ${keys.join(', ')} failed:`, err)
+      isOfflineMode = true
+    }
+  },
+
   // Helper para verificar status
   isAvailable(): boolean {
     return !isOfflineMode && redis.isOpen

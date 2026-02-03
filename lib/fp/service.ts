@@ -438,7 +438,19 @@ export function generateCouponCode(userId: string, discountPercent: number): str
 // HELPERS
 // ==========================================
 
+function isNFVAction(action: FPAction): boolean {
+  const nfvActions: string[] = [
+    FP_CONFIG.ACTIONS.VIDEO_UPLOAD,
+    FP_CONFIG.ACTIONS.VIDEO_PUBLISHED,
+    FP_CONFIG.ACTIONS.HELPFUL_VOTE,
+  ];
+  return nfvActions.includes(action);
+}
+
 function isChatAction(action: FPAction): boolean {
+  // NFV actions NAO contam no limite diario de chat
+  if (isNFVAction(action)) return false;
+
   const chatActions: string[] = [
     FP_CONFIG.ACTIONS.DAILY_ACCESS,
     FP_CONFIG.ACTIONS.MESSAGE,
@@ -466,6 +478,10 @@ function getAmountForAction(action: FPAction): number {
     [FP_CONFIG.ACTIONS.RESULT_LOGGED]: FP_CONFIG.APP_RESULT_LOGGED,
     [FP_CONFIG.ACTIONS.ACHIEVEMENT]: FP_CONFIG.APP_ACHIEVEMENT,
     [FP_CONFIG.ACTIONS.REFERRAL]: FP_CONFIG.APP_REFERRAL,
+
+    // NFV - Video
+    [FP_CONFIG.ACTIONS.VIDEO_PUBLISHED]: FP_CONFIG.VIDEO_ANALYSIS_PUBLISHED,
+    [FP_CONFIG.ACTIONS.HELPFUL_VOTE]: FP_CONFIG.HELPFUL_VOTE_RECEIVED,
   };
   return amounts[action] || 0;
 }
@@ -487,6 +503,79 @@ function getDescriptionForAction(action: FPAction): string {
     [FP_CONFIG.ACTIONS.ACHIEVEMENT]: 'Conquista desbloqueada',
     [FP_CONFIG.ACTIONS.REFERRAL]: 'Indicação convertida',
     [FP_CONFIG.ACTIONS.REDEEM]: 'Desconto resgatado',
+
+    // NFV - Video
+    [FP_CONFIG.ACTIONS.VIDEO_UPLOAD]: 'Upload de video para analise',
+    [FP_CONFIG.ACTIONS.VIDEO_PUBLISHED]: 'Analise publicada',
+    [FP_CONFIG.ACTIONS.HELPFUL_VOTE]: 'Voto util recebido',
   };
   return descriptions[action] || action;
+}
+
+// ==========================================
+// NFV - VIDEO UPLOAD SPENDING
+// ==========================================
+
+interface VideoSpendResult {
+  success: boolean;
+  fpSpent: number;
+  newBalance: number;
+  reason?: string;
+}
+
+/**
+ * Gasta FP para upload de video em arena premium
+ * Diferente do spendFP normal (desconto), este e custo de acao
+ */
+export async function spendFPForVideo(
+  userId: string,
+  metadata?: Record<string, unknown>
+): Promise<VideoSpendResult> {
+  const supabase = getSupabase();
+  const userFP = await ensureUserFP(userId);
+  const cost = FP_CONFIG.VIDEO_UPLOAD_COST;
+
+  if (userFP.balance < cost) {
+    return {
+      success: false,
+      fpSpent: 0,
+      newBalance: userFP.balance,
+      reason: 'insufficient_balance',
+    };
+  }
+
+  const newBalance = userFP.balance - cost;
+
+  try {
+    const { error: updateError } = await supabase
+      .from(TABLE_USER_FP)
+      .update({
+        balance: newBalance,
+        total_spent: userFP.total_spent + cost,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('user_id', userId);
+
+    if (updateError) throw updateError;
+
+    await supabase
+      .from(TABLE_FP_TRANSACTIONS)
+      .insert({
+        user_id: userId,
+        amount: -cost,
+        type: 'spend',
+        action: FP_CONFIG.ACTIONS.VIDEO_UPLOAD,
+        description: `Upload de video para analise (-${cost} FP)`,
+        metadata: metadata || {},
+      });
+
+    return {
+      success: true,
+      fpSpent: cost,
+      newBalance,
+    };
+  } catch (error) {
+    console.error('[FP] Error spending FP for video:', error);
+    throw error;
+  }
 }

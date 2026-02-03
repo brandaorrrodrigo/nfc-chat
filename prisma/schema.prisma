@@ -48,6 +48,7 @@ model User {
   badges            UserBadge[]
   moderationActions ModerationAction[]
   auditLogs         AuditLog[]
+  videoAnalyses     VideoAnalysis[]
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
@@ -92,6 +93,19 @@ model Arena {
   aiFrustrationThreshold Int  @default(120) // minutos
   aiCooldown        Int       @default(5) // minutos entre respostas
 
+  // NFV - Análise Biomecânica
+  arenaType            ArenaType @default(GENERAL)
+  parentArenaSlug      String?
+  requiresFP           Int?
+  requiresSubscription Boolean   @default(false)
+  movementCategory     String?
+  movementPattern      String?
+
+  // Índice & Busca
+  categoria         ArenaCategoria @default(COMUNIDADES_LIVRES)
+  criadaPor         CreatedBy      @default(ADMIN)
+  createdByUserId   String?
+
   // Métricas
   totalPosts        Int       @default(0)
   totalComments     Int       @default(0)
@@ -102,6 +116,7 @@ model Arena {
   posts             Post[]
   tags              ArenaTag[]
   founders          ArenaFounder[]
+  videoAnalyses     VideoAnalysis[]
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
@@ -109,13 +124,30 @@ model Arena {
   @@index([slug])
   @@index([isActive])
   @@index([status])
+  @@index([categoria])
 }
 
 enum AIPersona {
-  SCIENTIFIC    // Citações diretas, formal
-  MOTIVATIONAL  // Acolhedor, simples
-  SUSTAINING    // Responde tudo, mantém conversa
-  BALANCED      // Mix dos três
+  SCIENTIFIC          // Citações diretas, formal
+  MOTIVATIONAL        // Acolhedor, simples
+  SUSTAINING          // Responde tudo, mantém conversa
+  BALANCED            // Mix dos três
+  BIOMECHANICS_EXPERT // Especialista em biomecânica
+}
+
+enum ArenaType {
+  GENERAL      // Arena normal
+  NFV_HUB      // Hub Biomecânico (Level 1)
+  NFV_PREMIUM  // Arena Premium de Análise (Level 3)
+}
+
+enum AnalysisStatus {
+  PENDING_AI
+  AI_ANALYZED
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+  REVISION_NEEDED
 }
 
 enum ArenaStatus {
@@ -123,6 +155,20 @@ enum ArenaStatus {
   WARM     // 3-10 posts/dia
   COLD     // <3 posts/dia
   ARCHIVED // Desativada
+}
+
+enum ArenaCategoria {
+  NUTRICAO_DIETAS           // Nutrição & Dietas
+  TREINO_EXERCICIOS         // Treino & Exercícios
+  BIOMECANICA_NFV           // Biomecânica & NFV
+  SAUDE_CONDICOES_CLINICAS  // Saúde & Condições Clínicas
+  RECEITAS_ALIMENTACAO      // Receitas & Alimentação
+  COMUNIDADES_LIVRES        // Comunidades Livres (debate)
+}
+
+enum CreatedBy {
+  USER
+  ADMIN
 }
 
 model ArenaTag {
@@ -398,6 +444,65 @@ model AuditLog {
   @@index([targetType, targetId])
   @@index([createdAt])
   @@index([action])
+}
+
+// ============================================
+// NFV - ANÁLISE BIOMECÂNICA (VIDEO)
+// ============================================
+
+model VideoAnalysis {
+  id                     String          @id @default(cuid())
+  arenaId                String
+  userId                 String
+
+  // Video
+  videoUrl               String
+  videoPath              String
+  thumbnailUrl           String?
+  durationSeconds        Int?
+
+  // Movimento
+  movementPattern        String
+  userDescription        String?         @db.Text
+
+  // Gating
+  fpCost                 Int             @default(0)
+  paidWithSubscription   Boolean         @default(false)
+
+  // Pipeline
+  status                 AnalysisStatus  @default(PENDING_AI)
+
+  // IA Pré-Análise
+  aiAnalysis             Json?
+  aiAnalyzedAt           DateTime?
+  aiConfidence           Float?
+
+  // Revisão Admin
+  adminReviewerId        String?
+  adminNotes             String?         @db.Text
+  adminEditedAnalysis    Json?
+  reviewedAt             DateTime?
+
+  // Publicado
+  publishedAnalysis      Json?
+  publishedAt            DateTime?
+  rejectionReason        String?
+
+  // Métricas
+  viewCount              Int             @default(0)
+  helpfulVotes           Int             @default(0)
+
+  // Relações
+  arena                  Arena           @relation(fields: [arenaId], references: [id])
+  user                   User            @relation(fields: [userId], references: [id])
+
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
+
+  @@index([arenaId])
+  @@index([userId])
+  @@index([status])
+  @@index([movementPattern])
 }
 
 // ============================================

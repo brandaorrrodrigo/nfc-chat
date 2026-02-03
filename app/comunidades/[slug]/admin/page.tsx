@@ -42,7 +42,9 @@ import {
   Shield,
   ToggleLeft,
   ToggleRight,
+  Video,
 } from 'lucide-react';
+import { isNFVArena } from '@/lib/biomechanics/nfv-config';
 
 // ========================================
 // TIPOS
@@ -377,7 +379,7 @@ type Props = {
 export default function AdminPanelPage({ params }: Props) {
   const { slug } = use(params);
   const [comunidade, setComunidade] = useState<ComunidadeAdminData | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'topicos' | 'ia' | 'membros'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'topicos' | 'ia' | 'membros' | 'fila-analise'>('overview');
   const [configIA, setConfigIA] = useState({
     ativo: true,
     gerarResumos: true,
@@ -487,6 +489,7 @@ export default function AdminPanelPage({ params }: Props) {
               { id: 'topicos', label: 'Tópicos', icon: FileText },
               { id: 'ia', label: 'IA Facilitadora', icon: Bot },
               { id: 'membros', label: 'Membros', icon: Users },
+              ...(isNFVArena(slug) ? [{ id: 'fila-analise', label: 'Fila de Análise', icon: Video }] : []),
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -791,6 +794,30 @@ export default function AdminPanelPage({ params }: Props) {
               <p className="text-sm font-mono">[MVP DEMO]</p>
               <p className="text-sm mt-2">Gerenciamento de membros será implementado na versão completa.</p>
             </div>
+          </div>
+        )}
+
+        {/* Fila de Analise Tab (NFV) */}
+        {activeTab === 'fila-analise' && (
+          <div className="bg-zinc-900/70 border border-zinc-800 rounded-xl p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-3 bg-purple-500/20 rounded-xl">
+                <Video className="w-6 h-6 text-purple-400" />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-white">Fila de Analise Biomecanica</h2>
+                <p className="text-sm text-zinc-500">Revisar analises de video pendentes</p>
+              </div>
+            </div>
+
+            <Link
+              href={`/comunidades/${slug}/admin/fila-analise`}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+            >
+              <Video className="w-4 h-4" />
+              Abrir Fila de Analise
+              <ExternalLink className="w-3 h-3" />
+            </Link>
           </div>
         )}
       </main>

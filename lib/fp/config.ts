@@ -45,6 +45,13 @@ export const FP_CONFIG = {
   APP_REFERRAL: 200,            // Indicar amigo que assina
 
   // ==========================================
+  // NFV - Video Analysis (GASTO e GANHO)
+  // ==========================================
+  VIDEO_UPLOAD_COST: 25,           // Custo para enviar video (GASTO)
+  VIDEO_ANALYSIS_PUBLISHED: 10,    // Ganho quando analise e publicada
+  HELPFUL_VOTE_RECEIVED: 3,        // Ganho quando alguem vota util
+
+  // ==========================================
   // CONVERSÃO - Desconto no APP
   // ==========================================
   // FP é CONSUMIDO ao gerar desconto
@@ -84,6 +91,11 @@ export const FP_CONFIG = {
     RESULT_LOGGED: 'result_logged',
     ACHIEVEMENT: 'achievement',
     REFERRAL: 'referral',
+
+    // NFV - Video
+    VIDEO_UPLOAD: 'video_upload',
+    VIDEO_PUBLISHED: 'video_published',
+    HELPFUL_VOTE: 'helpful_vote',
 
     // Sistema
     REDEEM: 'redeem',

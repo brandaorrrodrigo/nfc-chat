@@ -15,6 +15,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import { isNFVArena, isNFVHub, isPremiumNFVArena } from '@/lib/biomechanics/nfv-config';
+
+// NFV Dynamic Imports
+const NFVHub = dynamic(() => import('@/components/nfv/NFVHub'), { ssr: false });
+const VideoGallery = dynamic(() => import('@/components/nfv/VideoGallery'), { ssr: false });
 import {
   ArrowLeft,
   Bot,
@@ -2173,6 +2178,33 @@ export default function PainelVivoPage() {
   // Not found state
   if (notFound || !comunidade) {
     return <ComunidadeNaoEncontrada slug={slug} />;
+  }
+
+  // NFV Hub - Layout especial biomecanico
+  if (isNFVHub(slug)) {
+    return <NFVHub />;
+  }
+
+  // NFV Premium Arena - Layout com galeria de videos
+  if (isPremiumNFVArena(slug)) {
+    return (
+      <div
+        className="min-h-[calc(100vh-64px)] flex flex-col overflow-hidden relative"
+        style={{
+          background: 'linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #1a0a27 100%)'
+        }}
+      >
+        <FPToastManager lastEarned={lastEarned} onClear={clearLastEarned} />
+        <div className="flex-1 overflow-y-auto p-4">
+          <VideoGallery
+            arenaSlug={slug}
+            onSelectAnalysis={(id) => {
+              window.location.href = `/comunidades/${slug}/videos/${id}`;
+            }}
+          />
+        </div>
+      </div>
+    );
   }
 
   return (

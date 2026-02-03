@@ -7,15 +7,20 @@
  * Visual: Premium Cyberpunk com Neon Glow
  * Paleta: Cyan (#00f5ff) + Magenta (#ff006e) + Purple (#8b5cf6)
  * Baseado nos padrões das landing pages NFC
+ *
+ * Features:
+ * - Índice de Arenas (accordion colapsável)
+ * - Busca de Arenas (search bar)
+ * - Filtros Rápidos (pills por categoria)
+ * - Grid de Comunidades (filtrado)
  */
 
-import React from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import {
   Activity,
   Syringe,
   Users,
-  Wifi,
   Dumbbell,
   Heart,
   Brain,
@@ -28,21 +33,23 @@ import {
   Star,
   Zap,
   MessageCircle,
-  ChevronRight,
   Eye,
   LucideIcon,
+  Loader2,
 } from 'lucide-react';
 import { getLoginUrl, COMUNIDADES_ROUTES } from '@/lib/navigation';
 import { useComunidadesAuth } from '@/app/components/comunidades/ComunidadesAuthContext';
+import ArenaSearchBar from '@/app/components/comunidades/ArenaSearchBar';
+import ArenaIndex from '@/app/components/comunidades/ArenaIndex';
+import QuickFilters from '@/app/components/comunidades/QuickFilters';
+import type { ArenaWithTags, ArenaCategoria, CommunityCardData } from '@/types/arena';
+import { arenaToDisplayFormat, CATEGORIA_GRADIENTS } from '@/lib/arena-utils';
 
 // ========================================
-// DADOS: COMUNIDADES
+// DADOS: FALLBACK (usado se API falhar)
 // ========================================
 
-const COMMUNITIES = [
-  // ========================================
-  // 🔥 NOVAS ARENAS - FASE 3 (NO TOPO)
-  // ========================================
+const FALLBACK_COMMUNITIES: CommunityCardData[] = [
   {
     id: 14,
     title: "Receitas Saudáveis",
@@ -54,6 +61,7 @@ const COMMUNITIES = [
     gradient: "from-green-500 to-emerald-600",
     lastActivity: "há 2 min",
     featured: true,
+    categoria: 'RECEITAS_ALIMENTACAO',
   },
   {
     id: 15,
@@ -66,10 +74,11 @@ const COMMUNITIES = [
     gradient: "from-blue-500 to-indigo-600",
     lastActivity: "há 5 min",
     featured: true,
+    categoria: 'TREINO_EXERCICIOS',
   },
   {
     id: 16,
-    title: "Sinal Vermelho 🚨",
+    title: "Sinal Vermelho",
     description: "Investigação inteligente de dores e desconfortos em exercícios. A IA faz perguntas progressivas e sugere ajustes ou encaminha ao médico.",
     members: 93,
     activeNow: 8,
@@ -78,10 +87,11 @@ const COMMUNITIES = [
     gradient: "from-red-500 to-rose-600",
     lastActivity: "há 8 min",
     featured: true,
+    categoria: 'BIOMECANICA_NFV',
   },
   {
     id: 17,
-    title: "💎 Aspiracional & Estética",
+    title: "Aspiracional & Estética",
     description: "Sonhos estéticos com base científica e responsabilidade. IA educadora sobre procedimentos com preparo físico, nutricional e psicológico.",
     members: 156,
     activeNow: 14,
@@ -90,11 +100,8 @@ const COMMUNITIES = [
     gradient: "from-pink-500 to-purple-600",
     lastActivity: "há 1 min",
     featured: true,
+    categoria: 'COMUNIDADES_LIVRES',
   },
-
-  // ========================================
-  // ARENAS EXISTENTES
-  // ========================================
   {
     id: 1,
     title: "Protocolo Lipedema",
@@ -105,6 +112,7 @@ const COMMUNITIES = [
     icon: "Activity",
     gradient: "from-cyan-500 to-blue-600",
     lastActivity: "há 2 min",
+    categoria: 'SAUDE_CONDICOES_CLINICAS',
   },
   {
     id: 13,
@@ -117,6 +125,7 @@ const COMMUNITIES = [
     gradient: "from-cyan-500 to-teal-600",
     lastActivity: "há 3 min",
     featured: true,
+    categoria: 'BIOMECANICA_NFV',
   },
   {
     id: 2,
@@ -128,6 +137,7 @@ const COMMUNITIES = [
     icon: "TrendingDown",
     gradient: "from-orange-500 to-red-500",
     lastActivity: "há 30s",
+    categoria: 'NUTRICAO_DIETAS',
   },
   {
     id: 3,
@@ -140,6 +150,7 @@ const COMMUNITIES = [
     gradient: "from-pink-500 to-rose-600",
     lastActivity: "há 15s",
     featured: true,
+    categoria: 'TREINO_EXERCICIOS',
   },
   {
     id: 4,
@@ -151,6 +162,7 @@ const COMMUNITIES = [
     icon: "Syringe",
     gradient: "from-emerald-500 to-teal-600",
     lastActivity: "há 1 min",
+    categoria: 'SAUDE_CONDICOES_CLINICAS',
   },
   {
     id: 5,
@@ -162,6 +174,7 @@ const COMMUNITIES = [
     icon: "Heart",
     gradient: "from-red-500 to-pink-600",
     lastActivity: "há 3 min",
+    categoria: 'TREINO_EXERCICIOS',
   },
   {
     id: 6,
@@ -173,6 +186,7 @@ const COMMUNITIES = [
     icon: "Brain",
     gradient: "from-purple-500 to-violet-600",
     lastActivity: "há 45s",
+    categoria: 'SAUDE_CONDICOES_CLINICAS',
   },
   {
     id: 7,
@@ -184,6 +198,7 @@ const COMMUNITIES = [
     icon: "Sparkles",
     gradient: "from-amber-500 to-orange-600",
     lastActivity: "há 2 min",
+    categoria: 'SAUDE_CONDICOES_CLINICAS',
   },
   {
     id: 8,
@@ -195,6 +210,7 @@ const COMMUNITIES = [
     icon: "Camera",
     gradient: "from-teal-500 to-cyan-600",
     lastActivity: "há 20s",
+    categoria: 'COMUNIDADES_LIVRES',
   },
   {
     id: 9,
@@ -207,6 +223,7 @@ const COMMUNITIES = [
     gradient: "from-lime-500 to-green-600",
     lastActivity: "há 10s",
     isCore: true,
+    categoria: 'NUTRICAO_DIETAS',
   },
   {
     id: 10,
@@ -218,6 +235,7 @@ const COMMUNITIES = [
     icon: "Home",
     gradient: "from-indigo-500 to-purple-600",
     lastActivity: "há 1 min",
+    categoria: 'TREINO_EXERCICIOS',
   },
   {
     id: 11,
@@ -230,6 +248,7 @@ const COMMUNITIES = [
     gradient: "from-violet-500 to-purple-600",
     lastActivity: "há 5 min",
     featured: true,
+    categoria: 'TREINO_EXERCICIOS',
   },
 ];
 
@@ -342,19 +361,7 @@ const customStyles = `
 // ========================================
 
 interface CommunityCardProps {
-  community: {
-    id: number;
-    title: string;
-    description: string;
-    members: number;
-    activeNow: number;
-    slug: string;
-    icon: string;
-    gradient: string;
-    lastActivity: string;
-    isCore?: boolean;
-    featured?: boolean;
-  };
+  community: CommunityCardData;
 }
 
 function CommunityCard({ community }: CommunityCardProps) {
@@ -377,7 +384,7 @@ function CommunityCard({ community }: CommunityCardProps) {
         )}
 
         {/* Badge Featured */}
-        {community.featured && (
+        {community.featured && !community.isCore && (
           <div className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-pink-500/20 to-rose-500/20 border border-pink-500/40 rounded-full">
             <Star className="w-3.5 h-3.5 text-pink-400" />
             <span className="text-xs font-bold text-pink-400 uppercase tracking-wider">Popular</span>
@@ -437,15 +444,74 @@ function CommunityCard({ community }: CommunityCardProps) {
 }
 
 // ========================================
+// SKELETON LOADER
+// ========================================
+
+function SkeletonCard() {
+  return (
+    <div className="card-premium rounded-2xl p-6 animate-pulse">
+      <div className="flex items-start gap-4 mb-4">
+        <div className="w-12 h-12 rounded-xl bg-zinc-800" />
+        <div className="flex-1">
+          <div className="h-5 bg-zinc-800 rounded w-3/4 mb-2" />
+          <div className="h-4 bg-zinc-800 rounded w-1/2" />
+        </div>
+      </div>
+      <div className="h-4 bg-zinc-800 rounded w-full mb-2" />
+      <div className="h-4 bg-zinc-800 rounded w-2/3" />
+    </div>
+  );
+}
+
+// ========================================
 // PÁGINA PRINCIPAL
 // ========================================
 
 export default function ComunidadesPage() {
   const { isAuthenticated } = useComunidadesAuth();
 
-  // Stats totais
-  const totalMembers = COMMUNITIES.reduce((acc, c) => acc + c.members, 0);
-  const totalOnline = COMMUNITIES.reduce((acc, c) => acc + c.activeNow, 0);
+  // State for API data
+  const [apiArenas, setApiArenas] = useState<ArenaWithTags[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [activeFilter, setActiveFilter] = useState<ArenaCategoria | null>(null);
+
+  // Fetch arenas from API
+  useEffect(() => {
+    async function fetchArenas() {
+      try {
+        const res = await fetch('/api/arenas');
+        if (res.ok) {
+          const data = await res.json();
+          // Handle both array response and grouped response
+          const arenas = Array.isArray(data) ? data : data.arenas || [];
+          setApiArenas(arenas);
+        }
+      } catch (err) {
+        console.error('Failed to fetch arenas:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchArenas();
+  }, []);
+
+  // Resolve display data: API arenas or fallback
+  const communities = useMemo<CommunityCardData[]>(() => {
+    if (apiArenas && apiArenas.length > 0) {
+      return apiArenas.map(arenaToDisplayFormat);
+    }
+    return FALLBACK_COMMUNITIES;
+  }, [apiArenas]);
+
+  // Apply category filter
+  const filteredCommunities = useMemo(() => {
+    if (!activeFilter) return communities;
+    return communities.filter((c) => c.categoria === activeFilter);
+  }, [communities, activeFilter]);
+
+  // Stats
+  const totalMembers = communities.reduce((acc, c) => acc + c.members, 0);
+  const totalOnline = communities.reduce((acc, c) => acc + c.activeNow, 0);
 
   return (
     <>
@@ -498,7 +564,7 @@ export default function ComunidadesPage() {
             {/* Stats Cards */}
             <div className="flex flex-wrap justify-center gap-4 mb-10">
               <div className="stats-card px-6 py-4 rounded-2xl">
-                <div className="text-3xl font-black text-white mb-1">{COMMUNITIES.length}</div>
+                <div className="text-3xl font-black text-white mb-1">{communities.length}</div>
                 <div className="text-sm text-gray-400">Comunidades</div>
               </div>
               <div className="stats-card px-6 py-4 rounded-2xl">
@@ -540,119 +606,137 @@ export default function ComunidadesPage() {
           {/* Divider */}
           <div className="h-px bg-gradient-to-r from-transparent via-[#00f5ff]/30 to-transparent my-8" />
 
-          {/* ===== DESTAQUES TÉCNICOS - CONTEÚDO UNDERGROUND ===== */}
-          <section className="py-8">
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-full mb-4">
-                <Zap className="w-4 h-4 text-purple-400" />
-                <span className="text-sm font-bold text-purple-300 uppercase tracking-wider">Underground Científico</span>
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
-                Destaques <span className="gradient-text">Técnicos</span>
-              </h2>
-              <p className="text-gray-400 max-w-2xl mx-auto">
-                Conteúdo de alta densidade para quem quer ir além do básico. Fisiologia aplicada sem filtro.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Destaque 1: Lipedema e o Paradoxo do Cardio */}
-              <Link
-                href="/comunidades/lipedema-paradoxo"
-                className="card-premium p-6 rounded-2xl group hover:border-cyan-500/50 block cursor-pointer relative overflow-hidden"
-              >
-                {/* Glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
-                <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/30">
-                        <Activity className="w-5 h-5 text-white" />
-                      </div>
-                      <span className="text-xs font-mono text-cyan-400 uppercase tracking-wider">Lipedema</span>
-                    </div>
-                    <span className="text-[10px] font-bold text-amber-400 bg-amber-400/10 px-2 py-1 rounded-full border border-amber-400/30">PRO</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors">
-                    Lipedema e o "Paradoxo do Cardio"
-                  </h3>
-                  <p className="text-sm text-gray-400 leading-relaxed mb-4">
-                    Você faz HIIT achando que vai "derreter" a gordura das pernas? Você está inflamando o tecido doente. Macrófagos M1, HIF-1α e a ciência do AEJ + Compressão.
-                  </p>
-                  <div className="flex items-center gap-1 text-cyan-400 font-semibold text-sm group-hover:gap-2 transition-all duration-300">
-                    <Eye className="w-4 h-4" />
-                    <span>Visualizar</span>
-                  </div>
-                </div>
-              </Link>
-
-              {/* Destaque 2: Trembolona e a Oxidação Lipídica */}
-              <Link
-                href="/comunidades/performance-biohacking"
-                className="card-premium p-6 rounded-2xl group hover:border-purple-500/50 block cursor-pointer relative overflow-hidden"
-              >
-                {/* Glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
-                <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-gradient-to-br from-purple-500 to-violet-600 shadow-lg shadow-purple-500/30">
-                        <Zap className="w-5 h-5 text-white" />
-                      </div>
-                      <span className="text-xs font-mono text-purple-400 uppercase tracking-wider">Performance</span>
-                    </div>
-                    <span className="text-[10px] font-bold text-amber-400 bg-amber-400/10 px-2 py-1 rounded-full border border-amber-400/30">PRO</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-3 group-hover:text-purple-400 transition-colors">
-                    Trembolona e a Verdade sobre o Reparticionamento
-                  </h3>
-                  <p className="text-sm text-gray-400 leading-relaxed mb-4">
-                    Como queimar gordura em superávit calórico? Antagonismo do Receptor de Glicocorticoide, inibição da lipogênese via IGF-1 local e ativação de ARs no adipócito.
-                  </p>
-                  <div className="flex items-center gap-1 text-purple-400 font-semibold text-sm group-hover:gap-2 transition-all duration-300">
-                    <Eye className="w-4 h-4" />
-                    <span>Visualizar</span>
-                  </div>
-                </div>
-              </Link>
-
-              {/* Destaque 3: Fragment 176-191 + AEJ */}
-              <Link
-                href="/comunidades/peptideos-research"
-                className="card-premium p-6 rounded-2xl group hover:border-pink-500/50 block cursor-pointer relative overflow-hidden"
-              >
-                {/* Glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
-                <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600 shadow-lg shadow-pink-500/30">
-                        <Syringe className="w-5 h-5 text-white" />
-                      </div>
-                      <span className="text-xs font-mono text-pink-400 uppercase tracking-wider">Peptídeos</span>
-                    </div>
-                    <span className="text-[10px] font-bold text-amber-400 bg-amber-400/10 px-2 py-1 rounded-full border border-amber-400/30">PRO</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-3 group-hover:text-pink-400 transition-colors">
-                    Fragment 176-191 + AEJ
-                  </h3>
-                  <p className="text-sm text-gray-400 leading-relaxed mb-4">
-                    Aplicou após o café da manhã? Você jogou dinheiro fora. O Fragment mobiliza, mas NÃO oxida. Sem cardio em jejum = injeção que não fez nada.
-                  </p>
-                  <div className="flex items-center gap-1 text-pink-400 font-semibold text-sm group-hover:gap-2 transition-all duration-300">
-                    <Eye className="w-4 h-4" />
-                    <span>Visualizar</span>
-                  </div>
-                </div>
-              </Link>
-            </div>
+          {/* ===== BUSCA DE ARENAS ===== */}
+          <section className="mb-6">
+            <ArenaSearchBar className="max-w-2xl mx-auto" />
           </section>
 
+          {/* ===== ÍNDICE DE ARENAS ===== */}
+          {apiArenas && apiArenas.length > 0 && (
+            <section className="mb-8">
+              <ArenaIndex arenas={apiArenas} />
+            </section>
+          )}
+
+          {/* ===== FILTROS RÁPIDOS ===== */}
+          <section className="mb-8">
+            <QuickFilters
+              activeFilter={activeFilter}
+              onFilterChange={setActiveFilter}
+            />
+          </section>
+
+          {/* ===== DESTAQUES TÉCNICOS - CONTEÚDO UNDERGROUND ===== */}
+          {!activeFilter && (
+            <section className="py-8">
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-full mb-4">
+                  <Zap className="w-4 h-4 text-purple-400" />
+                  <span className="text-sm font-bold text-purple-300 uppercase tracking-wider">Underground Científico</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+                  Destaques <span className="gradient-text">Técnicos</span>
+                </h2>
+                <p className="text-gray-400 max-w-2xl mx-auto">
+                  Conteúdo de alta densidade para quem quer ir além do básico. Fisiologia aplicada sem filtro.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Destaque 1: Lipedema e o Paradoxo do Cardio */}
+                <Link
+                  href="/comunidades/lipedema-paradoxo"
+                  className="card-premium p-6 rounded-2xl group hover:border-cyan-500/50 block cursor-pointer relative overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/30">
+                          <Activity className="w-5 h-5 text-white" />
+                        </div>
+                        <span className="text-xs font-mono text-cyan-400 uppercase tracking-wider">Lipedema</span>
+                      </div>
+                      <span className="text-[10px] font-bold text-amber-400 bg-amber-400/10 px-2 py-1 rounded-full border border-amber-400/30">PRO</span>
+                    </div>
+                    <h3 className="text-lg font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors">
+                      Lipedema e o "Paradoxo do Cardio"
+                    </h3>
+                    <p className="text-sm text-gray-400 leading-relaxed mb-4">
+                      Você faz HIIT achando que vai "derreter" a gordura das pernas? Você está inflamando o tecido doente. Macrófagos M1, HIF-1α e a ciência do AEJ + Compressão.
+                    </p>
+                    <div className="flex items-center gap-1 text-cyan-400 font-semibold text-sm group-hover:gap-2 transition-all duration-300">
+                      <Eye className="w-4 h-4" />
+                      <span>Visualizar</span>
+                    </div>
+                  </div>
+                </Link>
+
+                {/* Destaque 2: Trembolona e a Oxidação Lipídica */}
+                <Link
+                  href="/comunidades/performance-biohacking"
+                  className="card-premium p-6 rounded-2xl group hover:border-purple-500/50 block cursor-pointer relative overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-gradient-to-br from-purple-500 to-violet-600 shadow-lg shadow-purple-500/30">
+                          <Zap className="w-5 h-5 text-white" />
+                        </div>
+                        <span className="text-xs font-mono text-purple-400 uppercase tracking-wider">Performance</span>
+                      </div>
+                      <span className="text-[10px] font-bold text-amber-400 bg-amber-400/10 px-2 py-1 rounded-full border border-amber-400/30">PRO</span>
+                    </div>
+                    <h3 className="text-lg font-bold text-white mb-3 group-hover:text-purple-400 transition-colors">
+                      Trembolona e a Verdade sobre o Reparticionamento
+                    </h3>
+                    <p className="text-sm text-gray-400 leading-relaxed mb-4">
+                      Como queimar gordura em superávit calórico? Antagonismo do Receptor de Glicocorticoide, inibição da lipogênese via IGF-1 local e ativação de ARs no adipócito.
+                    </p>
+                    <div className="flex items-center gap-1 text-purple-400 font-semibold text-sm group-hover:gap-2 transition-all duration-300">
+                      <Eye className="w-4 h-4" />
+                      <span>Visualizar</span>
+                    </div>
+                  </div>
+                </Link>
+
+                {/* Destaque 3: Fragment 176-191 + AEJ */}
+                <Link
+                  href="/comunidades/peptideos-research"
+                  className="card-premium p-6 rounded-2xl group hover:border-pink-500/50 block cursor-pointer relative overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-pink-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-gradient-to-br from-pink-500 to-rose-600 shadow-lg shadow-pink-500/30">
+                          <Syringe className="w-5 h-5 text-white" />
+                        </div>
+                        <span className="text-xs font-mono text-pink-400 uppercase tracking-wider">Peptídeos</span>
+                      </div>
+                      <span className="text-[10px] font-bold text-amber-400 bg-amber-400/10 px-2 py-1 rounded-full border border-amber-400/30">PRO</span>
+                    </div>
+                    <h3 className="text-lg font-bold text-white mb-3 group-hover:text-pink-400 transition-colors">
+                      Fragment 176-191 + AEJ
+                    </h3>
+                    <p className="text-sm text-gray-400 leading-relaxed mb-4">
+                      Aplicou após o café da manhã? Você jogou dinheiro fora. O Fragment mobiliza, mas NÃO oxida. Sem cardio em jejum = injeção que não fez nada.
+                    </p>
+                    <div className="flex items-center gap-1 text-pink-400 font-semibold text-sm group-hover:gap-2 transition-all duration-300">
+                      <Eye className="w-4 h-4" />
+                      <span>Visualizar</span>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            </section>
+          )}
+
           {/* Divider */}
-          <div className="h-px bg-gradient-to-r from-transparent via-[#ff006e]/30 to-transparent my-8" />
+          {!activeFilter && (
+            <div className="h-px bg-gradient-to-r from-transparent via-[#ff006e]/30 to-transparent my-8" />
+          )}
 
           {/* ===== COMUNIDADES SECTION ===== */}
           <section id="comunidades" className="py-8">
@@ -660,10 +744,20 @@ export default function ComunidadesPage() {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
               <div>
                 <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
-                  Escolha sua <span className="gradient-text">Comunidade</span>
+                  {activeFilter ? (
+                    <>Arenas de <span className="gradient-text">{
+                      FALLBACK_COMMUNITIES.find(c => c.categoria === activeFilter)?.title?.split(' ')[0] ||
+                      activeFilter.split('_')[0]
+                    }</span></>
+                  ) : (
+                    <>Escolha sua <span className="gradient-text">Comunidade</span></>
+                  )}
                 </h2>
                 <p className="text-gray-400">
-                  Leitura livre para todos. Participe ativamente fazendo login.
+                  {activeFilter
+                    ? `${filteredCommunities.length} arenas nesta categoria`
+                    : 'Leitura livre para todos. Participe ativamente fazendo login.'
+                  }
                 </p>
               </div>
 
@@ -680,64 +774,86 @@ export default function ComunidadesPage() {
             </div>
 
             {/* Communities Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {COMMUNITIES.map((community) => (
-                <CommunityCard key={community.id} community={community} />
-              ))}
-            </div>
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {[...Array(6)].map((_, i) => (
+                  <SkeletonCard key={i} />
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {filteredCommunities.map((community) => (
+                  <CommunityCard key={community.id} community={community} />
+                ))}
+              </div>
+            )}
+
+            {filteredCommunities.length === 0 && !loading && (
+              <div className="text-center py-12">
+                <p className="text-zinc-500">Nenhuma arena encontrada nesta categoria.</p>
+                <button
+                  onClick={() => setActiveFilter(null)}
+                  className="mt-4 text-[#00f5ff] hover:underline text-sm"
+                >
+                  Ver todas as arenas
+                </button>
+              </div>
+            )}
           </section>
 
           {/* ===== BENEFITS SECTION ===== */}
-          <section className="py-16">
-            <div className="text-center mb-12">
-              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-                Por que participar das <span className="gradient-text">Comunidades NFC?</span>
-              </h2>
-            </div>
+          {!activeFilter && (
+            <section className="py-16">
+              <div className="text-center mb-12">
+                <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+                  Por que participar das <span className="gradient-text">Comunidades NFC?</span>
+                </h2>
+              </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                {
-                  icon: Users,
-                  title: "Apoio Real",
-                  description: "Conecte-se com pessoas que entendem sua jornada",
-                  gradient: "from-cyan-500 to-blue-600",
-                },
-                {
-                  icon: MessageCircle,
-                  title: "Troca de Experiências",
-                  description: "Compartilhe e aprenda com histórias reais",
-                  gradient: "from-purple-500 to-violet-600",
-                },
-                {
-                  icon: Zap,
-                  title: "Conteúdo Exclusivo",
-                  description: "Dicas e insights direto das especialistas NFC",
-                  gradient: "from-pink-500 to-rose-600",
-                },
-                {
-                  icon: Heart,
-                  title: "Sem Julgamento",
-                  description: "Ambiente seguro e acolhedor para todos",
-                  gradient: "from-emerald-500 to-teal-600",
-                },
-              ].map((benefit, index) => (
-                <div
-                  key={index}
-                  className="card-premium p-6 rounded-2xl text-center group"
-                >
-                  <div className={`w-14 h-14 mx-auto mb-4 rounded-xl bg-gradient-to-br ${benefit.gradient} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
-                    <benefit.icon className="w-7 h-7 text-white" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[
+                  {
+                    icon: Users,
+                    title: "Apoio Real",
+                    description: "Conecte-se com pessoas que entendem sua jornada",
+                    gradient: "from-cyan-500 to-blue-600",
+                  },
+                  {
+                    icon: MessageCircle,
+                    title: "Troca de Experiências",
+                    description: "Compartilhe e aprenda com histórias reais",
+                    gradient: "from-purple-500 to-violet-600",
+                  },
+                  {
+                    icon: Zap,
+                    title: "Conteúdo Exclusivo",
+                    description: "Dicas e insights direto das especialistas NFC",
+                    gradient: "from-pink-500 to-rose-600",
+                  },
+                  {
+                    icon: Heart,
+                    title: "Sem Julgamento",
+                    description: "Ambiente seguro e acolhedor para todos",
+                    gradient: "from-emerald-500 to-teal-600",
+                  },
+                ].map((benefit, index) => (
+                  <div
+                    key={index}
+                    className="card-premium p-6 rounded-2xl text-center group"
+                  >
+                    <div className={`w-14 h-14 mx-auto mb-4 rounded-xl bg-gradient-to-br ${benefit.gradient} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+                      <benefit.icon className="w-7 h-7 text-white" />
+                    </div>
+                    <h3 className="text-lg font-bold text-white mb-2">{benefit.title}</h3>
+                    <p className="text-sm text-gray-400">{benefit.description}</p>
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-2">{benefit.title}</h3>
-                  <p className="text-sm text-gray-400">{benefit.description}</p>
-                </div>
-              ))}
-            </div>
-          </section>
+                ))}
+              </div>
+            </section>
+          )}
 
           {/* ===== FINAL CTA ===== */}
-          {!isAuthenticated && (
+          {!isAuthenticated && !activeFilter && (
             <section className="py-16">
               <div
                 className="relative overflow-hidden rounded-3xl p-8 sm:p-12 text-center"
@@ -774,7 +890,7 @@ export default function ComunidadesPage() {
           {/* Footer */}
           <footer className="py-8 text-center border-t border-white/5">
             <p className="text-sm text-gray-500" suppressHydrationWarning>
-              © {new Date().getFullYear()} NutriFitCoach. Todos os direitos reservados.
+              &copy; {new Date().getFullYear()} NutriFitCoach. Todos os direitos reservados.
             </p>
           </footer>
         </div>
