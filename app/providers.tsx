@@ -26,6 +26,8 @@ import { SessionProvider } from 'next-auth/react';
 import { ComunidadesAuthProvider, useComunidadesAuth } from '@/app/components/comunidades/ComunidadesAuthContext';
 import { NFCHeader, UniversalFooter } from '@/components/shared';
 import { FPProvider } from '@/contexts/FPContext';
+import { StreakIcon } from '@/components/gamification/StreakBadge';
+import { Coins } from 'lucide-react';
 
 // Intervalo de refresh em segundos (10 minutos)
 // Mantém a sessão viva e a UI sincronizada
@@ -87,9 +89,32 @@ function UserAreaCompact() {
 
   // Usuário logado - mostrar avatar com menu
   const initials = (user.name || user.email || 'U').charAt(0).toUpperCase();
+  const [fpBalance, setFpBalance] = React.useState<number | null>(null);
+
+  // Buscar saldo de FP
+  React.useEffect(() => {
+    if (user?.id) {
+      fetch(`/api/fp/balance?userId=${user.id}`)
+        .then(res => res.json())
+        .then(data => setFpBalance(data.available))
+        .catch(() => setFpBalance(0));
+    }
+  }, [user?.id]);
 
   return (
-    <div className="absolute top-4 right-4 z-50" ref={menuRef}>
+    <div className="absolute top-4 right-4 z-50 flex items-center gap-3" ref={menuRef}>
+      {/* Streak Icon */}
+      {user?.id && <StreakIcon userId={user.id} />}
+
+      {/* FP Balance */}
+      {fpBalance !== null && (
+        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 rounded-full">
+          <Coins className="w-4 h-4 text-yellow-400" />
+          <span className="text-sm font-semibold text-yellow-400">{fpBalance}</span>
+          <span className="text-xs text-zinc-500 hidden sm:inline">FP</span>
+        </div>
+      )}
+
       <button
         onClick={() => setMenuOpen(!menuOpen)}
         className="flex items-center gap-2 p-1 pr-3 bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-700 rounded-full transition-all"
