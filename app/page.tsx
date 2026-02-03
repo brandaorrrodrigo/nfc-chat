@@ -503,6 +503,38 @@ export default function ComunidadesPage() {
     return FALLBACK_COMMUNITIES;
   }, [apiArenas]);
 
+  // ArenaIndex data: API arenas or fallback converted to ArenaWithTags format
+  const indexArenas = useMemo<ArenaWithTags[]>(() => {
+    if (apiArenas && apiArenas.length > 0) {
+      return apiArenas;
+    }
+    // Convert fallback to ArenaWithTags for ArenaIndex
+    return FALLBACK_COMMUNITIES.map((c): ArenaWithTags => ({
+      id: String(c.id),
+      name: c.title,
+      slug: c.slug,
+      description: c.description,
+      icon: c.icon,
+      color: '',
+      category: c.categoria || 'COMUNIDADES_LIVRES',
+      categoria: (c.categoria || 'COMUNIDADES_LIVRES') as ArenaCategoria,
+      arenaType: c.isCore ? 'NFV_PREMIUM' : 'GENERAL',
+      criadaPor: 'ADMIN',
+      status: (c.featured ? 'HOT' : 'WARM') as ArenaWithTags['status'],
+      totalPosts: c.members || 0,
+      totalComments: 0,
+      dailyActiveUsers: c.activeNow || 0,
+      isActive: true,
+      isPaused: false,
+      allowImages: true,
+      allowLinks: true,
+      allowVideos: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      tags: [],
+    }));
+  }, [apiArenas]);
+
   // Apply category filter
   const filteredCommunities = useMemo(() => {
     if (!activeFilter) return communities;
@@ -612,9 +644,9 @@ export default function ComunidadesPage() {
           </section>
 
           {/* ===== ÍNDICE DE ARENAS ===== */}
-          {apiArenas && apiArenas.length > 0 && (
+          {!loading && indexArenas.length > 0 && (
             <section className="mb-8">
-              <ArenaIndex arenas={apiArenas} />
+              <ArenaIndex arenas={indexArenas} />
             </section>
           )}
 
