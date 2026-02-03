@@ -39,14 +39,17 @@ export function MessageActions({
   // Só o autor pode ver o menu
   const isAuthor = authorId === currentUserId;
 
-  // Calcular se ainda pode editar
-  const createdDate = new Date(createdAt);
-  const minutesSinceCreation = (Date.now() - createdDate.getTime()) / 1000 / 60;
-  const canEdit = isAuthor && minutesSinceCreation < EDIT_TIME_LIMIT_MINUTES;
+  // Calcular se ainda pode editar (usar estado para evitar hydration mismatch)
   const canDelete = isAuthor;
+  const [canEdit, setCanEdit] = useState(false);
+  const [minutesRemaining, setMinutesRemaining] = useState(EDIT_TIME_LIMIT_MINUTES);
 
-  // Tempo restante para edição
-  const minutesRemaining = Math.max(0, EDIT_TIME_LIMIT_MINUTES - minutesSinceCreation);
+  useEffect(() => {
+    const createdDate = new Date(createdAt);
+    const minutesSinceCreation = (Date.now() - createdDate.getTime()) / 1000 / 60;
+    setCanEdit(isAuthor && minutesSinceCreation < EDIT_TIME_LIMIT_MINUTES);
+    setMinutesRemaining(Math.max(0, EDIT_TIME_LIMIT_MINUTES - minutesSinceCreation));
+  }, [createdAt, isAuthor]);
 
   // Fechar menu ao clicar fora
   useEffect(() => {

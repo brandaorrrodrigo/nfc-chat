@@ -773,7 +773,7 @@ export default function ComunidadesPage() {
 
           {/* Footer */}
           <footer className="py-8 text-center border-t border-white/5">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500" suppressHydrationWarning>
               © {new Date().getFullYear()} NutriFitCoach. Todos os direitos reservados.
             </p>
           </footer>

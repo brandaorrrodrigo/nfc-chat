@@ -41,7 +41,7 @@ const MOCK_TRENDING: TrendingTopic[] = [
     responseCount: 47,
     viewCount: 892,
     engagementScore: 95,
-    lastActivityAt: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
+    lastActivityAt: '2026-02-03T12:55:00.000Z',
     isHot: true,
     author: { name: 'Dra. Helena', isFounder: true }
   },
@@ -54,7 +54,7 @@ const MOCK_TRENDING: TrendingTopic[] = [
     responseCount: 38,
     viewCount: 654,
     engagementScore: 88,
-    lastActivityAt: new Date(Date.now() - 1000 * 60 * 12).toISOString(),
+    lastActivityAt: '2026-02-03T12:48:00.000Z',
     isHot: true,
     author: { name: 'Fernanda Lima' }
   },
@@ -67,7 +67,7 @@ const MOCK_TRENDING: TrendingTopic[] = [
     responseCount: 31,
     viewCount: 523,
     engagementScore: 82,
-    lastActivityAt: new Date(Date.now() - 1000 * 60 * 25).toISOString(),
+    lastActivityAt: '2026-02-03T12:35:00.000Z',
     isHot: true,
     author: { name: 'Dr. Ricardo', isFounder: true }
   },
@@ -80,7 +80,7 @@ const MOCK_TRENDING: TrendingTopic[] = [
     responseCount: 28,
     viewCount: 412,
     engagementScore: 78,
-    lastActivityAt: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
+    lastActivityAt: '2026-02-03T12:15:00.000Z',
     isHot: false,
     author: { name: 'Maria Silva' }
   },
@@ -93,7 +93,7 @@ const MOCK_TRENDING: TrendingTopic[] = [
     responseCount: 24,
     viewCount: 387,
     engagementScore: 72,
-    lastActivityAt: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
+    lastActivityAt: '2026-02-03T12:00:00.000Z',
     isHot: false,
     author: { name: 'Coach Bret', isFounder: true }
   },
@@ -106,7 +106,7 @@ const MOCK_TRENDING: TrendingTopic[] = [
     responseCount: 42,
     viewCount: 678,
     engagementScore: 85,
-    lastActivityAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
+    lastActivityAt: '2026-02-03T12:30:00.000Z',
     isHot: true,
     author: { name: 'Dra. Lucia', isFounder: true }
   },

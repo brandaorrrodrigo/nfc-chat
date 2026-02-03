@@ -173,7 +173,7 @@ export default function UniversalFooter({
         <div className={`pt-8 border-t ${variant === 'app' ? 'border-gray-200' : 'border-zinc-800'}`}>
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             {/* Copyright */}
-            <p className={`text-sm ${c.textMuted}`}>
+            <p className={`text-sm ${c.textMuted}`} suppressHydrationWarning>
               © {currentYear} NutriFitCoach. Todos os direitos reservados.
             </p>
 
@@ -227,7 +227,7 @@ export function CompactFooter({
     <footer className={`${c.bg} ${c.border} py-4 ${className}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs">
-          <p className={c.text}>
+          <p className={c.text} suppressHydrationWarning>
             © {currentYear} NutriFitCoach
           </p>
           <div className={`flex items-center gap-4 ${c.text}`}>

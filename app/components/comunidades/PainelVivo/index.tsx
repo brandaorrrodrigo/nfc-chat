@@ -483,7 +483,15 @@ function PerguntaDoDia({ comunidadeSlug }: { comunidadeSlug?: string }) {
     setComunidadeDaPergunta(comunidadeInfo?.nome || comunidadeEscolhida);
   }, [comunidadeSlug]);
 
-  const slugParaLink = comunidadeSlug || comunidades[new Date().getDate() % comunidades.length].slug;
+  // Usar estado para evitar hydration mismatch (new Date() difere entre server/client)
+  const [slugParaLink, setSlugParaLink] = useState(comunidadeSlug || '');
+
+  useEffect(() => {
+    if (!comunidadeSlug) {
+      const hoje = new Date().getDate();
+      setSlugParaLink(comunidades[hoje % comunidades.length].slug);
+    }
+  }, [comunidadeSlug]);
 
   return (
     <div className="bg-gradient-to-br from-purple-900/30 to-zinc-900/70 backdrop-blur-sm border border-purple-500/30 rounded-xl overflow-hidden">

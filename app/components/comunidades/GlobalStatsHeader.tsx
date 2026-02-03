@@ -40,13 +40,16 @@ const STATS_MOCK: GlobalStats = {
   ativos24h: 1423,
   mensagensHoje: 847,
   intervencoesIA: 156,
-  ultimaAtualizacao: new Date(),
+  ultimaAtualizacao: new Date(0), // Placeholder - atualizado no useEffect
 };
 
-// Simulação de variação nos dados
+// Simulação de variação nos dados (seed baseado no timestamp para consistência)
 function gerarVariacao(base: number, percentual: number = 5): number {
   const variacao = Math.floor(base * (percentual / 100));
-  const delta = Math.floor(Math.random() * variacao * 2) - variacao;
+  // Usar seed determinístico baseado no segundo atual para evitar hydration mismatch
+  const seed = Math.floor(Date.now() / 10000);
+  const pseudoRandom = ((seed * 9301 + 49297) % 233280) / 233280;
+  const delta = Math.floor(pseudoRandom * variacao * 2) - variacao;
   return Math.max(0, base + delta);
 }
 

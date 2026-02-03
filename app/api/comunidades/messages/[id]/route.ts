@@ -130,7 +130,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       .from('nfc_chat_messages')
       .select('*')
       .eq('id', messageId)
-      .single();
+      .maybeSingle();
 
     if (fetchError || !existingMessage) {
       log('warn', 'PATCH_MESSAGE_NOT_FOUND', {
@@ -287,8 +287,18 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    // Verificar autenticação
-    const session = await getServerSession(authOptions);
+    // Verificar autenticação (defensivo)
+    let session;
+    try {
+      session = await getServerSession(authOptions);
+    } catch (authError: any) {
+      log('error', 'DELETE_AUTH_ERROR', { messageId, error: authError.message });
+      return NextResponse.json(
+        { error: 'Erro de autenticação', details: authError.message },
+        { status: 401 }
+      );
+    }
+
     if (!session?.user) {
       log('warn', 'DELETE_UNAUTHORIZED', { messageId });
       return NextResponse.json(
@@ -300,13 +310,13 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     const userId = session.user.id || session.user.email;
     log('info', 'DELETE_AUTHENTICATED', { messageId, userId });
 
-    // Buscar mensagem existente
+    // Buscar mensagem existente (usar maybeSingle para não errar em "not found")
     log('info', 'DELETE_FETCHING_MESSAGE', { messageId });
     const { data: existingMessage, error: fetchError } = await supabase
       .from('nfc_chat_messages')
       .select('*')
       .eq('id', messageId)
-      .single();
+      .maybeSingle();
 
     if (fetchError) {
       log('error', 'DELETE_FETCH_ERROR', {

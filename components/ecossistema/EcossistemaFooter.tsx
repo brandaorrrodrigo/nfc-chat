@@ -83,7 +83,7 @@ export default function EcossistemaFooter() {
         {/* Linha Separadora */}
         <div className="border-t border-zinc-800 pt-6">
           {/* Copyright */}
-          <p className="text-center text-xs text-zinc-600">
+          <p className="text-center text-xs text-zinc-600" suppressHydrationWarning>
             © {currentYear} NutriFitCoach — Todos os direitos reservados
           </p>
         </div>

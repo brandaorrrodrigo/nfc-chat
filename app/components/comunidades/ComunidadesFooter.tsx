@@ -175,7 +175,7 @@ export default function ComunidadesFooter() {
       <div className="border-t border-zinc-800">
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-zinc-500" suppressHydrationWarning>
               © {currentYear} NutriFitCoach. Todos os direitos reservados.
             </p>
             <p className="flex items-center gap-1 text-xs text-zinc-500">

@@ -32,20 +32,21 @@ interface CommunityStats {
 // DADOS MOCK POR COMUNIDADE
 // ========================================
 
+// Timestamps fixos para evitar hydration mismatch (atualizados via useEffect)
 const COMMUNITY_STATS_MOCK: Record<string, CommunityStats> = {
   lipedema: {
     membrosInscritos: 1247,
     usuariosAtivos: 47,
     topicosAbertos: 24,
     ultimaAtividade: 'há 2 min',
-    ultimaAtividadeTimestamp: new Date(Date.now() - 2 * 60 * 1000),
+    ultimaAtividadeTimestamp: new Date(0),
   },
   peptideos: {
     membrosInscritos: 856,
     usuariosAtivos: 63,
     topicosAbertos: 18,
     ultimaAtividade: 'há 40s',
-    ultimaAtividadeTimestamp: new Date(Date.now() - 40 * 1000),
+    ultimaAtividadeTimestamp: new Date(0),
   },
 };
 
