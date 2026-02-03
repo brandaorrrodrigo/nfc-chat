@@ -1,11 +1,8 @@
 /**
- * Componentes de Gamificacao
- *
- * Sistema de Fitness Points (FP) para engajamento da comunidade.
+ * Gamification Components
+ * Componentes de gamificação e progressão
  */
 
-export { FPIcon, FPIconAnimated, FPIconBounce } from './FPIcon';
-export { FPToast, FPToastContainer, useFPToasts } from './FPToast';
-export { FPAchievementModal, useFPAchievementModal } from './FPAchievementModal';
-export { FPWidget, FPWidgetMini } from './FPWidget';
-export { FPExplanation } from './FPExplanation';
+export { ProgressBar } from "./ProgressBar";
+export { MilestoneNotification } from "./MilestoneNotification";
+export { ConversionHistory } from "./ConversionHistory";
