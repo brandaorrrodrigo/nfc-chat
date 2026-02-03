@@ -2175,18 +2175,13 @@ export default function PainelVivoPage() {
     );
   }
 
-  // Not found state
-  if (notFound || !comunidade) {
-    return <ComunidadeNaoEncontrada slug={slug} />;
-  }
-
-  // NFV Hub - Layout especial biomecanico
-  if (isNFVHub(slug)) {
+  // NFV Hub - Layout especial biomecanico (antes do notFound check)
+  if (!isLoading && isNFVHub(slug)) {
     return <NFVHub />;
   }
 
-  // NFV Premium Arena - Layout com galeria de videos
-  if (isPremiumNFVArena(slug)) {
+  // NFV Premium Arena - Layout com galeria de videos (antes do notFound check)
+  if (!isLoading && isPremiumNFVArena(slug)) {
     return (
       <div
         className="min-h-[calc(100vh-64px)] flex flex-col overflow-hidden relative"
@@ -2205,6 +2200,11 @@ export default function PainelVivoPage() {
         </div>
       </div>
     );
+  }
+
+  // Not found state
+  if (notFound || !comunidade) {
+    return <ComunidadeNaoEncontrada slug={slug} />;
   }
 
   return (
