@@ -162,7 +162,7 @@ async function main() {
       tags: ['biohacking', 'performance', 'farmacologia', 'elite']
     },
 
-    // BIOMECÂNICA & NFV
+    // SAÚDE & CONDIÇÕES CLÍNICAS (dores, lipedema)
     {
       name: 'Sinal Vermelho',
       slug: 'sinal-vermelho',
@@ -170,14 +170,14 @@ async function main() {
       icon: 'Activity',
       color: '#ef4444',
       category: 'health',
-      categoria: 'BIOMECANICA_NFV' as const,
+      categoria: 'SAUDE_CONDICOES_CLINICAS' as const,
       aiPersona: 'SCIENTIFIC' as const,
       aiInterventionRate: 70,
       aiFrustrationThreshold: 60,
       aiCooldown: 5,
       totalPosts: 93,
       status: 'WARM' as const,
-      tags: ['dor', 'biomecânica', 'investigação', 'desconforto', 'médico']
+      tags: ['dor', 'saúde', 'investigação', 'desconforto', 'médico']
     },
     {
       name: 'Lipedema — Paradoxo do Cardio',
@@ -186,7 +186,7 @@ async function main() {
       icon: 'Activity',
       color: '#06b6d4',
       category: 'health',
-      categoria: 'BIOMECANICA_NFV' as const,
+      categoria: 'SAUDE_CONDICOES_CLINICAS' as const,
       aiPersona: 'SCIENTIFIC' as const,
       aiInterventionRate: 40,
       aiFrustrationThreshold: 120,

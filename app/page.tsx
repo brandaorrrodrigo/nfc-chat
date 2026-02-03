@@ -32,6 +32,7 @@ import {
   Crown,
   Star,
   Zap,
+  Video,
   MessageCircle,
   Eye,
   LucideIcon,
@@ -87,7 +88,7 @@ const FALLBACK_COMMUNITIES: CommunityCardData[] = [
     gradient: "from-red-500 to-rose-600",
     lastActivity: "há 8 min",
     featured: true,
-    categoria: 'BIOMECANICA_NFV',
+    categoria: 'SAUDE_CONDICOES_CLINICAS',
   },
   {
     id: 17,
@@ -125,7 +126,7 @@ const FALLBACK_COMMUNITIES: CommunityCardData[] = [
     gradient: "from-cyan-500 to-teal-600",
     lastActivity: "há 3 min",
     featured: true,
-    categoria: 'BIOMECANICA_NFV',
+    categoria: 'SAUDE_CONDICOES_CLINICAS',
   },
   {
     id: 2,
@@ -250,6 +251,84 @@ const FALLBACK_COMMUNITIES: CommunityCardData[] = [
     featured: true,
     categoria: 'TREINO_EXERCICIOS',
   },
+  {
+    id: 20,
+    title: "Hub Biomecânico",
+    description: "Discussão aberta sobre biomecânica, padrões de movimento, cadeia cinética e correção postural. IA especialista em análise de movimento.",
+    members: 245,
+    activeNow: 22,
+    slug: "hub-biomecanico",
+    icon: "Activity",
+    gradient: "from-cyan-500 to-blue-600",
+    lastActivity: "há 1 min",
+    featured: true,
+    categoria: 'BIOMECANICA_NFV',
+  },
+  {
+    id: 21,
+    title: "Análise: Agachamento",
+    description: "Envie seu vídeo de agachamento e receba análise biomecânica com IA + revisão profissional. Identifique compensações e melhore sua técnica.",
+    members: 187,
+    activeNow: 15,
+    slug: "analise-agachamento",
+    icon: "Video",
+    gradient: "from-purple-500 to-violet-600",
+    lastActivity: "há 3 min",
+    isCore: true,
+    categoria: 'BIOMECANICA_NFV',
+  },
+  {
+    id: 22,
+    title: "Análise: Levantamento Terra",
+    description: "Análise biomecânica do seu terra. IA identifica posição da coluna, ativação de posteriores e padrão de hip hinge.",
+    members: 134,
+    activeNow: 11,
+    slug: "analise-terra",
+    icon: "Video",
+    gradient: "from-amber-500 to-orange-600",
+    lastActivity: "há 5 min",
+    isCore: true,
+    categoria: 'BIOMECANICA_NFV',
+  },
+  {
+    id: 23,
+    title: "Análise: Supino",
+    description: "Envie seu vídeo de supino para análise de retração escapular, trajetória da barra e ativação peitoral.",
+    members: 112,
+    activeNow: 9,
+    slug: "analise-supino",
+    icon: "Video",
+    gradient: "from-red-500 to-rose-600",
+    lastActivity: "há 8 min",
+    isCore: true,
+    categoria: 'BIOMECANICA_NFV',
+  },
+  {
+    id: 24,
+    title: "Análise: Puxadas",
+    description: "Análise biomecânica de puxadas e remadas. IA avalia ativação de dorsais, compensação de bíceps e posição escapular.",
+    members: 98,
+    activeNow: 7,
+    slug: "analise-puxadas",
+    icon: "Video",
+    gradient: "from-cyan-500 to-teal-600",
+    lastActivity: "há 10 min",
+    isCore: true,
+    categoria: 'BIOMECANICA_NFV',
+  },
+  {
+    id: 25,
+    title: "Análise: Elevação Pélvica",
+    description: "Análise do hip thrust e elevação pélvica. IA verifica extensão de quadril, ativação glútea e compensações lombares.",
+    members: 156,
+    activeNow: 13,
+    slug: "analise-elevacao-pelvica",
+    icon: "Video",
+    gradient: "from-pink-500 to-rose-600",
+    lastActivity: "há 4 min",
+    isCore: true,
+    categoria: 'BIOMECANICA_NFV',
+  },
 ];
 
 // ========================================
@@ -268,6 +347,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Utensils,
   Home,
   Zap,
+  Video,
 };
 
 // ========================================
@@ -495,10 +575,17 @@ export default function ComunidadesPage() {
     fetchArenas();
   }, []);
 
-  // Resolve display data: API arenas or fallback
+  // Arenas NFV do fallback (sempre incluidas)
+  const NFV_SLUGS = ['hub-biomecanico','analise-agachamento','analise-terra','analise-supino','analise-puxadas','analise-elevacao-pelvica'];
+  const nfvFallback = FALLBACK_COMMUNITIES.filter(c => NFV_SLUGS.includes(c.slug));
+
+  // Resolve display data: API arenas or fallback + NFV sempre presente
   const communities = useMemo<CommunityCardData[]>(() => {
     if (apiArenas && apiArenas.length > 0) {
-      return apiArenas.map(arenaToDisplayFormat);
+      const apiDisplay = apiArenas.map(arenaToDisplayFormat);
+      const existingSlugs = new Set(apiDisplay.map(a => a.slug));
+      const missingNFV = nfvFallback.filter(n => !existingSlugs.has(n.slug));
+      return [...apiDisplay, ...missingNFV];
     }
     return FALLBACK_COMMUNITIES;
   }, [apiArenas]);
