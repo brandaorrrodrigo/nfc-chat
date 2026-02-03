@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { MetricCard } from '@/components/dashboard/MetricCard'
+import { GPUMonitor } from '@/components/dashboard/GPUMonitor'
 
 export default function DashboardPage() {
   const [metrics, setMetrics] = useState({
@@ -132,6 +133,9 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      {/* GPU Monitoring */}
+      <GPUMonitor />
+
       {/* System Status */}
       <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl border border-slate-700 p-6">
         <h2 className="text-xl font-bold text-white mb-4">
@@ -158,17 +162,25 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
             <div className="flex items-center gap-3">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-sm text-gray-300">IA Claude</span>
+              <span className="text-sm text-gray-300">Ollama (Llama 3.1 70B)</span>
             </div>
-            <span className="text-xs text-green-400 font-medium">Operacional</span>
+            <span className="text-xs text-green-400 font-medium">Local - GPU 0</span>
           </div>
 
           <div className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
             <div className="flex items-center gap-3">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-sm text-gray-300">RAG (Pinecone)</span>
+              <span className="text-sm text-gray-300">ChromaDB (RAG)</span>
             </div>
-            <span className="text-xs text-green-400 font-medium">Operacional</span>
+            <span className="text-xs text-green-400 font-medium">Local - Docker</span>
+          </div>
+
+          <div className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span className="text-sm text-gray-300">LLaVA Vision</span>
+            </div>
+            <span className="text-xs text-green-400 font-medium">Local - GPU 2</span>
           </div>
         </div>
       </div>

@@ -1,0 +1,83 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: nfc-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: nfc_admin
+      POSTGRES_USER: nfc
+      POSTGRES_PASSWORD: nfc_password_change_me
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - nfc-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: nfc-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - nfc-network
+
+  # ChromaDB Vector Database
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: nfc-chromadb
+    restart: unless-stopped
+    environment:
+      IS_PERSISTENT: "TRUE"
+      PERSIST_DIRECTORY: "/chroma/chroma"
+      ANONYMIZED_TELEMETRY: "FALSE"
+    ports:
+      - "8000:8000"
+    volumes:
+      - chromadb_data:/chroma/chroma
+    networks:
+      - nfc-network
+
+  # Qdrant Vector Database (alternativa ao ChromaDB)
+  # Descomente se preferir usar Qdrant
+  # qdrant:
+  #   image: qdrant/qdrant:latest
+  #   container_name: nfc-qdrant
+  #   restart: unless-stopped
+  #   ports:
+  #     - "6333:6333"
+  #     - "6334:6334"
+  #   volumes:
+  #     - qdrant_data:/qdrant/storage
+  #   networks:
+  #     - nfc-network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  chromadb_data:
+    driver: local
+  # qdrant_data:
+  #   driver: local
+
+networks:
+  nfc-network:
+    driver: bridge
+
+# IMPORTANTE: Ollama deve ser instalado diretamente no host para acesso às GPUs
+# Instruções:
+# 1. Instalar Ollama: curl -fsSL https://ollama.com/install.sh | sh
+# 2. Pull dos modelos:
+#    ollama pull llama3.1:70b
+#    ollama pull llama3.1:8b
+#    ollama pull nomic-embed-text
+#    ollama pull llava:13b
+# 3. Ollama rodará em http://localhost:11434
