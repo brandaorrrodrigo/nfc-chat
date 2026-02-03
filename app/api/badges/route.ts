@@ -1,121 +1,55 @@
 /**
  * API: Badges
- * Path: /api/badges
- *
- * GET - Retorna badges do usuario com status
- * POST - Verifica e desbloqueia novas badges
+ * GET /api/badges?userId=xxx - Buscar badges do usuário
+ * POST /api/badges/check - Verificar e conceder badges
  */
 
-export const dynamic = 'force-dynamic';
-
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth-config';
-import {
-  getBadgesWithStatus,
-  checkAndUnlockBadges,
-  ALL_BADGES,
-} from '@/lib/badges';
+import { getUserBadges, checkAndAwardBadges, getBadgeProgress } from '@/lib/badges/badge-service';
 
-// ==========================================
-// GET - Listar badges do usuario
-// ==========================================
-
-export async function GET(request: NextRequest): Promise<NextResponse> {
+export async function GET(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-
-    // Pegar userId da query ou sessao
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('userId') || session?.user?.id;
+    const { searchParams } = new URL(req.url);
+    const userId = searchParams.get('userId');
+    const action = searchParams.get('action');
 
     if (!userId) {
-      return NextResponse.json(
-        { success: false, error: 'userId obrigatorio' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'userId é obrigatório' }, { status: 400 });
     }
 
-    // Buscar badges com status
-    const badges = await getBadgesWithStatus(userId);
+    if (action === 'progress') {
+      const progress = await getBadgeProgress(userId);
+      return NextResponse.json(progress);
+    }
 
-    // Separar por categoria
-    const byCategory = badges.reduce((acc, b) => {
-      const cat = b.badge.category;
-      if (!acc[cat]) acc[cat] = [];
-      acc[cat].push(b);
-      return acc;
-    }, {} as Record<string, typeof badges>);
-
-    // Estatisticas
-    const unlockedCount = badges.filter(b => b.unlocked).length;
-    const totalCount = badges.length;
-
-    return NextResponse.json({
-      success: true,
-      badges,
-      byCategory,
-      stats: {
-        unlocked: unlockedCount,
-        total: totalCount,
-        percentage: Math.round((unlockedCount / totalCount) * 100),
-      },
-    });
-
+    const badges = await getUserBadges(userId);
+    return NextResponse.json({ badges });
   } catch (error: any) {
-    console.error('[Badges GET Error]', error);
-    return NextResponse.json(
-      { success: false, error: 'Erro ao buscar badges', details: error.message },
-      { status: 500 }
-    );
+    console.error('[Badges API GET] Error:', error);
+    return NextResponse.json({ error: error.message || 'Erro interno' }, { status: 500 });
   }
 }
 
-// ==========================================
-// POST - Verificar e desbloquear badges
-// ==========================================
-
-interface CheckBadgesBody {
-  userId: string;
-}
-
-export async function POST(request: NextRequest): Promise<NextResponse> {
+export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    const body: CheckBadgesBody = await request.json();
-
-    const userId = body.userId || session?.user?.id;
+    const body = await req.json();
+    const { userId } = body;
 
     if (!userId) {
-      return NextResponse.json(
-        { success: false, error: 'userId obrigatorio' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'userId é obrigatório' }, { status: 400 });
     }
 
-    // Verificar e desbloquear novas badges
-    const result = await checkAndUnlockBadges(userId);
+    const newBadges = await checkAndAwardBadges(userId);
 
     return NextResponse.json({
       success: true,
-      newBadges: result.newBadges.map(b => ({
-        id: b.id,
-        name: b.name,
-        description: b.description,
-        icon: b.icon,
-        category: b.category,
-        rarity: b.rarity,
-        fpReward: b.fpReward,
-      })),
-      totalFPRewarded: result.totalFPRewarded,
-      hasNewBadges: result.newBadges.length > 0,
+      newBadges,
+      count: newBadges.length,
     });
-
   } catch (error: any) {
-    console.error('[Badges POST Error]', error);
-    return NextResponse.json(
-      { success: false, error: 'Erro ao verificar badges', details: error.message },
-      { status: 500 }
-    );
+    console.error('[Badges API POST] Error:', error);
+    return NextResponse.json({ error: error.message || 'Erro interno' }, { status: 500 });
   }
 }
+
+export const dynamic = 'force-dynamic';
