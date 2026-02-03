@@ -12,6 +12,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth-config';
 import { apiSuccess, apiError } from '@/lib/api-utils';
+import { onCommentLiked } from '@/lib/fp/fp-hooks';
 
 // Tipos de reação disponíveis
 const REACTION_TYPES = ['forca', 'amor', 'inspirador', 'util', 'parabens'] as const;
@@ -123,6 +124,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       usersWhoReacted.add(userId);
       action = 'added';
     }
+
+    // 🎮 GAMIFICAÇÃO: Conceder FP ao autor da mensagem quando receber reação
+    // TODO: Implementar quando migrar reactions para Supabase
+    // Para conceder FP, precisamos do authorId da mensagem
+    // Exemplo: await onCommentLiked(messageAuthorId, messageId, userId);
 
     return NextResponse.json({
       success: true,

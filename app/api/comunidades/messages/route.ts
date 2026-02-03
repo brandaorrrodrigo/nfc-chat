@@ -13,6 +13,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth-config';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { onCommentCreated } from '@/lib/fp/fp-hooks';
 
 // Interface da mensagem no banco
 interface DBMessage {
@@ -207,6 +208,16 @@ export async function POST(request: NextRequest) {
       respostas: [],
       reacoes: [],
     };
+
+    // 🎮 GAMIFICAÇÃO: Conceder FP por criar mensagem
+    try {
+      const userId = session.user.id || session.user.email;
+      if (userId) {
+        await onCommentCreated(userId, messageId, slug);
+      }
+    } catch (fpError) {
+      console.warn('Erro ao conceder FP, continuando:', fpError);
+    }
 
     return NextResponse.json({ mensagem, success: true });
   } catch (error: any) {

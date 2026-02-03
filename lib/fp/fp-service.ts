@@ -5,6 +5,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { FPAction, getFPRule } from './fp-rules';
+import { checkAndAwardBadges } from '../badges/badge-service';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -171,6 +172,14 @@ export async function awardFP(
 
     if (transactionError) {
       console.error('[FP Service] Transaction error:', transactionError);
+    }
+
+    // 🏆 VERIFICAR BADGES AUTOMATICAMENTE (async, não bloqueia)
+    // Se o usuário ganhou FP positivo, verificar se desbloqueou novos badges
+    if (rule.fpValue > 0) {
+      checkAndAwardBadges(userId).catch(error => {
+        console.warn('[FP Service] Badge check failed (non-blocking):', error);
+      });
     }
 
     return {
