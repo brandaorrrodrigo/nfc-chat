@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { createClient } from '@supabase/supabase-js'
 import { safeRedis } from '@/lib/redis'
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 export async function GET(request: NextRequest) {
   try {
@@ -15,31 +19,40 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(JSON.parse(cached))
     }
 
-    const where: Record<string, unknown> = { isActive: true }
+    console.log('[Arenas] Fetching from Supabase...')
+
+    let query = supabase
+      .from('Arena')
+      .select('*, tags:ArenaTag(tag)')
+      .eq('isActive', true)
+
     if (category) {
-      where.categoria = category
+      query = query.eq('categoria', category)
     }
 
-    const arenas = await prisma.arena.findMany({
-      where,
-      include: { tags: true },
-      orderBy: [
-        { totalPosts: 'desc' },
-      ],
-    })
+    query = query.order('totalPosts', { ascending: false })
+
+    const { data: arenas, error } = await query
+
+    if (error) {
+      console.error('[Arenas] Error:', error)
+      return NextResponse.json({ error: 'Failed to fetch arenas' }, { status: 500 })
+    }
+
+    console.log(`[Arenas] Found ${arenas?.length || 0} arenas`)
 
     let result: unknown
 
     if (grouped) {
       const groups: Record<string, typeof arenas> = {}
-      for (const arena of arenas) {
+      for (const arena of arenas || []) {
         const cat = arena.categoria || 'COMUNIDADES_LIVRES'
         if (!groups[cat]) groups[cat] = []
         groups[cat].push(arena)
       }
-      result = { groups, total: arenas.length }
+      result = { groups, total: arenas?.length || 0 }
     } else {
-      result = arenas
+      result = arenas || []
     }
 
     // Cache 5 minutes
@@ -47,7 +60,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(result)
   } catch (error) {
-    console.error('Error fetching arenas:', error)
+    console.error('[Arenas] Error:', error)
     return NextResponse.json({ error: 'Failed to fetch arenas' }, { status: 500 })
   }
 }
