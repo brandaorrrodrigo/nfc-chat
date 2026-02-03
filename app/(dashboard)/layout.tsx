@@ -1,5 +1,3 @@
-'use client'
-
 import { Sidebar } from '@/components/dashboard/Sidebar'
 import { TopBar } from '@/components/dashboard/TopBar'
 
