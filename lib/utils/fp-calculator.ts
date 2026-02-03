@@ -1,5 +1,5 @@
 import { prisma } from '../prisma'
-import { redis } from '../redis'
+import { safeRedis } from '../redis'
 
 interface FPCalculationParams {
   userId: string
@@ -23,10 +23,10 @@ export async function calculateAndAwardFP(params: FPCalculationParams): Promise<
     return { awarded: false, amount: 0, reason: 'Regra não encontrada ou inativa' }
   }
 
-  // Verificar cooldown
+  // ✅ FIX: Verificar cooldown com safeRedis
   if (rule.cooldown) {
     const cooldownKey = `fp:cooldown:${userId}:${action}`
-    const lastAction = await redis.get(cooldownKey)
+    const lastAction = await safeRedis.get(cooldownKey)
 
     if (lastAction) {
       const elapsed = Date.now() - parseInt(lastAction)
@@ -42,11 +42,11 @@ export async function calculateAndAwardFP(params: FPCalculationParams): Promise<
     }
   }
 
-  // Verificar cap diário
+  // ✅ FIX: Verificar cap diário com safeRedis
   if (rule.dailyCap) {
     const today = new Date().toISOString().split('T')[0]
     const capKey = `fp:cap:${userId}:${action}:${today}`
-    const currentCount = await redis.get(capKey)
+    const currentCount = await safeRedis.get(capKey)
 
     if (currentCount && parseInt(currentCount) >= rule.dailyCap) {
       return {
@@ -80,17 +80,25 @@ export async function calculateAndAwardFP(params: FPCalculationParams): Promise<
     })
   })
 
-  // Atualizar Redis (cooldown e cap)
+  // ✅ FIX: Atualizar Redis (cooldown e cap) com safeRedis
   if (rule.cooldown) {
     const cooldownKey = `fp:cooldown:${userId}:${action}`
-    await redis.setEx(cooldownKey, rule.cooldown * 60, Date.now().toString())
+    await safeRedis.setEx(cooldownKey, rule.cooldown * 60, Date.now().toString())
   }
 
   if (rule.dailyCap) {
     const today = new Date().toISOString().split('T')[0]
     const capKey = `fp:cap:${userId}:${action}:${today}`
-    await redis.incr(capKey)
-    await redis.expireAt(capKey, Math.floor(new Date().setHours(23, 59, 59, 999) / 1000))
+    // Nota: incr e expireAt não estão no safeRedis wrapper ainda, mas o erro será silencioso
+    try {
+      if (safeRedis.isAvailable()) {
+        const { redis } = await import('../redis')
+        await redis.incr(capKey)
+        await redis.expireAt(capKey, Math.floor(new Date().setHours(23, 59, 59, 999) / 1000))
+      }
+    } catch (err) {
+      console.error('[Redis] Failed to update daily cap:', err)
+    }
   }
 
   return { awarded: true, amount: rule.fpValue }

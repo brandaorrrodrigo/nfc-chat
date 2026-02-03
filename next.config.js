@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-// BUILD MARKER: 2026-01-27T23:50 - Force complete rebuild
+// BUILD MARKER: 2026-02-03 - Redis timeout fixes + Windows network folder exclusion
 const nextConfig = {
   reactStrictMode: true,
 
@@ -9,6 +9,23 @@ const nextConfig = {
 
   eslint: {
     ignoreDuringBuilds: true,
+  },
+
+  // ✅ FIX: Excluir pastas de rede do Windows do build
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.watchOptions = {
+        ...config.watchOptions,
+        ignored: [
+          '**/node_modules/**',
+          '**/.next/**',
+          '**/Ambiente de Impressão/**',
+          '**/Ambiente de Rede/**',
+          '**/AppData/**',
+        ],
+      }
+    }
+    return config
   },
 
   images: {

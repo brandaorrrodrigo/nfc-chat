@@ -1,5 +1,5 @@
 import { prisma } from '../prisma'
-import { redis } from '../redis'
+import { safeRedis } from '../redis'
 
 export async function calculateDailyMetrics(date: Date = new Date()) {
   const startOfDay = new Date(date.setHours(0, 0, 0, 0))
@@ -156,7 +156,9 @@ export async function calculateDailyMetrics(date: Date = new Date()) {
 
 export async function getRealtimeMetrics() {
   const cacheKey = 'metrics:realtime'
-  const cached = await redis.get(cacheKey)
+
+  // ✅ FIX: Usar safeRedis com fallback
+  const cached = await safeRedis.get(cacheKey)
 
   if (cached) {
     return JSON.parse(cached)
@@ -173,8 +175,8 @@ export async function getRealtimeMetrics() {
     totalMessagesLast24h,
     fpIssuedToday
   ] = await Promise.all([
-    // Usuários online (do Redis)
-    redis.sCard('users:online'),
+    // ✅ FIX: Usuários online (do Redis com fallback)
+    safeRedis.sCard('users:online'),
 
     // Mensagens na última hora
     prisma.post.count({
@@ -219,17 +221,19 @@ export async function getRealtimeMetrics() {
     fpIssuedToday: fpIssuedToday._sum.amount || 0
   }
 
-  // Cache por 30 segundos
-  await redis.setEx(cacheKey, 30, JSON.stringify(metrics))
+  // ✅ FIX: Cache por 30 segundos (com fallback)
+  await safeRedis.setEx(cacheKey, 30, JSON.stringify(metrics))
 
   return metrics
 }
 
 export async function trackUserOnline(userId: string) {
-  await redis.sAdd('users:online', userId)
-  await redis.expire('users:online', 300) // 5 minutos
+  // ✅ FIX: Usar safeRedis com fallback
+  await safeRedis.sAdd('users:online', userId)
+  await safeRedis.expire('users:online', 300) // 5 minutos
 }
 
 export async function trackUserOffline(userId: string) {
-  await redis.sRem('users:online', userId)
+  // ✅ FIX: Usar safeRedis com fallback
+  await safeRedis.sRem('users:online', userId)
 }

@@ -1,8 +1,9 @@
 import { Server as SocketIOServer } from 'socket.io'
 import { Server as HTTPServer } from 'http'
-import { redis } from './redis'
+import { safeRedis } from './redis'
 
 let io: SocketIOServer | null = null
+let redisPubSubEnabled = false
 
 export function initSocketServer(httpServer: HTTPServer) {
   io = new SocketIOServer(httpServer, {
@@ -45,36 +46,85 @@ export function initSocketServer(httpServer: HTTPServer) {
   return io
 }
 
+// ✅ FIX: Setup Redis Pub/Sub com fallback
 async function setupRedisPubSub() {
-  const subscriber = redis.duplicate()
-  await subscriber.connect()
+  // Não tentar conectar durante build do Vercel
+  if (!safeRedis.isAvailable()) {
+    console.log('[Socket] Redis not available, skipping Pub/Sub setup')
+    redisPubSubEnabled = false
+    return
+  }
 
-  // Inscrever em canal de métricas
-  await subscriber.subscribe('metrics:update', (message) => {
-    if (io) {
-      io.emit('metrics:update', JSON.parse(message))
-    }
-  })
+  try {
+    const { redis } = await import('./redis')
+    const subscriber = redis.duplicate()
+    await subscriber.connect()
 
-  // Inscrever em canal de alertas
-  await subscriber.subscribe('alert:new', (message) => {
-    if (io) {
-      io.emit('alert:new', JSON.parse(message))
-    }
-  })
+    // Inscrever em canal de métricas
+    await subscriber.subscribe('metrics:update', (message) => {
+      if (io) {
+        io.emit('metrics:update', JSON.parse(message))
+      }
+    })
 
-  console.log('✅ Redis Pub/Sub configured for WebSocket')
+    // Inscrever em canal de alertas
+    await subscriber.subscribe('alert:new', (message) => {
+      if (io) {
+        io.emit('alert:new', JSON.parse(message))
+      }
+    })
+
+    redisPubSubEnabled = true
+    console.log('[Socket] ✅ Redis Pub/Sub configured for WebSocket')
+  } catch (err) {
+    console.error('[Socket] Failed to setup Redis Pub/Sub:', err)
+    redisPubSubEnabled = false
+  }
 }
 
 export function getSocketServer(): SocketIOServer | null {
   return io
 }
 
+// ✅ FIX: Emit com fallback
 export async function emitMetricsUpdate(data: any) {
-  // Publicar no Redis para que todos os workers recebam
-  await redis.publish('metrics:update', JSON.stringify(data))
+  if (!redisPubSubEnabled) {
+    console.log('[Socket] Redis Pub/Sub not enabled, emitting directly')
+    if (io) {
+      io.emit('metrics:update', data)
+    }
+    return
+  }
+
+  try {
+    const { redis } = await import('./redis')
+    await redis.publish('metrics:update', JSON.stringify(data))
+  } catch (err) {
+    console.error('[Socket] Failed to publish metrics update:', err)
+    // Fallback: emit diretamente
+    if (io) {
+      io.emit('metrics:update', data)
+    }
+  }
 }
 
 export async function emitAlert(alert: any) {
-  await redis.publish('alert:new', JSON.stringify(alert))
+  if (!redisPubSubEnabled) {
+    console.log('[Socket] Redis Pub/Sub not enabled, emitting directly')
+    if (io) {
+      io.emit('alert:new', alert)
+    }
+    return
+  }
+
+  try {
+    const { redis } = await import('./redis')
+    await redis.publish('alert:new', JSON.stringify(alert))
+  } catch (err) {
+    console.error('[Socket] Failed to publish alert:', err)
+    // Fallback: emit diretamente
+    if (io) {
+      io.emit('alert:new', alert)
+    }
+  }
 }

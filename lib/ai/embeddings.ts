@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { redis } from '../redis'
+import { safeRedis } from '../redis'
 
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434'
 const EMBEDDING_MODEL = process.env.EMBEDDING_MODEL || 'nomic-embed-text'
@@ -8,11 +8,11 @@ interface EmbeddingResponse {
   embedding: number[]
 }
 
-// Cache de embeddings no Redis
+// ✅ FIX: Cache de embeddings no Redis com fallback
 async function getCachedEmbedding(text: string): Promise<number[] | null> {
   try {
     const cacheKey = `embedding:${Buffer.from(text).toString('base64').slice(0, 50)}`
-    const cached = await redis.get(cacheKey)
+    const cached = await safeRedis.get(cacheKey)
 
     if (cached) {
       return JSON.parse(cached)
@@ -27,7 +27,7 @@ async function getCachedEmbedding(text: string): Promise<number[] | null> {
 async function setCachedEmbedding(text: string, embedding: number[]): Promise<void> {
   try {
     const cacheKey = `embedding:${Buffer.from(text).toString('base64').slice(0, 50)}`
-    await redis.setex(cacheKey, 86400, JSON.stringify(embedding)) // 24h cache
+    await safeRedis.setEx(cacheKey, 86400, JSON.stringify(embedding)) // 24h cache
   } catch (error) {
     console.error('Error setting cached embedding:', error)
   }
