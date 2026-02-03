@@ -1772,11 +1772,21 @@ export default function PainelVivoPage() {
         throw new Error(result.error || 'Erro ao excluir mensagem');
       }
 
-      // Remover mensagem da lista
+      // Remover mensagem da lista (UI otimista)
       setMensagens(prev => prev.filter(m => m.id !== messageId));
+
+      // Atualizar saldo de FP (a API já removeu os FPs no banco)
+      await refreshFP();
+
+      // Mostrar mensagem de sucesso
+      if (result.fpRemoved && result.fpRemoved > 0) {
+        alert(`✅ Mensagem deletada!\n\n⚠️ ${result.fpRemoved} FP foi removido do seu saldo.`);
+      } else {
+        alert('✅ Mensagem deletada com sucesso!');
+      }
     } catch (error: any) {
       console.error('Erro ao excluir mensagem:', error);
-      alert('Erro ao excluir mensagem. Tente novamente.');
+      alert(`❌ Erro ao excluir mensagem\n\n${error.message || 'Tente novamente.'}`);
     }
   };
 

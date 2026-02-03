@@ -222,60 +222,90 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     // ==========================================
 
     // Buscar transações de FP relacionadas a esta mensagem
-    const { data: fpTransactions } = await supabase
+    // Nota: Busca por ambas as chaves possíveis no metadata (messageId e message_id)
+    const { data: fpTransactions, error: fpQueryError } = await supabase
       .from('nfc_chat_fp_transactions')
       .select('*')
       .eq('user_id', userId)
       .eq('type', 'earn')
-      .or(`metadata->>messageId.eq.${messageId},metadata->>message_id.eq.${messageId}`)
       .gte('created_at', existingMessage.created_at); // Só transações após criação da mensagem
 
+    console.log(`[DELETE Message] Buscando transações de FP para mensagem ${messageId}...`);
+
     let fpToRemove = 0;
+    const validTransactions: any[] = [];
 
+    // Filtrar manualmente transações relacionadas a esta mensagem
     if (fpTransactions && fpTransactions.length > 0) {
-      // Soma FP ganho por esta mensagem
-      fpToRemove = fpTransactions.reduce((sum, tx) => sum + tx.amount, 0);
+      for (const tx of fpTransactions) {
+        const metadata = tx.metadata || {};
+        const txMessageId = metadata.messageId || metadata.message_id;
 
-      console.log(`[DELETE Message] Removendo ${fpToRemove} FP do usuário ${userId} por deletar mensagem ${messageId}`);
-
-      // Buscar saldo atual do usuário
-      const { data: userFP } = await supabase
-        .from('nfc_chat_user_fp')
-        .select('*')
-        .eq('user_id', userId)
-        .single();
-
-      if (userFP && fpToRemove > 0) {
-        const newBalance = Math.max(0, userFP.balance - fpToRemove);
-        const newTotalEarned = Math.max(0, userFP.total_earned - fpToRemove);
-
-        // Atualizar saldo
-        await supabase
-          .from('nfc_chat_user_fp')
-          .update({
-            balance: newBalance,
-            total_earned: newTotalEarned,
-            fp_earned_today: Math.max(0, (userFP.fp_earned_today || 0) - fpToRemove),
-            updated_at: new Date().toISOString(),
-          })
-          .eq('user_id', userId);
-
-        // Registrar transação de remoção
-        await supabase
-          .from('nfc_chat_fp_transactions')
-          .insert({
-            user_id: userId,
-            amount: -fpToRemove,
-            type: 'spend',
-            action: 'admin_adjust',
-            description: 'FP removido por deletar mensagem',
-            metadata: {
-              reason: 'message_deleted',
-              message_id: messageId,
-              deleted_at: new Date().toISOString(),
-            },
-          });
+        if (txMessageId === messageId) {
+          validTransactions.push(tx);
+          fpToRemove += tx.amount;
+        }
       }
+
+      console.log(`[DELETE Message] Encontradas ${validTransactions.length} transações totalizando ${fpToRemove} FP`);
+
+      if (validTransactions.length > 0 && fpToRemove > 0) {
+        // Buscar saldo atual do usuário
+        const { data: userFP, error: userFPError } = await supabase
+          .from('nfc_chat_user_fp')
+          .select('*')
+          .eq('user_id', userId)
+          .single();
+
+        if (userFPError) {
+          console.error('[DELETE Message] Erro ao buscar saldo do usuário:', userFPError);
+        }
+
+        if (userFP) {
+          const newBalance = Math.max(0, userFP.balance - fpToRemove);
+          const newTotalEarned = Math.max(0, userFP.total_earned - fpToRemove);
+
+          console.log(`[DELETE Message] Saldo anterior: ${userFP.balance} FP → Novo saldo: ${newBalance} FP`);
+
+          // Atualizar saldo
+          const { error: updateError } = await supabase
+            .from('nfc_chat_user_fp')
+            .update({
+              balance: newBalance,
+              total_earned: newTotalEarned,
+              fp_earned_today: Math.max(0, (userFP.fp_earned_today || 0) - fpToRemove),
+              updated_at: new Date().toISOString(),
+            })
+            .eq('user_id', userId);
+
+          if (updateError) {
+            console.error('[DELETE Message] Erro ao atualizar saldo:', updateError);
+          }
+
+          // Registrar transação de remoção
+          const { error: insertError } = await supabase
+            .from('nfc_chat_fp_transactions')
+            .insert({
+              user_id: userId,
+              amount: -fpToRemove,
+              type: 'spend',
+              action: 'admin_adjust',
+              description: 'FP removido por deletar mensagem',
+              metadata: {
+                reason: 'message_deleted',
+                message_id: messageId,
+                deleted_at: new Date().toISOString(),
+                original_transactions: validTransactions.map(tx => tx.id),
+              },
+            });
+
+          if (insertError) {
+            console.error('[DELETE Message] Erro ao registrar transação de remoção:', insertError);
+          }
+        }
+      }
+    } else {
+      console.log('[DELETE Message] Nenhuma transação de FP encontrada para esta mensagem');
     }
 
     // Soft delete
