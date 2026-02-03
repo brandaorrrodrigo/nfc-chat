@@ -114,7 +114,7 @@ export default function DashboardPage() {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <a
-            href="/arenas/create"
+            href="/dashboard/arenas/create"
             className="p-4 bg-slate-700/50 hover:bg-slate-700 border border-slate-600 rounded-xl transition-colors text-center group"
           >
             <div className="text-3xl mb-2">➕</div>
@@ -122,7 +122,7 @@ export default function DashboardPage() {
           </a>
 
           <a
-            href="/moderation"
+            href="/dashboard/moderation"
             className="p-4 bg-slate-700/50 hover:bg-slate-700 border border-slate-600 rounded-xl transition-colors text-center group"
           >
             <div className="text-3xl mb-2">🛡️</div>
@@ -130,7 +130,7 @@ export default function DashboardPage() {
           </a>
 
           <a
-            href="/ai-control"
+            href="/dashboard/ai-control"
             className="p-4 bg-slate-700/50 hover:bg-slate-700 border border-slate-600 rounded-xl transition-colors text-center group"
           >
             <div className="text-3xl mb-2">🤖</div>
@@ -138,7 +138,7 @@ export default function DashboardPage() {
           </a>
 
           <a
-            href="/analytics"
+            href="/dashboard/analytics"
             className="p-4 bg-slate-700/50 hover:bg-slate-700 border border-slate-600 rounded-xl transition-colors text-center group"
           >
             <div className="text-3xl mb-2">📊</div>

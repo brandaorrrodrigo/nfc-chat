@@ -52,7 +52,7 @@ export default function CreateArenaPage() {
       })
 
       if (res.ok) {
-        router.push('/arenas')
+        router.push('/dashboard/arenas')
       } else {
         alert('Erro ao criar arena')
       }
@@ -69,7 +69,7 @@ export default function CreateArenaPage() {
       {/* Header */}
       <div>
         <Link
-          href="/arenas"
+          href="/dashboard/arenas"
           className="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-4"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -219,7 +219,7 @@ export default function CreateArenaPage() {
         {/* Submit */}
         <div className="flex gap-4">
           <Link
-            href="/arenas"
+            href="/dashboard/arenas"
             className="flex-1 px-6 py-4 bg-slate-700 text-white font-bold rounded-xl hover:bg-slate-600 transition-all text-center"
           >
             Cancelar

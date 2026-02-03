@@ -19,15 +19,15 @@ import {
 import { cn } from '@/lib/utils'
 
 const menuItems = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-  { name: 'Arenas', href: '/arenas', icon: MessageSquare },
-  { name: 'Usuários', href: '/users', icon: Users },
-  { name: 'Controle IA', href: '/ai-control', icon: Brain },
-  { name: 'Sistema FP', href: '/fp-system', icon: Coins },
-  { name: 'Moderação', href: '/moderation', icon: Shield },
-  { name: 'Conteúdo', href: '/content', icon: FileText },
-  { name: 'Analytics', href: '/analytics', icon: BarChart3 },
-  { name: 'Configurações', href: '/settings', icon: Settings },
+  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { name: 'Arenas', href: '/dashboard/arenas', icon: MessageSquare },
+  { name: 'Usuários', href: '/dashboard/users', icon: Users },
+  { name: 'Controle IA', href: '/dashboard/ai-control', icon: Brain },
+  { name: 'Sistema FP', href: '/dashboard/fp-system', icon: Coins },
+  { name: 'Moderação', href: '/dashboard/moderation', icon: Shield },
+  { name: 'Conteúdo', href: '/dashboard/content', icon: FileText },
+  { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
+  { name: 'Configurações', href: '/dashboard/settings', icon: Settings },
 ]
 
 export function Sidebar() {

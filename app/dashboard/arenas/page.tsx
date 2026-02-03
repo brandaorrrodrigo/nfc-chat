@@ -64,7 +64,7 @@ export default function ArenasPage() {
         </div>
 
         <Link
-          href="/arenas/create"
+          href="/dashboard/arenas/create"
           className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#00ff88] to-[#00d9ff] text-black font-bold rounded-xl hover:shadow-[0_0_30px_rgba(0,255,136,0.6)] transition-all"
         >
           <Plus className="w-5 h-5" />
