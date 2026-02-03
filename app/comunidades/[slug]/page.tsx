@@ -1968,6 +1968,14 @@ export default function PainelVivoPage() {
       messageId: realMessageId,  // ID real da mensagem para rastrear FP
     }).catch(console.error);
 
+    // Notificar sistema de tracking da IA sobre nova mensagem (para detectar respostas)
+    notificarRespostaUsuario(
+      user.id,
+      slug,
+      message,
+      realMessageId  // Usar ID real da mensagem
+    ).catch(console.error); // Fire and forget, não bloqueia UI
+
     // ========================================
     // SISTEMA DE MODERAÇÃO IA v3 - Acolhimento
     // Prioridade: welcome > emotional > misinformation
@@ -2060,14 +2068,6 @@ export default function PainelVivoPage() {
 
     // Chamar IA para analisar e potencialmente responder
     try {
-      // Notificar que usuário enviou mensagem (para tracking de respostas às perguntas da IA)
-      notificarRespostaUsuario(
-        user.id,
-        slug,
-        message,
-        tempId
-      ).catch(console.error); // Fire and forget, não bloqueia UI
-
       // Converter mensagens para formato da IA
       const mensagensParaIA = [...mensagens, novaMensagem].slice(-10).map(m => ({
         id: m.id,
