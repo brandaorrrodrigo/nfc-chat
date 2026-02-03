@@ -170,13 +170,16 @@ export default function LoginModal({
             {/* Email Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">
+                <label htmlFor="modal-email" className="block text-sm font-medium text-zinc-400 mb-2">
                   E-mail
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-600" />
                   <input
+                    id="modal-email"
+                    name="email"
                     type="email"
+                    autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="seu@email.com"
@@ -187,13 +190,16 @@ export default function LoginModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-zinc-400 mb-2">
+                <label htmlFor="modal-password" className="block text-sm font-medium text-zinc-400 mb-2">
                   Senha
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-600" />
                   <input
+                    id="modal-password"
+                    name="password"
                     type={showPassword ? 'text' : 'password'}
+                    autoComplete="current-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
@@ -221,8 +227,10 @@ export default function LoginModal({
               )}
 
               <div className="flex items-center justify-between">
-                <label className="flex items-center gap-2 cursor-pointer">
+                <label htmlFor="modal-remember" className="flex items-center gap-2 cursor-pointer">
                   <input
+                    id="modal-remember"
+                    name="remember"
                     type="checkbox"
                     className="w-4 h-4 rounded border-zinc-600 bg-zinc-800 text-[#00ff88] focus:ring-[#00ff88]/50"
                   />
