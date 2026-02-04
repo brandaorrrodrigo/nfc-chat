@@ -1,0 +1,14 @@
+node_modules
+.next
+.git
+.gitignore
+*.md
+*.log
+.env.local
+.env.example
+.eslintrc.json
+.vscode
+scripts
+prisma/migrations
+database
+__tests__
