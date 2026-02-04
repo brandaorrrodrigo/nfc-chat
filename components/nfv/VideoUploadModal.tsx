@@ -7,6 +7,12 @@
 
 import { useState, useRef } from 'react';
 import { X, Upload, Video, Link as LinkIcon, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { createClient } from '@supabase/supabase-js';
+
+// Cliente Supabase para upload direto (bypassa limite 4.5MB do Vercel)
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 interface VideoUploadModalProps {
   isOpen: boolean;
@@ -69,26 +75,37 @@ export function VideoUploadModal({
     setProgress(0);
 
     try {
-      // 1. Upload para Supabase Storage
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('arenaSlug', arenaSlug);
-      formData.append('userId', userId);
+      // Upload direto pro Supabase Storage (bypassa limite 4.5MB do Vercel)
+      const timestamp = Date.now();
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${arenaSlug}/${userId}_${timestamp}.${fileExt}`;
+      const bucketName = 'nfv-videos';
 
-      const uploadResponse = await fetch('/api/nfv/upload-video', {
-        method: 'POST',
-        body: formData,
-      });
+      setProgress(10);
 
-      if (!uploadResponse.ok) {
-        throw new Error('Erro ao fazer upload do vídeo');
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from(bucketName)
+        .upload(fileName, file, {
+          contentType: file.type,
+          upsert: false,
+        });
+
+      if (uploadError) {
+        console.error('Supabase upload error:', uploadError);
+        throw new Error(uploadError.message || 'Erro ao fazer upload do vídeo');
       }
 
-      const { videoUrl: uploadedUrl, videoPath } = await uploadResponse.json();
+      setProgress(80);
+
+      // Obter URL pública
+      const { data: urlData } = supabase.storage
+        .from(bucketName)
+        .getPublicUrl(uploadData.path);
+
       setProgress(100);
 
-      // 2. Criar registro de análise
-      await createVideoAnalysis(uploadedUrl, videoPath);
+      // Criar registro de análise
+      await createVideoAnalysis(urlData.publicUrl, uploadData.path);
     } catch (err: any) {
       console.error('Upload error:', err);
       setError(err.message || 'Erro ao fazer upload');
