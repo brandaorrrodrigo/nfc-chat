@@ -15,11 +15,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { isNFVArena, isNFVHub, isPremiumNFVArena } from '@/lib/biomechanics/nfv-config';
+import { isNFVArena, isNFVHub, isPremiumNFVArena, getPremiumArenaConfig } from '@/lib/biomechanics/nfv-config';
 
 // NFV Dynamic Imports
 const NFVHub = dynamic(() => import('@/components/nfv/NFVHub'), { ssr: false });
 const VideoGallery = dynamic(() => import('@/components/nfv/VideoGallery'), { ssr: false });
+const VideoUploadModal = dynamic(() => import('@/components/nfv/VideoUploadModal').then(mod => ({ default: mod.VideoUploadModal })), { ssr: false });
 import {
   ArrowLeft,
   Bot,
@@ -28,6 +29,9 @@ import {
   Users,
   ChevronDown,
   AlertTriangle,
+  Video,
+  Upload,
+  Activity,
 } from 'lucide-react';
 import { UserAvatar } from '@/app/components/comunidades/UserAvatar';
 import { useLoginRequiredModal } from '@/app/components/comunidades/LoginRequiredModal';
@@ -1658,6 +1662,118 @@ function NovasMensagensIndicator({ count, onClick }: { count: number; onClick: (
 }
 
 // ========================================
+// COMPONENTE: Arena Premium NFV (Biomecânica)
+// ========================================
+
+function PremiumArenaPage({
+  slug,
+  arenaConfig,
+  fpBalance,
+  isAuthenticated,
+  userId,
+  userName,
+  lastEarned,
+  clearLastEarned,
+}: {
+  slug: string;
+  arenaConfig: any;
+  fpBalance: number;
+  isAuthenticated: boolean;
+  userId?: string;
+  userName?: string;
+  lastEarned: any;
+  clearLastEarned: () => void;
+}) {
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const canUpload = isAuthenticated && (fpBalance >= 25);
+
+  return (
+    <div
+      className="min-h-[calc(100vh-64px)] flex flex-col overflow-hidden relative"
+      style={{
+        background: 'linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #1a0a27 100%)'
+      }}
+    >
+      <FPToastManager lastEarned={lastEarned} onClear={clearLastEarned} />
+
+      {/* Header da Arena Premium */}
+      <div className="border-b border-zinc-800 bg-zinc-900/50 backdrop-blur-sm">
+        <div className="max-w-5xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Link href="/comunidades/hub-biomecanico" className="text-zinc-400 hover:text-white transition-colors">
+                <ArrowLeft className="w-5 h-5" />
+              </Link>
+              <div className="flex items-center gap-2">
+                <Activity className="w-5 h-5" style={{ color: arenaConfig?.color || '#8b5cf6' }} />
+                <h1 className="text-lg font-bold text-white">
+                  {arenaConfig?.name || slug}
+                </h1>
+                <span className="text-[10px] bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full font-mono">
+                  NFV PREMIUM
+                </span>
+              </div>
+            </div>
+
+            {/* Botão Upload */}
+            <button
+              onClick={() => {
+                if (!isAuthenticated) {
+                  alert('Faça login para enviar vídeos para análise.');
+                  return;
+                }
+                if (fpBalance < 25) {
+                  alert(`Você precisa de 25 FP para enviar um vídeo.\nSeu saldo atual: ${fpBalance} FP.\n\nGanhe FP participando das comunidades!`);
+                  return;
+                }
+                setShowUploadModal(true);
+              }}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                canUpload
+                  ? 'bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-500 hover:to-cyan-500 text-white shadow-lg shadow-purple-500/25'
+                  : 'bg-zinc-800 text-zinc-400 border border-zinc-700'
+              }`}
+            >
+              <Upload className="w-4 h-4" />
+              Enviar Vídeo
+              <span className="text-[10px] opacity-75">25 FP</span>
+            </button>
+          </div>
+
+          <p className="text-xs text-zinc-500 mt-2 ml-8">
+            Envie seu vídeo de exercício e receba análise biomecânica detalhada com IA + revisão profissional em 48h.
+          </p>
+        </div>
+      </div>
+
+      {/* Galeria de Vídeos */}
+      <div className="flex-1 overflow-y-auto p-4">
+        <VideoGallery
+          arenaSlug={slug}
+          onSelectAnalysis={(id) => {
+            window.location.href = `/comunidades/${slug}/videos/${id}`;
+          }}
+        />
+      </div>
+
+      {/* Modal de Upload */}
+      {showUploadModal && userId && (
+        <VideoUploadModal
+          isOpen={showUploadModal}
+          onClose={() => setShowUploadModal(false)}
+          arenaSlug={slug}
+          arenaName={arenaConfig?.name || slug}
+          movementPattern={arenaConfig?.pattern || slug}
+          requiresFP={25}
+          userId={userId}
+          userName={userName || 'Usuário'}
+        />
+      )}
+    </div>
+  );
+}
+
+// ========================================
 // COMPONENTE: Comunidade Não Encontrada
 // ========================================
 
@@ -2183,23 +2299,18 @@ export default function PainelVivoPage() {
 
   // NFV Premium Arena - Layout com galeria de videos (antes do notFound check)
   if (!isLoading && isPremiumNFVArena(slug)) {
+    const arenaConfig = getPremiumArenaConfig(slug);
     return (
-      <div
-        className="min-h-[calc(100vh-64px)] flex flex-col overflow-hidden relative"
-        style={{
-          background: 'linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #1a0a27 100%)'
-        }}
-      >
-        <FPToastManager lastEarned={lastEarned} onClear={clearLastEarned} />
-        <div className="flex-1 overflow-y-auto p-4">
-          <VideoGallery
-            arenaSlug={slug}
-            onSelectAnalysis={(id) => {
-              window.location.href = `/comunidades/${slug}/videos/${id}`;
-            }}
-          />
-        </div>
-      </div>
+      <PremiumArenaPage
+        slug={slug}
+        arenaConfig={arenaConfig}
+        fpBalance={fpBalance}
+        isAuthenticated={isAuthenticated}
+        userId={user?.id}
+        userName={user?.nome || user?.name}
+        lastEarned={lastEarned}
+        clearLastEarned={clearLastEarned}
+      />
     );
   }
 
