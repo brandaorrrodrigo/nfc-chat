@@ -4,6 +4,8 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth-config';
 
 export async function GET(req: NextRequest) {
   try {
@@ -14,11 +16,12 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'userId obrigatorio' }, { status: 400 });
     }
 
-    // TODO: Integrar com sistema real de assinaturas
-    // Por enquanto, retorna false (ninguem e assinante)
-    // Em producao, verificar no Stripe/RevenueCat/etc
-    const isSubscriber = false;
-    const subscriptionTier = null;
+    // Verificar via sessão NextAuth (is_premium propagado do auth-config)
+    const session = await getServerSession(authOptions);
+    const sessionUser = session?.user as any;
+    const isSubscriber = sessionUser?.is_premium === true;
+
+    const subscriptionTier = isSubscriber ? 'app_premium' : null;
     const expiresAt = null;
 
     return NextResponse.json({

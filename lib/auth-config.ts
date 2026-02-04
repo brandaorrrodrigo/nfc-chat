@@ -78,6 +78,13 @@ const cookieOptions: Partial<CookiesOptions> = {
   },
 };
 
+// Emails com assinatura premium ativa (App NutriFitCoach pago)
+const PREMIUM_EMAILS = [
+  'admin@nutrifitcoach.com.br',
+  'demo@nutrifitcoach.com.br',
+  'brandaorrrodrigo@gmail.com',
+];
+
 // Usuários mock para desenvolvimento
 // TODO: Substituir por integração com Supabase
 const MOCK_USERS = [
@@ -87,6 +94,7 @@ const MOCK_USERS = [
     password: 'demo123',
     name: 'Usuário Demo',
     image: null,
+    is_premium: true,
   },
   {
     id: '2',
@@ -95,6 +103,7 @@ const MOCK_USERS = [
     name: 'Admin',
     image: null,
     is_admin: true,
+    is_premium: true,
   },
 ];
 
@@ -120,12 +129,14 @@ export const authOptions: AuthOptions = {
         if (action === 'register') {
           // Em produção, criar usuário no Supabase
           // Por enquanto, aceita qualquer registro e cria sessão
+          const isPremiumEmail = PREMIUM_EMAILS.includes(email.toLowerCase());
           const newUser: User = {
             id: uuidv4(),
             email: email.toLowerCase(),
             name: name || email.split('@')[0],
             image: null,
-          };
+            is_premium: isPremiumEmail,
+          } as User;
           return newUser;
         }
 
@@ -142,18 +153,21 @@ export const authOptions: AuthOptions = {
             name: mockUser.name,
             image: mockUser.image,
             is_admin: (mockUser as any).is_admin || false,
+            is_premium: (mockUser as any).is_premium || false,
           } as User;
         }
 
         // TODO: Verificar no Supabase
         // Por enquanto, aceita login se email termina com @nutrifitcoach.com.br
         if (email.endsWith('@nutrifitcoach.com.br') || email.endsWith('@gmail.com')) {
+          const isPremiumEmail = PREMIUM_EMAILS.includes(email.toLowerCase());
           return {
             id: uuidv4(),
             email: email.toLowerCase(),
             name: email.split('@')[0],
             image: null,
-          };
+            is_premium: isPremiumEmail,
+          } as User;
         }
 
         return null;
@@ -184,9 +198,10 @@ export const authOptions: AuthOptions = {
         token.email = user.email;
         token.name = user.name;
         token.is_admin = (user as any).is_admin || false;
-        // Comunidades são FREE - sem verificação premium
-        token.is_premium = false;
-        token.is_founder = false;
+        // Verifica premium pelo email ou flag do usuário
+        const emailPremium = PREMIUM_EMAILS.includes((user.email || '').toLowerCase());
+        token.is_premium = (user as any).is_premium || emailPremium;
+        token.is_founder = (user as any).is_founder || false;
       }
       return token;
     },
@@ -194,8 +209,8 @@ export const authOptions: AuthOptions = {
       if (session.user) {
         (session.user as any).id = token.id;
         (session.user as any).is_admin = token.is_admin || false;
-        (session.user as any).is_premium = false;
-        (session.user as any).is_founder = false;
+        (session.user as any).is_premium = token.is_premium || false;
+        (session.user as any).is_founder = token.is_founder || false;
       }
       return session;
     },

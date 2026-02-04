@@ -204,7 +204,7 @@ const EVENTOS_MOCK: AtividadeEvento[] = [
   {
     id: '19',
     tipo: 'usuario_online',
-    mensagem: '187 agentes ativos em Dieta na Vida Real',
+    mensagem: '5 agentes ativos em Dieta na Vida Real',
     comunidade: 'dieta-vida-real',
     timestamp: 'há 9 min',
   },
@@ -234,7 +234,7 @@ const EVENTOS_MOCK: AtividadeEvento[] = [
   {
     id: '23',
     tipo: 'usuario_online',
-    mensagem: '124 agentes ativos em Treino de Glúteo',
+    mensagem: '4 agentes ativos em Treino de Glúteo',
     comunidade: 'treino-gluteo',
     timestamp: 'há 12 min',
   },

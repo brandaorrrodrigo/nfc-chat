@@ -41,8 +41,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Arena nao e premium NFV' }, { status: 400 });
     }
 
-    // Verificar permissao
-    const permission = await checkVideoUploadPermission(userId, arenaSlug);
+    // Verificar permissao (paidWithSubscription = is_premium do frontend)
+    const permission = await checkVideoUploadPermission(userId, arenaSlug, paidWithSubscription === true);
     if (!permission.allowed) {
       return NextResponse.json({
         error: 'Permissao negada',

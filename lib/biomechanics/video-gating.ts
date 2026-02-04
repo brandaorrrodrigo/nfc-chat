@@ -20,10 +20,12 @@ export interface GatingResult {
 
 /**
  * Verifica se usuario pode fazer upload de video
+ * @param sessionPremium - flag is_premium vinda da sessão NextAuth (opcional)
  */
 export async function checkVideoUploadPermission(
   userId: string | null,
-  arenaSlug: string
+  arenaSlug: string,
+  sessionPremium?: boolean
 ): Promise<GatingResult> {
   if (!userId) {
     return {
@@ -35,8 +37,8 @@ export async function checkVideoUploadPermission(
     };
   }
 
-  // Check assinatura app
-  const hasSubscription = await checkAppSubscription(userId);
+  // Check assinatura: sessão NextAuth OU metadados do banco
+  const hasSubscription = sessionPremium === true || await checkAppSubscription(userId);
   if (hasSubscription) {
     return {
       allowed: true,

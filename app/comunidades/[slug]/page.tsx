@@ -397,7 +397,7 @@ const MENSAGENS_TREINO_GLUTEO: Mensagem[] = [
     tipo: 'ia',
     timestamp: '08:52',
     autor: { id: 'ia', nome: 'IA Facilitadora' },
-    conteudo: 'DESTAQUE: Patricia (Founder) comentou sobre periodização. 124 membros online discutindo.',
+    conteudo: 'DESTAQUE: Patricia (Founder) comentou sobre periodização. 5 membros online discutindo.',
     ia_tipo: 'destaque',
   },
   {
@@ -643,7 +643,7 @@ const MENSAGENS_ANTES_DEPOIS: Mensagem[] = [
     tipo: 'ia',
     timestamp: '09:16',
     autor: { id: 'ia', nome: 'IA Facilitadora' },
-    conteudo: 'DESTAQUE: Tatiana compartilhou transformação de 8 meses com fotos. 108 membros online.',
+    conteudo: 'DESTAQUE: Tatiana compartilhou transformação de 8 meses com fotos. 4 membros online.',
     ia_tipo: 'destaque',
   },
   {
@@ -787,7 +787,7 @@ const MENSAGENS_DIETA_VIDA_REAL: Mensagem[] = [
     tipo: 'ia',
     timestamp: '12:25',
     autor: { id: 'ia', nome: 'IA Facilitadora' },
-    conteudo: 'RESUMO: 187 membros online. Principais barreiras: rigidez excessiva, falta de tempo, distância da rotina real.',
+    conteudo: 'RESUMO: 6 membros online. Principais barreiras: rigidez excessiva, falta de tempo, distância da rotina real.',
     ia_tipo: 'resumo',
   },
   {
@@ -1670,6 +1670,7 @@ function PremiumArenaPage({
   arenaConfig,
   fpBalance,
   isAuthenticated,
+  isPremium,
   userId,
   userName,
   lastEarned,
@@ -1679,13 +1680,14 @@ function PremiumArenaPage({
   arenaConfig: any;
   fpBalance: number;
   isAuthenticated: boolean;
+  isPremium: boolean;
   userId?: string;
   userName?: string;
   lastEarned: any;
   clearLastEarned: () => void;
 }) {
   const [showUploadModal, setShowUploadModal] = useState(false);
-  const canUpload = isAuthenticated && (fpBalance >= 25);
+  const canUpload = isAuthenticated && (isPremium || fpBalance >= 25);
 
   return (
     <div
@@ -1722,7 +1724,7 @@ function PremiumArenaPage({
                   alert('Faça login para enviar vídeos para análise.');
                   return;
                 }
-                if (fpBalance < 25) {
+                if (!isPremium && fpBalance < 25) {
                   alert(`Você precisa de 25 FP para enviar um vídeo.\nSeu saldo atual: ${fpBalance} FP.\n\nGanhe FP participando das comunidades!`);
                   return;
                 }
@@ -1736,7 +1738,11 @@ function PremiumArenaPage({
             >
               <Upload className="w-4 h-4" />
               Enviar Vídeo
-              <span className="text-[10px] opacity-75">25 FP</span>
+              {isPremium ? (
+                <span className="text-[10px] text-green-400 font-bold">GRATUITO</span>
+              ) : (
+                <span className="text-[10px] opacity-75">25 FP</span>
+              )}
             </button>
           </div>
 
@@ -1764,9 +1770,10 @@ function PremiumArenaPage({
           arenaSlug={slug}
           arenaName={arenaConfig?.name || slug}
           movementPattern={arenaConfig?.pattern || slug}
-          requiresFP={25}
+          requiresFP={isPremium ? 0 : 25}
           userId={userId}
           userName={userName || 'Usuário'}
+          isPremium={isPremium}
         />
       )}
     </div>
@@ -2306,6 +2313,7 @@ export default function PainelVivoPage() {
         arenaConfig={arenaConfig}
         fpBalance={fpBalance}
         isAuthenticated={isAuthenticated}
+        isPremium={user?.is_premium || false}
         userId={user?.id}
         userName={user?.nome || user?.name}
         lastEarned={lastEarned}

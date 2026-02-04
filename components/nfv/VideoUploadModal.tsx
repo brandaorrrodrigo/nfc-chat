@@ -17,6 +17,7 @@ interface VideoUploadModalProps {
   requiresFP: number;
   userId: string;
   userName: string;
+  isPremium?: boolean;
 }
 
 type UploadMethod = 'file' | 'url';
@@ -31,6 +32,7 @@ export function VideoUploadModal({
   requiresFP,
   userId,
   userName,
+  isPremium = false,
 }: VideoUploadModalProps) {
   const [method, setMethod] = useState<UploadMethod>('file');
   const [videoUrl, setVideoUrl] = useState('');
@@ -133,7 +135,7 @@ export function VideoUploadModal({
           videoPath,
           movementPattern,
           userDescription: description,
-          paidWithSubscription: false,
+          paidWithSubscription: isPremium,
         }),
       });
 
