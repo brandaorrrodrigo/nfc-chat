@@ -1,6 +1,16 @@
 'use client';
 
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useSession, signOut } from 'next-auth/react';
+import {
+  Eye,
+  UserPlus,
+  LogOut,
+  ChevronDown,
+  User,
+  Loader2,
+} from 'lucide-react';
 
 interface NFCHeaderProps {
   currentPage?: 'app' | 'blog' | 'chat';
@@ -9,20 +19,29 @@ interface NFCHeaderProps {
 }
 
 export default function NFCHeader({
-  currentPage = 'chat',  // IMPORTANTE: default para 'chat' neste projeto
+  currentPage = 'chat',
   showNavigation = true,
   className = ''
 }: NFCHeaderProps) {
+  const { data: session, status } = useSession();
+  const isLoading = status === 'loading';
+  const user = session?.user;
+
   const navItems = [
     { label: 'APP', href: 'https://app.nutrifitcoach.com.br/', id: 'app' as const, color: 'green' },
     { label: 'BLOG', href: 'https://nutrifitcoach.com.br/', id: 'blog' as const, color: 'cyan' },
-    { label: 'CHAT', href: '/', id: 'chat' as const, color: 'purple' },  // CHAT é local neste projeto
+    { label: 'CHAT', href: '/', id: 'chat' as const, color: 'purple' },
   ];
 
   return (
     <header className={`relative z-50 ${className}`}>
       <div className="bg-[#0a0a14]/80 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 py-6">
+          {/* Auth area - canto superior direito */}
+          <div className="flex justify-end mb-2">
+            <AuthArea user={user} isLoading={isLoading} />
+          </div>
+
           <div className="flex flex-col items-center">
             <div className="w-[70%] max-w-5xl flex flex-col items-center">
 
@@ -119,5 +138,105 @@ export default function NFCHeader({
         <div className="absolute top-full left-0 right-0 h-6 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
       </div>
     </header>
+  );
+}
+
+// ========================================
+// Auth Area - Login/Logout no canto superior direito
+// ========================================
+
+function AuthArea({ user, isLoading }: { user: any; isLoading: boolean }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center gap-2">
+        <div className="w-8 h-8 rounded-full bg-zinc-800 animate-pulse" />
+        <Loader2 className="w-4 h-4 text-zinc-500 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="flex items-center gap-2">
+        <Link
+          href="/login"
+          className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-zinc-300 hover:text-white border border-zinc-800 hover:border-zinc-700 rounded-lg transition-all"
+        >
+          <Eye className="w-4 h-4" />
+          <span className="hidden sm:inline">Visualizar</span>
+        </Link>
+        <Link
+          href="/registro"
+          className="flex items-center gap-2 px-3 py-2 text-sm font-medium bg-[#00ff88] hover:bg-[#00ff88]/90 text-black rounded-lg shadow-[0_0_15px_rgba(0,255,136,0.3)] hover:shadow-[0_0_20px_rgba(0,255,136,0.5)] transition-all"
+        >
+          <UserPlus className="w-4 h-4" />
+          <span className="hidden sm:inline">Criar Conta</span>
+        </Link>
+      </div>
+    );
+  }
+
+  // Usuário logado - dropdown
+  const firstName = user.name?.split(' ')[0] || user.email?.split('@')[0] || 'User';
+
+  return (
+    <div className="relative" ref={menuRef}>
+      <button
+        onClick={() => setMenuOpen(!menuOpen)}
+        className="flex items-center gap-2 p-1.5 pr-3 bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 rounded-full transition-all duration-200 group"
+      >
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center text-white text-sm font-bold">
+          {firstName.charAt(0).toUpperCase()}
+        </div>
+        <span className="text-sm text-zinc-300 group-hover:text-white transition-colors max-w-[100px] truncate hidden sm:block">
+          {firstName}
+        </span>
+        <ChevronDown className={`w-4 h-4 text-zinc-500 transition-transform duration-200 ${menuOpen ? 'rotate-180' : ''}`} />
+      </button>
+
+      {menuOpen && (
+        <div className="absolute right-0 top-full mt-2 w-56 bg-zinc-900 border border-zinc-800 rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.5)] overflow-hidden z-50">
+          <div className="p-3 border-b border-zinc-800">
+            <p className="text-sm font-semibold text-white truncate">{user.name || firstName}</p>
+            <p className="text-xs text-zinc-500 truncate">{user.email}</p>
+          </div>
+          <div className="py-1">
+            <Link
+              href="https://app.nutrifitcoach.com.br/"
+              className="flex items-center gap-3 px-4 py-2.5 text-sm text-[#00ff88] hover:bg-zinc-800/50 transition-colors font-medium"
+              onClick={() => setMenuOpen(false)}
+            >
+              <User className="w-4 h-4" />
+              Acessar App NFC
+            </Link>
+          </div>
+          <div className="border-t border-zinc-800 py-1">
+            <button
+              onClick={() => {
+                setMenuOpen(false);
+                signOut({ callbackUrl: '/' });
+              }}
+              className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-red-400 hover:text-red-300 hover:bg-zinc-800/50 transition-colors"
+            >
+              <LogOut className="w-4 h-4" />
+              Sair
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
