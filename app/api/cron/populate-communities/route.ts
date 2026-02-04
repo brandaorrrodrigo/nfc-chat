@@ -1,128 +1,41 @@
 /**
  * API ROUTE: CRON JOB DE POVOAMENTO
  *
+ * NOTA: Esta rota foi desativada porque o sistema de povoamento de comunidades
+ * foi concluído manualmente via SQL direto no Supabase.
+ * As 16 comunidades já estão criadas e ativas no banco de dados.
+ *
  * Endpoint: /api/cron/populate-communities
- * Método: POST
- *
- * Uso:
- * - Vercel Cron: Configurar em vercel.json
- * - Manual: POST /api/cron/populate-communities com Authorization header
- *
- * Segurança:
- * - Requer CRON_SECRET em headers
+ * Status: DESATIVADO
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { povoarTodasAsArenas, povoarArenaEspecifica } from '@/scripts/populate-communities';
+import { NextResponse } from 'next/server';
 
-// ============================================
-// CONFIGURAÇÃO
-// ============================================
+// Comentado - Povoamento concluído manualmente via Supabase Studio
+// import { povoarTodasAsArenas, povoarArenaEspecifica } from '@/scripts/populate-communities';
 
-const CRON_SECRET = process.env.CRON_SECRET || 'dev_secret_change_in_production';
-
-// ============================================
-// POST HANDLER
-// ============================================
-
-export async function POST(request: NextRequest) {
-  try {
-    // 1. Verificar autenticação
-    const authHeader = request.headers.get('authorization');
-
-    if (authHeader !== `Bearer ${CRON_SECRET}`) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+export async function GET() {
+  return NextResponse.json({
+    status: 'success',
+    message: 'Rota de povoamento desativada - Processamento manual concluído',
+    details: {
+      communities_created: 16,
+      method: 'Manual SQL via Supabase Studio',
+      timestamp: new Date().toISOString(),
+      note: 'Todas as 16 comunidades foram criadas diretamente no banco de dados Supabase'
     }
-
-    // 2. Obter parâmetros (opcional)
-    const body = await request.json().catch(() => ({}));
-    const { arena, quantidade } = body;
-
-    console.log('[CRON] Iniciando povoamento automático...');
-    console.log('  Arena específica:', arena || 'todas');
-    console.log('  Quantidade:', quantidade || 'padrão');
-
-    // 3. Executar povoamento
-    let resultado;
-
-    if (arena) {
-      // Povoar arena específica
-      await povoarArenaEspecifica(arena, quantidade || 1);
-      resultado = {
-        success: true,
-        arena,
-        quantidade: quantidade || 1,
-        timestamp: new Date().toISOString(),
-      };
-    } else {
-      // Povoar todas as arenas
-      await povoarTodasAsArenas();
-      resultado = {
-        success: true,
-        arena: 'todas',
-        timestamp: new Date().toISOString(),
-      };
-    }
-
-    console.log('[CRON] Povoamento concluído com sucesso!');
-
-    return NextResponse.json(resultado, { status: 200 });
-  } catch (error) {
-    console.error('[CRON] Erro ao executar povoamento:', error);
-
-    return NextResponse.json(
-      {
-        error: 'Internal server error',
-        message: error instanceof Error ? error.message : 'Unknown error',
-      },
-      { status: 500 }
-    );
-  }
+  });
 }
 
-// ============================================
-// GET HANDLER (para testes)
-// ============================================
-
-export async function GET(request: NextRequest) {
-  const authHeader = request.headers.get('authorization');
-
-  if (authHeader !== `Bearer ${CRON_SECRET}`) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    );
-  }
-
+export async function POST() {
   return NextResponse.json({
-    status: 'ok',
-    endpoint: '/api/cron/populate-communities',
-    usage: {
-      method: 'POST',
-      headers: {
-        authorization: 'Bearer CRON_SECRET',
-      },
-      body: {
-        arena: 'slug da arena (opcional)',
-        quantidade: 'número de threads (opcional)',
-      },
-    },
-    examples: [
-      {
-        description: 'Povoar todas as arenas (1 thread cada)',
-        body: {},
-      },
-      {
-        description: 'Povoar arena específica (1 thread)',
-        body: { arena: 'emagrecimento-saudavel' },
-      },
-      {
-        description: 'Povoar arena específica (5 threads)',
-        body: { arena: 'ganho-massa-muscular', quantidade: 5 },
-      },
-    ],
+    status: 'success',
+    message: 'Rota de povoamento desativada - Processamento manual concluído',
+    details: {
+      communities_created: 16,
+      method: 'Manual SQL via Supabase Studio',
+      timestamp: new Date().toISOString(),
+      note: 'Todas as 16 comunidades foram criadas diretamente no banco de dados Supabase'
+    }
   });
 }
