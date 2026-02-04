@@ -65,6 +65,12 @@ export function useFP(): UseFPReturn {
 
       const response = await fetch('/api/fp/balance');
 
+      // 401 = não logado, apenas usa defaults sem erro
+      if (response.status === 401) {
+        setLoading(false);
+        return;
+      }
+
       if (!response.ok) {
         throw new Error('Falha ao carregar FP');
       }

@@ -1722,6 +1722,7 @@ export default function PainelVivoPage() {
     claimDailyBonus,
     lastEarned,
     clearLastEarned,
+    refresh: refreshFP,
   } = useFP();
 
   const [comunidade, setComunidade] = useState<(ComunidadeData & { mensagens: Mensagem[] }) | null>(null);

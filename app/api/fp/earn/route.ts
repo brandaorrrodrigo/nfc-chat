@@ -120,8 +120,24 @@ export async function POST(request: NextRequest) {
       actionType: finalAction,  // Retorna tipo detectado para debug
       hadLongBonus: bonusFP > 0,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('[FP Earn] Erro:', error);
+
+    // Se tabela não existe, retorna silenciosamente em vez de 500
+    const isTableMissing = error?.message?.includes('relation') ||
+      error?.code === '42P01' ||
+      error?.message?.includes('does not exist');
+
+    if (isTableMissing) {
+      return NextResponse.json({
+        success: false,
+        fpEarned: 0,
+        newBalance: 0,
+        streak: 0,
+        reason: 'fp_tables_not_configured',
+      });
+    }
+
     return NextResponse.json(
       { error: 'Erro interno ao registrar FP' },
       { status: 500 }
