@@ -38,6 +38,11 @@ import QuickFilters from '@/app/components/comunidades/QuickFilters';
 import type { ArenaWithTags, ArenaCategoria, CommunityCardData } from '@/types/arena';
 import { arenaToDisplayFormat, CATEGORIA_GRADIENTS } from '@/lib/arena-utils';
 
+// Formatação de número sem toLocaleString (evita hydration mismatch)
+function formatNumber(n: number): string {
+  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
 // ========================================
 // DADOS: FALLBACK (usado se API falhar)
 // ========================================
@@ -477,7 +482,7 @@ function CommunityCard({ community }: CommunityCardProps) {
               <div className="flex items-center gap-3 text-sm">
                 <span className="flex items-center gap-1.5 text-gray-400">
                   <Users className="w-4 h-4" />
-                  <span className="font-semibold text-white">{community.members.toLocaleString()}</span>
+                  <span className="font-semibold text-white">{formatNumber(community.members)}</span>
                 </span>
                 <span className="flex items-center gap-1.5 text-emerald-400">
                   <div className="relative">
@@ -608,8 +613,8 @@ export default function ComunidadesPageClient() {
       allowImages: true,
       allowLinks: true,
       allowVideos: false,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: '2025-01-01T00:00:00.000Z',
+      updatedAt: '2025-01-01T00:00:00.000Z',
       tags: [],
     }));
   }, [apiArenas]);
@@ -668,7 +673,7 @@ export default function ComunidadesPageClient() {
 
             {/* Subtítulo */}
             <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-              Conecte-se com <span className="text-[#00f5ff] font-semibold">{totalMembers.toLocaleString()}+ pessoas</span> que
+              Conecte-se com <span className="text-[#00f5ff] font-semibold">{formatNumber(totalMembers)}+ pessoas</span> que
               estão transformando suas vidas. Compartilhe experiências, tire dúvidas e evolua junto.
             </p>
 
@@ -679,7 +684,7 @@ export default function ComunidadesPageClient() {
                 <div className="text-sm text-gray-400">Comunidades</div>
               </div>
               <div className="stats-card px-6 py-4 rounded-2xl">
-                <div className="text-3xl font-black gradient-text mb-1">{totalMembers.toLocaleString()}</div>
+                <div className="text-3xl font-black gradient-text mb-1">{formatNumber(totalMembers)}</div>
                 <div className="text-sm text-gray-400">Membros</div>
               </div>
               <div className="stats-card px-6 py-4 rounded-2xl">
