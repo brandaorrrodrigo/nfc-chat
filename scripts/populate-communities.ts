@@ -287,7 +287,7 @@ async function concederFPParticipantes(thread: ThreadGerada): Promise<void> {
 // POVOAR TODAS AS ARENAS
 // ============================================
 
-async function povoarTodasAsArenas(): Promise<void> {
+export async function povoarTodasAsArenas(): Promise<void> {
   console.log('\n════════════════════════════════════════════════════════');
   console.log('🏗️  POVOAMENTO AUTOMÁTICO DE COMUNIDADES');
   console.log('════════════════════════════════════════════════════════\n');
@@ -316,7 +316,7 @@ async function povoarTodasAsArenas(): Promise<void> {
 // POVOAR ARENA ESPECÍFICA (para testes)
 // ============================================
 
-async function povoarArenaEspecifica(slug: string, quantidade: number = 1): Promise<void> {
+export async function povoarArenaEspecifica(slug: string, quantidade: number = 1): Promise<void> {
   const arena = ARENAS_DISPONIVEIS.find(a => a.slug === slug);
 
   if (!arena) {
