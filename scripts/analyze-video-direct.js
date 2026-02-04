@@ -158,50 +158,72 @@ async function main() {
     console.log('\n🔍 Analisando frames com', visionModel, '...');
 
     const exerciseType = analysis.movement_pattern || 'exercício';
-    const prompt = `Você é um especialista em biomecânica analisando um vídeo de ${exerciseType}.
 
-Analise este frame e identifique:
-- Técnica e execução
-- Postura e alinhamento
-- Possíveis compensações
-- Pontos de atenção
+    // Função para gerar prompt específico para cada frame
+    const getFramePrompt = (frameNum, totalFrames, timestamp) => {
+      const phase = frameNum <= 2 ? 'INÍCIO/DESCIDA' :
+                   frameNum <= 4 ? 'MEIO/FUNDO' : 'SUBIDA/FINAL';
 
-Seja objetivo e técnico. Responda em português.`;
+      return `Analise este frame de ${exerciseType} (frame ${frameNum}/${totalFrames}, tempo ${timestamp}s, fase: ${phase}).
+
+FOQUE APENAS NO QUE VOCÊ VÊ NESTA IMAGEM:
+1. Posição atual do corpo (ângulo dos joelhos, quadril, coluna)
+2. Alinhamento (joelhos sobre os pés? coluna neutra?)
+3. Problemas visíveis (valgo? inclinação excessiva? compensações?)
+
+Responda em 3-4 frases diretas. Seja específico sobre o que vê, não genérico.`;
+    };
 
     const frameAnalyses = [];
 
     for (let i = 0; i < framePaths.length; i++) {
+      const timestamp = interval * (i + 1);
       process.stdout.write(`\r   Analisando frame ${i + 1}/${framePaths.length}...`);
 
       const imageBuffer = await fs.readFile(framePaths[i]);
       const imageBase64 = imageBuffer.toString('base64');
+
+      // Gerar prompt específico para este frame
+      const framePrompt = getFramePrompt(i + 1, framePaths.length, timestamp.toFixed(1));
 
       try {
         const response = await axios.post(
           `${OLLAMA_URL}/api/generate`,
           {
             model: visionModel,
-            prompt,
+            prompt: framePrompt,
             images: [imageBase64],
             stream: false,
-            options: { temperature: 0.3, num_predict: 300 },
+            options: { temperature: 0.2, num_predict: 200 }, // Menos tokens, mais focado
           },
           { timeout: 120000 }
         );
 
         const analysisText = response.data.response || '';
 
-        // Calcular score
-        let score = 7;
+        // Calcular score baseado na análise
+        let score = 7; // Base
         const lower = analysisText.toLowerCase();
-        if (lower.includes('correto') || lower.includes('boa')) score += 1;
+
+        // Positivos
+        if (lower.includes('correto') || lower.includes('correta')) score += 1;
+        if (lower.includes('adequad') || lower.includes('bom') || lower.includes('boa')) score += 1;
+        if (lower.includes('alinhad')) score += 0.5;
+        if (lower.includes('neutr')) score += 0.5; // coluna neutra
+
+        // Negativos
+        if (lower.includes('valgo') || lower.includes('varo')) score -= 1.5;
+        if (lower.includes('inclinaç') || lower.includes('inclina')) score -= 1;
+        if (lower.includes('compensaç')) score -= 1;
         if (lower.includes('problema') || lower.includes('erro')) score -= 1;
-        if (lower.includes('grave') || lower.includes('severo')) score -= 2;
-        score = Math.max(0, Math.min(10, score));
+        if (lower.includes('grave') || lower.includes('severo') || lower.includes('risco')) score -= 2;
+        if (lower.includes('arredond')) score -= 1; // coluna arredondada
+
+        score = Math.max(3, Math.min(10, Math.round(score * 10) / 10));
 
         frameAnalyses.push({
           frameNumber: i + 1,
-          timestamp: interval * (i + 1),
+          timestamp: timestamp,
           analysis: analysisText,
           score,
         });
@@ -210,7 +232,7 @@ Seja objetivo e técnico. Responda em português.`;
         console.error(`\n   ⚠️ Erro no frame ${i + 1}:`, err.message);
         frameAnalyses.push({
           frameNumber: i + 1,
-          timestamp: interval * (i + 1),
+          timestamp: timestamp,
           analysis: 'Erro ao analisar',
           score: 5,
         });
