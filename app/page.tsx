@@ -1,9 +1,4 @@
-/**
- * Página Principal - Server Component
- *
- * Este é um server component que envolve ComunidadesPageClient com ComunidadesAuthProvider
- * para garantir que o hook useComunidadesAuth() funcione corretamente.
- */
+'use client';
 
 import { ComunidadesAuthProvider } from './components/comunidades/ComunidadesAuthContext';
 import ComunidadesPageClient from './ComunidadesPageClient';
