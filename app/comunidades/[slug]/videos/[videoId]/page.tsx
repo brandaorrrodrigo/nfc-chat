@@ -263,7 +263,17 @@ export default function VideoDetailPage() {
     );
   }
 
-  const displayAnalysis = analysis.published_analysis || analysis.ai_analysis;
+  // Parse ai_analysis se for string (Supabase às vezes retorna JSONB como string)
+  let parsedAiAnalysis = analysis.ai_analysis;
+  if (typeof parsedAiAnalysis === 'string') {
+    try {
+      parsedAiAnalysis = JSON.parse(parsedAiAnalysis);
+    } catch {
+      parsedAiAnalysis = undefined;
+    }
+  }
+
+  const displayAnalysis = analysis.published_analysis || parsedAiAnalysis;
 
   return (
     <div className="min-h-screen bg-zinc-950">
