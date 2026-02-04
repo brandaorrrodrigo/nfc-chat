@@ -4,7 +4,7 @@
  */
 
 import { prisma } from '@/lib/prisma';
-import { sendEmail } from '@/lib/email';
+// import { sendEmail } from '@/lib/email'; // TODO: implementar serviço de email
 
 export interface ExpiringCoupon {
   id: string;
@@ -116,18 +116,18 @@ export async function sendExpirationReminders(): Promise<{
         },
       });
 
-      // Enviar email (opcional)
-      if (user.email) {
-        try {
-          await sendEmail({
-            to: user.email,
-            subject: `⏰ Seu Cupom de ${coupon.discountPercent}% OFF Expira em ${coupon.hoursRemaining}h!`,
-            html: generateExpirationEmailHTML(user.name || 'Usuário', coupon),
-          });
-        } catch (emailError) {
-          console.error(`❌ Erro ao enviar email para ${user.email}:`, emailError);
-        }
-      }
+      // Enviar email (opcional) - comentado até implementar serviço de email
+      // if (user.email) {
+      //   try {
+      //     await sendEmail({
+      //       to: user.email,
+      //       subject: `⏰ Seu Cupom de ${coupon.discountPercent}% OFF Expira em ${coupon.hoursRemaining}h!`,
+      //       html: generateExpirationEmailHTML(user.name || 'Usuário', coupon),
+      //     });
+      //   } catch (emailError) {
+      //     console.error(`❌ Erro ao enviar email para ${user.email}:`, emailError);
+      //   }
+      // }
 
       sent++;
       console.log(`✅ Lembrete enviado: ${coupon.code} (${coupon.hoursRemaining}h restantes)`);
