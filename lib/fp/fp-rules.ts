@@ -269,7 +269,7 @@ export function getFPValue(action: FPAction): number {
   return FP_RULES[action].fpValue;
 }
 
-export function hasAction DailyCap(action: FPAction): boolean {
+export function hasActionDailyCap(action: FPAction): boolean {
   return FP_RULES[action].dailyCap !== undefined;
 }
 
