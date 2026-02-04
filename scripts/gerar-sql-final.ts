@@ -4,6 +4,13 @@
 
 import * as fs from 'fs';
 
+// Função para sanitizar texto e garantir encoding correto
+function sanitizeText(text: string): string {
+  return text
+    .replace(/'/g, "''")  // Escapar aspas simples
+    .normalize('NFC');     // Normalizar Unicode
+}
+
 console.log('🔧 Gerando SQL compatível com schema real...\n');
 
 const ARENAS = [
@@ -90,7 +97,7 @@ ARENAS.forEach((arena, index) => {
 
     // Ghost Users (simplificado)
     dados.ghostUsers.forEach((user: any) => {
-      const bio = (user.bio || '').replace(/'/g, "''");
+      const bio = sanitizeText(user.bio || '');
       sql += `INSERT INTO "User" (id, email, name, username, avatar_url, bio, is_ghost_user, "createdAt", "updatedAt")\n`;
       sql += `VALUES (\n`;
       sql += `  '${user.id}',\n`;
@@ -112,8 +119,8 @@ ARENAS.forEach((arena, index) => {
 
     // Threads/Posts
     dados.threads.forEach((thread: any) => {
-      const title = thread.title.replace(/'/g, "''");
-      const content = thread.content.replace(/'/g, "''");
+      const title = sanitizeText(thread.title);
+      const content = sanitizeText(thread.content);
       // Concatenar título no início do conteúdo
       const fullContent = `${title}\n\n${content}`;
       const arenaId = arenaMap[thread.arena_slug];
@@ -133,8 +140,8 @@ ARENAS.forEach((arena, index) => {
 
     // Mensagens
     dados.mensagens.forEach((msg: any) => {
-      const content = msg.content.replace(/'/g, "''");
-      const authorName = msg.author_name.replace(/'/g, "''");
+      const content = sanitizeText(msg.content);
+      const authorName = sanitizeText(msg.author_name);
       sql += `INSERT INTO nfc_chat_messages (id, comunidade_slug, post_id, author_id, author_name, content, created_at, is_ia)\n`;
       sql += `VALUES (\n`;
       sql += `  '${msg.id}',\n`;
@@ -160,7 +167,7 @@ sql += `\n-- ══════════════════════�
 sql += `-- RESUMO: ${totalUsers} users | ${totalThreads} threads | ${totalMensagens} msgs\n`;
 sql += `-- ════════════════════════════════════════════════════════\n`;
 
-fs.writeFileSync('IMPORT_FINAL.sql', sql);
+fs.writeFileSync('IMPORT_FINAL.sql', sql, { encoding: 'utf-8' });
 
 console.log(`\n✅ Arquivo gerado: IMPORT_FINAL.sql`);
 console.log(`📊 Total: ${totalUsers} users, ${totalThreads} threads, ${totalMensagens} mensagens\n`);
