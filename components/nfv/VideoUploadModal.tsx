@@ -6,7 +6,7 @@
  */
 
 import { useState, useRef } from 'react';
-import { X, Upload, Video, Link as LinkIcon, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { X, Upload, Video, Link as LinkIcon, Loader2, CheckCircle, AlertCircle, Camera, Lightbulb, ChevronDown, ChevronUp } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 
 // Cliente Supabase para upload direto (bypassa limite 4.5MB do Vercel)
@@ -46,6 +46,7 @@ export function VideoUploadModal({
   const [status, setStatus] = useState<UploadStatus>('idle');
   const [error, setError] = useState('');
   const [progress, setProgress] = useState(0);
+  const [showTips, setShowTips] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
@@ -330,6 +331,85 @@ export function VideoUploadModal({
                   em biomecânica e depois revisado por um profissional. O resultado será publicado
                   na arena em até 48 horas.
                 </p>
+              </div>
+
+              {/* Guia de Gravação */}
+              <div className="border border-zinc-700 rounded-lg overflow-hidden">
+                <button
+                  onClick={() => setShowTips(!showTips)}
+                  className="w-full flex items-center justify-between p-4 bg-zinc-800/50 hover:bg-zinc-800 transition"
+                >
+                  <div className="flex items-center gap-2 text-sm font-medium text-zinc-300">
+                    <Camera className="w-4 h-4 text-purple-400" />
+                    Como gravar para melhor análise
+                  </div>
+                  {showTips ? (
+                    <ChevronUp className="w-4 h-4 text-zinc-500" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-zinc-500" />
+                  )}
+                </button>
+
+                {showTips && (
+                  <div className="p-4 space-y-4 bg-zinc-900/50">
+                    {/* Ângulos recomendados */}
+                    <div>
+                      <h4 className="text-xs font-semibold text-purple-400 uppercase mb-2">
+                        Ângulos Recomendados
+                      </h4>
+                      <div className="grid grid-cols-3 gap-2 text-xs">
+                        <div className="bg-zinc-800 rounded-lg p-2 text-center">
+                          <div className="text-lg mb-1">📐</div>
+                          <div className="font-medium text-white">Lateral (90°)</div>
+                          <div className="text-zinc-500 mt-1">Profundidade, tronco, joelhos</div>
+                        </div>
+                        <div className="bg-zinc-800 rounded-lg p-2 text-center">
+                          <div className="text-lg mb-1">👤</div>
+                          <div className="font-medium text-white">Frontal</div>
+                          <div className="text-zinc-500 mt-1">Valgo, distribuição de peso</div>
+                        </div>
+                        <div className="bg-zinc-800 rounded-lg p-2 text-center">
+                          <div className="text-lg mb-1">🔙</div>
+                          <div className="font-medium text-white">Posterior</div>
+                          <div className="text-zinc-500 mt-1">Quadril, pés, alinhamento</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Dicas de gravação */}
+                    <div>
+                      <h4 className="text-xs font-semibold text-purple-400 uppercase mb-2">
+                        Dicas para Melhor Análise
+                      </h4>
+                      <ul className="space-y-2 text-xs text-zinc-400">
+                        <li className="flex items-start gap-2">
+                          <Lightbulb className="w-3 h-3 text-yellow-400 mt-0.5 flex-shrink-0" />
+                          <span><strong className="text-zinc-300">Corpo inteiro visível</strong> - pés até cabeça no enquadramento</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <Lightbulb className="w-3 h-3 text-yellow-400 mt-0.5 flex-shrink-0" />
+                          <span><strong className="text-zinc-300">Boa iluminação</strong> - evite contraluz e sombras</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <Lightbulb className="w-3 h-3 text-yellow-400 mt-0.5 flex-shrink-0" />
+                          <span><strong className="text-zinc-300">Fundo limpo</strong> - sem objetos que confundam a análise</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <Lightbulb className="w-3 h-3 text-yellow-400 mt-0.5 flex-shrink-0" />
+                          <span><strong className="text-zinc-300">2-3 repetições</strong> - para avaliar consistência</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <Lightbulb className="w-3 h-3 text-yellow-400 mt-0.5 flex-shrink-0" />
+                          <span><strong className="text-zinc-300">Câmera fixa</strong> - na altura do quadril, sem movimento</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <Lightbulb className="w-3 h-3 text-yellow-400 mt-0.5 flex-shrink-0" />
+                          <span><strong className="text-zinc-300">Roupa ajustada</strong> - para visualizar articulações</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Actions */}
