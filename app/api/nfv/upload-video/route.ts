@@ -135,12 +135,3 @@ export async function POST(req: NextRequest) {
 }
 
 export const dynamic = 'force-dynamic';
-
-// Aumentar limite de body para 100MB (Vercel padrão é 4.5MB)
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '100mb',
-    },
-  },
-};
