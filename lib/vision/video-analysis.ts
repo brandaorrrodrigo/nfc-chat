@@ -1,6 +1,7 @@
 /**
  * Análise de Vídeo com Vision Models (llama3.2-vision / llava)
  * Extrai frames e analisa com LLM multimodal
+ * Suporta vídeos locais e do Supabase Storage
  */
 
 import axios from 'axios';
@@ -8,17 +9,97 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { createClient } from '@supabase/supabase-js';
 
 const execAsync = promisify(exec);
 
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
 const VISION_MODEL = process.env.VISION_MODEL || 'llama3.2-vision:latest';
+const VISION_MODEL_FALLBACK = 'llava:latest'; // Fallback se llama3.2-vision não disponível
+
+// Detectar sistema operacional
+const isWindows = process.platform === 'win32';
+
+/**
+ * Verifica se ffmpeg está instalado
+ */
+export async function checkFfmpegAvailable(): Promise<boolean> {
+  try {
+    const cmd = isWindows ? 'where ffmpeg' : 'which ffmpeg';
+    await execAsync(cmd);
+    return true;
+  } catch {
+    console.warn('⚠️ ffmpeg não encontrado. Instale com: choco install ffmpeg (Windows) ou brew install ffmpeg (Mac)');
+    return false;
+  }
+}
+
+// Supabase client para download de vídeos
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
 export interface VideoAnalysisOptions {
-  videoPath: string;
+  videoPath?: string;
+  videoUrl?: string; // URL do Supabase Storage ou URL pública
   exerciseType?: string;
   focusAreas?: string[];
   framesCount?: number;
+}
+
+/**
+ * Baixa vídeo do Supabase Storage para arquivo temporário
+ */
+export async function downloadVideoFromSupabase(
+  videoPath: string,
+  outputDir: string
+): Promise<string> {
+  if (!supabase) {
+    throw new Error('Supabase não configurado');
+  }
+
+  const bucketName = 'nfv-videos';
+  const localPath = path.join(outputDir, `video_${Date.now()}.mp4`);
+
+  console.log(`⬇️ Downloading video from Supabase: ${videoPath}`);
+
+  const { data, error } = await supabase.storage
+    .from(bucketName)
+    .download(videoPath);
+
+  if (error) {
+    throw new Error(`Erro ao baixar vídeo: ${error.message}`);
+  }
+
+  // Converter Blob para Buffer e salvar
+  const arrayBuffer = await data.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  await fs.writeFile(localPath, buffer);
+
+  console.log(`✅ Video downloaded to: ${localPath}`);
+  return localPath;
+}
+
+/**
+ * Baixa vídeo de URL pública
+ */
+export async function downloadVideoFromUrl(
+  videoUrl: string,
+  outputDir: string
+): Promise<string> {
+  const localPath = path.join(outputDir, `video_${Date.now()}.mp4`);
+
+  console.log(`⬇️ Downloading video from URL: ${videoUrl}`);
+
+  const response = await axios.get(videoUrl, {
+    responseType: 'arraybuffer',
+    timeout: 120000, // 2 min timeout
+  });
+
+  await fs.writeFile(localPath, Buffer.from(response.data));
+
+  console.log(`✅ Video downloaded to: ${localPath}`);
+  return localPath;
 }
 
 export interface FrameAnalysis {
@@ -36,6 +117,30 @@ export interface VideoAnalysisResult {
   summary: string;
   recommendations: string[];
   technicalIssues: string[];
+}
+
+/**
+ * Extrai um único frame (fallback quando ffmpeg tem limitações)
+ */
+export async function extractSingleFrame(
+  videoPath: string,
+  outputDir: string
+): Promise<string | null> {
+  try {
+    const framePath = path.join(outputDir, 'frame_001.jpg');
+
+    // Tentar extrair frame no segundo 1
+    await execAsync(
+      `ffmpeg -ss 1 -i "${videoPath}" -vframes 1 -q:v 2 "${framePath}" -y`
+    );
+
+    // Verificar se arquivo foi criado
+    await fs.access(framePath);
+    return framePath;
+  } catch (error) {
+    console.error('Erro ao extrair frame único:', error);
+    return null;
+  }
 }
 
 /**
@@ -99,7 +204,8 @@ async function imageToBase64(imagePath: string): Promise<string> {
 export async function analyzeFrame(
   imagePath: string,
   prompt: string,
-  frameNumber: number
+  frameNumber: number,
+  modelOverride?: string
 ): Promise<FrameAnalysis> {
   console.log(`🔍 Analyzing frame ${frameNumber}...`);
 
@@ -107,11 +213,15 @@ export async function analyzeFrame(
     // Converter imagem para base64
     const imageBase64 = await imageToBase64(imagePath);
 
+    // Determinar qual modelo usar
+    const modelToUse = modelOverride || await getBestVisionModel() || VISION_MODEL;
+    console.log(`   Using model: ${modelToUse}`);
+
     // Chamar Ollama Vision API
     const response = await axios.post(
       `${OLLAMA_URL}/api/generate`,
       {
-        model: VISION_MODEL,
+        model: modelToUse,
         prompt,
         images: [imageBase64],
         stream: false,
@@ -121,7 +231,7 @@ export async function analyzeFrame(
         },
       },
       {
-        timeout: 60000, // 1 min timeout
+        timeout: 120000, // 2 min timeout (modelos de visão são mais lentos)
       }
     );
 
@@ -202,12 +312,14 @@ function calculateFrameScore(analysis: string, issuesCount: number): number {
 
 /**
  * Analisa vídeo completo de exercício
+ * Suporta videoPath local ou videoUrl do Supabase/URL pública
  */
 export async function analyzeExerciseVideo(
   options: VideoAnalysisOptions
 ): Promise<VideoAnalysisResult> {
   const {
     videoPath,
+    videoUrl,
     exerciseType = 'exercício',
     focusAreas = ['técnica geral', 'postura', 'amplitude'],
     framesCount = 8,
@@ -215,15 +327,66 @@ export async function analyzeExerciseVideo(
 
   console.log(`🎥 Starting video analysis: ${exerciseType}`);
 
+  // 1. Criar diretório temporário para frames e downloads
+  const tempDir = path.join(process.cwd(), 'temp', `analysis_${Date.now()}`);
+
   try {
-    // 1. Criar diretório temporário para frames
-    const tempDir = path.join(process.cwd(), 'temp', `analysis_${Date.now()}`);
     await fs.mkdir(tempDir, { recursive: true });
 
-    // 2. Extrair frames
-    const framePaths = await extractFrames(videoPath, tempDir, framesCount);
+    // 2. Obter path do vídeo (baixar se necessário)
+    let localVideoPath = videoPath;
 
-    // 3. Preparar prompt
+    if (!localVideoPath && videoUrl) {
+      // Baixar vídeo do Supabase Storage ou URL
+      if (videoUrl.includes('supabase') || videoUrl.startsWith(supabaseUrl || '')) {
+        // É URL do Supabase - extrair path
+        const urlPath = videoUrl.split('/nfv-videos/')[1] || videoUrl;
+        localVideoPath = await downloadVideoFromSupabase(urlPath, tempDir);
+      } else {
+        // URL pública externa
+        localVideoPath = await downloadVideoFromUrl(videoUrl, tempDir);
+      }
+    }
+
+    if (!localVideoPath) {
+      throw new Error('videoPath ou videoUrl é obrigatório');
+    }
+
+    // 3. Verificar se ffmpeg está disponível
+    const ffmpegAvailable = await checkFfmpegAvailable();
+
+    let framePaths: string[] = [];
+
+    if (ffmpegAvailable) {
+      // 4. Extrair frames do vídeo com ffmpeg
+      framePaths = await extractFrames(localVideoPath, tempDir, framesCount);
+    } else {
+      // Fallback: Usar thumbnail se disponível, ou analisar primeiro frame
+      console.log('⚠️ ffmpeg não disponível. Tentando análise com frame único...');
+
+      // Tentar extrair um único frame de forma alternativa
+      try {
+        const singleFramePath = await extractSingleFrame(localVideoPath, tempDir);
+        if (singleFramePath) {
+          framePaths = [singleFramePath];
+        }
+      } catch (frameError) {
+        console.warn('Não foi possível extrair frame:', frameError);
+      }
+
+      if (framePaths.length === 0) {
+        throw new Error('ffmpeg não instalado. Instale com: choco install ffmpeg (Windows) ou brew install ffmpeg (Mac)');
+      }
+    }
+
+    // 4. Obter melhor modelo de visão disponível
+    const visionModel = await getBestVisionModel();
+    if (!visionModel) {
+      throw new Error('Nenhum modelo de visão disponível. Execute: ollama pull llama3.2-vision');
+    }
+    console.log(`🤖 Using vision model: ${visionModel}`);
+
+    // 5. Preparar prompt
     const prompt = `Você é um especialista em biomecânica analisando um vídeo de ${exerciseType}.
 
 Analise este frame e identifique:
@@ -237,11 +400,11 @@ Analise este frame e identifique:
 
 Seja objetivo e técnico. Mencione APENAS o que você vê neste frame específico.`;
 
-    // 4. Analisar cada frame
+    // 6. Analisar cada frame
     const frameAnalyses: FrameAnalysis[] = [];
 
     for (let i = 0; i < framePaths.length; i++) {
-      const analysis = await analyzeFrame(framePaths[i], prompt, i + 1);
+      const analysis = await analyzeFrame(framePaths[i], prompt, i + 1, visionModel);
 
       // Calcular timestamp
       const videoDuration = 10; // Placeholder - seria calculado com ffprobe
@@ -335,15 +498,58 @@ function generateSummary(exerciseType: string, score: number, issuesCount: numbe
 }
 
 /**
- * Verifica se Vision Model está disponível
+ * Verifica se Vision Model está disponível e retorna qual usar
  */
 export async function checkVisionModelAvailable(): Promise<boolean> {
   try {
     const response = await axios.get(`${OLLAMA_URL}/api/tags`, { timeout: 5000 });
     const models = response.data.models || [];
-    return models.some((m: any) => m.name === VISION_MODEL);
+    const modelNames = models.map((m: any) => m.name);
+
+    // Verificar modelo primário ou fallback
+    const hasVisionModel = modelNames.includes(VISION_MODEL) ||
+                          modelNames.includes('llama3.2-vision') ||
+                          modelNames.includes(VISION_MODEL_FALLBACK) ||
+                          modelNames.includes('llava');
+
+    if (hasVisionModel) {
+      console.log('✅ Vision model disponível:', modelNames.filter((n: string) =>
+        n.includes('vision') || n.includes('llava')
+      ));
+    }
+
+    return hasVisionModel;
   } catch (error) {
     console.error('❌ Error checking vision model:', error);
     return false;
+  }
+}
+
+/**
+ * Retorna o melhor modelo de visão disponível
+ */
+export async function getBestVisionModel(): Promise<string | null> {
+  try {
+    const response = await axios.get(`${OLLAMA_URL}/api/tags`, { timeout: 5000 });
+    const models = response.data.models || [];
+    const modelNames = models.map((m: any) => m.name);
+
+    // Ordem de preferência
+    const preferredModels = [
+      'llama3.2-vision:latest',
+      'llama3.2-vision',
+      'llava:latest',
+      'llava',
+    ];
+
+    for (const model of preferredModels) {
+      if (modelNames.includes(model)) {
+        return model;
+      }
+    }
+
+    return null;
+  } catch (error) {
+    return null;
   }
 }

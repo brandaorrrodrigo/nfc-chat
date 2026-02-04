@@ -12,6 +12,41 @@ import { checkVideoUploadPermission } from '@/lib/biomechanics/video-gating';
 
 const TABLE = 'nfc_chat_video_analyses';
 
+/**
+ * Trigger automático para análise com IA (Ollama llama3.2-vision)
+ * Chamado em background após criar registro de vídeo
+ */
+async function triggerAIAnalysis(analysisId: string): Promise<void> {
+  console.log(`[NFV] 🤖 Triggering AI analysis for: ${analysisId}`);
+
+  try {
+    // Determinar base URL
+    const baseUrl = process.env.NEXTAUTH_URL ||
+                   process.env.NEXT_PUBLIC_APP_URL ||
+                   'http://localhost:3000';
+
+    const response = await fetch(`${baseUrl}/api/nfv/analysis`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ analysisId }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('[NFV] AI analysis trigger failed:', errorData);
+      return;
+    }
+
+    const result = await response.json();
+    console.log(`[NFV] ✅ AI analysis completed:`, {
+      score: result.aiResult?.overall_score,
+      type: result.aiResult?.analysis_type,
+    });
+  } catch (error) {
+    console.error('[NFV] AI analysis trigger error:', error);
+  }
+}
+
 // POST - Criar registro de video analysis
 export async function POST(req: NextRequest) {
   try {
@@ -94,6 +129,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Erro ao criar registro' }, { status: 500 });
     }
 
+    // 🤖 TRIGGER AUTOMÁTICO: Iniciar análise com IA (Ollama)
+    // Dispara em background para não bloquear resposta ao usuário
+    triggerAIAnalysis(data.id).catch((err) => {
+      console.error('[NFV] Auto-analysis trigger failed:', err);
+    });
+
     return NextResponse.json({ success: true, analysis: data });
   } catch (error) {
     console.error('[NFV] POST error:', error);
@@ -127,10 +168,16 @@ export async function GET(req: NextRequest) {
     }
 
     if (status) {
-      query = query.eq('status', status);
+      // Suporta múltiplos status separados por vírgula
+      const statusList = status.split(',').map(s => s.trim());
+      if (statusList.length > 1) {
+        query = query.in('status', statusList);
+      } else {
+        query = query.eq('status', status);
+      }
     } else {
-      // Por padrao, mostrar apenas aprovados para publico
-      query = query.eq('status', 'APPROVED');
+      // Por padrão, mostrar todos os vídeos públicos (na fila, analisados e aprovados)
+      query = query.in('status', ['PENDING_AI', 'AI_ANALYZED', 'APPROVED']);
     }
 
     if (pattern) {

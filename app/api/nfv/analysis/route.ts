@@ -45,13 +45,16 @@ export async function POST(req: NextRequest) {
 
     let aiAnalysis: any;
 
-    if (visionAvailable && analysis.video_path) {
-      // 🎥 ANÁLISE REAL COM VISION MODEL
-      console.log('🎥 Starting vision-based analysis...');
+    if (visionAvailable && (analysis.video_url || analysis.video_path)) {
+      // 🎥 ANÁLISE REAL COM VISION MODEL (Ollama llama3.2-vision)
+      console.log('🎥 Starting vision-based analysis with Ollama...');
+      console.log(`   Video URL: ${analysis.video_url}`);
+      console.log(`   Video Path: ${analysis.video_path}`);
 
       try {
         const visionResult = await analyzeExerciseVideo({
-          videoPath: analysis.video_path,
+          videoUrl: analysis.video_url, // URL do Supabase Storage
+          videoPath: analysis.video_path, // Path no bucket (fallback)
           exerciseType: analysis.movement_pattern,
           focusAreas: ['técnica', 'postura', 'amplitude', 'compensações'],
           framesCount: 6,

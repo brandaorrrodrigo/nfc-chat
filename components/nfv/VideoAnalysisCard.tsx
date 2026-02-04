@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { Play, ThumbsUp, Eye, Clock, User } from 'lucide-react';
+import { Play, ThumbsUp, Eye, Clock, User, Loader2, Bot, CheckCircle } from 'lucide-react';
 import MovementPatternBadge from './MovementPatternBadge';
 
 interface VideoAnalysisCardProps {
@@ -16,12 +16,43 @@ interface VideoAnalysisCardProps {
     movement_pattern: string;
     user_name: string;
     user_description?: string;
+    status?: string;
     published_at?: string;
+    created_at?: string;
     view_count: number;
     helpful_votes: number;
     ai_confidence?: number;
   };
   onClick?: () => void;
+}
+
+// Badge de status do vídeo
+function StatusBadge({ status }: { status?: string }) {
+  switch (status) {
+    case 'PENDING_AI':
+      return (
+        <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-yellow-500/20 text-yellow-400 text-[10px]">
+          <Loader2 className="w-3 h-3 animate-spin" />
+          Na fila
+        </div>
+      );
+    case 'AI_ANALYZED':
+      return (
+        <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 text-[10px]">
+          <Bot className="w-3 h-3" />
+          Analisado
+        </div>
+      );
+    case 'APPROVED':
+      return (
+        <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-500/20 text-green-400 text-[10px]">
+          <CheckCircle className="w-3 h-3" />
+          Aprovado
+        </div>
+      );
+    default:
+      return null;
+  }
 }
 
 export default function VideoAnalysisCard({ analysis, onClick }: VideoAnalysisCardProps) {
@@ -64,9 +95,14 @@ export default function VideoAnalysisCard({ analysis, onClick }: VideoAnalysisCa
           </div>
         </div>
 
-        {/* Badge */}
+        {/* Badge de padrão */}
         <div className="absolute top-2 left-2">
           <MovementPatternBadge pattern={analysis.movement_pattern} size="sm" />
+        </div>
+
+        {/* Badge de status */}
+        <div className="absolute bottom-2 left-2">
+          <StatusBadge status={analysis.status} />
         </div>
 
         {/* Confidence */}
@@ -104,7 +140,7 @@ export default function VideoAnalysisCard({ analysis, onClick }: VideoAnalysisCa
           </span>
           <span className="flex items-center gap-1 ml-auto">
             <Clock className="w-3 h-3" />
-            {formatDate(analysis.published_at)}
+            {formatDate(analysis.published_at || analysis.created_at)}
           </span>
         </div>
       </div>

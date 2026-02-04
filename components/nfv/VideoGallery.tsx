@@ -20,7 +20,8 @@ export default function VideoGallery({ arenaSlug, onSelectAnalysis }: VideoGalle
 
   const { analyses, loading, error, hasMore, fetchAnalyses, loadMore } = useVideoAnalysis({
     arenaSlug,
-    status: 'APPROVED',
+    // Mostrar todos: pendentes, analisados e aprovados
+    status: undefined,
     pattern: selectedPattern,
     limit: 12,
   });
