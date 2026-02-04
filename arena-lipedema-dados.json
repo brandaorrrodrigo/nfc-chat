@@ -1,0 +1,477 @@
+{
+  "arena": {
+    "nome": "Musculação Lipedema",
+    "slug": "musculacao-lipedema",
+    "categoria": "lipedema"
+  },
+  "ghostUsers": [
+    {
+      "id": "ghost_caio_run",
+      "email": "caio_run@yahoo.com.br",
+      "name": "Caio Dias",
+      "username": "caio_run",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=caio_run",
+      "bio": "Treino regular, ainda aprendendo.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_matheus93",
+      "email": "matheus93@hotmail.com",
+      "name": "Matheus Carvalho",
+      "username": "matheus93",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=matheus93",
+      "bio": "Novato, qualquer dica ajuda!",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_lucas14",
+      "email": "lucas14@outlook.com",
+      "name": "Lucas Alves",
+      "username": "lucas14",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=lucas14",
+      "bio": "Sempre buscando evolução.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_priscilaferreira",
+      "email": "priscilaferreira@hotmail.com",
+      "name": "Priscila Ferreira",
+      "username": "priscilaferreira",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=priscilaferreira",
+      "bio": "Começando agora. Objetivo: voltar a treinar.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_andre_active",
+      "email": "andre_active@hotmail.com",
+      "name": "André Souza",
+      "username": "andre_active",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=andre_active",
+      "bio": "Começando agora. Objetivo: definir.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_carolinalopes",
+      "email": "carolinalopes@yahoo.com.br",
+      "name": "Carolina Lopes",
+      "username": "carolinalopes",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=carolinalopes",
+      "bio": "Apaixonado por treino.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_sabrina_",
+      "email": "sabrina_@hotmail.com",
+      "name": "Sabrina Souza",
+      "username": "sabrina_",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=sabrina_",
+      "bio": "Voltando a treinar depois de muito tempo parado.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_priscila_fernandes",
+      "email": "priscila_fernandes@hotmail.com",
+      "name": "Priscila Fernandes",
+      "username": "priscila_fernandes",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=priscila_fernandes",
+      "bio": "Iniciante tentando melhorar postura.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_matheus_castro",
+      "email": "matheus_castro@hotmail.com",
+      "name": "Matheus Castro",
+      "username": "matheus_castro",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=matheus_castro",
+      "bio": "Iniciante tentando emagrecer.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_fernanda16",
+      "email": "fernanda16@gmail.com",
+      "name": "Fernanda Nascimento",
+      "username": "fernanda16",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=fernanda16",
+      "bio": "Iniciante tentando melhorar condicionamento.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_gabriela_rodrigues",
+      "email": "gabriela_rodrigues@hotmail.com",
+      "name": "Gabriela Rodrigues",
+      "username": "gabriela_rodrigues",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=gabriela_rodrigues",
+      "bio": "Novato, qualquer dica ajuda!",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_rafaela22",
+      "email": "rafaela22@yahoo.com.br",
+      "name": "Rafaela Fernandes",
+      "username": "rafaela22",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=rafaela22",
+      "bio": "Baseio tudo em evidência.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_amanda70",
+      "email": "amanda70@gmail.com",
+      "name": "Amanda Ferreira",
+      "username": "amanda70",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=amanda70",
+      "bio": "Voltando a treinar depois de muito tempo parado.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_vanessa43",
+      "email": "vanessa43@hotmail.com",
+      "name": "Vanessa Fernandes",
+      "username": "vanessa43",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=vanessa43",
+      "bio": "Iniciante tentando voltar a treinar.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_vanessabarbosa",
+      "email": "vanessabarbosa@yahoo.com.br",
+      "name": "Vanessa Barbosa",
+      "username": "vanessabarbosa",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=vanessabarbosa",
+      "bio": "Novato, qualquer dica ajuda!",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_rafael_soares",
+      "email": "rafael_soares@yahoo.com.br",
+      "name": "Rafael Soares",
+      "username": "rafael_soares",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=rafael_soares",
+      "bio": "Novato, qualquer dica ajuda!",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_henrique_almeida",
+      "email": "henrique_almeida@hotmail.com",
+      "name": "Henrique Almeida",
+      "username": "henrique_almeida",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=henrique_almeida",
+      "bio": "Iniciante tentando correr melhor.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_fernanda_soares",
+      "email": "fernanda_soares@hotmail.com",
+      "name": "Fernanda Soares",
+      "username": "fernanda_soares",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=fernanda_soares",
+      "bio": "Voltando a treinar depois de muito tempo parado.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_rodrigo_wellness",
+      "email": "rodrigo_wellness@gmail.com",
+      "name": "Rodrigo Lopes",
+      "username": "rodrigo_wellness",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=rodrigo_wellness",
+      "bio": "Mostrem os estudos.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_gabrielcastro",
+      "email": "gabrielcastro@outlook.com",
+      "name": "Gabriel Castro",
+      "username": "gabrielcastro",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=gabrielcastro",
+      "bio": "Começando agora. Objetivo: aumentar força.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_felipe_martins",
+      "email": "felipe_martins@hotmail.com",
+      "name": "Felipe Martins",
+      "username": "felipe_martins",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=felipe_martins",
+      "bio": "Sempre buscando evolução.",
+      "is_ghost_user": true
+    }
+  ],
+  "threads": [
+    {
+      "id": "post_lipedema_1",
+      "arena_slug": "musculacao-lipedema",
+      "user_id": "ghost_caio_run",
+      "title": "quando parei de treinar inchei mais",
+      "content": "fiquei um mes sem treinar por preguica e percebi q as pernas ficaram mais inchadas. voltei a treinar e melhorou",
+      "is_published": true,
+      "created_at": "2026-02-04T10:23:36.742Z"
+    },
+    {
+      "id": "post_lipedema_2",
+      "arena_slug": "musculacao-lipedema",
+      "user_id": "ghost_andre_active",
+      "title": "que exercicio nao inflama",
+      "content": "No meu caso… quais exercicios vcs fazem q nao causam mais inflamacao? tenho medo de piorar",
+      "is_published": true,
+      "created_at": "2026-02-05T10:23:36.742Z"
+    },
+    {
+      "id": "post_lipedema_3",
+      "arena_slug": "musculacao-lipedema",
+      "user_id": "ghost_matheus_castro",
+      "title": "musculacao engrossa a perna no lipedema?",
+      "content": "Não sou especialista, mas… tenho lipedema e morro de medo de musculacao engrossar minhas pernas. treinar ajuda ou piora? alguem aqui tem experiencia?",
+      "is_published": true,
+      "created_at": "2026-02-06T10:23:36.742Z"
+    },
+    {
+      "id": "post_lipedema_4",
+      "arena_slug": "musculacao-lipedema",
+      "user_id": "ghost_rafaela22",
+      "title": "lipedema tem cura ou so controle",
+      "content": "vejo muita gente vendendo solucao milagrosa. mas na real é so controle ne? nao tem cura",
+      "is_published": true,
+      "created_at": "2026-02-07T10:23:36.742Z"
+    },
+    {
+      "id": "post_lipedema_5",
+      "arena_slug": "musculacao-lipedema",
+      "user_id": "ghost_henrique_almeida",
+      "title": "impacto piorou tudo",
+      "content": "tentei correr e minhas pernas incharam muito mais. impacto realmente piora lipedema",
+      "is_published": true,
+      "created_at": "2026-02-08T10:23:36.742Z"
+    }
+  ],
+  "mensagens": [
+    {
+      "id": "msg_lipedema_0_0",
+      "comunidade_slug": "musculacao-lipedema",
+      "post_id": "post_lipedema_1",
+      "author_id": "ghost_matheus93",
+      "author_name": "Matheus Carvalho",
+      "content": "comigo tb foi assim. levou uns 3 meses pra pegar o jeito",
+      "created_at": "2026-02-04T11:03:36.742Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_lipedema_0_1",
+      "comunidade_slug": "musculacao-lipedema",
+      "post_id": "post_lipedema_1",
+      "author_id": "ghost_lucas14",
+      "author_name": "Lucas Alves",
+      "content": "normal isso no começo. depois melhora",
+      "created_at": "2026-02-04T11:16:36.742Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_lipedema_0_2",
+      "comunidade_slug": "musculacao-lipedema",
+      "post_id": "post_lipedema_1",
+      "author_id": "ghost_priscilaferreira",
+      "author_name": "Priscila Ferreira",
+      "content": "No meu caso… discordo. no meu caso foi totalmente diferente",
+      "created_at": "2026-02-04T11:25:36.742Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_lipedema_1_0",
+      "comunidade_slug": "musculacao-lipedema",
+      "post_id": "post_lipedema_2",
+      "author_id": "ghost_carolinalopes",
+      "author_name": "Carolina Lopes",
+      "content": "tenta aumentar a proteina pra 1.6-2g por kg... comigo funcionou",
+      "created_at": "2026-02-05T10:39:36.742Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_lipedema_1_1",
+      "comunidade_slug": "musculacao-lipedema",
+      "post_id": "post_lipedema_2",
+      "author_id": "ghost_sabrina_",
+      "author_name": "Sabrina Souza",
+      "content": "Já passei por isso… cara ja passei por isso tb... é frustrante demais mas nao desiste",
+      "created_at": "2026-02-05T11:13:36.742Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_lipedema_1_2",
+      "comunidade_slug": "musculacao-lipedema",
+      "post_id": "post_lipedema_2",
+      "author_id": "ghost_priscila_fernandes",
+      "author_name": "Priscila Fernandes",
+      "content": "to na mesma situacao q vc... vamos junto!",
+      "created_at": "2026-02-05T11:41:36.742Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_lipedema_2_0",
+      "comunidade_slug": "musculacao-lipedema",
+      "post_id": "post_lipedema_3",
+      "author_id": "ghost_fernanda16",
+      "author_name": "Fernanda Nascimento",
+      "content": "to na mesma situacao q vc. vamos junto!",
+      "created_at": "2026-02-06T11:00:36.742Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_lipedema_2_1",
+      "comunidade_slug": "musculacao-lipedema",
+      "post_id": "post_lipedema_3",
+      "author_id": "ghost_gabriela_rodrigues",
+      "author_name": "Gabriela Rodrigues",
+      "content": "eu fazia assim tb e não dava resultado. mudei pra X e melhorou",
+      "created_at": "2026-02-06T11:32:36.742Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_lipedema_2_2",
+      "comunidade_slug": "musculacao-lipedema",
+      "post_id": "post_lipedema_3",
+      "author_id": "ghost_lucas14",
+      "author_name": "Lucas Alves",
+      "content": "cara ja passei por isso tb... é frustrante demais mas nao desiste",
+      "created_at": "2026-02-06T12:07:36.742Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_lipedema_3_0",
+      "comunidade_slug": "musculacao-lipedema",
+      "post_id": "post_lipedema_4",
+      "author_id": "ghost_amanda70",
+      "author_name": "Amanda Ferreira",
+      "content": "nao sou especialista, mas… hipertrofia funciona melhor em faixas de 8-12 reps com carga moderada",
+      "created_at": "2026-02-07T10:28:36.742Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_lipedema_3_1",
+      "comunidade_slug": "musculacao-lipedema",
+      "post_id": "post_lipedema_4",
+      "author_id": "ghost_vanessa43",
+      "author_name": "Vanessa Fernandes",
+      "content": "No meu caso… acho q depende muito da pessoa. nao da pra generalizar",
+      "created_at": "2026-02-07T10:47:36.742Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_lipedema_3_2",
+      "comunidade_slug": "musculacao-lipedema",
+      "post_id": "post_lipedema_4",
+      "author_id": "ghost_vanessabarbosa",
+      "author_name": "Vanessa Barbosa",
+      "content": "hipertrofia funciona melhor em faixas de 8-12 reps com carga moderada",
+      "created_at": "2026-02-07T11:00:36.742Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_lipedema_3_3",
+      "comunidade_slug": "musculacao-lipedema",
+      "post_id": "post_lipedema_4",
+      "author_id": "ghost_priscila_fernandes",
+      "author_name": "Priscila Fernandes",
+      "content": "proteina: 1.6-2.2g/kg. mais q isso nao agrega. estudos mostram",
+      "created_at": "2026-02-07T11:28:36.742Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_lipedema_3_4",
+      "comunidade_slug": "musculacao-lipedema",
+      "post_id": "post_lipedema_4",
+      "author_id": "ghost_rafael_soares",
+      "author_name": "Rafael Soares",
+      "content": "Cara, comigo foi assim… hipertrofia funciona melhor em faixas de 8-12 reps com carga moderada",
+      "created_at": "2026-02-07T11:38:36.742Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_lipedema_3_5",
+      "comunidade_slug": "musculacao-lipedema",
+      "post_id": "post_lipedema_4",
+      "author_id": "ia_facilitadora",
+      "author_name": "NutriFit Coach",
+      "content": "Excelente relato. Quando o musculo trabalha, ele ajuda a drenar o liquido acumulado. Parar de treinar piora a estagnacao. Vcs sentem diferenca nos dias que treinam vs dias que nao treinam?",
+      "created_at": "2026-02-07T11:57:36.742Z",
+      "is_ia": true
+    },
+    {
+      "id": "msg_lipedema_4_0",
+      "comunidade_slug": "musculacao-lipedema",
+      "post_id": "post_lipedema_5",
+      "author_id": "ghost_fernanda_soares",
+      "author_name": "Fernanda Soares",
+      "content": "No meu caso… cara ja passei por isso tb... é frustrante demais mas nao desiste",
+      "created_at": "2026-02-08T10:54:36.742Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_lipedema_4_1",
+      "comunidade_slug": "musculacao-lipedema",
+      "post_id": "post_lipedema_5",
+      "author_id": "ghost_fernanda16",
+      "author_name": "Fernanda Nascimento",
+      "content": "comigo tb foi assim. levou uns 3 meses pra pegar o jeito",
+      "created_at": "2026-02-08T11:00:36.742Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_lipedema_4_2",
+      "comunidade_slug": "musculacao-lipedema",
+      "post_id": "post_lipedema_5",
+      "author_id": "ghost_rodrigo_wellness",
+      "author_name": "Rodrigo Lopes",
+      "content": "passei anos fazendo errado. quando corrigi a tecnica mudou tudo",
+      "created_at": "2026-02-08T11:24:36.742Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_lipedema_4_3",
+      "comunidade_slug": "musculacao-lipedema",
+      "post_id": "post_lipedema_5",
+      "author_id": "ghost_rafaela22",
+      "author_name": "Rafaela Fernandes",
+      "content": "cara ja passei por isso tb..... é frustrante demais mas nao desiste",
+      "created_at": "2026-02-08T11:30:36.742Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_lipedema_4_4",
+      "comunidade_slug": "musculacao-lipedema",
+      "post_id": "post_lipedema_5",
+      "author_id": "ghost_gabrielcastro",
+      "author_name": "Gabriel Castro",
+      "content": "não sou especialista, mas… cara ja passei por isso tb..... é frustrante demais mas nao desiste",
+      "created_at": "2026-02-08T12:06:36.742Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_lipedema_4_5",
+      "comunidade_slug": "musculacao-lipedema",
+      "post_id": "post_lipedema_5",
+      "author_id": "ghost_felipe_martins",
+      "author_name": "Felipe Martins",
+      "content": "eu tive q mudar 3x o treino ate achar oq funciona pra mim",
+      "created_at": "2026-02-08T12:46:36.742Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_lipedema_4_6",
+      "comunidade_slug": "musculacao-lipedema",
+      "post_id": "post_lipedema_5",
+      "author_id": "ghost_felipe_martins",
+      "author_name": "Felipe Martins",
+      "content": "eu tive q mudar 3x o treino ate achar oq funciona pra mim",
+      "created_at": "2026-02-08T13:16:36.742Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_lipedema_4_7",
+      "comunidade_slug": "musculacao-lipedema",
+      "post_id": "post_lipedema_5",
+      "author_id": "ia_facilitadora",
+      "author_name": "NutriFit Coach",
+      "content": "Faz sentido o medo. Mas hipertrofia muscular é diferente de inflamacao. Musculo forte melhora circulacao. Alguem conseguiu reduzir o inchaço fortalecendo as pernas?",
+      "created_at": "2026-02-08T13:41:36.742Z",
+      "is_ia": true
+    }
+  ]
+}

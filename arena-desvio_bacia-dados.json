@@ -1,0 +1,527 @@
+{
+  "arena": {
+    "nome": "Desvio de Bacia",
+    "slug": "desvio-bacia-gordura",
+    "categoria": "desvio_bacia"
+  },
+  "ghostUsers": [
+    {
+      "id": "ghost_amandaalves",
+      "email": "amandaalves@outlook.com",
+      "name": "Amanda Alves",
+      "username": "amandaalves",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=amandaalves",
+      "bio": "Começando agora. Objetivo: definir.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_patricia4",
+      "email": "patricia4@gmail.com",
+      "name": "Patricia Barbosa",
+      "username": "patricia4",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=patricia4",
+      "bio": "Curtindo o processo.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_priscila_fernandes",
+      "email": "priscila_fernandes@hotmail.com",
+      "name": "Priscila Fernandes",
+      "username": "priscila_fernandes",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=priscila_fernandes",
+      "bio": "Iniciante tentando melhorar postura.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_matheus93",
+      "email": "matheus93@hotmail.com",
+      "name": "Matheus Carvalho",
+      "username": "matheus93",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=matheus93",
+      "bio": "Novato, qualquer dica ajuda!",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_marianacastro",
+      "email": "marianacastro@hotmail.com",
+      "name": "Mariana Castro",
+      "username": "marianacastro",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=marianacastro",
+      "bio": "Começando agora. Objetivo: melhorar condicionamento.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_andre_active",
+      "email": "andre_active@hotmail.com",
+      "name": "André Souza",
+      "username": "andre_active",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=andre_active",
+      "bio": "Começando agora. Objetivo: definir.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_priscilaferreira",
+      "email": "priscilaferreira@hotmail.com",
+      "name": "Priscila Ferreira",
+      "username": "priscilaferreira",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=priscilaferreira",
+      "bio": "Começando agora. Objetivo: voltar a treinar.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_luciana_",
+      "email": "luciana_@outlook.com",
+      "name": "Luciana Rodrigues",
+      "username": "luciana_",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=luciana_",
+      "bio": "Curtindo o processo.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_jessica19",
+      "email": "jessica19@hotmail.com",
+      "name": "Jessica Barbosa",
+      "username": "jessica19",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=jessica19",
+      "bio": "Iniciante tentando melhorar postura.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_carolinalopes",
+      "email": "carolinalopes@yahoo.com.br",
+      "name": "Carolina Lopes",
+      "username": "carolinalopes",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=carolinalopes",
+      "bio": "Apaixonado por treino.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_henrique0",
+      "email": "henrique0@yahoo.com.br",
+      "name": "Henrique Lima",
+      "username": "henrique0",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=henrique0",
+      "bio": "Intermediário buscando melhorar postura.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_rafaelcosta",
+      "email": "rafaelcosta@outlook.com",
+      "name": "Rafael Costa",
+      "username": "rafaelcosta",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=rafaelcosta",
+      "bio": "Intermediário buscando ficar saudável.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_priscila96",
+      "email": "priscila96@hotmail.com",
+      "name": "Priscila Souza",
+      "username": "priscila96",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=priscila96",
+      "bio": "Iniciante tentando ganhar massa muscular.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_leandro_",
+      "email": "leandro_@yahoo.com.br",
+      "name": "Leandro Costa",
+      "username": "leandro_",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=leandro_",
+      "bio": "Baseio tudo em evidência.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_carlossilva",
+      "email": "carlossilva@hotmail.com",
+      "name": "Carlos Silva",
+      "username": "carlossilva",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=carlossilva",
+      "bio": "Novato, qualquer dica ajuda!",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_fernanda_soares",
+      "email": "fernanda_soares@hotmail.com",
+      "name": "Fernanda Soares",
+      "username": "fernanda_soares",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=fernanda_soares",
+      "bio": "Voltando a treinar depois de muito tempo parado.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_bruno_dias",
+      "email": "bruno_dias@gmail.com",
+      "name": "Bruno Dias",
+      "username": "bruno_dias",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=bruno_dias",
+      "bio": "Treino regular, ainda aprendendo.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_matheus_castro",
+      "email": "matheus_castro@hotmail.com",
+      "name": "Matheus Castro",
+      "username": "matheus_castro",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=matheus_castro",
+      "bio": "Iniciante tentando emagrecer.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_gabriela_rocha",
+      "email": "gabriela_rocha@outlook.com",
+      "name": "Gabriela Rocha",
+      "username": "gabriela_rocha",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=gabriela_rocha",
+      "bio": "Novato, qualquer dica ajuda!",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_amanda_rodrigues",
+      "email": "amanda_rodrigues@hotmail.com",
+      "name": "Amanda Rodrigues",
+      "username": "amanda_rodrigues",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=amanda_rodrigues",
+      "bio": "Novato, qualquer dica ajuda!",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_fernanda16",
+      "email": "fernanda16@gmail.com",
+      "name": "Fernanda Nascimento",
+      "username": "fernanda16",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=fernanda16",
+      "bio": "Iniciante tentando melhorar condicionamento.",
+      "is_ghost_user": true
+    }
+  ],
+  "threads": [
+    {
+      "id": "post_desvio_bacia_1",
+      "arena_slug": "desvio-bacia-gordura",
+      "user_id": "ghost_amandaalves",
+      "title": "descobri que nao era gordura era postura",
+      "content": "anos fazendo dieta achando q tinha gordura localizada. descobri q era desvio de bacia. quando corrigi a postura mudou tudo",
+      "is_published": true,
+      "created_at": "2026-02-04T10:23:36.749Z"
+    },
+    {
+      "id": "post_desvio_bacia_2",
+      "arena_slug": "desvio-bacia-gordura",
+      "user_id": "ghost_priscila_fernandes",
+      "title": "Já passei por isso… desvio de bacia engorda?",
+      "content": "No meu caso… tenho desvio de bacia e sempre tive barriga. será q tem relação ou é coincidência?",
+      "is_published": true,
+      "created_at": "2026-02-05T10:23:36.749Z"
+    },
+    {
+      "id": "post_desvio_bacia_3",
+      "arena_slug": "desvio-bacia-gordura",
+      "user_id": "ghost_luciana_",
+      "title": "minha barriga mudou sem emagrecer",
+      "content": "trabalhei correção postural por 3 meses. balança não mudou mas minha barriga diminuiu visivelmente. é impressionante",
+      "is_published": true,
+      "created_at": "2026-02-06T10:23:36.749Z"
+    },
+    {
+      "id": "post_desvio_bacia_4",
+      "arena_slug": "desvio-bacia-gordura",
+      "user_id": "ghost_carlossilva",
+      "title": "Cara, comigo foi assim… como saber se tenho desvio de bacia?",
+      "content": "nao sou especialista. mas… como eu sei se tenho desvio de bacia? tem algum teste simples que posso fazer sozinha ou precisa de profissional?",
+      "is_published": true,
+      "created_at": "2026-02-07T10:23:36.749Z"
+    },
+    {
+      "id": "post_desvio_bacia_5",
+      "arena_slug": "desvio-bacia-gordura",
+      "user_id": "ghost_matheus_castro",
+      "title": "nao sou especialista, mas… descobri que nao era gordura era postura",
+      "content": "anos fazendo dieta achando q tinha gordura localizada. descobri q era desvio de bacia. quando corrigi a postura mudou tudo",
+      "is_published": true,
+      "created_at": "2026-02-08T10:23:36.749Z"
+    }
+  ],
+  "mensagens": [
+    {
+      "id": "msg_desvio_bacia_0_0",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_1",
+      "author_id": "ghost_patricia4",
+      "author_name": "Patricia Barbosa",
+      "content": "no meu caso demorou uns 2 meses pra ver resultado. paciencia",
+      "created_at": "2026-02-04T10:37:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_0_1",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_1",
+      "author_id": "ghost_priscila_fernandes",
+      "author_name": "Priscila Fernandes",
+      "content": "No meu caso… to na mesma situacao q vc. vamos junto!",
+      "created_at": "2026-02-04T10:47:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_0_2",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_1",
+      "author_id": "ghost_matheus93",
+      "author_name": "Matheus Carvalho",
+      "content": "comigo tb foi assim. levou uns 3 meses pra pegar o jeito",
+      "created_at": "2026-02-04T11:09:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_0_3",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_1",
+      "author_id": "ghost_marianacastro",
+      "author_name": "Mariana Castro",
+      "content": "cara ja passei por isso tb... é frustrante demais mas nao desiste",
+      "created_at": "2026-02-04T11:29:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_0_4",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_1",
+      "author_id": "ghost_andre_active",
+      "author_name": "André Souza",
+      "content": "tem evidencia disso? pq tudo q eu li fala o contrario",
+      "created_at": "2026-02-04T11:41:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_0_5",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_1",
+      "author_id": "ghost_priscila_fernandes",
+      "author_name": "Priscila Fernandes",
+      "content": "comigo tb foi assim. levou uns 3 meses pra pegar o jeito",
+      "created_at": "2026-02-04T12:26:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_0_6",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_1",
+      "author_id": "ghost_priscilaferreira",
+      "author_name": "Priscila Ferreira",
+      "content": "Cara, comigo foi assim… comigo tb foi assim... levou uns 3 meses pra pegar o jeito",
+      "created_at": "2026-02-04T12:49:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_1_0",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_2",
+      "author_id": "ghost_luciana_",
+      "author_name": "Luciana Rodrigues",
+      "content": "diminui o peso e foca na tecnica primeiro. melhor fazer bem feito do q jogar peso",
+      "created_at": "2026-02-05T10:34:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_1_1",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_2",
+      "author_id": "ghost_jessica19",
+      "author_name": "Jessica Barbosa",
+      "content": "tenta aumentar a proteina pra 1.6-2g por kg. comigo funcionou",
+      "created_at": "2026-02-05T10:49:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_1_2",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_2",
+      "author_id": "ghost_carolinalopes",
+      "author_name": "Carolina Lopes",
+      "content": "cara ja passei por isso tb... é frustrante demais mas nao desiste",
+      "created_at": "2026-02-05T11:13:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_1_3",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_2",
+      "author_id": "ia_facilitadora",
+      "author_name": "NutriFit Coach",
+      "content": "Excelente relato. Alinhamento pelvico muda a projecao do abdomen e a silhueta geral, mesmo sem perder gordura. Vcs mediram antes e depois da correcao?",
+      "created_at": "2026-02-05T11:31:36.749Z",
+      "is_ia": true
+    },
+    {
+      "id": "msg_desvio_bacia_2_0",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_3",
+      "author_id": "ghost_henrique0",
+      "author_name": "Henrique Lima",
+      "content": "no meu caso demorou uns 2 meses pra ver resultado. paciencia",
+      "created_at": "2026-02-06T10:37:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_2_1",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_3",
+      "author_id": "ghost_rafaelcosta",
+      "author_name": "Rafael Costa",
+      "content": "eu tive q mudar 3x o treino ate achar oq funciona pra mim",
+      "created_at": "2026-02-06T11:20:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_2_2",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_3",
+      "author_id": "ghost_priscila96",
+      "author_name": "Priscila Souza",
+      "content": "No meu caso… to na mesma situacao q vc. vamos junto!",
+      "created_at": "2026-02-06T11:31:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_2_3",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_3",
+      "author_id": "ghost_leandro_",
+      "author_name": "Leandro Costa",
+      "content": "essa crença de metabolismo lento é mito. CICO funciona pra todo mundo",
+      "created_at": "2026-02-06T12:03:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_2_4",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_3",
+      "author_id": "ghost_andre_active",
+      "author_name": "André Souza",
+      "content": "Não sou especialista, mas… normal isso no começo... depois melhora",
+      "created_at": "2026-02-06T12:32:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_3_0",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_4",
+      "author_id": "ghost_matheus93",
+      "author_name": "Matheus Carvalho",
+      "content": "experimenta treinar em jejum. pra mim fez diferenca",
+      "created_at": "2026-02-07T10:56:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_3_1",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_4",
+      "author_id": "ghost_fernanda_soares",
+      "author_name": "Fernanda Soares",
+      "content": "experimenta treinar em jejum. pra mim fez diferenca",
+      "created_at": "2026-02-07T11:11:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_3_2",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_4",
+      "author_id": "ghost_priscilaferreira",
+      "author_name": "Priscila Ferreira",
+      "content": "to na mesma situacao q vc. vamos junto!",
+      "created_at": "2026-02-07T11:28:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_3_3",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_4",
+      "author_id": "ghost_bruno_dias",
+      "author_name": "Bruno Dias",
+      "content": "no meu caso demorou uns 2 meses pra ver resultado. paciencia",
+      "created_at": "2026-02-07T11:48:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_3_4",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_4",
+      "author_id": "ghost_leandro_",
+      "author_name": "Leandro Costa",
+      "content": "to na mesma situacao q vc. vamos junto!",
+      "created_at": "2026-02-07T11:54:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_4_0",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_5",
+      "author_id": "ghost_gabriela_rocha",
+      "author_name": "Gabriela Rocha",
+      "content": "discordo. no meu caso foi totalmente diferente",
+      "created_at": "2026-02-08T11:00:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_4_1",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_5",
+      "author_id": "ghost_amanda_rodrigues",
+      "author_name": "Amanda Rodrigues",
+      "content": "cara ja passei por isso tb... é frustrante demais mas nao desiste",
+      "created_at": "2026-02-08T11:28:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_4_2",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_5",
+      "author_id": "ghost_carolinalopes",
+      "author_name": "Carolina Lopes",
+      "content": "no meu caso demorou uns 2 meses pra ver resultado... paciencia",
+      "created_at": "2026-02-08T11:40:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_4_3",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_5",
+      "author_id": "ghost_jessica19",
+      "author_name": "Jessica Barbosa",
+      "content": "normal isso no começo. depois melhora",
+      "created_at": "2026-02-08T12:03:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_4_4",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_5",
+      "author_id": "ghost_gabriela_rocha",
+      "author_name": "Gabriela Rocha",
+      "content": "cara ja passei por isso tb... é frustrante demais mas nao desiste",
+      "created_at": "2026-02-08T12:30:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_4_5",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_5",
+      "author_id": "ghost_fernanda16",
+      "author_name": "Fernanda Nascimento",
+      "content": "nao sou especialista, mas… essa crença de metabolismo lento é mito. CICO funciona pra todo mundo",
+      "created_at": "2026-02-08T12:36:36.749Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_desvio_bacia_4_6",
+      "comunidade_slug": "desvio-bacia-gordura",
+      "post_id": "post_desvio_bacia_5",
+      "author_id": "ia_facilitadora",
+      "author_name": "NutriFit Coach",
+      "content": "Já passei por isso… Interessante debate sobre profissional. Idealmente fisio avalia e corrige, personal fortalece os padroes corretos. Os dois juntos é melhor. Qual caminho vcs seguiram?",
+      "created_at": "2026-02-08T13:05:36.749Z",
+      "is_ia": true
+    }
+  ]
+}

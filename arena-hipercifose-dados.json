@@ -1,0 +1,564 @@
+{
+  "arena": {
+    "nome": "Hipercifose Drenagem",
+    "slug": "hipercifose-drenagem",
+    "categoria": "hipercifose"
+  },
+  "ghostUsers": [
+    {
+      "id": "ghost_jessica19",
+      "email": "jessica19@hotmail.com",
+      "name": "Jessica Barbosa",
+      "username": "jessica19",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=jessica19",
+      "bio": "Iniciante tentando melhorar postura.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_priscilaferreira",
+      "email": "priscilaferreira@hotmail.com",
+      "name": "Priscila Ferreira",
+      "username": "priscilaferreira",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=priscilaferreira",
+      "bio": "Começando agora. Objetivo: voltar a treinar.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_caio_run",
+      "email": "caio_run@yahoo.com.br",
+      "name": "Caio Dias",
+      "username": "caio_run",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=caio_run",
+      "bio": "Treino regular, ainda aprendendo.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_rafael_soares",
+      "email": "rafael_soares@yahoo.com.br",
+      "name": "Rafael Soares",
+      "username": "rafael_soares",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=rafael_soares",
+      "bio": "Novato, qualquer dica ajuda!",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_igor_nascimento",
+      "email": "igor_nascimento@outlook.com",
+      "name": "Igor Nascimento",
+      "username": "igor_nascimento",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=igor_nascimento",
+      "bio": "Voltando a treinar depois de muito tempo parado.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_caiolopes",
+      "email": "caiolopes@hotmail.com",
+      "name": "Caio Lopes",
+      "username": "caiolopes",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=caiolopes",
+      "bio": "Voltando a treinar depois de muito tempo parado.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_leandro_",
+      "email": "leandro_@yahoo.com.br",
+      "name": "Leandro Costa",
+      "username": "leandro_",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=leandro_",
+      "bio": "Baseio tudo em evidência.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_matheus93",
+      "email": "matheus93@hotmail.com",
+      "name": "Matheus Carvalho",
+      "username": "matheus93",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=matheus93",
+      "bio": "Novato, qualquer dica ajuda!",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_priscila41",
+      "email": "priscila41@gmail.com",
+      "name": "Priscila Barbosa",
+      "username": "priscila41",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=priscila41",
+      "bio": "Intermediário buscando melhorar condicionamento.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_carolina_vieira",
+      "email": "carolina_vieira@yahoo.com.br",
+      "name": "Carolina Vieira",
+      "username": "carolina_vieira",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=carolina_vieira",
+      "bio": "Voltando a treinar depois de muito tempo parado.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_amanda_rodrigues",
+      "email": "amanda_rodrigues@hotmail.com",
+      "name": "Amanda Rodrigues",
+      "username": "amanda_rodrigues",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=amanda_rodrigues",
+      "bio": "Novato, qualquer dica ajuda!",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_priscila_fernandes",
+      "email": "priscila_fernandes@hotmail.com",
+      "name": "Priscila Fernandes",
+      "username": "priscila_fernandes",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=priscila_fernandes",
+      "bio": "Iniciante tentando melhorar postura.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_henrique0",
+      "email": "henrique0@yahoo.com.br",
+      "name": "Henrique Lima",
+      "username": "henrique0",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=henrique0",
+      "bio": "Intermediário buscando melhorar postura.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_luciana_",
+      "email": "luciana_@outlook.com",
+      "name": "Luciana Rodrigues",
+      "username": "luciana_",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=luciana_",
+      "bio": "Curtindo o processo.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_amanda70",
+      "email": "amanda70@gmail.com",
+      "name": "Amanda Ferreira",
+      "username": "amanda70",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=amanda70",
+      "bio": "Voltando a treinar depois de muito tempo parado.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_fernando_alves",
+      "email": "fernando_alves@outlook.com",
+      "name": "Fernando Alves",
+      "username": "fernando_alves",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=fernando_alves",
+      "bio": "Começando agora. Objetivo: definir.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_henrique_almeida",
+      "email": "henrique_almeida@hotmail.com",
+      "name": "Henrique Almeida",
+      "username": "henrique_almeida",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=henrique_almeida",
+      "bio": "Iniciante tentando correr melhor.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_fernanda_soares",
+      "email": "fernanda_soares@hotmail.com",
+      "name": "Fernanda Soares",
+      "username": "fernanda_soares",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=fernanda_soares",
+      "bio": "Voltando a treinar depois de muito tempo parado.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_anaribeiro",
+      "email": "anaribeiro@hotmail.com",
+      "name": "Ana Ribeiro",
+      "username": "anaribeiro",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=anaribeiro",
+      "bio": "Baseio tudo em evidência.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_gabriela_rodrigues",
+      "email": "gabriela_rodrigues@hotmail.com",
+      "name": "Gabriela Rodrigues",
+      "username": "gabriela_rodrigues",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=gabriela_rodrigues",
+      "bio": "Novato, qualquer dica ajuda!",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_amandaalves",
+      "email": "amandaalves@outlook.com",
+      "name": "Amanda Alves",
+      "username": "amandaalves",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=amandaalves",
+      "bio": "Começando agora. Objetivo: definir.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_vanessabarbosa",
+      "email": "vanessabarbosa@yahoo.com.br",
+      "name": "Vanessa Barbosa",
+      "username": "vanessabarbosa",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=vanessabarbosa",
+      "bio": "Novato, qualquer dica ajuda!",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_gabrielcastro",
+      "email": "gabrielcastro@outlook.com",
+      "name": "Gabriel Castro",
+      "username": "gabrielcastro",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=gabrielcastro",
+      "bio": "Começando agora. Objetivo: aumentar força.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_bruno_dias",
+      "email": "bruno_dias@gmail.com",
+      "name": "Bruno Dias",
+      "username": "bruno_dias",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=bruno_dias",
+      "bio": "Treino regular, ainda aprendendo.",
+      "is_ghost_user": true
+    }
+  ],
+  "threads": [
+    {
+      "id": "post_hipercifose_1",
+      "arena_slug": "hipercifose-drenagem",
+      "user_id": "ghost_jessica19",
+      "title": "Cara, comigo foi assim… que exercicio melhora postura curvada",
+      "content": "minhas costas são super curvadas e isso me incomoda muito. tem algum exercício que ajuda? musculação ou pilates?",
+      "is_published": true,
+      "created_at": "2026-02-04T10:23:36.743Z"
+    },
+    {
+      "id": "post_hipercifose_2",
+      "arena_slug": "hipercifose-drenagem",
+      "user_id": "ghost_priscila41",
+      "title": "diferenca entre postura ruim e hipercifose",
+      "content": "todo mundo curvado tem hipercifose ou é só má postura? onde tá a linha divisória entre uma coisa e outra",
+      "is_published": true,
+      "created_at": "2026-02-05T10:23:36.743Z"
+    },
+    {
+      "id": "post_hipercifose_3",
+      "arena_slug": "hipercifose-drenagem",
+      "user_id": "ghost_luciana_",
+      "title": "quando corrigi a postura pernas desincharam",
+      "content": "comecei a trabalhar postura com fisio e percebi que minhas pernas desincharam muito. nao mudei mais nada, só corrigi a curvatura das costas",
+      "is_published": true,
+      "created_at": "2026-02-06T10:23:36.743Z"
+    },
+    {
+      "id": "post_hipercifose_4",
+      "arena_slug": "hipercifose-drenagem",
+      "user_id": "ghost_leandro_",
+      "title": "hipercifose tem tratamento ou so controle?",
+      "content": "vejo muita gente falando de \"corrigir\" hipercifose mas será que corrige mesmo ou só controla? qual a real?",
+      "is_published": true,
+      "created_at": "2026-02-07T10:23:36.743Z"
+    },
+    {
+      "id": "post_hipercifose_5",
+      "arena_slug": "hipercifose-drenagem",
+      "user_id": "ghost_anaribeiro",
+      "title": "hipercifose tem tratamento ou so controle?",
+      "content": "vejo muita gente falando de \"corrigir\" hipercifose mas será que corrige mesmo ou só controla? qual a real?",
+      "is_published": true,
+      "created_at": "2026-02-08T10:23:36.743Z"
+    }
+  ],
+  "mensagens": [
+    {
+      "id": "msg_hipercifose_0_0",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_1",
+      "author_id": "ghost_priscilaferreira",
+      "author_name": "Priscila Ferreira",
+      "content": "normal isso no começo. depois melhora",
+      "created_at": "2026-02-04T10:38:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_0_1",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_1",
+      "author_id": "ghost_caio_run",
+      "author_name": "Caio Dias",
+      "content": "eu fazia assim tb e não dava resultado. mudei pra X e melhorou",
+      "created_at": "2026-02-04T10:58:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_0_2",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_1",
+      "author_id": "ghost_rafael_soares",
+      "author_name": "Rafael Soares",
+      "content": "No meu caso… tenta aumentar a proteina pra 1.6-2g por kg. comigo funcionou",
+      "created_at": "2026-02-04T11:43:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_0_3",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_1",
+      "author_id": "ghost_igor_nascimento",
+      "author_name": "Igor Nascimento",
+      "content": "não sou especialista, mas… tenta aumentar a proteina pra 1.6-2g por kg. comigo funcionou",
+      "created_at": "2026-02-04T12:13:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_0_4",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_1",
+      "author_id": "ghost_caiolopes",
+      "author_name": "Caio Lopes",
+      "content": "Não sou especialista, mas… to na mesma situacao q vc. vamos junto!",
+      "created_at": "2026-02-04T12:23:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_0_5",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_1",
+      "author_id": "ghost_leandro_",
+      "author_name": "Leandro Costa",
+      "content": "eu fazia assim tb e não dava resultado. mudei pra X e melhorou",
+      "created_at": "2026-02-04T12:32:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_0_6",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_1",
+      "author_id": "ghost_matheus93",
+      "author_name": "Matheus Carvalho",
+      "content": "Cara, comigo foi assim… to na mesma situacao q vc. vamos junto!",
+      "created_at": "2026-02-04T12:54:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_0_7",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_1",
+      "author_id": "ia_facilitadora",
+      "author_name": "NutriFit Coach",
+      "content": "Já passei por isso… Concordo. Yoga e pilates trabalham mobilidade toracica, o que libera a respiracao e consequentemente melhora circulacao. Quem aqui ja testou ambos? Qual preferem?",
+      "created_at": "2026-02-04T13:09:36.743Z",
+      "is_ia": true
+    },
+    {
+      "id": "msg_hipercifose_1_0",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_2",
+      "author_id": "ghost_carolina_vieira",
+      "author_name": "Carolina Vieira",
+      "content": "Já passei por isso… normal isso no começo. depois melhora",
+      "created_at": "2026-02-05T10:46:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_1_1",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_2",
+      "author_id": "ghost_amanda_rodrigues",
+      "author_name": "Amanda Rodrigues",
+      "content": "eu fazia assim tb e não dava resultado. mudei pra X e melhorou",
+      "created_at": "2026-02-05T11:08:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_1_2",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_2",
+      "author_id": "ghost_priscila_fernandes",
+      "author_name": "Priscila Fernandes",
+      "content": "tenta aumentar a proteina pra 1.6-2g por kg. comigo funcionou",
+      "created_at": "2026-02-05T11:44:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_1_3",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_2",
+      "author_id": "ghost_henrique0",
+      "author_name": "Henrique Lima",
+      "content": "diminui o peso e foca na tecnica primeiro. melhor fazer bem feito do q jogar peso",
+      "created_at": "2026-02-05T12:19:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_1_4",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_2",
+      "author_id": "ghost_caio_run",
+      "author_name": "Caio Dias",
+      "content": "no meu caso demorou uns 2 meses pra ver resultado... paciencia",
+      "created_at": "2026-02-05T12:33:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_2_0",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_3",
+      "author_id": "ghost_amanda70",
+      "author_name": "Amanda Ferreira",
+      "content": "to na mesma situacao q vc. vamos junto!",
+      "created_at": "2026-02-06T11:03:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_2_1",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_3",
+      "author_id": "ghost_caio_run",
+      "author_name": "Caio Dias",
+      "content": "acho q depende muito da pessoa... nao da pra generalizar",
+      "created_at": "2026-02-06T11:48:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_2_2",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_3",
+      "author_id": "ghost_fernando_alves",
+      "author_name": "Fernando Alves",
+      "content": "Não sou especialista, mas… normal isso no começo. depois melhora",
+      "created_at": "2026-02-06T12:08:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_3_0",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_4",
+      "author_id": "ghost_henrique_almeida",
+      "author_name": "Henrique Almeida",
+      "content": "experimenta treinar em jejum. pra mim fez diferenca",
+      "created_at": "2026-02-07T10:49:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_3_1",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_4",
+      "author_id": "ghost_fernanda_soares",
+      "author_name": "Fernanda Soares",
+      "content": "essa crença de metabolismo lento é mito... CICO funciona pra todo mundo",
+      "created_at": "2026-02-07T11:26:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_3_2",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_4",
+      "author_id": "ghost_anaribeiro",
+      "author_name": "Ana Ribeiro",
+      "content": "deficit calorico é oq importa no final. pode comer carbo a noite sim",
+      "created_at": "2026-02-07T11:45:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_3_3",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_4",
+      "author_id": "ghost_gabriela_rodrigues",
+      "author_name": "Gabriela Rodrigues",
+      "content": "nao sou especialista, mas… diminui o peso e foca na tecnica primeiro. melhor fazer bem feito do q jogar peso",
+      "created_at": "2026-02-07T12:21:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_3_4",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_4",
+      "author_id": "ghost_amandaalves",
+      "author_name": "Amanda Alves",
+      "content": "No meu caso… deficit calorico é oq importa no final. pode comer carbo a noite sim",
+      "created_at": "2026-02-07T12:57:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_3_5",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_4",
+      "author_id": "ghost_henrique0",
+      "author_name": "Henrique Lima",
+      "content": "acho q depende muito da pessoa. nao da pra generalizar",
+      "created_at": "2026-02-07T13:02:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_3_6",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_4",
+      "author_id": "ghost_amanda70",
+      "author_name": "Amanda Ferreira",
+      "content": "não sou especialista, mas… essa crença de metabolismo lento é mito... CICO funciona pra todo mundo",
+      "created_at": "2026-02-07T13:31:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_4_0",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_5",
+      "author_id": "ghost_priscila_fernandes",
+      "author_name": "Priscila Fernandes",
+      "content": "nao sou especialista, mas… hipertrofia funciona melhor em faixas de 8-12 reps com carga moderada",
+      "created_at": "2026-02-08T10:45:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_4_1",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_5",
+      "author_id": "ghost_vanessabarbosa",
+      "author_name": "Vanessa Barbosa",
+      "content": "hipertrofia funciona melhor em faixas de 8-12 reps com carga moderada",
+      "created_at": "2026-02-08T11:10:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_4_2",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_5",
+      "author_id": "ghost_leandro_",
+      "author_name": "Leandro Costa",
+      "content": "tenta aumentar a proteina pra 1.6-2g por kg... comigo funcionou",
+      "created_at": "2026-02-08T11:32:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_4_3",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_5",
+      "author_id": "ghost_gabriela_rodrigues",
+      "author_name": "Gabriela Rodrigues",
+      "content": "acho q depende muito da pessoa. nao da pra generalizar",
+      "created_at": "2026-02-08T11:45:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_4_4",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_5",
+      "author_id": "ghost_gabrielcastro",
+      "author_name": "Gabriel Castro",
+      "content": "discordo. no meu caso foi totalmente diferente",
+      "created_at": "2026-02-08T12:12:36.743Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_hipercifose_4_5",
+      "comunidade_slug": "hipercifose-drenagem",
+      "post_id": "post_hipercifose_5",
+      "author_id": "ghost_bruno_dias",
+      "author_name": "Bruno Dias",
+      "content": "hipertrofia funciona melhor em faixas de 8-12 reps com carga moderada",
+      "created_at": "2026-02-08T12:45:36.743Z",
+      "is_ia": false
+    }
+  ]
+}

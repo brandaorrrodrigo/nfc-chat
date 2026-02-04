@@ -1,0 +1,533 @@
+{
+  "ghostUsers": [
+    {
+      "id": "ghost_rafaela96",
+      "email": "rafaela96@yahoo.com.br",
+      "name": "Rafaela Alves",
+      "username": "rafaela96",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=rafaela96",
+      "bio": "Intermediário buscando emagrecer.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_pedroalmeida",
+      "email": "pedroalmeida@yahoo.com.br",
+      "name": "Pedro Almeida",
+      "username": "pedroalmeida",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=pedroalmeida",
+      "bio": "Voltando a treinar depois de muito tempo parado.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_fernando_santos",
+      "email": "fernando_santos@gmail.com",
+      "name": "Fernando Santos",
+      "username": "fernando_santos",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=fernando_santos",
+      "bio": "Iniciante tentando perder barriga.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_joaorocha",
+      "email": "joaorocha@hotmail.com",
+      "name": "João Rocha",
+      "username": "joaorocha",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=joaorocha",
+      "bio": "Treino regular, ainda aprendendo.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_fernanda73",
+      "email": "fernanda73@gmail.com",
+      "name": "Fernanda Santos",
+      "username": "fernanda73",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=fernanda73",
+      "bio": "Iniciante tentando ganhar massa muscular.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_tatianalima",
+      "email": "tatianalima@gmail.com",
+      "name": "Tatiana Lima",
+      "username": "tatianalima",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=tatianalima",
+      "bio": "Voltando a treinar depois de muito tempo parado.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_gustavo43",
+      "email": "gustavo43@gmail.com",
+      "name": "Gustavo Costa",
+      "username": "gustavo43",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=gustavo43",
+      "bio": "Voltando a treinar depois de muito tempo parado.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_diegocosta",
+      "email": "diegocosta@gmail.com",
+      "name": "Diego Costa",
+      "username": "diegocosta",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=diegocosta",
+      "bio": "Experiente em musculação.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_thiago11",
+      "email": "thiago11@hotmail.com",
+      "name": "Thiago Souza",
+      "username": "thiago11",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=thiago11",
+      "bio": "Iniciante tentando melhorar postura.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_carolina_fit",
+      "email": "carolina_fit@outlook.com",
+      "name": "Carolina Pereira",
+      "username": "carolina_fit",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=carolina_fit",
+      "bio": "Iniciante tentando correr melhor.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_felipe92",
+      "email": "felipe92@outlook.com",
+      "name": "Felipe Silva",
+      "username": "felipe92",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=felipe92",
+      "bio": "Treino há uns 2 anos. Foco em melhorar postura.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_pedro_fernandes",
+      "email": "pedro_fernandes@hotmail.com",
+      "name": "Pedro Fernandes",
+      "username": "pedro_fernandes",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=pedro_fernandes",
+      "bio": "Questiono tudo antes de aplicar.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_ana57",
+      "email": "ana57@hotmail.com",
+      "name": "Ana Barbosa",
+      "username": "ana57",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=ana57",
+      "bio": "Iniciante tentando melhorar postura.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_diego96",
+      "email": "diego96@hotmail.com",
+      "name": "Diego Souza",
+      "username": "diego96",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=diego96",
+      "bio": "Iniciante tentando melhorar postura.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_carolinacosta",
+      "email": "carolinacosta@outlook.com",
+      "name": "Carolina Costa",
+      "username": "carolinacosta",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=carolinacosta",
+      "bio": "Baseio tudo em evidência.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_carlos15",
+      "email": "carlos15@hotmail.com",
+      "name": "Carlos Fernandes",
+      "username": "carlos15",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=carlos15",
+      "bio": "Iniciante tentando definir.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_fernando_",
+      "email": "fernando_@gmail.com",
+      "name": "Fernando Almeida",
+      "username": "fernando_",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=fernando_",
+      "bio": "Voltando a treinar depois de muito tempo parado.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_sabrinamartins",
+      "email": "sabrinamartins@hotmail.com",
+      "name": "Sabrina Martins",
+      "username": "sabrinamartins",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=sabrinamartins",
+      "bio": "Treino há uns 2 anos. Foco em aumentar força.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_joaorodrigues",
+      "email": "joaorodrigues@yahoo.com.br",
+      "name": "João Rodrigues",
+      "username": "joaorodrigues",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=joaorodrigues",
+      "bio": "Iniciante tentando ficar saudável.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_amanda_treino",
+      "email": "amanda_treino@outlook.com",
+      "name": "Amanda Costa",
+      "username": "amanda_treino",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=amanda_treino",
+      "bio": "Iniciante tentando voltar a treinar.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_igoralmeida",
+      "email": "igoralmeida@hotmail.com",
+      "name": "Igor Almeida",
+      "username": "igoralmeida",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=igoralmeida",
+      "bio": "Começando agora. Objetivo: aumentar força.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_henrique4",
+      "email": "henrique4@outlook.com",
+      "name": "Henrique Gomes",
+      "username": "henrique4",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=henrique4",
+      "bio": "Intermediário buscando definir.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_gustavo_ferreira",
+      "email": "gustavo_ferreira@outlook.com",
+      "name": "Gustavo Ferreira",
+      "username": "gustavo_ferreira",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=gustavo_ferreira",
+      "bio": "Voltando a treinar depois de muito tempo parado.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_fabio_life",
+      "email": "fabio_life@outlook.com",
+      "name": "Fabio Dias",
+      "username": "fabio_life",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=fabio_life",
+      "bio": "Treino há uns 2 anos. Foco em emagrecer.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_andre9",
+      "email": "andre9@hotmail.com",
+      "name": "André Lima",
+      "username": "andre9",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=andre9",
+      "bio": "Novato, qualquer dica ajuda!",
+      "is_ghost_user": true
+    }
+  ],
+  "threads": [
+    {
+      "id": "post_1",
+      "arena_slug": "barriga-pochete-postura",
+      "user_id": "ghost_rafaela96",
+      "title": "pilates mudou tudo",
+      "content": "depois de anos tentando musculacao comecei pilates e em 3 meses a barriga sumiu sem emagrecer um kg. foi so ativacao de core msm",
+      "is_published": true,
+      "created_at": "2026-02-04T00:21:48.465Z",
+      "updated_at": "2026-02-04T00:21:48.465Z"
+    },
+    {
+      "id": "post_2",
+      "arena_slug": "barriga-pochete-postura",
+      "user_id": "ghost_fernanda73",
+      "title": "Cara, comigo foi assim… barriga que nao sai mesmo emagrecendo",
+      "content": "No meu caso… faco reeducacao alimentar ha meses, emagreci no corpo todo menos na barriga. ela fica projetada pra frente tipo pochete... isso é gordura resistente ou outra coisa? ja tentei de tudo",
+      "is_published": true,
+      "created_at": "2026-02-05T00:21:48.465Z",
+      "updated_at": "2026-02-05T00:21:48.465Z"
+    },
+    {
+      "id": "post_3",
+      "arena_slug": "barriga-pochete-postura",
+      "user_id": "ghost_pedro_fernandes",
+      "title": "lordose lombar é sempre ruim?",
+      "content": "tem gente q fala q toda lordose é problema. mas nao é uma curvatura natural da coluna? qual o limite entre normal e patologico?",
+      "is_published": true,
+      "created_at": "2026-02-06T00:21:48.465Z",
+      "updated_at": "2026-02-06T00:21:48.465Z"
+    },
+    {
+      "id": "post_4",
+      "arena_slug": "barriga-pochete-postura",
+      "user_id": "ghost_fernando_",
+      "title": "barriga so de um lado?",
+      "content": "No meu caso… gente isso é normal? minha barriga fica mais projetada de um lado. parece q meu corpo é torto. alguem ja teve isso?",
+      "is_published": true,
+      "created_at": "2026-02-07T00:21:48.465Z",
+      "updated_at": "2026-02-07T00:21:48.465Z"
+    },
+    {
+      "id": "post_5",
+      "arena_slug": "barriga-pochete-postura",
+      "user_id": "ghost_igoralmeida",
+      "title": "descobri q era postura nao gordura",
+      "content": "passei anos fazendo dieta e treino abdominal achando q minha barriga era gordura. ai descobri q era anteversao pelvica. quando corrijo a postura a barriga some",
+      "is_published": true,
+      "created_at": "2026-02-08T00:21:48.465Z",
+      "updated_at": "2026-02-08T00:21:48.465Z"
+    }
+  ],
+  "mensagens": [
+    {
+      "id": "msg_0_0",
+      "comunidade_slug": "barriga-pochete-postura",
+      "post_id": "post_1",
+      "author_id": "ghost_pedroalmeida",
+      "author_name": "Pedro Almeida",
+      "content": "Não sou especialista, mas… to na mesma situacao q vc. vamos junto!",
+      "created_at": "2026-02-04T00:34:48.465Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_0_1",
+      "comunidade_slug": "barriga-pochete-postura",
+      "post_id": "post_1",
+      "author_id": "ghost_fernando_santos",
+      "author_name": "Fernando Santos",
+      "content": "cara ja passei por isso tb... é frustrante demais mas nao desiste",
+      "created_at": "2026-02-04T00:45:48.465Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_0_2",
+      "comunidade_slug": "barriga-pochete-postura",
+      "post_id": "post_1",
+      "author_id": "ghost_joaorocha",
+      "author_name": "João Rocha",
+      "content": "no meu caso demorou uns 2 meses pra ver resultado. paciencia",
+      "created_at": "2026-02-04T01:25:48.465Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_1_0",
+      "comunidade_slug": "barriga-pochete-postura",
+      "post_id": "post_2",
+      "author_id": "ghost_tatianalima",
+      "author_name": "Tatiana Lima",
+      "content": "diminui o peso e foca na tecnica primeiro. melhor fazer bem feito do q jogar peso",
+      "created_at": "2026-02-05T00:58:48.465Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_1_1",
+      "comunidade_slug": "barriga-pochete-postura",
+      "post_id": "post_2",
+      "author_id": "ghost_gustavo43",
+      "author_name": "Gustavo Costa",
+      "content": "proteina: 1.6-2.2g/kg. mais q isso não agrega. estudos mostram",
+      "created_at": "2026-02-05T01:09:48.465Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_1_2",
+      "comunidade_slug": "barriga-pochete-postura",
+      "post_id": "post_2",
+      "author_id": "ghost_diegocosta",
+      "author_name": "Diego Costa",
+      "content": "proteina: 1.6-2.2g/kg... mais q isso não agrega. estudos mostram",
+      "created_at": "2026-02-05T01:26:48.465Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_1_3",
+      "comunidade_slug": "barriga-pochete-postura",
+      "post_id": "post_2",
+      "author_id": "ghost_thiago11",
+      "author_name": "Thiago Souza",
+      "content": "experimenta treinar em jejum. pra mim fez diferenca",
+      "created_at": "2026-02-05T01:36:48.465Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_1_4",
+      "comunidade_slug": "barriga-pochete-postura",
+      "post_id": "post_2",
+      "author_id": "ghost_carolina_fit",
+      "author_name": "Carolina Pereira",
+      "content": "Cara, comigo foi assim… eu fazia assim tb e não dava resultado. mudei pra X e melhorou",
+      "created_at": "2026-02-05T01:47:48.465Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_1_5",
+      "comunidade_slug": "barriga-pochete-postura",
+      "post_id": "post_2",
+      "author_id": "ghost_felipe92",
+      "author_name": "Felipe Silva",
+      "content": "hipertrofia funciona melhor em faixas de 8-12 reps com carga moderada",
+      "created_at": "2026-02-05T02:27:48.465Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_2_0",
+      "comunidade_slug": "barriga-pochete-postura",
+      "post_id": "post_3",
+      "author_id": "ghost_ana57",
+      "author_name": "Ana Barbosa",
+      "content": "essa crença de metabolismo lento é mito. CICO funciona pra todo mundo",
+      "created_at": "2026-02-06T00:55:48.465Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_2_1",
+      "comunidade_slug": "barriga-pochete-postura",
+      "post_id": "post_3",
+      "author_id": "ghost_diego96",
+      "author_name": "Diego Souza",
+      "content": "deficit calorico é oq importa no final. pode comer carbo a noite sim",
+      "created_at": "2026-02-06T01:31:48.465Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_2_2",
+      "comunidade_slug": "barriga-pochete-postura",
+      "post_id": "post_3",
+      "author_id": "ghost_fernanda73",
+      "author_name": "Fernanda Santos",
+      "content": "proteina: 1.6-2.2g/kg. mais q isso nao agrega. estudos mostram",
+      "created_at": "2026-02-06T01:59:48.465Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_2_3",
+      "comunidade_slug": "barriga-pochete-postura",
+      "post_id": "post_3",
+      "author_id": "ghost_carolinacosta",
+      "author_name": "Carolina Costa",
+      "content": "tem evidencia disso? pq tudo q eu li fala o contrario",
+      "created_at": "2026-02-06T02:30:48.465Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_2_4",
+      "comunidade_slug": "barriga-pochete-postura",
+      "post_id": "post_3",
+      "author_id": "ghost_pedroalmeida",
+      "author_name": "Pedro Almeida",
+      "content": "deficit calorico é oq importa no final. pode comer carbo a noite sim",
+      "created_at": "2026-02-06T03:14:48.465Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_2_5",
+      "comunidade_slug": "barriga-pochete-postura",
+      "post_id": "post_3",
+      "author_id": "ghost_carlos15",
+      "author_name": "Carlos Fernandes",
+      "content": "discordo. no meu caso foi totalmente diferente",
+      "created_at": "2026-02-06T03:53:48.465Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_2_6",
+      "comunidade_slug": "barriga-pochete-postura",
+      "post_id": "post_3",
+      "author_id": "ia_facilitadora",
+      "author_name": "NutriFit Coach",
+      "content": "Ponto importante. Gluteo fraco é uma das causas mais comuns de anteversao pelvica. Quem aqui ja fortaleceu gluteo e notou diferenca na barriga?",
+      "created_at": "2026-02-06T04:20:48.465Z",
+      "is_ia": true
+    },
+    {
+      "id": "msg_3_0",
+      "comunidade_slug": "barriga-pochete-postura",
+      "post_id": "post_4",
+      "author_id": "ghost_sabrinamartins",
+      "author_name": "Sabrina Martins",
+      "content": "eu fazia assim tb e não dava resultado. mudei pra X e melhorou",
+      "created_at": "2026-02-07T00:59:48.465Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_3_1",
+      "comunidade_slug": "barriga-pochete-postura",
+      "post_id": "post_4",
+      "author_id": "ghost_joaorodrigues",
+      "author_name": "João Rodrigues",
+      "content": "Cara, comigo foi assim… diminui o peso e foca na tecnica primeiro. melhor fazer bem feito do q jogar peso",
+      "created_at": "2026-02-07T01:43:48.465Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_3_2",
+      "comunidade_slug": "barriga-pochete-postura",
+      "post_id": "post_4",
+      "author_id": "ghost_amanda_treino",
+      "author_name": "Amanda Costa",
+      "content": "experimenta treinar em jejum. pra mim fez diferenca",
+      "created_at": "2026-02-07T02:11:48.465Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_4_0",
+      "comunidade_slug": "barriga-pochete-postura",
+      "post_id": "post_5",
+      "author_id": "ghost_joaorodrigues",
+      "author_name": "João Rodrigues",
+      "content": "comigo tb foi assim. levou uns 3 meses pra pegar o jeito",
+      "created_at": "2026-02-08T00:43:48.465Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_4_1",
+      "comunidade_slug": "barriga-pochete-postura",
+      "post_id": "post_5",
+      "author_id": "ghost_henrique4",
+      "author_name": "Henrique Gomes",
+      "content": "no meu caso demorou uns 2 meses pra ver resultado. paciencia",
+      "created_at": "2026-02-08T00:54:48.465Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_4_2",
+      "comunidade_slug": "barriga-pochete-postura",
+      "post_id": "post_5",
+      "author_id": "ghost_gustavo_ferreira",
+      "author_name": "Gustavo Ferreira",
+      "content": "cara ja passei por isso tb... é frustrante demais mas nao desiste",
+      "created_at": "2026-02-08T01:13:48.465Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_4_3",
+      "comunidade_slug": "barriga-pochete-postura",
+      "post_id": "post_5",
+      "author_id": "ghost_fabio_life",
+      "author_name": "Fabio Dias",
+      "content": "no meu caso demorou uns 2 meses pra ver resultado. paciencia",
+      "created_at": "2026-02-08T01:50:48.465Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_4_4",
+      "comunidade_slug": "barriga-pochete-postura",
+      "post_id": "post_5",
+      "author_id": "ghost_felipe92",
+      "author_name": "Felipe Silva",
+      "content": "no meu caso demorou uns 2 meses pra ver resultado. paciencia",
+      "created_at": "2026-02-08T02:19:48.465Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_4_5",
+      "comunidade_slug": "barriga-pochete-postura",
+      "post_id": "post_5",
+      "author_id": "ghost_andre9",
+      "author_name": "André Lima",
+      "content": "normal isso no começo. depois melhora",
+      "created_at": "2026-02-08T02:30:48.465Z",
+      "is_ia": false
+    }
+  ]
+}

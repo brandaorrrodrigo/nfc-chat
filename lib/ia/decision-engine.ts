@@ -53,6 +53,14 @@ import {
   type InterventionRecord,
 } from './intervention-tracker';
 
+import {
+  naturalizarTexto,
+  validarNaturalidade,
+  selecionarPerfilAleatorio,
+  obterPerfilNaturalizacao,
+  type NaturalizacaoOptions,
+} from './language-naturalizer';
+
 // ========================================
 // TIPOS
 // ========================================
@@ -564,10 +572,30 @@ export async function decidirEResponder(
   }
 
   // PASSO 6: Formatar resposta final com follow-up
-  const respostaFinal = formatarRespostaComFollowUp(
+  const respostaComFollowUp = formatarRespostaComFollowUp(
     respostaBase.texto,
     followUpQuestion
   );
+
+  // PASSO 6.5: NATURALIZAR TEXTO (Nova integração!)
+  // Aplicar naturalização baseada no dicionário de linguagem humana
+  const perfilSelecionado = selecionarPerfilAleatorio();
+  const opcoesNaturalizacao = obterPerfilNaturalizacao(perfilSelecionado);
+
+  // Naturalizar a resposta completa
+  const respostaFinal = naturalizarTexto(respostaComFollowUp, opcoesNaturalizacao);
+
+  // Validar naturalidade (log para debug em desenvolvimento)
+  if (process.env.NODE_ENV === 'development') {
+    const validacao = validarNaturalidade(respostaFinal);
+    if (!validacao.pareceHumano) {
+      console.warn('[IA] Resposta não passou na validação de naturalidade:', {
+        score: validacao.score,
+        problemas: validacao.problemas,
+        perfil: perfilSelecionado,
+      });
+    }
+  }
 
   // PASSO 7: Salvar intervencao no banco (se configurado)
   let interventionId: string | undefined;

@@ -9,7 +9,10 @@
       "Bash(git checkout:*)",
       "Bash(git commit:*)",
       "Bash(npm install:*)",
-      "Bash(npx prisma:*)"
+      "Bash(npx prisma:*)",
+      "Bash(DRY_RUN=true npx tsx:*)",
+      "Bash(npx tsx:*)",
+      "Bash(ls:*)"
     ]
   }
 }

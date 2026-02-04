@@ -12,6 +12,16 @@
  * - NAO vender diretamente
  * - NAO jogar multiplos links sem contexto
  * - Parecer especialista presente no debate
+ *
+ * LINGUAGEM NATURAL (v2.0):
+ * - Todas as respostas passam por naturalização automática
+ * - Sistema baseado em: DICIONARIO_LINGUAGEM_HUMANA.md
+ * - Distribuição de perfis: 60% emocional, 25% prático, 10% técnico, 5% avançado
+ * - Validação automática de naturalidade (score mínimo: 60/100)
+ * - Regra de ouro: "Se parecer bonito demais, está errado"
+ *
+ * @see D:\NUTRIFITCOACH_MASTER\nfc-comunidades\DICIONARIO_LINGUAGEM_HUMANA.md
+ * @see D:\NUTRIFITCOACH_MASTER\nfc-comunidades\lib\ia\language-naturalizer.ts
  */
 
 // ========================================

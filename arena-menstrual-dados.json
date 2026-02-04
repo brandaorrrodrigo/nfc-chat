@@ -1,0 +1,585 @@
+{
+  "arena": {
+    "nome": "Dor Menstrual",
+    "slug": "lipedema-dor-menstrual",
+    "categoria": "menstrual"
+  },
+  "ghostUsers": [
+    {
+      "id": "ghost_andre_saude",
+      "email": "andre_saude@yahoo.com.br",
+      "name": "André Alves",
+      "username": "andre_saude",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=andre_saude",
+      "bio": "Treino há uns 2 anos. Foco em perder barriga.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_henrique0",
+      "email": "henrique0@yahoo.com.br",
+      "name": "Henrique Lima",
+      "username": "henrique0",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=henrique0",
+      "bio": "Intermediário buscando melhorar postura.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_gabriela_rodrigues",
+      "email": "gabriela_rodrigues@hotmail.com",
+      "name": "Gabriela Rodrigues",
+      "username": "gabriela_rodrigues",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=gabriela_rodrigues",
+      "bio": "Novato, qualquer dica ajuda!",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_priscila41",
+      "email": "priscila41@gmail.com",
+      "name": "Priscila Barbosa",
+      "username": "priscila41",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=priscila41",
+      "bio": "Intermediário buscando melhorar condicionamento.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_gabrielcastro",
+      "email": "gabrielcastro@outlook.com",
+      "name": "Gabriel Castro",
+      "username": "gabrielcastro",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=gabrielcastro",
+      "bio": "Começando agora. Objetivo: aumentar força.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_rafael_soares",
+      "email": "rafael_soares@yahoo.com.br",
+      "name": "Rafael Soares",
+      "username": "rafael_soares",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=rafael_soares",
+      "bio": "Novato, qualquer dica ajuda!",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_bruno_dias",
+      "email": "bruno_dias@gmail.com",
+      "name": "Bruno Dias",
+      "username": "bruno_dias",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=bruno_dias",
+      "bio": "Treino regular, ainda aprendendo.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_amanda_rodrigues",
+      "email": "amanda_rodrigues@hotmail.com",
+      "name": "Amanda Rodrigues",
+      "username": "amanda_rodrigues",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=amanda_rodrigues",
+      "bio": "Novato, qualquer dica ajuda!",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_rodrigo_santos",
+      "email": "rodrigo_santos@yahoo.com.br",
+      "name": "Rodrigo Santos",
+      "username": "rodrigo_santos",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=rodrigo_santos",
+      "bio": "Apaixonado por treino.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_henrique_almeida",
+      "email": "henrique_almeida@hotmail.com",
+      "name": "Henrique Almeida",
+      "username": "henrique_almeida",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=henrique_almeida",
+      "bio": "Iniciante tentando correr melhor.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_vanessabarbosa",
+      "email": "vanessabarbosa@yahoo.com.br",
+      "name": "Vanessa Barbosa",
+      "username": "vanessabarbosa",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=vanessabarbosa",
+      "bio": "Novato, qualquer dica ajuda!",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_rafaela22",
+      "email": "rafaela22@yahoo.com.br",
+      "name": "Rafaela Fernandes",
+      "username": "rafaela22",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=rafaela22",
+      "bio": "Baseio tudo em evidência.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_carlossilva",
+      "email": "carlossilva@hotmail.com",
+      "name": "Carlos Silva",
+      "username": "carlossilva",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=carlossilva",
+      "bio": "Novato, qualquer dica ajuda!",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_vitorferreira",
+      "email": "vitorferreira@gmail.com",
+      "name": "Vitor Ferreira",
+      "username": "vitorferreira",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=vitorferreira",
+      "bio": "Curtindo o processo.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_tatiana_ferreira",
+      "email": "tatiana_ferreira@outlook.com",
+      "name": "Tatiana Ferreira",
+      "username": "tatiana_ferreira",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=tatiana_ferreira",
+      "bio": "Cético de modinha.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_carolina_vieira",
+      "email": "carolina_vieira@yahoo.com.br",
+      "name": "Carolina Vieira",
+      "username": "carolina_vieira",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=carolina_vieira",
+      "bio": "Voltando a treinar depois de muito tempo parado.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_felipe_martins",
+      "email": "felipe_martins@hotmail.com",
+      "name": "Felipe Martins",
+      "username": "felipe_martins",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=felipe_martins",
+      "bio": "Sempre buscando evolução.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_rafaela63",
+      "email": "rafaela63@gmail.com",
+      "name": "Rafaela Oliveira",
+      "username": "rafaela63",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=rafaela63",
+      "bio": "Novato, qualquer dica ajuda!",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_andre_active",
+      "email": "andre_active@hotmail.com",
+      "name": "André Souza",
+      "username": "andre_active",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=andre_active",
+      "bio": "Começando agora. Objetivo: definir.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_fernando_alves",
+      "email": "fernando_alves@outlook.com",
+      "name": "Fernando Alves",
+      "username": "fernando_alves",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=fernando_alves",
+      "bio": "Começando agora. Objetivo: definir.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_felipe45",
+      "email": "felipe45@outlook.com",
+      "name": "Felipe Barbosa",
+      "username": "felipe45",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=felipe45",
+      "bio": "Começando agora. Objetivo: perder barriga.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_marianacastro",
+      "email": "marianacastro@hotmail.com",
+      "name": "Mariana Castro",
+      "username": "marianacastro",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=marianacastro",
+      "bio": "Começando agora. Objetivo: melhorar condicionamento.",
+      "is_ghost_user": true
+    },
+    {
+      "id": "ghost_leandro_",
+      "email": "leandro_@yahoo.com.br",
+      "name": "Leandro Costa",
+      "username": "leandro_",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=leandro_",
+      "bio": "Baseio tudo em evidência.",
+      "is_ghost_user": true
+    }
+  ],
+  "threads": [
+    {
+      "id": "post_menstrual_1",
+      "arena_slug": "lipedema-dor-menstrual",
+      "user_id": "ghost_andre_saude",
+      "title": "ciclicidade da dor é diagnostico",
+      "content": "a dor cíclica (que piora na menstruação) pode ser usada como critério de diagnóstico de lipedema? ou é só sintoma comum?",
+      "is_published": true,
+      "created_at": "2026-02-04T10:23:36.746Z"
+    },
+    {
+      "id": "post_menstrual_2",
+      "arena_slug": "lipedema-dor-menstrual",
+      "user_id": "ghost_henrique0",
+      "title": "anticoncepcional ajuda ou piora?",
+      "content": "tomo anticoncepcional e não sei se ajuda ou piora o lipedema. alguém tem experiência com isso?",
+      "is_published": true,
+      "created_at": "2026-02-05T10:23:36.746Z"
+    },
+    {
+      "id": "post_menstrual_3",
+      "arena_slug": "lipedema-dor-menstrual",
+      "user_id": "ghost_carlossilva",
+      "title": "Cara, comigo foi assim… lipedema piora com hormonios?",
+      "content": "vi gente falando que hormônio piora lipedema. é verdade? minha dor sempre piora na menstruação",
+      "is_published": true,
+      "created_at": "2026-02-06T10:23:36.746Z"
+    },
+    {
+      "id": "post_menstrual_4",
+      "arena_slug": "lipedema-dor-menstrual",
+      "user_id": "ghost_henrique0",
+      "title": "anticoncepcional ajuda ou piora?",
+      "content": "tomo anticoncepcional e não sei se ajuda ou piora o lipedema. alguém tem experiência com isso?",
+      "is_published": true,
+      "created_at": "2026-02-07T10:23:36.746Z"
+    },
+    {
+      "id": "post_menstrual_5",
+      "arena_slug": "lipedema-dor-menstrual",
+      "user_id": "ghost_felipe45",
+      "title": "dor nos nodulos antes ou durante menstruacao?",
+      "content": "Já passei por isso… a dor piora antes da menstruação ou durante? pra mim é sempre uns 3 dias antes que fica insuportável",
+      "is_published": true,
+      "created_at": "2026-02-08T10:23:36.746Z"
+    }
+  ],
+  "mensagens": [
+    {
+      "id": "msg_menstrual_0_0",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_1",
+      "author_id": "ghost_henrique0",
+      "author_name": "Henrique Lima",
+      "content": "hipertrofia funciona melhor em faixas de 8-12 reps com carga moderada",
+      "created_at": "2026-02-04T10:40:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_0_1",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_1",
+      "author_id": "ghost_gabriela_rodrigues",
+      "author_name": "Gabriela Rodrigues",
+      "content": "Cara, comigo foi assim… proteina: 1.6-2.2g/kg. mais q isso não agrega. estudos mostram",
+      "created_at": "2026-02-04T11:17:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_0_2",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_1",
+      "author_id": "ghost_priscila41",
+      "author_name": "Priscila Barbosa",
+      "content": "eu fazia assim tb e não dava resultado. mudei pra X e melhorou",
+      "created_at": "2026-02-04T11:53:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_0_3",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_1",
+      "author_id": "ghost_gabrielcastro",
+      "author_name": "Gabriel Castro",
+      "content": "No meu caso… diminui o peso e foca na tecnica primeiro. melhor fazer bem feito do q jogar peso",
+      "created_at": "2026-02-04T12:02:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_0_4",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_1",
+      "author_id": "ghost_rafael_soares",
+      "author_name": "Rafael Soares",
+      "content": "diminui o peso e foca na tecnica primeiro. melhor fazer bem feito do q jogar peso",
+      "created_at": "2026-02-04T12:19:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_0_5",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_1",
+      "author_id": "ghost_bruno_dias",
+      "author_name": "Bruno Dias",
+      "content": "diminui o peso e foca na tecnica primeiro. melhor fazer bem feito do q jogar peso",
+      "created_at": "2026-02-04T12:57:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_1_0",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_2",
+      "author_id": "ghost_amanda_rodrigues",
+      "author_name": "Amanda Rodrigues",
+      "content": "No meu caso… proteina: 1.6-2.2g/kg. mais q isso não agrega. estudos mostram",
+      "created_at": "2026-02-05T11:06:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_1_1",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_2",
+      "author_id": "ghost_rodrigo_santos",
+      "author_name": "Rodrigo Santos",
+      "content": "eu fazia assim tb e não dava resultado. mudei pra X e melhorou",
+      "created_at": "2026-02-05T11:50:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_1_2",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_2",
+      "author_id": "ghost_henrique_almeida",
+      "author_name": "Henrique Almeida",
+      "content": "diminui o peso e foca na tecnica primeiro. melhor fazer bem feito do q jogar peso",
+      "created_at": "2026-02-05T12:35:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_1_3",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_2",
+      "author_id": "ghost_vanessabarbosa",
+      "author_name": "Vanessa Barbosa",
+      "content": "Eu achava que era frescura, mas… proteina: 1.6-2.2g/kg. mais q isso não agrega. estudos mostram",
+      "created_at": "2026-02-05T13:00:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_1_4",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_2",
+      "author_id": "ghost_vanessabarbosa",
+      "author_name": "Vanessa Barbosa",
+      "content": "Já passei por isso… experimenta treinar em jejum. pra mim fez diferenca",
+      "created_at": "2026-02-05T13:07:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_1_5",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_2",
+      "author_id": "ghost_rafaela22",
+      "author_name": "Rafaela Fernandes",
+      "content": "deficit calorico é oq importa no final. pode comer carbo a noite sim",
+      "created_at": "2026-02-05T13:35:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_2_0",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_3",
+      "author_id": "ghost_bruno_dias",
+      "author_name": "Bruno Dias",
+      "content": "passei anos fazendo errado... quando corrigi a tecnica mudou tudo",
+      "created_at": "2026-02-06T10:33:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_2_1",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_3",
+      "author_id": "ghost_vitorferreira",
+      "author_name": "Vitor Ferreira",
+      "content": "experimenta treinar em jejum. pra mim fez diferenca",
+      "created_at": "2026-02-06T10:54:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_2_2",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_3",
+      "author_id": "ghost_tatiana_ferreira",
+      "author_name": "Tatiana Ferreira",
+      "content": "tenta aumentar a proteina pra 1.6-2g por kg. comigo funcionou",
+      "created_at": "2026-02-06T11:24:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_2_3",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_3",
+      "author_id": "ghost_carolina_vieira",
+      "author_name": "Carolina Vieira",
+      "content": "cara ja passei por isso tb... é frustrante demais mas nao desiste",
+      "created_at": "2026-02-06T11:45:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_2_4",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_3",
+      "author_id": "ghost_felipe_martins",
+      "author_name": "Felipe Martins",
+      "content": "cara ja passei por isso tb... é frustrante demais mas nao desiste",
+      "created_at": "2026-02-06T12:13:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_2_5",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_3",
+      "author_id": "ghost_rafaela63",
+      "author_name": "Rafaela Oliveira",
+      "content": "Não sou especialista, mas… comigo tb foi assim. levou uns 3 meses pra pegar o jeito",
+      "created_at": "2026-02-06T12:18:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_3_0",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_4",
+      "author_id": "ghost_andre_active",
+      "author_name": "André Souza",
+      "content": "proteina: 1.6-2.2g/kg. mais q isso nao agrega. estudos mostram",
+      "created_at": "2026-02-07T10:59:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_3_1",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_4",
+      "author_id": "ghost_rafaela22",
+      "author_name": "Rafaela Fernandes",
+      "content": "tem evidencia disso? pq tudo q eu li fala o contrario",
+      "created_at": "2026-02-07T11:11:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_3_2",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_4",
+      "author_id": "ghost_fernando_alves",
+      "author_name": "Fernando Alves",
+      "content": "proteina: 1.6-2.2g/kg. mais q isso não agrega. estudos mostram",
+      "created_at": "2026-02-07T11:35:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_3_3",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_4",
+      "author_id": "ghost_felipe45",
+      "author_name": "Felipe Barbosa",
+      "content": "No meu caso… hipertrofia funciona melhor em faixas de 8-12 reps com carga moderada",
+      "created_at": "2026-02-07T12:05:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_3_4",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_4",
+      "author_id": "ghost_marianacastro",
+      "author_name": "Mariana Castro",
+      "content": "discordo. no meu caso foi totalmente diferente",
+      "created_at": "2026-02-07T12:46:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_3_5",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_4",
+      "author_id": "ghost_fernando_alves",
+      "author_name": "Fernando Alves",
+      "content": "proteina: 1.6-2.2g/kg. mais q isso não agrega. estudos mostram",
+      "created_at": "2026-02-07T12:51:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_3_6",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_4",
+      "author_id": "ghost_leandro_",
+      "author_name": "Leandro Costa",
+      "content": "proteina: 1.6-2.2g/kg. mais q isso não agrega. estudos mostram",
+      "created_at": "2026-02-07T12:59:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_4_0",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_5",
+      "author_id": "ghost_fernando_alves",
+      "author_name": "Fernando Alves",
+      "content": "proteina: 1.6-2.2g/kg. mais q isso não agrega. estudos mostram",
+      "created_at": "2026-02-08T10:49:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_4_1",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_5",
+      "author_id": "ghost_henrique_almeida",
+      "author_name": "Henrique Almeida",
+      "content": "hipertrofia funciona melhor em faixas de 8-12 reps com carga moderada",
+      "created_at": "2026-02-08T10:55:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_4_2",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_5",
+      "author_id": "ghost_gabriela_rodrigues",
+      "author_name": "Gabriela Rodrigues",
+      "content": "Cara, comigo foi assim… eu fazia assim tb e não dava resultado. mudei pra X e melhorou",
+      "created_at": "2026-02-08T11:19:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_4_3",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_5",
+      "author_id": "ghost_tatiana_ferreira",
+      "author_name": "Tatiana Ferreira",
+      "content": "no meu caso demorou uns 2 meses pra ver resultado. paciencia",
+      "created_at": "2026-02-08T11:43:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_4_4",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_5",
+      "author_id": "ghost_rafaela22",
+      "author_name": "Rafaela Fernandes",
+      "content": "tenta aumentar a proteina pra 1.6-2g por kg. comigo funcionou",
+      "created_at": "2026-02-08T12:15:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_4_5",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_5",
+      "author_id": "ghost_henrique_almeida",
+      "author_name": "Henrique Almeida",
+      "content": "eu fazia assim tb e não dava resultado. mudei pra X e melhorou",
+      "created_at": "2026-02-08T12:35:36.746Z",
+      "is_ia": false
+    },
+    {
+      "id": "msg_menstrual_4_6",
+      "comunidade_slug": "lipedema-dor-menstrual",
+      "post_id": "post_menstrual_5",
+      "author_id": "ia_facilitadora",
+      "author_name": "NutriFit Coach",
+      "content": "Dor ciclica nao é fraqueza. É fisiologia. Os hormonios realmente afetam o lipedema. O que mais te ajuda nesses dias: descanso ou adaptacao do treino?",
+      "created_at": "2026-02-08T12:51:36.746Z",
+      "is_ia": true
+    }
+  ]
+}
