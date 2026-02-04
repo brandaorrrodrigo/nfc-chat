@@ -7,7 +7,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, ThumbsUp, ThumbsDown, Eye, Clock, User, Loader2, CheckCircle } from 'lucide-react';
+import { ArrowLeft, ThumbsUp, ThumbsDown, Eye, Clock, User, Loader2, CheckCircle, Bot, Target, Play, Star } from 'lucide-react';
 import VideoPlayer from '@/components/nfv/VideoPlayer';
 import MovementPatternBadge from '@/components/nfv/MovementPatternBadge';
 
@@ -91,8 +91,114 @@ export default function VideoDetailPage() {
     });
   };
 
+  const getScoreColor = (score: number) => {
+    if (score >= 8) return 'text-green-400';
+    if (score >= 6) return 'text-yellow-400';
+    return 'text-red-400';
+  };
+
+  const getScoreBg = (score: number) => {
+    if (score >= 8) return 'bg-green-500/20 border-green-500/30';
+    if (score >= 6) return 'bg-yellow-500/20 border-yellow-500/30';
+    return 'bg-red-500/20 border-red-500/30';
+  };
+
   const renderPublishedAnalysis = (data: Record<string, unknown>) => {
-    // Renderiza os campos da analise publicada
+    // Verificar se é análise do Ollama Vision (tem overall_score)
+    const isVisionAnalysis = 'overall_score' in data || 'frame_analyses' in data;
+
+    if (isVisionAnalysis) {
+      const score = (data.overall_score as number) || 0;
+      const summary = data.summary as string;
+      const recommendations = data.recommendations as string[] || [];
+      const frameAnalyses = data.frame_analyses as Array<{
+        frame: number;
+        timestamp: string;
+        analysis: string;
+        score: number;
+      }> || [];
+      const model = data.model as string || 'IA';
+      const framesAnalyzed = (data.frames_analyzed as number) || frameAnalyses.length;
+
+      return (
+        <div className="space-y-6">
+          {/* Score Card */}
+          <div className={`border rounded-xl p-5 ${getScoreBg(score)}`}>
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2 text-sm text-zinc-400 mb-1">
+                  <Bot className="w-4 h-4" />
+                  Score da Analise
+                </div>
+                <div className={`text-5xl font-bold ${getScoreColor(score)}`}>
+                  {score.toFixed(1)}
+                  <span className="text-2xl text-zinc-500">/10</span>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-xs text-zinc-500">Modelo</div>
+                <div className="text-sm text-zinc-400">{model}</div>
+                <div className="text-xs text-zinc-500 mt-2">Frames</div>
+                <div className="text-sm text-zinc-400">{framesAnalyzed}</div>
+              </div>
+            </div>
+
+            {summary && (
+              <p className="mt-4 text-sm text-zinc-300 border-t border-zinc-700/50 pt-4">
+                {summary}
+              </p>
+            )}
+          </div>
+
+          {/* Recommendations */}
+          {recommendations.length > 0 && (
+            <div>
+              <div className="flex items-center gap-2 text-sm font-medium text-white mb-3">
+                <Target className="w-4 h-4 text-purple-400" />
+                Recomendacoes
+              </div>
+              <ul className="space-y-2">
+                {recommendations.map((rec, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-zinc-300">
+                    <Star className="w-4 h-4 text-yellow-400 flex-shrink-0 mt-0.5" />
+                    {rec}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Frame by Frame Analysis */}
+          {frameAnalyses.length > 0 && (
+            <div>
+              <div className="flex items-center gap-2 text-sm font-medium text-white mb-4">
+                <Play className="w-4 h-4 text-cyan-400" />
+                Analise Frame a Frame
+              </div>
+              <div className="space-y-4">
+                {frameAnalyses.map((frame, i) => (
+                  <div key={i} className="border-l-2 border-zinc-700 pl-4">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="text-xs text-zinc-500">
+                        Frame {frame.frame} ({frame.timestamp})
+                      </span>
+                      <span className={`text-sm font-semibold ${getScoreColor(frame.score)}`}>
+                        {frame.score}/10
+                      </span>
+                    </div>
+                    <p className="text-sm text-zinc-400">
+                      {frame.analysis}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // Fallback: formato antigo
     const sections = [
       { key: 'key_observations', label: 'Observacoes Principais' },
       { key: 'suggestions', label: 'Sugestoes' },
