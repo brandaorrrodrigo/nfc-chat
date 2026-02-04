@@ -3,11 +3,12 @@
 /**
  * Providers - Client Component Wrapper
  *
- * SessionProvider + UniversalHeader global
+ * SessionProvider + ComunidadesAuthProvider + UniversalHeader global
  */
 
 import React from 'react';
 import { SessionProvider, useSession, signOut } from 'next-auth/react';
+import { ComunidadesAuthProvider } from './components/comunidades/ComunidadesAuthContext';
 import UniversalHeader from '@/components/shared/UniversalHeader';
 import type { UniversalUser } from '@/components/shared/UniversalHeader';
 
@@ -43,8 +44,10 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       refetchInterval={10 * 60}
       refetchOnWindowFocus={true}
     >
-      <HeaderWithSession />
-      {children}
+      <ComunidadesAuthProvider>
+        <HeaderWithSession />
+        {children}
+      </ComunidadesAuthProvider>
     </SessionProvider>
   );
 }

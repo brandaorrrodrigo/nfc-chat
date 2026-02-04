@@ -31,7 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen bg-zinc-950 text-white">
+      <body className="min-h-screen bg-zinc-950 text-white pt-16">
         <Providers>
           {children}
         </Providers>
