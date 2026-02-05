@@ -204,6 +204,11 @@ model Post {
   userId          String
   content         String    @db.Text
 
+  // Avatar (NUNCA gerado pelo LLM - atribuído pelo backend)
+  avatarId        String?
+  avatarImg       String?   // Path para imagem
+  avatarInitialsColor String? // Cor das iniciais (fallback)
+
   // Status
   isPublished     Boolean   @default(true)
   isPinned        Boolean   @default(false)
@@ -237,6 +242,7 @@ model Post {
 
   @@index([arenaId])
   @@index([userId])
+  @@index([avatarId])
   @@index([isUnderReview])
   @@index([createdAt])
   @@index([isPublished])
@@ -247,6 +253,11 @@ model Comment {
   postId          String
   userId          String
   content         String    @db.Text
+
+  // Avatar (NUNCA gerado pelo LLM - atribuído pelo backend)
+  avatarId        String?
+  avatarImg       String?   // Path para imagem
+  avatarInitialsColor String? // Cor das iniciais (fallback)
 
   // Status
   isAIResponse    Boolean   @default(false)
@@ -537,4 +548,54 @@ model DailyMetrics {
   createdAt       DateTime @default(now())
 
   @@index([date])
+}
+
+// ============================================
+// JUIZ BIOMÉTRICO - AVALIAÇÃO VISUAL
+// ============================================
+
+model BiometricBaseline {
+  id                String   @id @default(cuid())
+  user_id           String
+
+  // Análise técnica completa
+  analysis_text     String   @db.Text
+
+  // Metadados das imagens (URLs ou paths)
+  images_metadata   Json     // { frontal, lateral, posterior }
+
+  // Contexto do protocolo no momento da avaliação
+  protocol_context  String?  @db.Text
+
+  // Relações
+  comparisons       BiometricComparison[]
+
+  created_at        DateTime @default(now())
+
+  @@index([user_id])
+  @@index([created_at])
+  @@map("biometric_baselines")
+}
+
+model BiometricComparison {
+  id                String            @id @default(cuid())
+  baseline_id       String
+  baseline          BiometricBaseline @relation(fields: [baseline_id], references: [id], onDelete: Cascade)
+  user_id           String
+
+  // Análise comparativa técnica
+  analysis_text     String            @db.Text
+
+  // Metadados das novas imagens
+  images_metadata   Json              // { frontal, lateral, posterior }
+
+  // Contexto do protocolo na reavaliação
+  protocol_context  String?           @db.Text
+
+  created_at        DateTime          @default(now())
+
+  @@index([baseline_id])
+  @@index([user_id])
+  @@index([created_at])
+  @@map("biometric_comparisons")
 }
