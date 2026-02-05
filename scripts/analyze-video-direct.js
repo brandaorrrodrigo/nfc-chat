@@ -172,6 +172,167 @@ function formatChunksForPrompt(chunks) {
   }).join('\n\n');
 }
 
+// ============================================================================
+// EXTRAÇÃO DE PONTOS CRÍTICOS E RECOMENDAÇÕES
+// ============================================================================
+
+const EXERCISE_DATABASE = {
+  'valgo': {
+    severidade: 'CRITICA',
+    exercicios: [
+      { nome: 'Clamshell com Banda Elástica', volume: '3x15', frequencia: '5x/semana' },
+      { nome: 'Side Plank com Abdução', volume: '3x30s', frequencia: '3x/semana' },
+      { nome: 'Monster Walk Lateral', volume: '3x20 passos', frequencia: 'Diário' }
+    ],
+    ajustes_tecnicos: [
+      'Adicionar banda elástica nos joelhos durante agachamento',
+      'Reduzir carga em 20-30% e focar em execução',
+      'Comando: "Empurra joelhos para FORA"'
+    ],
+    tempo_correcao: '4-6 semanas'
+  },
+  'anteriorização': {
+    severidade: 'MODERADA',
+    exercicios: [
+      { nome: 'Alongamento de Panturrilha', volume: '3x30s', frequencia: '2x/dia' },
+      { nome: 'Goblet Squat com Pausa', volume: '4x8', frequencia: '3x/semana' }
+    ],
+    ajustes_tecnicos: [
+      'Elevar calcanhares 2-3cm temporariamente',
+      'Foco em "sentar para trás"'
+    ],
+    tempo_correcao: '2-4 semanas'
+  },
+  'lordose': {
+    severidade: 'MODERADA',
+    exercicios: [
+      { nome: 'Dead Bug', volume: '3x10', frequencia: '4x/semana' },
+      { nome: 'Prancha com Retroversão', volume: '3x30s', frequencia: '4x/semana' }
+    ],
+    ajustes_tecnicos: [
+      'Contrair abdômen ANTES de iniciar descida',
+      'Imaginar "meter o cóccix para dentro"'
+    ],
+    tempo_correcao: '3-4 semanas'
+  },
+  'coluna': {
+    severidade: 'MODERADA',
+    exercicios: [
+      { nome: 'Bird Dog', volume: '3x10 cada lado', frequencia: '4x/semana' },
+      { nome: 'McGill Curl-Up', volume: '3x10', frequencia: '4x/semana' }
+    ],
+    ajustes_tecnicos: [
+      'Ativar core antes de qualquer movimento',
+      'Manter coluna neutra em todas as fases'
+    ],
+    tempo_correcao: '4-6 semanas'
+  },
+  'joelho': {
+    severidade: 'MODERADA',
+    exercicios: [
+      { nome: 'Terminal Knee Extension', volume: '3x15', frequencia: '4x/semana' },
+      { nome: 'Step Down Controlado', volume: '3x10 cada lado', frequencia: '3x/semana' }
+    ],
+    ajustes_tecnicos: [
+      'Manter joelhos alinhados com 2º dedo do pé',
+      'Evitar bloqueio agressivo no topo'
+    ],
+    tempo_correcao: '3-5 semanas'
+  }
+};
+
+function extractCriticalPoints(frameAnalyses) {
+  const deviationsMap = new Map();
+
+  for (const frame of frameAnalyses) {
+    const desvios = frame.desvios_criticos || [];
+
+    // Adicionar desvios explícitos
+    for (const desvio of desvios) {
+      const key = desvio.toLowerCase().replace(/[~°\d]/g, '').trim();
+      if (!deviationsMap.has(key)) {
+        deviationsMap.set(key, { nome: desvio, frames: [], count: 0 });
+      }
+      const dev = deviationsMap.get(key);
+      dev.frames.push(frame.frameNumber);
+      dev.count++;
+    }
+
+    // Adicionar desvios de alinhamento
+    if (frame.alinhamentos?.joelho_esq_valgo || frame.alinhamentos?.joelho_dir_valgo) {
+      const key = 'valgo de joelho';
+      if (!deviationsMap.has(key)) {
+        deviationsMap.set(key, { nome: 'Valgo dinâmico de joelho', frames: [], count: 0 });
+      }
+      deviationsMap.get(key).frames.push(frame.frameNumber);
+      deviationsMap.get(key).count++;
+    }
+
+    if (frame.alinhamentos?.coluna_neutra === false) {
+      const key = 'perda coluna neutra';
+      if (!deviationsMap.has(key)) {
+        deviationsMap.set(key, { nome: 'Perda de neutralidade da coluna', frames: [], count: 0 });
+      }
+      deviationsMap.get(key).frames.push(frame.frameNumber);
+      deviationsMap.get(key).count++;
+    }
+
+    if (frame.alinhamentos?.joelhos_sobre_pes === false) {
+      const key = 'desalinhamento joelhos';
+      if (!deviationsMap.has(key)) {
+        deviationsMap.set(key, { nome: 'Joelhos desalinhados sobre os pés', frames: [], count: 0 });
+      }
+      deviationsMap.get(key).frames.push(frame.frameNumber);
+      deviationsMap.get(key).count++;
+    }
+  }
+
+  // Converter para array e classificar severidade
+  return Array.from(deviationsMap.values()).map(dev => {
+    const frequency = dev.count / frameAnalyses.length;
+    return {
+      nome: dev.nome,
+      severidade: frequency >= 0.6 ? 'CRITICA' : frequency >= 0.3 ? 'MODERADA' : 'LEVE',
+      frames_afetados: [...new Set(dev.frames)],
+      frequencia: `${(frequency * 100).toFixed(0)}% dos frames`
+    };
+  }).sort((a, b) => {
+    const order = { 'CRITICA': 0, 'MODERADA': 1, 'LEVE': 2 };
+    return order[a.severidade] - order[b.severidade];
+  });
+}
+
+function getRecommendations(desvio) {
+  const normalized = desvio.toLowerCase();
+  for (const [key, value] of Object.entries(EXERCISE_DATABASE)) {
+    if (normalized.includes(key)) {
+      return value;
+    }
+  }
+  // Sinônimos
+  if (normalized.includes('valgismo') || normalized.includes('colapso medial')) {
+    return EXERCISE_DATABASE['valgo'];
+  }
+  if (normalized.includes('inclinação') || normalized.includes('forward lean')) {
+    return EXERCISE_DATABASE['anteriorização'];
+  }
+  return null;
+}
+
+function generateAllRecommendations(pontosCriticos) {
+  return pontosCriticos.map(ponto => {
+    const rec = getRecommendations(ponto.nome);
+    if (!rec) return null;
+    return {
+      desvio: ponto.nome,
+      severidade: ponto.severidade,
+      exercicios: rec.exercicios,
+      ajustes_tecnicos: rec.ajustes_tecnicos,
+      tempo_correcao: rec.tempo_correcao
+    };
+  }).filter(Boolean);
+}
+
 // Prompt estruturado para Vision - retorna JSON
 const VISION_PROMPT = (frameNumber, totalFrames, exerciseType) => `
 Você é um biomecânico PhD especializado em análise de movimento.
@@ -623,7 +784,16 @@ async function main() {
       }
     }
 
-    // 10. Calcular resultado final
+    // 10. Extrair pontos críticos e gerar recomendações
+    console.log('\n🎯 Extraindo pontos críticos...');
+    const pontosCriticos = extractCriticalPoints(frameAnalyses);
+    console.log(`   ✅ ${pontosCriticos.length} pontos críticos identificados`);
+
+    console.log('💪 Gerando recomendações de exercícios...');
+    const recomendacoesExercicios = generateAllRecommendations(pontosCriticos);
+    console.log(`   ✅ ${recomendacoesExercicios.length} protocolos de exercícios`);
+
+    // 11. Calcular resultado final
     const avgScore = frameAnalyses.reduce((sum, f) => sum + f.score, 0) / frameAnalyses.length;
     const hasRAG = ragChunks.length > 0;
 
@@ -658,20 +828,27 @@ async function main() {
         justificativa: f.justificativa,
       })),
 
-      // Relatório técnico (se gerado)
+      // PONTOS CRÍTICOS EXTRAÍDOS (novo!)
+      pontos_criticos: pontosCriticos,
+
+      // RECOMENDAÇÕES DE EXERCÍCIOS (novo!)
+      recomendacoes_exercicios: recomendacoesExercicios,
+
+      // Relatório técnico (se gerado pelo LLM)
       report: report ? {
         resumo: report.resumo_executivo,
         analise_por_fase: report.analise_por_fase,
-        pontos_criticos: report.pontos_criticos || report.desvios_identificados,
-        recomendacoes: report.recomendacoes_corretivas,
+        pontos_criticos: report.pontos_criticos || report.desvios_identificados || pontosCriticos,
+        recomendacoes: report.recomendacoes_corretivas || recomendacoesExercicios,
         classificacao: report.classificacao,
         proximos_passos: report.proximos_passos,
-        // Campos RAG
         desvios_detalhados: report.desvios_identificados,
         referencias_cientificas: report.referencias_cientificas,
       } : {
-        resumo: `Análise de ${exerciseType}: Score médio ${avgScore.toFixed(1)}/10`,
+        resumo: `Análise de ${exerciseType}: Score médio ${avgScore.toFixed(1)}/10. ${pontosCriticos.length} pontos críticos identificados.`,
         classificacao: getClassificacao(avgScore),
+        pontos_criticos: pontosCriticos,
+        recomendacoes: recomendacoesExercicios,
       },
 
       // Scores
@@ -680,17 +857,16 @@ async function main() {
 
       // Resumo para UI
       summary: report?.resumo_executivo ||
-        `Análise de ${exerciseType}: Score médio ${avgScore.toFixed(1)}/10 baseado em ${frameAnalyses.length} frames.`,
-      recommendations: report?.proximos_passos || [
+        `Análise de ${exerciseType}: Score ${avgScore.toFixed(1)}/10. ${pontosCriticos.length} desvios detectados em ${frameAnalyses.length} frames.`,
+      recommendations: report?.proximos_passos || recomendacoesExercicios.flatMap(r => r.ajustes_tecnicos).slice(0, 5) || [
         avgScore >= 7 ? 'Boa execução! Continue praticando.' : 'Foque na correção técnica.',
-        'Revise os pontos identificados em cada frame.',
       ],
 
       // Tempo de processamento
       processing_time_ms: Date.now() - startTime,
     };
 
-    // 11. Salvar no banco
+    // 12. Salvar no banco
     console.log('\n💾 Salvando resultado...');
 
     const { error: updateError } = await supabase
@@ -709,13 +885,15 @@ async function main() {
       console.log('   ✅ Salvo no banco!');
     }
 
-    // 12. Resultado final
+    // 13. Resultado final
     console.log('\n' + '='.repeat(60));
     console.log('📊 RESULTADO DA ANÁLISE BIOMECÂNICA');
     console.log('='.repeat(60));
     console.log(`   Score Geral: ${(report?.score_geral || avgScore).toFixed(1)}/10`);
     console.log(`   Classificação: ${report?.classificacao || getClassificacao(avgScore)}`);
     console.log(`   Frames: ${frameAnalyses.length}`);
+    console.log(`   Pontos Críticos: ${pontosCriticos.length}`);
+    console.log(`   Protocolos de Exercícios: ${recomendacoesExercicios.length}`);
     console.log(`   Modelos: Vision=${visionModel}, Text=${textModel || 'N/A'}`);
     console.log(`   RAG: ${hasRAG ? `${ragChunks.length} chunks de ${ragSources.length} fontes` : 'Desabilitado'}`);
     console.log(`   Tempo: ${((Date.now() - startTime) / 1000).toFixed(1)}s`);
@@ -737,44 +915,41 @@ async function main() {
       console.log(`      ${f.justificativa}`);
     });
 
-    // Desvios detalhados (formato RAG)
-    if (report?.desvios_identificados?.length > 0) {
-      console.log('\n⚠️  Desvios Identificados (com fundamentação):');
-      report.desvios_identificados.forEach((d, i) => {
-        console.log(`   ${i + 1}. [${d.severidade}] ${d.nome}`);
-        console.log(`      ${d.descricao_tecnica}`);
-        if (d.fundamentacao_cientifica) {
-          console.log(`      📖 ${d.fundamentacao_cientifica.substring(0, 150)}...`);
-        }
-        if (d.causas_provaveis?.length > 0) {
-          console.log(`      Causas: ${d.causas_provaveis.join(', ')}`);
-        }
-      });
-    } else if (report?.pontos_criticos?.length > 0) {
-      console.log('\n⚠️  Pontos Críticos:');
-      report.pontos_criticos.forEach((p, i) => {
-        console.log(`   ${i + 1}. [${p.severidade}] ${p.descricao}`);
+    // PONTOS CRÍTICOS (sempre mostrar - extraídos automaticamente)
+    if (pontosCriticos.length > 0) {
+      console.log('\n⚠️  PONTOS CRÍTICOS IDENTIFICADOS:');
+      pontosCriticos.forEach((p, i) => {
+        const severityIcon = p.severidade === 'CRITICA' ? '🔴' : p.severidade === 'MODERADA' ? '🟡' : '🟢';
+        console.log(`   ${i + 1}. ${severityIcon} [${p.severidade}] ${p.nome}`);
+        console.log(`      Frequência: ${p.frequencia}`);
+        console.log(`      Frames afetados: ${p.frames_afetados.join(', ')}`);
       });
     }
 
-    if (report?.recomendacoes_corretivas?.length > 0) {
-      console.log('\n💡 Recomendações:');
-      report.recomendacoes_corretivas.forEach((r, i) => {
-        if (r.exercicios) {
-          // Formato RAG
-          console.log(`   ${i + 1}. [Prioridade ${r.prioridade}] ${r.desvio_alvo || 'Geral'}`);
-          r.exercicios.forEach(ex => {
-            console.log(`      → ${ex.nome}: ${ex.volume}, ${ex.frequencia}`);
-          });
-          if (r.ajustes_tecnicos?.length > 0) {
-            console.log(`      Ajustes: ${r.ajustes_tecnicos.join('; ')}`);
-          }
-        } else {
-          // Formato simples
-          console.log(`   ${i + 1}. [${r.categoria}] ${r.descricao}`);
-          if (r.exercicio_corretivo) {
-            console.log(`      → Exercício: ${r.exercicio_corretivo}`);
-          }
+    // RECOMENDAÇÕES DE EXERCÍCIOS (sempre mostrar - geradas automaticamente)
+    if (recomendacoesExercicios.length > 0) {
+      console.log('\n💪 PROTOCOLOS DE EXERCÍCIOS CORRETIVOS:');
+      recomendacoesExercicios.forEach((rec, i) => {
+        console.log(`\n   ${i + 1}. Para: ${rec.desvio} [${rec.severidade}]`);
+        console.log(`      Tempo estimado de correção: ${rec.tempo_correcao}`);
+        console.log('      Exercícios:');
+        rec.exercicios.forEach(ex => {
+          console.log(`         → ${ex.nome}: ${ex.volume}, ${ex.frequencia}`);
+        });
+        console.log('      Ajustes técnicos:');
+        rec.ajustes_tecnicos.forEach(aj => {
+          console.log(`         • ${aj}`);
+        });
+      });
+    }
+
+    // Desvios detalhados do relatório LLM (se disponível)
+    if (report?.desvios_identificados?.length > 0) {
+      console.log('\n📝 Análise Detalhada (LLM):');
+      report.desvios_identificados.forEach((d, i) => {
+        console.log(`   ${i + 1}. ${d.nome}`);
+        if (d.fundamentacao_cientifica) {
+          console.log(`      📖 ${d.fundamentacao_cientifica.substring(0, 150)}...`);
         }
       });
     }
@@ -796,7 +971,7 @@ async function main() {
       });
     }
 
-    console.log('='.repeat(60));
+    console.log('\n' + '='.repeat(60));
 
   } finally {
     // Limpar temp
