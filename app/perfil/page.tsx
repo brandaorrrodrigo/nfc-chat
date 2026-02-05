@@ -16,6 +16,7 @@ import { useRouter } from 'next/navigation';
 import { FPDashboard } from '@/components/gamification/FPDashboard';
 import { StreakBadge } from '@/components/gamification/StreakBadge';
 import { Leaderboard } from '@/components/gamification/Leaderboard';
+import AvatarUpload from '@/components/profile/AvatarUpload';
 import {
   User,
   Award,
@@ -24,7 +25,8 @@ import {
   ArrowLeft,
   Calendar,
   Mail,
-  Shield
+  Shield,
+  Edit2
 } from 'lucide-react';
 
 interface Badge {
@@ -41,6 +43,7 @@ export default function PerfilPage() {
   const router = useRouter();
   const [badges, setBadges] = useState<Badge[]>([]);
   const [loadingBadges, setLoadingBadges] = useState(true);
+  const [isEditingAvatar, setIsEditingAvatar] = useState(false);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -91,6 +94,23 @@ export default function PerfilPage() {
     }
   };
 
+  const handleAvatarChange = async (newAvatarUrl: string | null) => {
+    try {
+      // TODO: Implementar chamada à API para salvar avatar no backend
+      // Por enquanto, apenas atualiza localmente
+      console.log('Novo avatar:', newAvatarUrl);
+
+      // Simular sucesso
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      // TODO: Atualizar sessão do usuário
+      // await update({ image: newAvatarUrl });
+    } catch (error) {
+      console.error('Erro ao atualizar avatar:', error);
+      throw error;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#0a0a14] py-8">
       <div className="container max-w-7xl mx-auto px-4 space-y-8">
@@ -111,24 +131,66 @@ export default function PerfilPage() {
         {/* User Info Card */}
         <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
           <div className="flex items-start gap-6">
-            {/* Avatar */}
+            {/* Avatar com Upload */}
             <div className="relative">
-              {user.image ? (
-                <img
-                  src={user.image}
-                  alt={user.name || ''}
-                  className="w-24 h-24 rounded-full object-cover ring-4 ring-emerald-500/30"
+              {isEditingAvatar ? (
+                <AvatarUpload
+                  currentAvatar={user.image || undefined}
+                  userName={user.name || user.email || 'Usuário'}
+                  onAvatarChange={handleAvatarChange}
+                  size="lg"
                 />
               ) : (
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-black font-bold text-3xl ring-4 ring-emerald-500/30">
-                  {(user.name || user.email || 'U').charAt(0).toUpperCase()}
-                </div>
+                <>
+                  {user.image ? (
+                    <img
+                      src={user.image}
+                      alt={user.name || ''}
+                      className="w-24 h-24 rounded-full object-cover ring-4 ring-emerald-500/30"
+                    />
+                  ) : (
+                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-black font-bold text-3xl ring-4 ring-emerald-500/30">
+                      {(() => {
+                        const name = user.name || user.email || 'U';
+                        const parts = name.trim().split(/\s+/);
+                        if (parts.length === 1) {
+                          return parts[0].substring(0, 2).toUpperCase();
+                        }
+                        return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+                      })()}
+                    </div>
+                  )}
+                  <button
+                    onClick={() => setIsEditingAvatar(true)}
+                    className="
+                      absolute -bottom-2 -right-2
+                      w-10 h-10 rounded-full
+                      bg-emerald-500 hover:bg-emerald-600
+                      flex items-center justify-center
+                      shadow-lg
+                      transition-colors
+                    "
+                    title="Editar avatar"
+                  >
+                    <Edit2 className="w-4 h-4 text-white" />
+                  </button>
+                </>
               )}
             </div>
 
             {/* User Details */}
             <div className="flex-1">
-              <h2 className="text-2xl font-bold text-white mb-2">{user.name || 'Usuário'}</h2>
+              <div className="flex items-center gap-3 mb-2">
+                <h2 className="text-2xl font-bold text-white">{user.name || 'Usuário'}</h2>
+                {isEditingAvatar && (
+                  <button
+                    onClick={() => setIsEditingAvatar(false)}
+                    className="text-sm text-zinc-400 hover:text-white transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                )}
+              </div>
 
               <div className="space-y-2 text-sm text-zinc-400">
                 {user.email && (

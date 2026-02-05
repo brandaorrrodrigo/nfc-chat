@@ -73,7 +73,13 @@ export default function Avatar({
   };
 
   const getInitials = (name: string) => {
-    return name.charAt(0).toUpperCase();
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 1) {
+      // Se tem apenas um nome, pega as duas primeiras letras
+      return parts[0].substring(0, 2).toUpperCase();
+    }
+    // Se tem nome completo, pega primeira letra do primeiro e do último nome
+    return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
   };
 
   const currentRoleStyle = role ? roleStyles[role] : null;

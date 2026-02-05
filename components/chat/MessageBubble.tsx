@@ -12,6 +12,15 @@ import React, { useState } from 'react';
 import { Heart, Star, ThumbsUp, Copy, Check, Share2, MoreHorizontal } from 'lucide-react';
 import { QuickReplyGroup } from './QuickReply';
 
+// Função para gerar iniciais
+function getInitials(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) {
+    return parts[0].substring(0, 2).toUpperCase();
+  }
+  return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+}
+
 export interface Message {
   id: string;
   type: 'ai' | 'user';
@@ -169,7 +178,7 @@ export default function MessageBubble({
           />
         ) : (
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 via-purple-500 to-cyan-500 flex items-center justify-center text-white font-bold shadow-lg">
-            {userName.charAt(0).toUpperCase()}
+            {getInitials(userName)}
           </div>
         )}
       </div>

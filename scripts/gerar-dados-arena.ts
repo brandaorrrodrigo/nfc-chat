@@ -7,6 +7,7 @@
 
 import { gerarThreadsEmLote, gerarEstatisticas } from './thread-generator';
 import { GHOST_USERS } from './ghost-users-database';
+import { gerarAvatarVariado } from './avatar-generator';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -58,12 +59,12 @@ threads.forEach(thread => {
 dados.ghostUsers = Array.from(ghostUsersIds)
   .map(id => GHOST_USERS.find(u => u.id === id))
   .filter(u => u && u.id !== 'ia_facilitadora')
-  .map(u => ({
+  .map((u, index) => ({
     id: u!.id,
     email: u!.email,
     name: u!.nome,
     username: u!.username,
-    avatar_url: `https://api.dicebear.com/7.x/avataaars/svg?seed=${u!.username}`,
+    avatar_url: gerarAvatarVariado(u!.username, index, u!.genero),
     bio: u!.bio,
     is_ghost_user: true,
   }));
