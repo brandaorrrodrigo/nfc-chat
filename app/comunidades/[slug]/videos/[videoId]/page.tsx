@@ -7,7 +7,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, ThumbsUp, ThumbsDown, Eye, Clock, User, Loader2, CheckCircle, Bot, Target, Play, Star } from 'lucide-react';
+import { ArrowLeft, ThumbsUp, ThumbsDown, Eye, Clock, User, Loader2, CheckCircle, Bot, Target, Play, Star, AlertTriangle, Shield, ShieldCheck } from 'lucide-react';
 import VideoPlayer from '@/components/nfv/VideoPlayer';
 import MovementPatternBadge from '@/components/nfv/MovementPatternBadge';
 
@@ -112,25 +112,57 @@ export default function VideoDetailPage() {
     const isVisionAnalysis = 'overall_score' in data || 'frame_analyses' in data;
 
     if (isBiomechanicsAnalysis || isVisionAnalysis) {
-      const score = (data.overall_score as number) || 0;
+      // Score - suporta formato antigo (overall_score) e novo (score)
+      const score = (data.score as number) || (data.overall_score as number) || 0;
       const summary = data.summary as string;
       const recommendations = data.recommendations as string[] || [];
       const report = data.report as Record<string, unknown> || {};
-      const frameAnalyses = data.frame_analyses as Array<{
+      // Frame analyses - suporta formato antigo e novo
+      const visionAnalysis = data.vision_analysis as Array<Record<string, unknown>> || [];
+      const frameAnalyses = (data.frame_analyses as Array<{
         frame: number;
+        frame_numero?: number;
         timestamp: string;
         fase?: string;
-        angulos?: { joelho_esq_graus?: number; joelho_dir_graus?: number; flexao_quadril_graus?: number; inclinacao_tronco_graus?: number };
+        angulos?: {
+          joelho_esq_graus?: number;
+          joelho_dir_graus?: number;
+          joelho_esquerdo?: number;
+          joelho_direito?: number;
+          flexao_quadril_graus?: number;
+          flexao_quadril?: number;
+          inclinacao_tronco_graus?: number;
+          inclinacao_tronco?: number;
+        };
         alinhamentos?: { joelhos_sobre_pes?: boolean; joelho_esq_valgo?: boolean; joelho_dir_valgo?: boolean; coluna_neutra?: boolean };
         desvios?: string[];
+        desvios_detectados?: string[];
         analysis?: string;
         justificativa?: string;
         score: number;
-      }> || [];
+        confianca_medida?: string;
+        interpolated?: boolean;
+      }> || visionAnalysis.map((v, i) => ({
+        frame: (v.frame_numero as number) || i + 1,
+        timestamp: v.timestamp as string || `${i * 0.4}s`,
+        fase: v.fase as string,
+        angulos: v.angulos as Record<string, number>,
+        alinhamentos: v.alinhamentos as Record<string, boolean>,
+        desvios: (v.desvios_detectados as string[]) || (v.desvios as string[]),
+        justificativa: v.justificativa as string,
+        score: v.score as number || 0,
+        confianca_medida: v.confianca_medida as string,
+        interpolated: v.interpolated as boolean
+      })));
       const modelVision = data.model_vision as string || data.model as string || 'IA';
       const modelText = data.model_text as string;
-      const framesAnalyzed = (data.frames_analyzed as number) || frameAnalyses.length;
-      const classificacao = (report.classificacao as string) || (data.classificacao as string);
+      const framesAnalyzed = (data.frames_analyzed as number) || (data.metadata as Record<string,unknown>)?.frames_analyzed as number || frameAnalyses.length;
+      const classificacao = (report.classificacao as string) || (data.classificacao as string) || (data.classification as string);
+
+      // Validação e confiança - novo formato
+      const validationResult = data.validation_result as { isSuspicious: boolean; issues: string[]; recommendation: string; confidenceLevel: string } | undefined;
+      const confidenceLevel = validationResult?.confidenceLevel || (data.metadata as Record<string,unknown>)?.confidence_level as string || 'media';
+      const interpolationApplied = (data.metadata as Record<string,unknown>)?.interpolation_applied as boolean || false;
 
       // Pontos críticos - novo formato do script (com fallback para formato antigo)
       const pontosCriticosNovo = data.pontos_criticos as Array<{ nome: string; severidade: string; frames_afetados: number[]; frequencia: string }> || [];
@@ -215,6 +247,45 @@ export default function VideoDetailPage() {
               </p>
             )}
           </div>
+
+          {/* Aviso de Confiança */}
+          {validationResult?.isSuspicious && (
+            <div className="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-xl">
+              <div className="flex items-center gap-2 mb-2">
+                <AlertTriangle className="w-5 h-5 text-yellow-400" />
+                <p className="font-bold text-yellow-400">
+                  Analise com Confianca Reduzida
+                </p>
+              </div>
+
+              <ul className="text-sm text-yellow-300 space-y-1 mb-3">
+                {validationResult.issues?.map((issue, i) => (
+                  <li key={i}>• {issue}</li>
+                ))}
+              </ul>
+
+              <p className="text-xs text-yellow-400">
+                💡 {validationResult.recommendation}
+              </p>
+
+              {interpolationApplied && (
+                <p className="text-xs text-yellow-500 mt-2 italic">
+                  ⚠️ Interpolacao biomecanica foi aplicada para melhorar a precisao
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Badge de Confiança */}
+          {!validationResult?.isSuspicious && confidenceLevel === 'alta' && (
+            <div className="flex items-center gap-2 p-3 bg-green-500/10 border border-green-500/30 rounded-xl">
+              <ShieldCheck className="w-5 h-5 text-green-400" />
+              <div>
+                <p className="text-sm text-green-400 font-medium">Alta Confianca</p>
+                <p className="text-xs text-green-400/70">Analise validada sem inconsistencias</p>
+              </div>
+            </div>
+          )}
 
           {/* Pontos Criticos - Novo formato */}
           {pontosCriticosNovo.length > 0 && (
@@ -376,7 +447,7 @@ export default function VideoDetailPage() {
                   <div key={i} className="border-l-2 border-zinc-700 pl-4">
                     <div className="flex items-center gap-3 mb-2">
                       <span className="text-xs text-zinc-500">
-                        Frame {frame.frame} ({frame.timestamp})
+                        Frame {frame.frame_numero || frame.frame} ({frame.timestamp})
                       </span>
                       {frame.fase && (
                         <span className={`text-[10px] px-2 py-0.5 rounded ${getFaseColor(frame.fase)}`}>
@@ -388,27 +459,27 @@ export default function VideoDetailPage() {
                       </span>
                     </div>
 
-                    {/* Angulos */}
+                    {/* Angulos - suporta formato antigo e novo */}
                     {frame.angulos && (
                       <div className="flex flex-wrap gap-2 mb-2">
-                        {frame.angulos.joelho_esq_graus && (
+                        {(frame.angulos.joelho_esquerdo || frame.angulos.joelho_esq_graus) && (
                           <span className="text-[10px] bg-zinc-800 px-2 py-0.5 rounded text-zinc-400">
-                            Joelho E: {frame.angulos.joelho_esq_graus}°
+                            Joelho E: {frame.angulos.joelho_esquerdo || frame.angulos.joelho_esq_graus}°
                           </span>
                         )}
-                        {frame.angulos.joelho_dir_graus && (
+                        {(frame.angulos.joelho_direito || frame.angulos.joelho_dir_graus) && (
                           <span className="text-[10px] bg-zinc-800 px-2 py-0.5 rounded text-zinc-400">
-                            Joelho D: {frame.angulos.joelho_dir_graus}°
+                            Joelho D: {frame.angulos.joelho_direito || frame.angulos.joelho_dir_graus}°
                           </span>
                         )}
-                        {frame.angulos.flexao_quadril_graus && (
+                        {(frame.angulos.flexao_quadril || frame.angulos.flexao_quadril_graus) && (
                           <span className="text-[10px] bg-zinc-800 px-2 py-0.5 rounded text-zinc-400">
-                            Quadril: {frame.angulos.flexao_quadril_graus}°
+                            Quadril: {frame.angulos.flexao_quadril || frame.angulos.flexao_quadril_graus}°
                           </span>
                         )}
-                        {frame.angulos.inclinacao_tronco_graus && (
+                        {(frame.angulos.inclinacao_tronco || frame.angulos.inclinacao_tronco_graus) && (
                           <span className="text-[10px] bg-zinc-800 px-2 py-0.5 rounded text-zinc-400">
-                            Tronco: {frame.angulos.inclinacao_tronco_graus}°
+                            Tronco: {frame.angulos.inclinacao_tronco || frame.angulos.inclinacao_tronco_graus}°
                           </span>
                         )}
                       </div>
@@ -440,10 +511,10 @@ export default function VideoDetailPage() {
                       </div>
                     )}
 
-                    {/* Desvios */}
-                    {frame.desvios && frame.desvios.length > 0 && (
+                    {/* Desvios - suporta formato antigo e novo */}
+                    {((frame.desvios_detectados || frame.desvios) && (frame.desvios_detectados || frame.desvios)!.length > 0) && (
                       <div className="mb-2">
-                        {frame.desvios.map((desvio, j) => (
+                        {(frame.desvios_detectados || frame.desvios)!.map((desvio, j) => (
                           <span key={j} className="text-[10px] text-orange-400 block">
                             ⚠ {desvio}
                           </span>
@@ -451,9 +522,22 @@ export default function VideoDetailPage() {
                       </div>
                     )}
 
+                    {/* Indicador de interpolação */}
+                    {frame.interpolated && (
+                      <span className="text-[10px] bg-yellow-500/20 text-yellow-400 px-2 py-0.5 rounded mb-2 inline-block">
+                        ⚡ Interpolado
+                      </span>
+                    )}
+
                     <p className="text-sm text-zinc-400">
                       {frame.justificativa || frame.analysis}
                     </p>
+
+                    {frame.confianca_medida && (
+                      <span className="text-[10px] text-zinc-500 mt-1 block">
+                        Confiança: {frame.confianca_medida}
+                      </span>
+                    )}
                   </div>
                 ))}
               </div>
