@@ -104,21 +104,62 @@ export default function VideoDetailPage() {
   };
 
   const renderPublishedAnalysis = (data: Record<string, unknown>) => {
+    // Verificar se é análise biomecânica estruturada (novo formato)
+    const isBiomechanicsAnalysis = 'analysis_type' in data &&
+      (data.analysis_type === 'biomechanics_structured' || data.analysis_type === 'biomechanics_complete');
+
     // Verificar se é análise do Ollama Vision (tem overall_score)
     const isVisionAnalysis = 'overall_score' in data || 'frame_analyses' in data;
 
-    if (isVisionAnalysis) {
+    if (isBiomechanicsAnalysis || isVisionAnalysis) {
       const score = (data.overall_score as number) || 0;
       const summary = data.summary as string;
       const recommendations = data.recommendations as string[] || [];
+      const report = data.report as Record<string, unknown> || {};
       const frameAnalyses = data.frame_analyses as Array<{
         frame: number;
         timestamp: string;
-        analysis: string;
+        fase?: string;
+        angulos?: { joelho_esq_graus?: number; joelho_dir_graus?: number; flexao_quadril_graus?: number; inclinacao_tronco_graus?: number };
+        alinhamentos?: { joelhos_sobre_pes?: boolean; joelho_esq_valgo?: boolean; joelho_dir_valgo?: boolean; coluna_neutra?: boolean };
+        desvios?: string[];
+        analysis?: string;
+        justificativa?: string;
         score: number;
       }> || [];
-      const model = data.model as string || 'IA';
+      const modelVision = data.model_vision as string || data.model as string || 'IA';
+      const modelText = data.model_text as string;
       const framesAnalyzed = (data.frames_analyzed as number) || frameAnalyses.length;
+      const classificacao = (report.classificacao as string) || (data.classificacao as string);
+      const pontosCriticos = (report.pontos_criticos as Array<{ tipo: string; descricao: string; severidade: string }>) || [];
+      const recomendacoesCorretivas = (report.recomendacoes as Array<{ prioridade: number; categoria: string; descricao: string; exercicio_corretivo?: string }>) || [];
+
+      const getClassificacaoColor = (c: string) => {
+        switch (c) {
+          case 'EXCELENTE': return 'text-green-400 bg-green-500/20';
+          case 'BOM': return 'text-blue-400 bg-blue-500/20';
+          case 'REGULAR': return 'text-yellow-400 bg-yellow-500/20';
+          default: return 'text-red-400 bg-red-500/20';
+        }
+      };
+
+      const getSeveridadeColor = (s: string) => {
+        switch (s) {
+          case 'LEVE': return 'text-yellow-400';
+          case 'MODERADO': return 'text-orange-400';
+          case 'SEVERO': return 'text-red-400';
+          default: return 'text-zinc-400';
+        }
+      };
+
+      const getFaseColor = (fase?: string) => {
+        switch (fase) {
+          case 'excentrica': return 'bg-blue-500/20 text-blue-400';
+          case 'isometrica': return 'bg-purple-500/20 text-purple-400';
+          case 'concentrica': return 'bg-green-500/20 text-green-400';
+          default: return 'bg-zinc-700 text-zinc-400';
+        }
+      };
 
       return (
         <div className="space-y-6">
@@ -134,28 +175,88 @@ export default function VideoDetailPage() {
                   {score.toFixed(1)}
                   <span className="text-2xl text-zinc-500">/10</span>
                 </div>
+                {classificacao && (
+                  <span className={`inline-block mt-2 px-2 py-0.5 rounded text-xs font-semibold ${getClassificacaoColor(classificacao)}`}>
+                    {classificacao}
+                  </span>
+                )}
               </div>
               <div className="text-right">
-                <div className="text-xs text-zinc-500">Modelo</div>
-                <div className="text-sm text-zinc-400">{model}</div>
+                <div className="text-xs text-zinc-500">Vision</div>
+                <div className="text-sm text-zinc-400">{modelVision}</div>
+                {modelText && (
+                  <>
+                    <div className="text-xs text-zinc-500 mt-2">Text</div>
+                    <div className="text-sm text-zinc-400">{modelText}</div>
+                  </>
+                )}
                 <div className="text-xs text-zinc-500 mt-2">Frames</div>
                 <div className="text-sm text-zinc-400">{framesAnalyzed}</div>
               </div>
             </div>
 
-            {summary && (
+            {(summary || report.resumo) && (
               <p className="mt-4 text-sm text-zinc-300 border-t border-zinc-700/50 pt-4">
-                {summary}
+                {(report.resumo as string) || summary}
               </p>
             )}
           </div>
 
-          {/* Recommendations */}
-          {recommendations.length > 0 && (
+          {/* Pontos Criticos */}
+          {pontosCriticos.length > 0 && (
+            <div>
+              <div className="flex items-center gap-2 text-sm font-medium text-white mb-3">
+                <svg className="w-4 h-4 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                Pontos Criticos
+              </div>
+              <div className="space-y-2">
+                {pontosCriticos.map((ponto, i) => (
+                  <div key={i} className="flex items-start gap-3 bg-zinc-800/50 rounded-lg p-3">
+                    <span className={`text-xs font-semibold px-2 py-0.5 rounded ${getSeveridadeColor(ponto.severidade)} bg-zinc-800`}>
+                      {ponto.severidade}
+                    </span>
+                    <div>
+                      <span className="text-xs text-zinc-500">[{ponto.tipo}]</span>
+                      <p className="text-sm text-zinc-300">{ponto.descricao}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Recomendacoes Corretivas */}
+          {recomendacoesCorretivas.length > 0 && (
             <div>
               <div className="flex items-center gap-2 text-sm font-medium text-white mb-3">
                 <Target className="w-4 h-4 text-purple-400" />
-                Recomendacoes
+                Recomendacoes Corretivas
+              </div>
+              <div className="space-y-3">
+                {recomendacoesCorretivas.map((rec, i) => (
+                  <div key={i} className="bg-zinc-800/50 rounded-lg p-3">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-xs font-bold text-purple-400">#{rec.prioridade}</span>
+                      <span className="text-xs text-zinc-500">{rec.categoria}</span>
+                    </div>
+                    <p className="text-sm text-zinc-300">{rec.descricao}</p>
+                    {rec.exercicio_corretivo && (
+                      <p className="text-xs text-cyan-400 mt-1">→ {rec.exercicio_corretivo}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Recommendations simples (fallback) */}
+          {recommendations.length > 0 && recomendacoesCorretivas.length === 0 && (
+            <div>
+              <div className="flex items-center gap-2 text-sm font-medium text-white mb-3">
+                <Target className="w-4 h-4 text-purple-400" />
+                Proximos Passos
               </div>
               <ul className="space-y-2">
                 {recommendations.map((rec, i) => (
@@ -182,12 +283,81 @@ export default function VideoDetailPage() {
                       <span className="text-xs text-zinc-500">
                         Frame {frame.frame} ({frame.timestamp})
                       </span>
+                      {frame.fase && (
+                        <span className={`text-[10px] px-2 py-0.5 rounded ${getFaseColor(frame.fase)}`}>
+                          {frame.fase}
+                        </span>
+                      )}
                       <span className={`text-sm font-semibold ${getScoreColor(frame.score)}`}>
                         {frame.score}/10
                       </span>
                     </div>
+
+                    {/* Angulos */}
+                    {frame.angulos && (
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {frame.angulos.joelho_esq_graus && (
+                          <span className="text-[10px] bg-zinc-800 px-2 py-0.5 rounded text-zinc-400">
+                            Joelho E: {frame.angulos.joelho_esq_graus}°
+                          </span>
+                        )}
+                        {frame.angulos.joelho_dir_graus && (
+                          <span className="text-[10px] bg-zinc-800 px-2 py-0.5 rounded text-zinc-400">
+                            Joelho D: {frame.angulos.joelho_dir_graus}°
+                          </span>
+                        )}
+                        {frame.angulos.flexao_quadril_graus && (
+                          <span className="text-[10px] bg-zinc-800 px-2 py-0.5 rounded text-zinc-400">
+                            Quadril: {frame.angulos.flexao_quadril_graus}°
+                          </span>
+                        )}
+                        {frame.angulos.inclinacao_tronco_graus && (
+                          <span className="text-[10px] bg-zinc-800 px-2 py-0.5 rounded text-zinc-400">
+                            Tronco: {frame.angulos.inclinacao_tronco_graus}°
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Alinhamentos */}
+                    {frame.alinhamentos && (
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {frame.alinhamentos.joelhos_sobre_pes === false && (
+                          <span className="text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded">
+                            Joelhos desalinhados
+                          </span>
+                        )}
+                        {frame.alinhamentos.joelho_esq_valgo && (
+                          <span className="text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded">
+                            Valgo Esq
+                          </span>
+                        )}
+                        {frame.alinhamentos.joelho_dir_valgo && (
+                          <span className="text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded">
+                            Valgo Dir
+                          </span>
+                        )}
+                        {frame.alinhamentos.coluna_neutra === false && (
+                          <span className="text-[10px] bg-orange-500/20 text-orange-400 px-2 py-0.5 rounded">
+                            Coluna nao neutra
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Desvios */}
+                    {frame.desvios && frame.desvios.length > 0 && (
+                      <div className="mb-2">
+                        {frame.desvios.map((desvio, j) => (
+                          <span key={j} className="text-[10px] text-orange-400 block">
+                            ⚠ {desvio}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
                     <p className="text-sm text-zinc-400">
-                      {frame.analysis}
+                      {frame.justificativa || frame.analysis}
                     </p>
                   </div>
                 ))}
