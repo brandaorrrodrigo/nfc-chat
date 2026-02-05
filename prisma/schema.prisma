@@ -26,16 +26,16 @@ model User {
   twoFactorEnabled  Boolean   @default(false)
   twoFactorSecret   String?
 
-  // FP (FitPoints)
+  // FP
   fpTotal           Int       @default(0)
   fpAvailable       Int       @default(0)
   currentStreak     Int       @default(0)
   longestStreak     Int       @default(0)
   lastActiveDate    DateTime?
 
-  // FitPoints (novo sistema)
-  fitpoints_balance     Int      @default(0)
-  fitpoints_lifetime    Int      @default(0)  // Total já ganho
+  // FP (novo sistema)
+  fp_balance     Int      @default(0)
+  fp_lifetime    Int      @default(0)  // Total já ganho
 
   // Subscription
   subscription_tier     String   @default("free")  // 'free' | 'premium' | 'premium_plus'
@@ -61,7 +61,7 @@ model User {
   moderationActions ModerationAction[]
   auditLogs         AuditLog[]
   videoAnalyses     VideoAnalysis[]
-  fitpointsTransactions FitPointsTransaction[]
+  biometricFPTransactions BiometricFPTransaction[]
   biometricBaselines BiometricBaseline[]
   biometricComparisons BiometricComparison[]
 
@@ -615,8 +615,8 @@ model BiometricComparison {
 
   // Monetization
   cost_fps          Int               // Quanto custou (25 FPs ou 0 se Premium)
-  payment_method    String            // 'fitpoints' | 'subscription'
-  transaction_id    String?           // Referência para FitPointsTransaction
+  payment_method    String            // 'fp' | 'subscription'
+  transaction_id    String?           // Referência para FPTransaction
 
   created_at        DateTime          @default(now())
 
@@ -627,10 +627,10 @@ model BiometricComparison {
 }
 
 // ============================================
-// FITPOINTS - SISTEMA DE MONETIZAÇÃO
+// FP - SISTEMA DE MONETIZAÇÃO
 // ============================================
 
-model FitPointsTransaction {
+model BiometricFPTransaction {
   id                String   @id @default(cuid())
   user_id           String
   user              User     @relation(fields: [user_id], references: [id])
@@ -651,7 +651,7 @@ model FitPointsTransaction {
   @@index([user_id])
   @@index([transaction_type])
   @@index([created_at])
-  @@map("fitpoints_transactions")
+  @@map("fp_transactions")
 }
 
 model BiometricPricing {
@@ -660,7 +660,7 @@ model BiometricPricing {
   item_type         String   @unique  // 'baseline' | 'comparison' | 'export_pdf'
 
   // Preços
-  fps_cost          Int      // Custo em FitPoints
+  fps_cost          Int      // Custo em FP
   premium_free      Boolean  @default(false)  // Grátis para Premium?
 
   // Regras especiais
