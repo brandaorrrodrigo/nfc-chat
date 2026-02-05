@@ -105,8 +105,8 @@ export default function VideoDetailPage() {
 
   const renderPublishedAnalysis = (data: Record<string, unknown>) => {
     // Verificar se é análise biomecânica estruturada (novo formato)
-    const isBiomechanicsAnalysis = 'analysis_type' in data &&
-      (data.analysis_type === 'biomechanics_structured' || data.analysis_type === 'biomechanics_complete');
+    const analysisType = data.analysis_type as string || '';
+    const isBiomechanicsAnalysis = analysisType.startsWith('biomechanics_');
 
     // Verificar se é análise do Ollama Vision (tem overall_score)
     const isVisionAnalysis = 'overall_score' in data || 'frame_analyses' in data;
