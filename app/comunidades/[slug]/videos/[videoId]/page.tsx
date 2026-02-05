@@ -131,7 +131,19 @@ export default function VideoDetailPage() {
       const modelText = data.model_text as string;
       const framesAnalyzed = (data.frames_analyzed as number) || frameAnalyses.length;
       const classificacao = (report.classificacao as string) || (data.classificacao as string);
-      const pontosCriticos = (report.pontos_criticos as Array<{ tipo: string; descricao: string; severidade: string }>) || [];
+
+      // Pontos críticos - novo formato do script (com fallback para formato antigo)
+      const pontosCriticosNovo = data.pontos_criticos as Array<{ nome: string; severidade: string; frames_afetados: number[]; frequencia: string }> || [];
+      const pontosCriticosAntigo = (report.pontos_criticos as Array<{ tipo: string; descricao: string; severidade: string }>) || [];
+
+      // Recomendações - novo formato do script (com fallback para formato antigo)
+      const recomendacoesExercicios = data.recomendacoes_exercicios as Array<{
+        desvio: string;
+        severidade: string;
+        exercicios: Array<{ nome: string; volume: string; frequencia: string }>;
+        ajustes_tecnicos: string[];
+        tempo_correcao: string;
+      }> || [];
       const recomendacoesCorretivas = (report.recomendacoes as Array<{ prioridade: number; categoria: string; descricao: string; exercicio_corretivo?: string }>) || [];
 
       const getClassificacaoColor = (c: string) => {
@@ -144,9 +156,11 @@ export default function VideoDetailPage() {
       };
 
       const getSeveridadeColor = (s: string) => {
-        switch (s) {
+        switch (s?.toUpperCase()) {
           case 'LEVE': return 'text-yellow-400';
+          case 'MODERADA':
           case 'MODERADO': return 'text-orange-400';
+          case 'CRITICA':
           case 'SEVERO': return 'text-red-400';
           default: return 'text-zinc-400';
         }
@@ -202,8 +216,34 @@ export default function VideoDetailPage() {
             )}
           </div>
 
-          {/* Pontos Criticos */}
-          {pontosCriticos.length > 0 && (
+          {/* Pontos Criticos - Novo formato */}
+          {pontosCriticosNovo.length > 0 && (
+            <div>
+              <div className="flex items-center gap-2 text-sm font-medium text-white mb-3">
+                <svg className="w-4 h-4 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                Pontos Críticos ({pontosCriticosNovo.length})
+              </div>
+              <div className="space-y-2">
+                {pontosCriticosNovo.map((ponto, i) => (
+                  <div key={i} className="bg-zinc-800/50 rounded-lg p-3 border-l-4 border-red-500/50">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className={`text-xs font-semibold px-2 py-0.5 rounded ${getSeveridadeColor(ponto.severidade)} bg-zinc-800`}>
+                        {ponto.severidade}
+                      </span>
+                      <span className="text-xs text-zinc-500">{ponto.frequencia}</span>
+                    </div>
+                    <p className="text-sm text-zinc-300 font-medium">{ponto.nome}</p>
+                    <p className="text-xs text-zinc-500 mt-1">Frames: {ponto.frames_afetados?.join(', ')}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Pontos Criticos - Formato antigo (fallback) */}
+          {pontosCriticosNovo.length === 0 && pontosCriticosAntigo.length > 0 && (
             <div>
               <div className="flex items-center gap-2 text-sm font-medium text-white mb-3">
                 <svg className="w-4 h-4 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -212,7 +252,7 @@ export default function VideoDetailPage() {
                 Pontos Criticos
               </div>
               <div className="space-y-2">
-                {pontosCriticos.map((ponto, i) => (
+                {pontosCriticosAntigo.map((ponto, i) => (
                   <div key={i} className="flex items-start gap-3 bg-zinc-800/50 rounded-lg p-3">
                     <span className={`text-xs font-semibold px-2 py-0.5 rounded ${getSeveridadeColor(ponto.severidade)} bg-zinc-800`}>
                       {ponto.severidade}
@@ -227,8 +267,63 @@ export default function VideoDetailPage() {
             </div>
           )}
 
-          {/* Recomendacoes Corretivas */}
-          {recomendacoesCorretivas.length > 0 && (
+          {/* Protocolos de Exercícios Corretivos - Novo formato */}
+          {recomendacoesExercicios.length > 0 && (
+            <div>
+              <div className="flex items-center gap-2 text-sm font-medium text-white mb-3">
+                <Target className="w-4 h-4 text-purple-400" />
+                Protocolos de Exercícios Corretivos
+              </div>
+              <div className="space-y-4">
+                {recomendacoesExercicios.map((rec, i) => (
+                  <div key={i} className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-purple-500/50">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className={`text-xs font-semibold px-2 py-0.5 rounded ${getSeveridadeColor(rec.severidade)} bg-zinc-800`}>
+                        {rec.severidade}
+                      </span>
+                      <span className="text-xs text-purple-400">⏱️ {rec.tempo_correcao}</span>
+                    </div>
+                    <p className="text-sm text-zinc-300 font-medium mb-3">Para: {rec.desvio}</p>
+
+                    {/* Exercícios */}
+                    <div className="mb-3">
+                      <p className="text-xs text-zinc-500 mb-2">💪 Exercícios:</p>
+                      <div className="space-y-1.5 ml-2">
+                        {rec.exercicios?.map((ex, j) => (
+                          <div key={j} className="text-xs text-zinc-300 flex items-center gap-2">
+                            <span className="text-green-400">→</span>
+                            <span className="font-medium">{ex.nome}</span>
+                            <span className="text-zinc-500">|</span>
+                            <span>{ex.volume}</span>
+                            <span className="text-zinc-500">|</span>
+                            <span className="text-cyan-400">{ex.frequencia}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Ajustes técnicos */}
+                    {rec.ajustes_tecnicos?.length > 0 && (
+                      <div>
+                        <p className="text-xs text-zinc-500 mb-2">🎯 Ajustes Técnicos:</p>
+                        <ul className="space-y-1 ml-2">
+                          {rec.ajustes_tecnicos.map((aj, j) => (
+                            <li key={j} className="text-xs text-zinc-400 flex items-start gap-2">
+                              <span className="text-yellow-400">•</span>
+                              <span>{aj}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Recomendacoes Corretivas - Formato antigo (fallback) */}
+          {recomendacoesExercicios.length === 0 && recomendacoesCorretivas.length > 0 && (
             <div>
               <div className="flex items-center gap-2 text-sm font-medium text-white mb-3">
                 <Target className="w-4 h-4 text-purple-400" />
@@ -252,7 +347,7 @@ export default function VideoDetailPage() {
           )}
 
           {/* Recommendations simples (fallback) */}
-          {recommendations.length > 0 && recomendacoesCorretivas.length === 0 && (
+          {recommendations.length > 0 && recomendacoesExercicios.length === 0 && recomendacoesCorretivas.length === 0 && (
             <div>
               <div className="flex items-center gap-2 text-sm font-medium text-white mb-3">
                 <Target className="w-4 h-4 text-purple-400" />
