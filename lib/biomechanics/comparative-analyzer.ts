@@ -1,6 +1,7 @@
 /**
  * Analisador Comparativo de Biomecânica
- * Compara frames do usuário com padrões de referência (ouro + ruins)
+ * Estratégia: modelo Vision mede ângulos, código calcula similaridades
+ * com base nos ângulos de referência do padrão ouro
  */
 
 import {
@@ -64,31 +65,115 @@ export interface ComparativeAnalysisResult {
   timestamp: string
 }
 
-async function ollamaVisionChat(images: string[], prompt: string) {
-  const response = await fetch(`${OLLAMA_URL}/api/chat`, {
+/**
+ * Chama Ollama Vision para medir ângulos em 1 imagem
+ */
+async function measureAnglesWithVision(imageBase64: string, frameNumber: number, totalFrames: number): Promise<{
+  knee_l: number
+  knee_r: number
+  hip: number
+  trunk: number
+  valgus: boolean
+  forward_lean: boolean
+  score: number
+}> {
+  const phase = frameNumber <= Math.ceil(totalFrames / 3) ? 'eccentric' :
+    frameNumber <= Math.ceil((totalFrames * 2) / 3) ? 'bottom' : 'concentric'
+
+  // Ranges esperados por fase (mesmo approach do analyze-video-direct.js que funciona)
+  const ranges: Record<string, { knee: string; hip: string; trunk: string; desc: string }> = {
+    eccentric: { knee: '120-160', hip: '100-140', trunk: '10-18', desc: 'DESCENDING - knees more extended' },
+    bottom: { knee: '85-100', hip: '75-95', trunk: '18-25', desc: 'BOTTOM - maximum flexion' },
+    concentric: { knee: '100-160', hip: '90-145', trunk: '12-20', desc: 'ASCENDING - extending' }
+  }
+  const r = ranges[phase]
+
+  const prompt = `You are a HUMAN GONIOMETER. Analyze squat frame ${frameNumber}/${totalFrames}.
+
+Phase: ${phase.toUpperCase()} (${r.desc})
+Expected ranges: Knee ${r.knee}deg, Hip ${r.hip}deg, Trunk ${r.trunk}deg
+
+MEASURE using anatomical landmarks:
+- Knee: angle femur-tibia (180=straight, 90=parallel)
+- Hip: torso-femur angle (180=standing, 90=seated)
+- Trunk: lean from vertical (0=upright, 30=leaned)
+
+VARY angles based on ACTUAL body position visible!
+
+Return JSON: {"knee_l":0,"knee_r":0,"hip":0,"trunk":0,"score":7}`
+
+  const response = await fetch(`${OLLAMA_URL}/api/generate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model: VISION_MODEL,
-      messages: [{
-        role: 'user',
-        content: prompt,
-        images
-      }],
+      prompt,
+      images: [imageBase64],
+      format: 'json',
       stream: false,
-      options: {
-        temperature: 0.2,
-        top_p: 0.85,
-        seed: 42
-      }
+      options: { temperature: 0.1, num_predict: 300 }
     })
   })
 
   if (!response.ok) {
-    throw new Error(`Ollama error: ${response.status}`)
+    const errText = await response.text().catch(() => '')
+    throw new Error(`Ollama ${response.status}: ${errText.substring(0, 100)}`)
   }
 
-  return response.json()
+  const data = await response.json()
+  const content = (data.response || '').trim()
+  const jsonMatch = content.replace(/```json\s*/gi, '').replace(/```/g, '').match(/\{[\s\S]*\}/)
+
+  if (!jsonMatch) {
+    throw new Error(`Sem JSON: ${content.substring(0, 100)}`)
+  }
+
+  const parsed = JSON.parse(jsonMatch[0])
+  const keys = Object.keys(parsed)
+
+  // Busca flexível de chaves
+  const findNum = (candidates: string[], def: number): number => {
+    for (const c of candidates) {
+      if (parsed[c] !== undefined) {
+        const n = Number(parsed[c])
+        if (!isNaN(n)) return n
+      }
+    }
+    // Busca parcial
+    for (const k of keys) {
+      for (const c of candidates) {
+        if (k.includes(c) || c.includes(k)) {
+          const n = Number(parsed[k])
+          if (!isNaN(n) && n > 0) return n
+        }
+      }
+    }
+    return def
+  }
+
+  const knee_l = findNum(['knee_l', 'kne_l', 'left_knee', 'knee'], 0)
+  const knee_r_raw = findNum(['knee_r', 'kne_r', 'right_knee'], 0)
+
+  return {
+    knee_l,
+    knee_r: knee_r_raw > 0 ? knee_r_raw : knee_l,
+    hip: findNum(['hip', 'hip_flexion'], 0),
+    trunk: findNum(['trunk', 'trn', 'tr', 'trunk_lean'], 0),
+    // Valgus e forward lean calculados pelo código, não pelo modelo
+    valgus: Math.abs(knee_l - (knee_r_raw > 0 ? knee_r_raw : knee_l)) > 10,
+    forward_lean: findNum(['trunk', 'trn', 'tr', 'trunk_lean'], 0) > 25,
+    score: findNum(['score', 'quality'], 5)
+  }
+}
+
+/**
+ * Calcula similaridade com padrão ouro baseado em diferença angular
+ * 100% = idêntico, 0% = diferença >= maxDiff
+ */
+function calcSimilarity(measured: number, reference: number, maxDiff: number = 40): number {
+  if (measured === 0) return 0 // Sem medição
+  const diff = Math.abs(measured - reference)
+  return Math.max(0, Math.min(100, Math.round(100 - (diff / maxDiff) * 100)))
 }
 
 /**
@@ -99,8 +184,8 @@ export async function analyzeFrameComparative(
   frameNumber: number,
   totalFrames: number,
   goldFrames: string[],
-  valgoFrames: string[],
-  anteroFrames: string[],
+  _valgoFrames: string[],
+  _anteroFrames: string[],
   goldStandard: ReferencePattern,
   videoDuration: number = 3
 ): Promise<ComparativeFrameResult> {
@@ -108,94 +193,95 @@ export async function analyzeFrameComparative(
   console.log(`  🔍 Análise comparativa frame ${frameNumber}/${totalFrames}...`)
 
   const frameIndex = frameNumber - 1
-  const goldFrame = goldFrames[frameIndex] || null
-  const valgoFrame = valgoFrames[frameIndex] || null
-  const anteroFrame = anteroFrames[frameIndex] || null
-
-  // Ângulos de referência do padrão ouro
   const angRefOuro = getExpectedAngles(goldStandard, frameIndex)
-
-  // Montar lista de imagens e prompt dinâmico
-  const images: string[] = [userFrameBase64]
-  let imageDescriptions = '1. **FRAME DO USUÁRIO** (analisar este)'
-
-  if (goldFrame) {
-    images.push(goldFrame)
-    imageDescriptions += '\n2. **PADRÃO OURO** (execução perfeita - referência positiva)'
-  }
-
-  let imgIndex = images.length + 1
-  if (valgoFrame) {
-    images.push(valgoFrame)
-    imageDescriptions += `\n${imgIndex}. **PADRÃO RUIM - Valgo Dinâmico** (erro comum - joelhos para dentro)`
-    imgIndex++
-  }
-  if (anteroFrame) {
-    images.push(anteroFrame)
-    imageDescriptions += `\n${imgIndex}. **PADRÃO RUIM - Anteriorização** (erro comum - tronco muito inclinado)`
-  }
-
-  const prompt = `
-Você é um biomecânico especializado comparando execuções de agachamento.
-
-Você recebeu ${images.length} imagens nesta ORDEM:
-${imageDescriptions}
-
-TAREFA:
-Compare VISUALMENTE o frame do usuário com as referências.
-MEÇA ângulos reais, NÃO copie valores de exemplo.
-
-Retorne APENAS este JSON (sem texto adicional):
-
-{
-  "similaridade_com_padrao_ouro": 0-100,
-  "similaridade_com_valgo": 0-100,
-  "similaridade_com_anterorizacao": 0-100,
-  "desvios_observados": [
-    "Liste APENAS desvios VISUALMENTE ÓBVIOS vs padrão ouro"
-  ],
-  "aspectos_positivos": [
-    "O que está IGUAL ou MELHOR que o padrão ouro"
-  ],
-  "angulos_estimados": {
-    "joelho_esquerdo": numero,
-    "joelho_direito": numero,
-    "flexao_quadril": numero,
-    "inclinacao_tronco": numero
-  },
-  "score": 0-10,
-  "justificativa": "Baseado na comparação visual com as referências"
-}
-`.trim()
+  const hasGoldRef = goldFrames.length > 0
 
   try {
-    const response = await ollamaVisionChat(images, prompt)
-    const content = response.message?.content || ''
-    const jsonMatch = content.match(/\{[\s\S]*\}/)
+    // Tentar medir ângulos até 2 vezes
+    let angles: Awaited<ReturnType<typeof measureAnglesWithVision>> | null = null
 
-    if (!jsonMatch) {
-      throw new Error('Vision não retornou JSON válido')
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        angles = await measureAnglesWithVision(userFrameBase64, frameNumber, totalFrames)
+        if (angles.knee_l > 0 || angles.hip > 0) break // Tem dados válidos
+        if (attempt < 2) console.log(`  ⚠️ Frame ${frameNumber}: ângulos zerados, tentando novamente...`)
+      } catch (err) {
+        if (attempt < 2) {
+          const msg = err instanceof Error ? err.message : String(err)
+          console.log(`  ⚠️ Frame ${frameNumber}: ${msg}, tentando novamente...`)
+        } else {
+          throw err
+        }
+      }
     }
 
-    const analysis = JSON.parse(jsonMatch[0])
+    if (!angles) {
+      throw new Error('Falha após 2 tentativas')
+    }
 
-    // Calcular score ajustado
-    const scoreAjustado = calculateComparativeScore(analysis)
+    // Se knee_r = 0, usar knee_l
+    if (angles.knee_r === 0 && angles.knee_l > 0) angles.knee_r = angles.knee_l
+
+    // CALCULAR SIMILARIDADES PROGRAMATICAMENTE
+    const simKnee = calcSimilarity(angles.knee_l, angRefOuro.joelho_esquerdo)
+    const simHip = calcSimilarity(angles.hip, angRefOuro.flexao_quadril)
+    const simTrunk = calcSimilarity(angles.trunk, angRefOuro.inclinacao_tronco, 20)
+
+    // Similaridade geral com ouro (ponderada)
+    const simOuro = angles.knee_l > 0
+      ? Math.round(simKnee * 0.4 + simHip * 0.35 + simTrunk * 0.25)
+      : 0
+
+    // Similaridade com valgo (baseado em detecção + diferença angular)
+    const simValgo = angles.valgus ? 70 : (Math.abs(angles.knee_l - angles.knee_r) > 10 ? 40 : 10)
+
+    // Similaridade com anteriorização (baseado em inclinação)
+    const simAntero = angles.trunk > 25 ? 70 : angles.trunk > 18 ? 40 : angles.trunk > 10 ? 15 : 5
+
+    // Detectar desvios automaticamente
+    const desvios: string[] = []
+    const positivos: string[] = []
+
+    if (angles.valgus) desvios.push('Valgo dinâmico de joelho detectado')
+    if (angles.forward_lean || angles.trunk > 25) desvios.push(`Anteriorização do tronco (${angles.trunk}°)`)
+    if (simKnee < 50 && angles.knee_l > 0) desvios.push(`Joelho ${angles.knee_l}° vs referência ${angRefOuro.joelho_esquerdo}°`)
+    if (simHip < 50 && angles.hip > 0) desvios.push(`Quadril ${angles.hip}° vs referência ${angRefOuro.flexao_quadril}°`)
+
+    if (simOuro >= 70) positivos.push('Execução próxima ao padrão ouro')
+    if (!angles.valgus && Math.abs(angles.knee_l - angles.knee_r) <= 5) positivos.push('Bom alinhamento bilateral')
+    if (angles.trunk > 0 && angles.trunk <= 18) positivos.push('Tronco bem posicionado')
+    if (simKnee >= 80) positivos.push('Flexão de joelho adequada')
+
+    // Score ajustado pela comparação com referência
+    const scoreAjustado = Math.max(0, Math.min(10,
+      Math.round(((simOuro / 100) * 10 - (simValgo > 40 ? 1.5 : 0) - (simAntero > 40 ? 1 : 0)) * 10) / 10
+    ))
+
+    console.log(`    📐 Joelho=${angles.knee_l}°/${angles.knee_r}° Quadril=${angles.hip}° Tronco=${angles.trunk}° | SimOuro=${simOuro}% Score=${angles.score} Ajust=${scoreAjustado}`)
 
     return {
       frame_numero: frameNumber,
       timestamp: `${((frameNumber - 1) * (videoDuration / totalFrames)).toFixed(1)}s`,
-      similaridade_com_padrao_ouro: analysis.similaridade_com_padrao_ouro || 0,
-      similaridade_com_valgo: analysis.similaridade_com_valgo || 0,
-      similaridade_com_anterorizacao: analysis.similaridade_com_anterorizacao || 0,
-      desvios_observados: analysis.desvios_observados || [],
-      aspectos_positivos: analysis.aspectos_positivos || [],
-      angulos_estimados: analysis.angulos_estimados || { joelho_esquerdo: 0, joelho_direito: 0, flexao_quadril: 0, inclinacao_tronco: 0 },
+      similaridade_com_padrao_ouro: simOuro,
+      similaridade_com_valgo: simValgo,
+      similaridade_com_anterorizacao: simAntero,
+      desvios_observados: desvios,
+      aspectos_positivos: positivos,
+      angulos_estimados: {
+        joelho_esquerdo: angles.knee_l,
+        joelho_direito: angles.knee_r,
+        flexao_quadril: angles.hip,
+        inclinacao_tronco: angles.trunk
+      },
       angulos_referencia: angRefOuro,
-      score: analysis.score || 0,
+      score: angles.score,
       score_ajustado: scoreAjustado,
-      justificativa: analysis.justificativa || '',
-      metodo: goldFrame ? 'comparative_with_references' : 'standalone_vision'
+      justificativa: desvios.length > 0
+        ? `Desvios: ${desvios.join('; ')}`
+        : positivos.length > 0
+          ? positivos.join('; ')
+          : 'Análise visual sem desvios significativos',
+      metodo: hasGoldRef ? 'comparative_with_gold_standard' : 'standalone_vision'
     }
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : String(error)
@@ -223,13 +309,11 @@ function calculateComparativeScore(analysis: {
   similaridade_com_padrao_ouro?: number
   similaridade_com_valgo?: number
   similaridade_com_anterorizacao?: number
-  score?: number
 }): number {
   const simOuro = analysis.similaridade_com_padrao_ouro || 0
   const simValgo = analysis.similaridade_com_valgo || 0
   const simAntero = analysis.similaridade_com_anterorizacao || 0
 
-  // Fórmula: proximidade ao ouro bonifica, proximidade aos ruins penaliza
   const scoreBase = (simOuro / 100) * 10
   const penalidade = ((simValgo + simAntero) / 200) * 4
 
@@ -264,7 +348,7 @@ export async function runComparativeAnalysis(
   console.log(`  Valgo: ${valgoCheck.available ? '✅' : '⚠️ sem frames'} (${valgoCheck.found.length}/${valgoPattern?.frames.length || 0})`)
   console.log(`  Anteriorização: ${anteroCheck.available ? '✅' : '⚠️ sem frames'} (${anteroCheck.found.length}/${anteroPattern?.frames.length || 0})`)
 
-  // 3. Carregar frames disponíveis
+  // 3. Carregar frames disponíveis (para referência de ângulos)
   const goldFrames = goldCheck.available ? loadPatternFrames(goldStandard) : []
   const valgoFrames = valgoCheck.available && valgoPattern ? loadPatternFrames(valgoPattern) : []
   const anteroFrames = anteroCheck.available && anteroPattern ? loadPatternFrames(anteroPattern!) : []
@@ -312,7 +396,6 @@ export async function runComparativeAnalysis(
       desviosMap.set('anterorizacao_tronco', (desviosMap.get('anterorizacao_tronco') || 0) + 1)
     }
 
-    // Também considerar desvios observados textualmente
     for (const desvio of frame.desvios_observados) {
       const lower = desvio.toLowerCase()
       if (lower.includes('valgo') || lower.includes('joelho')) {
@@ -365,12 +448,12 @@ export async function runComparativeAnalysis(
     similaridade_padrao_ouro: Math.round(simOuroMedia),
     frames_analyzed: userFramesBase64.length,
     comparative_analysis: results,
-    pontos_criticos,
+    pontos_criticos: pontosCriticos,
     references_used: {
       gold_standard: goldFrames.length > 0,
       valgo_pattern: valgoFrames.length > 0,
       anterorizacao_pattern: anteroFrames.length > 0,
-      lordose_pattern: false // Ainda não implementado
+      lordose_pattern: false
     },
     metodo: goldFrames.length > 0 ? 'comparative_with_gold_standard' : 'standalone_vision',
     timestamp: new Date().toISOString()
