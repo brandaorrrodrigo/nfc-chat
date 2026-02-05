@@ -13,6 +13,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { PrismaClient } from '../generated/prisma';
 import * as fs from 'fs';
 import * as path from 'path';
+import { biometricPaywall, PaywallBlockedError } from './biometric-paywall.service';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY || '',
@@ -43,20 +44,36 @@ export interface ValidationResult {
   issues: string[];
 }
 
+export interface PaymentInfo {
+  method: 'fitpoints' | 'subscription' | 'free_quota';
+  cost_fps: number;
+  transaction_id?: string;
+}
+
 export interface BaselineResult {
-  type: 'baseline_created' | 'validation_error';
+  type: 'baseline_created' | 'validation_error' | 'paywall_blocked';
   baseline_id?: string;
   analysis?: string;
   missing?: string[];
   issues?: string[];
+  payment_info?: PaymentInfo;
+  paywall_reason?: string;
+  required_fps?: number;
+  current_balance?: number;
+  shortfall?: number;
 }
 
 export interface ComparisonResult {
-  type: 'comparison_created' | 'validation_error';
+  type: 'comparison_created' | 'validation_error' | 'paywall_blocked';
   comparison_id?: string;
   analysis?: string;
   missing?: string[];
   issues?: string[];
+  payment_info?: PaymentInfo;
+  paywall_reason?: string;
+  required_fps?: number;
+  current_balance?: number;
+  shortfall?: number;
 }
 
 // ============================================
@@ -100,7 +117,27 @@ export class JuizBiometricoService {
     }
 
     try {
-      // 2. Preparar mensagem para Claude
+      // 2. Verificar acesso via paywall
+      console.log('💰 Verificando acesso via paywall...');
+      const access = await biometricPaywall.checkBaselineAccess(input.user_id);
+
+      if (!access.allowed) {
+        console.log('🚫 Acesso bloqueado:', access.reason);
+        return {
+          type: 'paywall_blocked',
+          paywall_reason: access.reason,
+          required_fps: access.cost_fps,
+          current_balance: access.current_balance,
+          shortfall: access.shortfall,
+        };
+      }
+
+      // 3. Processar pagamento
+      console.log('💳 Processando pagamento...');
+      const payment = await biometricPaywall.processBaselinePayment(input.user_id);
+      console.log(`✅ Pagamento processado via ${payment.method}`);
+
+      // 4. Preparar mensagem para Claude
       const userMessage = this.buildAnalysisMessage(
         input.images,
         input.current_protocol
@@ -108,7 +145,7 @@ export class JuizBiometricoService {
 
       console.log('📤 Enviando para Claude Vision API...');
 
-      // 3. Chamar Claude Vision
+      // 5. Chamar Claude Vision
       const response = await anthropic.messages.create({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 2000,
@@ -129,13 +166,15 @@ export class JuizBiometricoService {
 
       console.log('✅ Análise recebida do Claude');
 
-      // 4. Salvar baseline no banco
+      // 6. Salvar baseline no banco com informações de pagamento
       const baseline = await prisma.biometricBaseline.create({
         data: {
           user_id: input.user_id,
           analysis_text: analysisText,
           images_metadata: input.images as any,
           protocol_context: input.current_protocol,
+          was_free: payment.method === 'free_quota',
+          cost_fps: payment.cost_fps,
           created_at: new Date(),
         },
       });
@@ -146,8 +185,23 @@ export class JuizBiometricoService {
         type: 'baseline_created',
         baseline_id: baseline.id,
         analysis: analysisText,
+        payment_info: {
+          method: payment.method,
+          cost_fps: payment.cost_fps,
+          transaction_id: payment.transaction_id,
+        },
       };
     } catch (error) {
+      if (error instanceof PaywallBlockedError) {
+        console.log('🚫 Paywall bloqueado:', error.reason);
+        return {
+          type: 'paywall_blocked',
+          paywall_reason: error.reason,
+          required_fps: error.cost_fps,
+          shortfall: error.shortfall,
+        };
+      }
+
       console.error('❌ Erro ao criar baseline:', error);
       throw error;
     }
@@ -188,7 +242,22 @@ export class JuizBiometricoService {
     }
 
     try {
-      // 3. Preparar mensagem comparativa
+      // 3. Verificar acesso via paywall
+      console.log('💰 Verificando acesso via paywall...');
+      const access = await biometricPaywall.checkComparisonAccess(input.user_id);
+
+      if (!access.allowed) {
+        console.log('🚫 Acesso bloqueado:', access.reason);
+        return {
+          type: 'paywall_blocked',
+          paywall_reason: access.reason,
+          required_fps: access.cost_fps,
+          current_balance: access.current_balance,
+          shortfall: access.shortfall,
+        };
+      }
+
+      // 4. Preparar mensagem comparativa
       const userMessage = this.buildComparisonMessage(
         baseline,
         input.current_protocol
@@ -196,7 +265,7 @@ export class JuizBiometricoService {
 
       console.log('📤 Enviando comparação para Claude Vision API...');
 
-      // 4. Chamar Claude
+      // 5. Chamar Claude
       const response = await anthropic.messages.create({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 2500,
@@ -217,7 +286,18 @@ export class JuizBiometricoService {
 
       console.log('✅ Comparação recebida do Claude');
 
-      // 5. Salvar comparação
+      // 6. Criar ID temporário para a comparação (necessário para processar pagamento)
+      const tempComparisonId = `comparison-${Date.now()}`;
+
+      // 7. Processar pagamento
+      console.log('💳 Processando pagamento...');
+      const payment = await biometricPaywall.processComparisonPayment(
+        input.user_id,
+        tempComparisonId
+      );
+      console.log(`✅ Pagamento processado via ${payment.method}`);
+
+      // 8. Salvar comparação com informações de pagamento
       const comparison = await prisma.biometricComparison.create({
         data: {
           baseline_id: baseline.id,
@@ -225,6 +305,9 @@ export class JuizBiometricoService {
           analysis_text: comparisonText,
           images_metadata: input.images as any,
           protocol_context: input.current_protocol,
+          cost_fps: payment.cost_fps,
+          payment_method: payment.method,
+          transaction_id: payment.transaction_id,
           created_at: new Date(),
         },
       });
@@ -235,8 +318,23 @@ export class JuizBiometricoService {
         type: 'comparison_created',
         comparison_id: comparison.id,
         analysis: comparisonText,
+        payment_info: {
+          method: payment.method,
+          cost_fps: payment.cost_fps,
+          transaction_id: payment.transaction_id,
+        },
       };
     } catch (error) {
+      if (error instanceof PaywallBlockedError) {
+        console.log('🚫 Paywall bloqueado:', error.reason);
+        return {
+          type: 'paywall_blocked',
+          paywall_reason: error.reason,
+          required_fps: error.cost_fps,
+          shortfall: error.shortfall,
+        };
+      }
+
       console.error('❌ Erro ao criar comparação:', error);
       throw error;
     }

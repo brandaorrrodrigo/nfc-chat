@@ -15,7 +15,8 @@
     "avatar:fix": "ts-node --project tsconfig.scripts.json scripts/fix-duplicate-avatars.ts",
     "avatar:migrate": "ts-node --project tsconfig.scripts.json scripts/migrate-avatars.ts",
     "avatar:stats": "ts-node --project tsconfig.scripts.json scripts/avatar-stats.ts",
-    "seed:arenas-biometria": "npx tsx scripts/seed-arenas-biometria.ts"
+    "seed:arenas-biometria": "npx tsx scripts/seed-arenas-biometria.ts",
+    "seed:pricing": "npx tsx scripts/seed-biometric-pricing.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.73.0",

@@ -26,12 +26,24 @@ model User {
   twoFactorEnabled  Boolean   @default(false)
   twoFactorSecret   String?
 
-  // FP
+  // FP (FitPoints)
   fpTotal           Int       @default(0)
   fpAvailable       Int       @default(0)
   currentStreak     Int       @default(0)
   longestStreak     Int       @default(0)
   lastActiveDate    DateTime?
+
+  // FitPoints (novo sistema)
+  fitpoints_balance     Int      @default(0)
+  fitpoints_lifetime    Int      @default(0)  // Total já ganho
+
+  // Subscription
+  subscription_tier     String   @default("free")  // 'free' | 'premium' | 'premium_plus'
+  subscription_status   String   @default("inactive")  // 'active' | 'inactive' | 'cancelled' | 'trial'
+  subscription_ends_at  DateTime?
+
+  // Biometric quota
+  free_baseline_used    Boolean  @default(false)  // Já usou baseline grátis?
 
   // Flags de moderação
   isMuted           Boolean   @default(false)
@@ -49,6 +61,9 @@ model User {
   moderationActions ModerationAction[]
   auditLogs         AuditLog[]
   videoAnalyses     VideoAnalysis[]
+  fitpointsTransactions FitPointsTransaction[]
+  biometricBaselines BiometricBaseline[]
+  biometricComparisons BiometricComparison[]
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
@@ -557,6 +572,7 @@ model DailyMetrics {
 model BiometricBaseline {
   id                String   @id @default(cuid())
   user_id           String
+  user              User     @relation(fields: [user_id], references: [id])
 
   // Análise técnica completa
   analysis_text     String   @db.Text
@@ -566,6 +582,10 @@ model BiometricBaseline {
 
   // Contexto do protocolo no momento da avaliação
   protocol_context  String?  @db.Text
+
+  // Monetization
+  was_free          Boolean  @default(false)  // True se foi a baseline grátis
+  cost_fps          Int      @default(0)      // Quanto custou (0 se grátis)
 
   // Relações
   comparisons       BiometricComparison[]
@@ -582,6 +602,7 @@ model BiometricComparison {
   baseline_id       String
   baseline          BiometricBaseline @relation(fields: [baseline_id], references: [id], onDelete: Cascade)
   user_id           String
+  user              User              @relation(fields: [user_id], references: [id])
 
   // Análise comparativa técnica
   analysis_text     String            @db.Text
@@ -592,10 +613,65 @@ model BiometricComparison {
   // Contexto do protocolo na reavaliação
   protocol_context  String?           @db.Text
 
+  // Monetization
+  cost_fps          Int               // Quanto custou (25 FPs ou 0 se Premium)
+  payment_method    String            // 'fitpoints' | 'subscription'
+  transaction_id    String?           // Referência para FitPointsTransaction
+
   created_at        DateTime          @default(now())
 
   @@index([baseline_id])
   @@index([user_id])
   @@index([created_at])
   @@map("biometric_comparisons")
+}
+
+// ============================================
+// FITPOINTS - SISTEMA DE MONETIZAÇÃO
+// ============================================
+
+model FitPointsTransaction {
+  id                String   @id @default(cuid())
+  user_id           String
+  user              User     @relation(fields: [user_id], references: [id])
+
+  amount            Int      // Positivo = ganho, Negativo = gasto
+  balance_after     Int      // Saldo após transação
+
+  transaction_type  String   // 'purchase' | 'spend' | 'reward' | 'refund' | 'bonus'
+  category          String   // 'biometric_analysis' | 'meal_plan' | 'workout' | etc
+
+  // Metadata
+  description       String
+  reference_id      String?  // ID do item comprado (ex: comparison_id)
+  metadata          Json?    // Dados adicionais
+
+  created_at        DateTime @default(now())
+
+  @@index([user_id])
+  @@index([transaction_type])
+  @@index([created_at])
+  @@map("fitpoints_transactions")
+}
+
+model BiometricPricing {
+  id                String   @id @default(cuid())
+
+  item_type         String   @unique  // 'baseline' | 'comparison' | 'export_pdf'
+
+  // Preços
+  fps_cost          Int      // Custo em FitPoints
+  premium_free      Boolean  @default(false)  // Grátis para Premium?
+
+  // Regras especiais
+  first_free        Boolean  @default(false)  // Primeira vez grátis?
+  max_per_month     Int?     // Limite mensal (null = ilimitado)
+
+  // Active
+  is_active         Boolean  @default(true)
+
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+
+  @@map("biometric_pricing")
 }
