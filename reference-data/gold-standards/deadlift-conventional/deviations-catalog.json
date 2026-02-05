@@ -1,0 +1,694 @@
+{
+  "exercise_id": "deadlift_conventional",
+  "version": "1.0.0",
+  "created_at": "2025-02-05",
+  "total_deviations_cataloged": 11,
+  "evidence_base_references": [
+    "McGill SM. Low Back Disorders: Evidence-Based Prevention and Rehabilitation. 3rd Ed. 2015",
+    "Escamilla RF et al. A three-dimensional biomechanical analysis of the deadlift. Med Sci Sports Exerc. 2000",
+    "Hales M. Improving the Deadlift: Understanding Biomechanical Constraints. Strength Cond J. 2010",
+    "Swinton PA et al. A biomechanical analysis of straight and hexagonal barbell deadlifts. J Strength Cond Res. 2011"
+  ],
+
+  "deviations": [
+    {
+      "id": "lumbar_flexion",
+      "name": "Flexão Lombar (Perda de Lordose Neutra)",
+      "name_en": "Lumbar Flexion (Loss of Neutral Lordosis)",
+      "description": "Coluna lombar flexiona (arredonda), perdendo curvatura neutra sob carga. DESVIO CRÍTICO DE SEGURANÇA.",
+      "aliases": ["rounded lower back", "cat back", "flexed spine", "costas arredondadas"],
+
+      "biomechanical_cause": {
+        "primary": "Core fraco ou má ativação de extensores lombares",
+        "secondary": ["Carga excessiva", "Fadiga", "Má técnica de setup", "Mobilidade inadequada de quadril", "Isquiotibiais curtos"],
+        "risk_factors": ["Histórico de dor lombar", "Core fraco", "Carga >90% 1RM", "Fadiga extrema"]
+      },
+
+      "detection_method": {
+        "primary": "lumbar_curvature < neutral_lordosis - 10°",
+        "secondary": "lumbar_angle_change > 15° from setup to pull",
+        "requires_landmarks": ["lumbar_spine", "sacrum", "thoracic_spine"],
+        "calculation": "angle(lumbar_vector) compared to neutral_baseline",
+        "detection_phase": "setup, pull_initial, and lockout"
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "lumbar_flexion": "5-10 degrees from neutral",
+          "injury_risk": "moderate",
+          "performance_impact": "Increased disc stress but controllable",
+          "intervention": "Reduce load, core strengthening"
+        },
+        "moderate": {
+          "lumbar_flexion": "10-20 degrees from neutral",
+          "injury_risk": "high (disc herniation risk)",
+          "performance_impact": "Dangerous spinal loading (3-4x normal shear stress)",
+          "intervention": "Stop, significant load reduction"
+        },
+        "severe": {
+          "lumbar_flexion": ">20 degrees (significant rounding)",
+          "injury_risk": "CRITICAL (imminent disc injury risk)",
+          "performance_impact": "Extremely dangerous, potential catastrophic injury",
+          "intervention": "STOP IMMEDIATELY, do not complete lift"
+        }
+      },
+
+      "evidence_base": {
+        "prevalence": "15-30% under heavy loads (>85% 1RM)",
+        "injury_correlation": "Lumbar flexion increases disc shear by 300-400N per 10° (McGill SM, 2015)",
+        "biomechanical_impact": "Most dangerous deadlift deviation, direct path to disc herniation",
+        "correction_efficacy": "Requires fundamental retraining, core strengthening"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Chest up", "Proud chest", "Arch hard", "Pull slack out of bar"],
+        "corrective_exercises": [
+          {
+            "name": "Romanian deadlift (RDL)",
+            "target": "Hip hinge pattern with maintained lumbar neutrality",
+            "sets": 4,
+            "reps": 8,
+            "frequency": "3x/week"
+          },
+          {
+            "name": "Plank variations (especially weighted)",
+            "target": "Anti-extension core strength",
+            "sets": 3,
+            "duration": "45-60s",
+            "frequency": "Daily"
+          },
+          {
+            "name": "Bird dogs",
+            "target": "Lumbar stability",
+            "sets": 3,
+            "reps": 10,
+            "frequency": "Daily"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "hips_rise_first",
+      "name": "Quadris Sobem Primeiro",
+      "name_en": "Hips Rise First (Squat the Deadlift)",
+      "description": "Quadris estendem primeiro no início do pull, antes dos ombros, causando o levantamento em duas fases",
+      "aliases": ["squat the deadlift", "stripper deadlift", "two-stage lift"],
+
+      "biomechanical_cause": {
+        "primary": "Setup inadequado (quadris muito baixos) ou má coordenação",
+        "secondary": ["Tentativa de 'leg press' a barra", "Quadríceps tentando dominar movimento", "Carga muito pesada"],
+        "risk_factors": ["Setup muito baixo (squatting)", "Falta de força de cadeia posterior"]
+      },
+
+      "detection_method": {
+        "primary": "hip_extension_rate > shoulder_rise_rate in first 20% of pull",
+        "secondary": "hip_angle_change > knee_angle_change by >15° in initial pull",
+        "requires_landmarks": ["hip", "shoulder", "knee"],
+        "calculation": "compare(delta_hip_height/dt, delta_shoulder_height/dt)",
+        "detection_phase": "pull_initial (0-30%)"
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "hip_shoulder_differential": "Hips rise 10-20% faster than shoulders",
+          "injury_risk": "low-moderate",
+          "performance_impact": "Slightly inefficient, becomes more back-dominant",
+          "intervention": "Setup adjustment"
+        },
+        "moderate": {
+          "hip_shoulder_differential": "Hips rise 20-40% faster",
+          "injury_risk": "moderate (increased lumbar loading)",
+          "performance_impact": "Two-phase lift, significant efficiency loss",
+          "intervention": "Higher hip setup, reduce load"
+        },
+        "severe": {
+          "hip_shoulder_differential": "Hips rise >40% faster (essentially lock out legs first)",
+          "injury_risk": "high (excessive lumbar loading in compromised position)",
+          "performance_impact": "Becomes stiff-leg deadlift from disadvantaged position",
+          "intervention": "Complete setup re-teaching"
+        }
+      },
+
+      "evidence_base": {
+        "prevalence": "30-40% with improper setup",
+        "biomechanical_impact": "Shifts load entirely to lumbar extensors after legs extend",
+        "correction_efficacy": "High with setup correction"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Hips and shoulders rise together", "Lead with chest", "Push floor away"],
+        "corrective_exercises": [
+          {
+            "name": "Deficit deadlifts (standing on plates)",
+            "target": "Force proper pulling mechanics from extended range",
+            "sets": 3,
+            "reps": 5,
+            "frequency": "2x/week"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "bar_drift_forward",
+      "name": "Barra se Afasta do Corpo",
+      "name_en": "Bar Drifts Away from Body",
+      "description": "Barra não mantém contato ou proximidade com corpo, afastando-se anteriormente durante o pull",
+      "aliases": ["bar swings forward", "loss of bar contact", "barra se afasta"],
+
+      "biomechanical_cause": {
+        "primary": "Setup inadequado (barra muito longe) ou perda de tensão latíssimo",
+        "secondary": ["Quadris muito baixos no setup", "Falta de 'pulling back' cue", "Má ativação de lats"],
+        "risk_factors": ["Setup com barra longe de canelas", "Fraqueza de lats"]
+      },
+
+      "detection_method": {
+        "primary": "bar_x - body_x > 8cm at any point during pull",
+        "secondary": "bar_trajectory_forward_component > 5cm",
+        "requires_landmarks": ["bar_position", "shin", "hip"],
+        "calculation": "horizontal_distance(bar_x, body_reference_x)",
+        "detection_phase": "pull_initial and mid-pull"
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "forward_drift": "3-6 cm",
+          "injury_risk": "low-moderate",
+          "performance_impact": "Increased moment arm, ~10-15% harder",
+          "intervention": "Lat activation, setup closer"
+        },
+        "moderate": {
+          "forward_drift": "6-10 cm",
+          "injury_risk": "moderate (significant lumbar loading increase)",
+          "performance_impact": "~20-30% harder, very inefficient",
+          "intervention": "Major setup correction"
+        },
+        "severe": {
+          "forward_drift": ">10 cm (barra swings forward significantly)",
+          "injury_risk": "high (may need to drop bar, extreme lumbar moment)",
+          "performance_impact": "May fail lift, extremely dangerous",
+          "intervention": "Stop, fundamental re-teaching"
+        }
+      },
+
+      "evidence_base": {
+        "prevalence": "20-35% especially in beginners",
+        "biomechanical_impact": "Each cm forward increases lumbar moment by ~1-2% body weight (McGill SM, 2015)",
+        "correction_efficacy": "High with proper cueing"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Bar drags up legs", "Pull bar back into you", "Activate lats", "Bar stays over midfoot"],
+        "corrective_exercises": [
+          {
+            "name": "Straight-arm lat pulldowns",
+            "target": "Lat activation for pulling bar into body",
+            "sets": 3,
+            "reps": 12,
+            "frequency": "3x/week"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "rounded_shoulders",
+      "name": "Ombros Arredondados (Protração Escapular)",
+      "name_en": "Rounded Shoulders (Scapular Protraction)",
+      "description": "Ombros arredondam para frente, escápulas protraem, perdendo tensão de costas superior",
+      "aliases": ["scapular protraction", "shoulder rounding", "ombros para frente"],
+
+      "biomechanical_cause": {
+        "primary": "Fraqueza de trapézio/rombóides ou má ativação",
+        "secondary": ["Grip inadequado", "Carga excessiva", "Fadiga"],
+        "risk_factors": ["Postura cifótica habitual", "Fraqueza de costas superior"]
+      },
+
+      "detection_method": {
+        "primary": "scapular_protraction > 3cm from neutral during pull",
+        "secondary": "shoulder_width_increase during pull",
+        "requires_landmarks": ["scapula", "shoulder", "spine"],
+        "calculation": "distance(scapula_medial_border, spine)",
+        "detection_phase": "pull_initial and lockout"
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "protraction_distance": "1-2 cm",
+          "injury_risk": "low",
+          "performance_impact": "Slight loss of back tension",
+          "intervention": "Activation cueing"
+        },
+        "moderate": {
+          "protraction_distance": "2-4 cm",
+          "injury_risk": "moderate (bicep tendon stress, loss of control)",
+          "performance_impact": "Reduced force transfer, grip weakens",
+          "intervention": "Back strengthening"
+        },
+        "severe": {
+          "protraction_distance": ">4 cm (complete rounding)",
+          "injury_risk": "high (possible bicep tear, loss of control)",
+          "performance_impact": "Dangerous, potential bar drop",
+          "intervention": "Stop, fundamental back work"
+        }
+      },
+
+      "evidence_base": {
+        "prevalence": "15-25%",
+        "biomechanical_impact": "Increases bicep tendon loading, reduces lat engagement",
+        "correction_efficacy": "Moderate with strengthening"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Chest up", "Shoulders back", "Bend the bar", "Lats tight"],
+        "corrective_exercises": [
+          {
+            "name": "Face pulls",
+            "target": "Posterior shoulder and scapular retractors",
+            "sets": 3,
+            "reps": 15,
+            "frequency": "Daily"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "excessive_lockout_hyperextension",
+      "name": "Hiperextensão Excessiva no Lockout",
+      "name_en": "Excessive Lockout Hyperextension",
+      "description": "Tronco hiperextende excessivamente no lockout, 'leaning back' muito além de vertical",
+      "aliases": ["leaning back too far", "excessive layback", "hiperextensão lombar"],
+
+      "biomechanical_cause": {
+        "primary": "Má compreensão de lockout correto ou compensação",
+        "secondary": ["Tentativa de 'mostrar' lockout completo", "Fraqueza de glúteos (compensa com lombar)"],
+        "risk_factors": ["Má instrução", "Competição (exagero)"]
+      },
+
+      "detection_method": {
+        "primary": "lumbar_extension > neutral + 15°",
+        "secondary": "trunk_angle_from_vertical < -10° (leaning backward)",
+        "requires_landmarks": ["lumbar_spine", "thoracic_spine", "hip"],
+        "calculation": "angle(trunk_vector, vertical)",
+        "detection_phase": "lockout"
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "hyperextension": "10-15 degrees beyond neutral",
+          "injury_risk": "low-moderate",
+          "performance_impact": "Unnecessary but not immediately dangerous",
+          "intervention": "Cueing for neutral lockout"
+        },
+        "moderate": {
+          "hyperextension": "15-25 degrees",
+          "injury_risk": "moderate (facet joint compression)",
+          "performance_impact": "Increased risk over time",
+          "intervention": "Conscious lockout control"
+        },
+        "severe": {
+          "hyperextension": ">25 degrees (dramatic leaning back)",
+          "injury_risk": "high (lumbar facet injury possible)",
+          "performance_impact": "Dangerous",
+          "intervention": "Immediate correction"
+        }
+      },
+
+      "evidence_base": {
+        "prevalence": "10-20% in powerlifters",
+        "biomechanical_impact": "Increases facet joint compression posteriorly",
+        "correction_efficacy": "Easily corrected with cueing"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Stand tall, not back", "Neutral spine", "Squeeze glutes, don't lean"],
+        "corrective_exercises": [
+          {
+            "name": "Glute bridges / Hip thrusts",
+            "target": "Strengthen glutes for proper hip extension without lumbar compensation",
+            "sets": 3,
+            "reps": 12,
+            "frequency": "3x/week"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "knees_cave_in",
+      "name": "Joelhos Colapsam para Dentro (Valgus)",
+      "name_en": "Knees Cave In (Valgus)",
+      "description": "Joelhos colapsam medialmente durante o pull, especialmente no início",
+      "aliases": ["knee valgus", "knees in", "joelhos para dentro"],
+
+      "biomechanical_cause": {
+        "primary": "Fraqueza de glúteos e abdutores de quadril",
+        "secondary": ["Stance muito estreito", "Carga excessiva", "Fadiga"],
+        "risk_factors": ["Fraqueza de glúteo médio", "Q-angle elevado"]
+      },
+
+      "detection_method": {
+        "primary": "knee_medial_displacement > 5cm from setup position",
+        "secondary": "knee_x < foot_x",
+        "requires_landmarks": ["knee_left", "knee_right", "foot_left", "foot_right"],
+        "calculation": "distance(knee_x, foot_center_x)",
+        "detection_phase": "pull_initial"
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "medial_displacement": "2-4 cm",
+          "injury_risk": "low",
+          "performance_impact": "Slight inefficiency",
+          "intervention": "Glute activation"
+        },
+        "moderate": {
+          "medial_displacement": "4-7 cm",
+          "injury_risk": "moderate (MCL stress, knee instability)",
+          "performance_impact": "Reduced force production",
+          "intervention": "Glute strengthening, stance adjustment"
+        },
+        "severe": {
+          "medial_displacement": ">7 cm",
+          "injury_risk": "high (knee injury risk)",
+          "performance_impact": "Significant instability",
+          "intervention": "Stop, unilateral work"
+        }
+      },
+
+      "evidence_base": {
+        "prevalence": "15-25%",
+        "biomechanical_impact": "Increases knee valgus moment, reduces hip extension effectiveness",
+        "correction_efficacy": "High with glute strengthening"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Push knees out", "Spread the floor"],
+        "corrective_exercises": [
+          {
+            "name": "Banded deadlifts",
+            "target": "Hip abduction resistance during pull",
+            "sets": 3,
+            "reps": 8,
+            "frequency": "Every deadlift session"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "head_position_hyperextension",
+      "name": "Hiperextensão Cervical",
+      "name_en": "Cervical Hyperextension",
+      "description": "Cabeça excessivamente estendida para trás, olhando muito para cima",
+      "aliases": ["looking up too much", "neck hyperextension"],
+
+      "biomechanical_cause": {
+        "primary": "Má instrução ('look up' cue taken too far)",
+        "secondary": ["Tentativa de manter tronco ereto"],
+        "risk_factors": ["Histórico de dor cervical"]
+      },
+
+      "detection_method": {
+        "primary": "cervical_extension > 30° from neutral",
+        "requires_landmarks": ["nose", "ear", "shoulder"],
+        "calculation": "angle(ear_to_nose, ear_to_shoulder)",
+        "detection_phase": "all phases"
+      },
+
+      "severity_thresholds": {
+        "mild": {"extension_angle": "20-30 degrees", "injury_risk": "low", "intervention": "Neutral neck cueing"},
+        "moderate": {"extension_angle": "30-40 degrees", "injury_risk": "moderate", "intervention": "Immediate correction"},
+        "severe": {"extension_angle": ">40 degrees", "injury_risk": "high", "intervention": "Stop"}
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Neutral neck", "Look at floor 8 feet ahead", "Pack your neck"]
+      }
+    },
+
+    {
+      "id": "hitching",
+      "name": "Hitching (Apoiar Barra nas Coxas)",
+      "name_en": "Hitching (Bar Resting on Thighs)",
+      "description": "Barra para e apoia nas coxas durante o pull, com pequenos re-pulls. Ilegal em competição.",
+      "aliases": ["bar resting on thighs", "double pull", "ramping"],
+
+      "biomechanical_cause": {
+        "primary": "Fraqueza na fase final do lockout",
+        "secondary": ["Carga excessiva", "Má técnica de lockout", "Braços muito curtos relativos a torso"],
+        "risk_factors": ["Carga >95% 1RM", "Antropometria desfavorável"]
+      },
+
+      "detection_method": {
+        "primary": "bar_velocity == 0 for > 0.3s while bar_y < lockout_height",
+        "secondary": "multiple_acceleration_phases (bar stops and restarts)",
+        "requires_landmarks": ["bar_position"],
+        "calculation": "bar_velocity_over_time, detect pauses",
+        "detection_phase": "mid-pull to lockout"
+      },
+
+      "severity_thresholds": {
+        "mild": {"pause_duration": "0.2-0.5s", "injury_risk": "low", "performance_impact": "Invalid in competition", "intervention": "Reduce load, lockout strengthening"},
+        "moderate": {"pause_duration": "0.5-1s with visible re-pull", "injury_risk": "low", "performance_impact": "Multiple hitches, very inefficient", "intervention": "Significant load reduction"},
+        "severe": {"pause_duration": ">1s or multiple hitches", "injury_risk": "low but completely invalid", "performance_impact": "Not a deadlift anymore", "intervention": "Lower weight dramatically"}
+      },
+
+      "evidence_base": {
+        "prevalence": "5-15% at maximal attempts",
+        "biomechanical_impact": "Indicates weakness in lockout phase",
+        "correction_efficacy": "Improves with specific lockout training"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Smooth continuous pull", "Don't stop", "One motion"],
+        "corrective_exercises": [
+          {
+            "name": "Rack pulls (from knee height)",
+            "target": "Lockout strength",
+            "sets": 3,
+            "reps": 5,
+            "frequency": "2x/week"
+          },
+          {
+            "name": "Banded deadlifts",
+            "target": "Accelerating force at top (where bands hardest)",
+            "sets": 3,
+            "reps": 5,
+            "frequency": "1x/week"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "soft_lockout",
+      "name": "Lockout Incompleto (Soft Lockout)",
+      "name_en": "Soft Lockout (Incomplete Lockout)",
+      "description": "Não completa o lockout totalmente - joelhos e/ou quadris permanecem levemente flexionados",
+      "aliases": ["incomplete lockout", "soft knees", "não completa"],
+
+      "biomechanical_cause": {
+        "primary": "Fraqueza de glúteos ou quadríceps no final do ROM",
+        "secondary": ["Fadiga", "Carga excessiva", "Má consciência de lockout completo"],
+        "risk_factors": ["Fraqueza de cadeia posterior", "Carga >85% 1RM"]
+      },
+
+      "detection_method": {
+        "primary": "knee_angle < 170° OR hip_angle < 175° at top position",
+        "secondary": "lockout_height < expected_full_lockout_height",
+        "requires_landmarks": ["knee", "hip", "shoulder"],
+        "calculation": "angle(hip, knee, ankle) AND angle(shoulder, hip, knee)",
+        "detection_phase": "lockout"
+      },
+
+      "severity_thresholds": {
+        "mild": {"knee_flexion_remaining": "5-10 degrees", "hip_flexion_remaining": "5-8 degrees", "injury_risk": "low", "performance_impact": "May not count in competition", "intervention": "Conscious full lockout"},
+        "moderate": {"knee_flexion_remaining": "10-15 degrees", "hip_flexion_remaining": "8-12 degrees", "injury_risk": "low", "performance_impact": "Definitely won't count, incomplete rep", "intervention": "Glute/quad strengthening"},
+        "severe": {"knee_flexion_remaining": ">15 degrees", "hip_flexion_remaining": ">12 degrees", "injury_risk": "low", "performance_impact": "Essentially didn't complete lift", "intervention": "Reduce load, build lockout strength"}
+      },
+
+      "evidence_base": {
+        "prevalence": "10-20% especially at max attempts",
+        "biomechanical_impact": "Indicates weakness in final ROM",
+        "correction_efficacy": "High with targeted lockout work"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Full lockout", "Stand tall", "Lock knees and hips"],
+        "corrective_exercises": [
+          {
+            "name": "Glute-ham raises",
+            "target": "Strengthen posterior chain in shortened position",
+            "sets": 3,
+            "reps": 8,
+            "frequency": "2x/week"
+          },
+          {
+            "name": "Paused deadlifts at knee height",
+            "target": "Strengthen lockout from the sticking point",
+            "sets": 3,
+            "reps": 5,
+            "frequency": "1x/week"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "grip_failure",
+      "name": "Falha de Pegada",
+      "name_en": "Grip Failure",
+      "description": "Pegada abre ou perde tensão durante o pull, causando possível perda de barra",
+      "aliases": ["grip opening", "grip slip", "perda de pegada"],
+
+      "biomechanical_cause": {
+        "primary": "Força de antebraços/grip inadequada para a carga",
+        "secondary": ["Má técnica de grip", "Barra muito grossa", "Mãos suadas"],
+        "risk_factors": ["Antebraços fracos", "Sem uso de hook grip ou mixed grip", "Sem giz"]
+      },
+
+      "detection_method": {
+        "primary": "observational - visible opening of fingers or bar slipping",
+        "secondary": "wrist_extension increasing (fingers extending)",
+        "requires_landmarks": ["wrist", "hand"],
+        "calculation": "angle(forearm, hand) increasing during pull",
+        "detection_phase": "mid-pull and lockout"
+      },
+
+      "severity_thresholds": {
+        "mild": {"grip_opening": "Slight, fingers still holding", "injury_risk": "low", "performance_impact": "Can complete lift but near limit", "intervention": "Grip strengthening"},
+        "moderate": {"grip_opening": "Significant, visible struggle", "injury_risk": "moderate (may drop bar)", "performance_impact": "May fail lift", "intervention": "Reduce load, use straps for training, strengthen grip separately"},
+        "severe": {"grip_opening": "Complete loss, bar dropped", "injury_risk": "high (potential bar drop on foot/shin)", "performance_impact": "Failed lift, dangerous", "intervention": "Immediate grip work, reduce loads"}
+      },
+
+      "evidence_base": {
+        "prevalence": "20-30% at >90% 1RM without straps/mixed grip",
+        "biomechanical_impact": "Grip is often limiting factor before back/legs",
+        "correction_efficacy": "High with dedicated grip training"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Squeeze bar hard", "Hook grip or mixed grip", "Use chalk"],
+        "corrective_exercises": [
+          {
+            "name": "Farmer's walks",
+            "target": "Grip endurance under load",
+            "sets": 3,
+            "distance": "40-50 meters",
+            "frequency": "2x/week"
+          },
+          {
+            "name": "Dead hangs from bar",
+            "target": "Grip strength",
+            "sets": 3,
+            "duration": "30-60s",
+            "frequency": "3x/week"
+          },
+          {
+            "name": "Barbell holds (deadlift lockout hold)",
+            "target": "Specific grip strength for deadlift",
+            "sets": 3,
+            "duration": "20-30s",
+            "frequency": "After deadlifts"
+          }
+        ],
+        "equipment_modifications": [
+          "Use chalk",
+          "Consider hook grip (painful initially but strongest)",
+          "Mixed grip for max attempts (but risk of bicep tear on supinated arm)",
+          "Use straps for volume training to protect grip, train grip separately"
+        ]
+      }
+    },
+
+    {
+      "id": "asymmetric_pull",
+      "name": "Pull Assimétrico",
+      "name_en": "Asymmetric Pull",
+      "description": "Um lado do corpo puxa mais que o outro, causando rotação ou inclinação do tronco/barra",
+      "aliases": ["uneven pull", "bar tilted", "trunk rotation", "pull torto"],
+
+      "biomechanical_cause": {
+        "primary": "Assimetria de força bilateral",
+        "secondary": ["Histórico de lesão unilateral", "Escoliose", "Má setup (pés assimétricos)"],
+        "risk_factors": ["Lesão prévia", "Déficit de mobilidade unilateral"]
+      },
+
+      "detection_method": {
+        "primary": "bar_tilt > 5° (bar ends at different heights)",
+        "secondary": "trunk_rotation > 8° during pull",
+        "requires_landmarks": ["bar_left_end", "bar_right_end", "shoulder_left", "shoulder_right"],
+        "calculation": "angle(bar_left_y - bar_right_y)",
+        "detection_phase": "pull_initial and lockout"
+      },
+
+      "severity_thresholds": {
+        "mild": {"bar_tilt": "3-6 degrees", "trunk_rotation": "5-10 degrees", "injury_risk": "low-moderate", "performance_impact": "Slight inefficiency", "intervention": "Awareness, unilateral work"},
+        "moderate": {"bar_tilt": "6-10 degrees", "trunk_rotation": "10-15 degrees", "injury_risk": "moderate (spinal rotation under load)", "performance_impact": "Visible asymmetry, may fail", "intervention": "Reduce load, address asymmetry"},
+        "severe": {"bar_tilt": ">10 degrees", "trunk_rotation": ">15 degrees", "injury_risk": "high (spinal injury risk, potential bar drop)", "performance_impact": "Dangerous", "intervention": "Stop, unilateral training phase"}
+      },
+
+      "evidence_base": {
+        "prevalence": "10-20%",
+        "biomechanical_impact": "Increases injury risk through asymmetric loading",
+        "correction_efficacy": "Moderate to high with dedicated unilateral work"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Pull evenly", "Stay centered", "Check setup symmetry"],
+        "corrective_exercises": [
+          {
+            "name": "Single-leg RDL",
+            "target": "Identify and address weaker side",
+            "sets": 3,
+            "reps": "10 each side, start weaker",
+            "frequency": "3x/week"
+          },
+          {
+            "name": "Unilateral dumbbell deadlifts",
+            "target": "Build unilateral strength",
+            "sets": 3,
+            "reps": 8,
+            "frequency": "2x/week"
+          }
+        ]
+      }
+    }
+  ],
+
+  "common_combinations": [
+    {
+      "combination": ["lumbar_flexion", "hips_rise_first"],
+      "prevalence": "high",
+      "cause": "Poor setup with hips too low, then compensates with lumbar flexion",
+      "synergistic_effect": "EXTREMELY DANGEROUS - combines two major injury risks",
+      "priority": "Address setup first, then core strength",
+      "correction_approach": "Complete fundamental re-teaching required"
+    },
+    {
+      "combination": ["bar_drift_forward", "lumbar_flexion"],
+      "prevalence": "moderate-high",
+      "cause": "Bar too far from body increases moment arm, spine rounds to compensate",
+      "synergistic_effect": "Dramatically increases injury risk",
+      "priority": "Fix bar path first",
+      "correction_approach": "Reduce load, focus on lat activation and bar path"
+    }
+  ],
+
+  "detection_priority": [
+    "lumbar_flexion",
+    "hips_rise_first",
+    "bar_drift_forward",
+    "rounded_shoulders",
+    "excessive_lockout_hyperextension",
+    "knees_cave_in",
+    "asymmetric_pull",
+    "hitching",
+    "soft_lockout",
+    "grip_failure",
+    "head_position_hyperextension"
+  ]
+}

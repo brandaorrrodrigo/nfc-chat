@@ -1,0 +1,280 @@
+{
+  "exercise_id": "barbell_row_bent",
+  "version": "1.0.0",
+  "created_at": "2025-02-05",
+  "validated_by": "NFC Biomechanics Team",
+  "evidence_sources": [
+    "NSCA Essentials of Strength Training and Conditioning 4th Ed",
+    "Fenwick CM et al. Comparison of different rowing exercises: trunk muscle activation and lumbar spine motion, load, and stiffness. J Strength Cond Res. 2009",
+    "Neumann DA. Cinesiologia do Aparelho Musculoesquelético (2011)",
+    "Lehman GJ et al. An unstable support surface does not increase scapulothoracic stabilizing muscle activity during push up and push up plus exercises. Man Ther. 2008"
+  ],
+
+  "exercise_metadata": {
+    "category": "upper_body_compound_pull",
+    "primary_muscles": ["latissimus_dorsi", "rhomboids", "middle_trapezius", "posterior_deltoid"],
+    "secondary_muscles": ["biceps_brachii", "brachialis", "erector_spinae", "core"],
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "joint_actions": {
+      "shoulder": "extension_horizontal_abduction",
+      "elbow": "flexion",
+      "scapula": "retraction",
+      "spine": "isometric_stabilization"
+    }
+  },
+
+  "phases": {
+    "setup_position": {
+      "duration_percentage": 10,
+      "description": "Posição inicial, barra sustentada com braços estendidos",
+      "key_points": [
+        "Postura de hip hinge, tronco ~45° (Pendlay) a 70° (tradicional)",
+        "Coluna neutra rigorosamente mantida",
+        "Joelhos levemente flexionados",
+        "Pés hip-width apart",
+        "Braços totalmente estendidos, perpendiculares ao chão",
+        "Grip pronado, shoulder-width ou levemente mais largo",
+        "Olhar neutro ao chão (não para cima)"
+      ],
+      "angles": {
+        "elbow_left": {
+          "ideal": 175,
+          "acceptable_range": [170, 180],
+          "tolerance": 10,
+          "measurement_method": "shoulder-elbow-wrist",
+          "scientific_rationale": "Braços totalmente estendidos no setup, cotovelos locked mas não hiperextendidos"
+        },
+        "elbow_right": {
+          "ideal": 175,
+          "acceptable_range": [170, 180],
+          "tolerance": 10,
+          "measurement_method": "shoulder-elbow-wrist",
+          "scientific_rationale": "Extensão completa de cotovelos"
+        },
+        "trunk": {
+          "ideal": 45,
+          "acceptable_range": [35, 70],
+          "tolerance": 20,
+          "measurement_method": "vertical-spine_angle",
+          "scientific_rationale": "Tronco entre 45° (Pendlay style) e 70° (traditional row style). ~45° aumenta ativação de lats, ~70° permite mais carga (Fenwick 2009)"
+        },
+        "hip": {
+          "ideal": 100,
+          "acceptable_range": [90, 120],
+          "tolerance": 20,
+          "measurement_method": "shoulder-hip-knee",
+          "scientific_rationale": "Quadril em flexão moderada (hip hinge pattern), não squat"
+        },
+        "knee_left": {
+          "ideal": 160,
+          "acceptable_range": [150, 170],
+          "tolerance": 15,
+          "measurement_method": "hip-knee-ankle",
+          "scientific_rationale": "Joelhos levemente flexionados (~15-20°) para estabilidade e redução de stress lombar"
+        },
+        "knee_right": {
+          "ideal": 160,
+          "acceptable_range": [150, 170],
+          "tolerance": 15,
+          "measurement_method": "hip-knee-ankle",
+          "scientific_rationale": "Flexão leve de joelhos"
+        }
+      },
+      "critical_checkpoints": [
+        {
+          "name": "lumbar_neutrality_maintained",
+          "description": "Coluna lombar em lordose neutra durante TODA a amplitude (setup e execução)",
+          "detection_method": "lumbar_curvature == natural_lordosis ± 5°",
+          "risk_if_failed": "critical",
+          "injury_mechanisms": "Flexão lombar sob carga na posição de hip hinge aumenta dramaticamente shear stress discal (Fenwick 2009)"
+        },
+        {
+          "name": "hip_hinge_not_squat",
+          "description": "Movimento é hip hinge (quadril flexiona, joelhos levemente flexos), não squat pattern",
+          "detection_method": "hip_flexion > knee_flexion_change",
+          "risk_if_failed": "medium",
+          "injury_mechanisms": "Squat pattern reduz ativação de posterior chain e altera biomecânica do pull"
+        }
+      ]
+    },
+
+    "concentric_pull": {
+      "duration_percentage": 40,
+      "description": "Fase concêntrica, puxando barra em direção ao abdômen/peitoral inferior",
+      "key_points": [
+        "Pull iniciado por retração escapular (shoulder blades back and down)",
+        "Cotovelos puxam para trás e ligeiramente para fora",
+        "Barra toca entre linha do umbigo e esterno inferior",
+        "Cotovelos não ultrapassam excessivamente o plano do tronco",
+        "Tronco mantém ângulo fixo (sem usar momentum)",
+        "Expiração durante pull"
+      ],
+      "angles": {
+        "elbow_left": {
+          "ideal": 45,
+          "acceptable_range": [35, 60],
+          "tolerance": 15,
+          "measurement_method": "shoulder-elbow-wrist",
+          "scientific_rationale": "Flexão de cotovelo a ~130-140° (angle restante ~45° from extension) no topo do pull, otimiza ativação de lats e rombóides"
+        },
+        "elbow_right": {
+          "ideal": 45,
+          "acceptable_range": [35, 60],
+          "tolerance": 15,
+          "measurement_method": "shoulder-elbow-wrist",
+          "scientific_rationale": "Flexão de cotovelo no topo do pull"
+        },
+        "shoulder_extension_left": {
+          "ideal": 30,
+          "acceptable_range": [20, 40],
+          "tolerance": 15,
+          "measurement_method": "torso-shoulder-elbow_sagittal",
+          "scientific_rationale": "Extensão de ombro de ~20-40° atrás do plano do tronco, com retração escapular"
+        },
+        "shoulder_extension_right": {
+          "ideal": 30,
+          "acceptable_range": [20, 40],
+          "tolerance": 15,
+          "measurement_method": "torso-shoulder-elbow_sagittal",
+          "scientific_rationale": "Extensão de ombro com retração escapular"
+        },
+        "trunk": {
+          "ideal": 45,
+          "acceptable_range": [35, 70],
+          "tolerance": 20,
+          "measurement_method": "vertical-spine_angle",
+          "scientific_rationale": "Ângulo do tronco PERMANECE FIXO durante pull, não usa momentum (body english)"
+        },
+        "scapular_retraction": {
+          "ideal": 15,
+          "acceptable_range": [10, 20],
+          "tolerance": 8,
+          "measurement_method": "scapula_retraction_degrees",
+          "scientific_rationale": "Retração escapular completa no topo do pull, ativando rombóides e trapézio médio"
+        }
+      },
+      "critical_checkpoints": [
+        {
+          "name": "no_trunk_momentum",
+          "description": "Ângulo do tronco permanece fixo (± 5°), sem 'body english' ou momentum excessivo",
+          "detection_method": "trunk_angle_change < 5° from setup to top",
+          "risk_if_failed": "medium",
+          "injury_mechanisms": "Uso de momentum excessivo aumenta carga dinâmica na lombar e reduz ativação muscular alvo"
+        },
+        {
+          "name": "scapular_retraction_precedes_pull",
+          "description": "Retração escapular inicia o movimento antes da flexão de cotovelo dominante",
+          "detection_method": "scapular_retraction_starts before elbow_flexion_dominant",
+          "risk_if_failed": "medium",
+          "injury_mechanisms": "Pull dominado por braços (sem retração escapular) reduz ativação de rombóides e aumenta stress no bíceps"
+        },
+        {
+          "name": "bar_touch_point_correct",
+          "description": "Barra toca entre umbigo e esterno inferior (não pescoço ou pelve)",
+          "detection_method": "bar_contact_y between umbilicus and lower_sternum",
+          "risk_if_failed": "low",
+          "injury_mechanisms": "Touch point incorreto indica déficit de ativação ou técnica subótima"
+        }
+      ]
+    },
+
+    "isometric_top": {
+      "duration_percentage": 10,
+      "description": "Contração isométrica no topo do movimento, barra próxima ao corpo",
+      "key_points": [
+        "Pausa breve no topo (squeeze)",
+        "Escápulas totalmente retraídas",
+        "Cotovelos atrás do plano do tronco",
+        "Tensão máxima em lats e rombóides"
+      ],
+      "angles": {
+        "elbow_left": {
+          "ideal": 45,
+          "acceptable_range": [35, 60],
+          "tolerance": 15,
+          "measurement_method": "shoulder-elbow-wrist"
+        },
+        "elbow_right": {
+          "ideal": 45,
+          "acceptable_range": [35, 60],
+          "tolerance": 15,
+          "measurement_method": "shoulder-elbow-wrist"
+        },
+        "scapular_retraction": {
+          "ideal": 15,
+          "acceptable_range": [10, 20],
+          "tolerance": 8,
+          "measurement_method": "scapula_retraction_degrees"
+        }
+      }
+    },
+
+    "eccentric_descent": {
+      "duration_percentage": 40,
+      "description": "Fase excêntrica, descida controlada da barra",
+      "key_points": [
+        "Descida controlada (2-3 segundos)",
+        "Cotovelos estendem progressivamente",
+        "Escápulas retornam à posição neutra (não protração excessiva)",
+        "Tronco mantém ângulo fixo",
+        "Core mantém rigidez"
+      ],
+      "angles": {
+        "elbow_left": {
+          "ideal": 110,
+          "acceptable_range": [90, 130],
+          "tolerance": 20,
+          "measurement_method": "shoulder-elbow-wrist",
+          "scientific_rationale": "Extensão progressiva de cotovelo durante fase excêntrica"
+        },
+        "elbow_right": {
+          "ideal": 110,
+          "acceptable_range": [90, 130],
+          "tolerance": 20,
+          "measurement_method": "shoulder-elbow-wrist",
+          "scientific_rationale": "Extensão progressiva"
+        },
+        "trunk": {
+          "ideal": 45,
+          "acceptable_range": [35, 70],
+          "tolerance": 20,
+          "measurement_method": "vertical-spine_angle",
+          "scientific_rationale": "Ângulo do tronco permanece fixo"
+        }
+      }
+    }
+  },
+
+  "biomechanical_constraints": {
+    "max_trunk_angle": 75,
+    "min_trunk_angle": 30,
+    "max_trunk_angle_change_during_rep": 10,
+    "max_elbow_flexion": 150,
+    "min_elbow_extension": 170,
+    "max_lumbar_flexion_degrees": 5,
+    "bilateral_symmetry_threshold_degrees": 8,
+    "safety_limits": {
+      "lumbar_flexion_critical": 10,
+      "excessive_momentum_trunk_change": 15,
+      "cervical_hyperextension_max": 20
+    }
+  },
+
+  "similarity_weights": {
+    "elbow": 0.25,
+    "shoulder_extension": 0.25,
+    "trunk_stability": 0.25,
+    "scapular_retraction": 0.15,
+    "symmetry": 0.10
+  },
+
+  "common_deviations_preview": [
+    "lumbar_flexion",
+    "excessive_body_english",
+    "insufficient_scapular_retraction",
+    "pull_with_arms_only",
+    "incorrect_touch_point",
+    "asymmetric_pull"
+  ]
+}

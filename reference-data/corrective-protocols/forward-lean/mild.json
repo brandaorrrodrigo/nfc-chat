@@ -1,0 +1,592 @@
+{
+  "protocol_id": "forward_lean_mild_v1",
+  "deviation": "forward-lean",
+  "severity": "mild",
+  "version": "1.0.0",
+  "last_updated": "2025-01-15",
+
+  "overview": {
+    "description": "Protocolo corretivo para inclinação anterior excessiva leve do tronco durante agachamento (10-15° além do ótimo para antropometria individual). Foco em força de quadríceps, mobilidade de tornozelo, e controle de core anterior.",
+    "typical_presentation": "Tronco inclina para frente mais que o ideal durante descida. Padrão inconsistente - ocorre principalmente sob fadiga ou com cargas mais pesadas. Sem dor significativa. Pode ser simplesmente antropometria (fêmures longos) ou déficit leve de mobilidade/força.",
+    "primary_causes": [
+      "Limitação leve de dorsiflexão de tornozelo (< 35°)",
+      "Fraqueza relativa de quadríceps comparado à cadeia posterior",
+      "Antropometria - fêmures longos requerem mais forward lean (pode ser normal)",
+      "Tensão em flexores do quadril limitando extensão",
+      "Posicionamento inadequado da barra (muito alto ou baixo)",
+      "Falta de consciência postural do ângulo do tronco"
+    ],
+    "expected_duration": "3-5 semanas com prática 4x/semana",
+    "success_rate": "80-90% de melhora significativa quando causa é tratável (não antropométrica)"
+  },
+
+  "goals_hierarchy": [
+    {
+      "priority": 1,
+      "goal": "Identificar se forward lean é devido a limitação corrigível ou antropometria normal",
+      "measurable_outcome": "Avaliação de proporções corporais, comparação com normas"
+    },
+    {
+      "priority": 2,
+      "goal": "Melhorar dorsiflexão de tornozelo para permitir tíbia mais vertical",
+      "measurable_outcome": "Dorsiflexão ≥ 40° com joelho flexionado"
+    },
+    {
+      "priority": 3,
+      "goal": "Fortalecer quadríceps para suportar posição mais ereta",
+      "measurable_outcome": "Front squat com 70% do back squat 1RM mantendo torso ereto"
+    },
+    {
+      "priority": 4,
+      "goal": "Desenvolver consciência do ângulo do tronco e capacidade de ajustar",
+      "measurable_outcome": "Capacidade de realizar agachamento com diferentes ângulos de tronco intencionalmente"
+    },
+    {
+      "priority": 5,
+      "goal": "Otimizar posicionamento da barra e setup",
+      "measurable_outcome": "Encontrar posição individual ótima (high bar vs low bar, stance width)"
+    }
+  ],
+
+  "phases": [
+    {
+      "phase_number": 1,
+      "name": "Avaliação, Mobilidade e Consciência Postural",
+      "duration_typical": "7-10 dias",
+      "frequency": "Diária (mobilidade 2x/dia, força 4x/semana)",
+      "focus": "Determinar causa do forward lean, melhorar mobilidade de tornozelo, desenvolver consciência de ângulo de tronco",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Anthropometric Assessment",
+            "target": "Determinar se proporções corporais (femur:torso ratio) explicam forward lean",
+            "measurement_method": "Medir comprimento de fêmur sentado vs em pé. Ratio > 1:1 indica fêmures longos = forward lean é normal"
+          },
+          {
+            "test": "Wall Ankle Dorsiflexion",
+            "target": "10-12cm de distância da parede com joelho tocando sem calcanhar levantar",
+            "measurement_method": "Fita métrica"
+          },
+          {
+            "test": "Goblet Squat com Feedback",
+            "target": "10 reps com consciência clara do ângulo do tronco, capacidade de modificá-lo intencionalmente",
+            "measurement_method": "Filmagem lateral - atleta pode descrever sensação de ângulo"
+          },
+          {
+            "test": "Front Squat Básico",
+            "target": "5 reps com barra vazia mantendo tronco mais ereto que back squat",
+            "measurement_method": "Observação lateral - comparação visual"
+          }
+        ],
+        "subjective_markers": [
+          "Compreensão de se forward lean é problema ou antropometria normal",
+          "Melhora de mobilidade de tornozelo perceptível",
+          "Consciência aumentada de posição do tronco",
+          "Sensação de maior facilidade em manter tronco ereto"
+        ],
+        "minimum_time": "7 dias",
+        "all_criteria_required": false,
+        "minimum_criteria": 3
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "ankle_mobilization_progression",
+          "name": "Progressão de Mobilização de Tornozelo",
+          "primary_targets": ["Dorsiflexão de tornozelo", "Mobilidade de sóleo"],
+          "equipment": ["Parede", "Banda de resistência (opcional)"],
+          "sets": 3,
+          "reps": "15 repetições + 30s hold final",
+          "tempo": "2s avançar, 2s retornar + hold estático",
+          "rest": "30s entre pernas",
+
+          "execution_cues": [
+            "Wall ankle mobilization padrão: pé a 8-10cm da parede",
+            "Joelho avança em direção à parede sem calcanhar levantar",
+            "Tocar parede com joelho, hold 2s, retornar",
+            "Após 15 reps: hold posição máxima por 30s contínuos",
+            "Progressão: aumentar distância 1-2cm por semana",
+            "Variação: adicionar banda ao redor do tornozelo puxando para trás (mobilização com distração)"
+          ],
+
+          "common_errors": [
+            {
+              "error": "Calcanhar levanta do chão",
+              "correction": "Reduzir distância da parede, trabalhar em amplitude disponível"
+            },
+            {
+              "error": "Pé roda externamente compensando",
+              "correction": "Manter pé apontando reto, dedos alinhados com parede"
+            }
+          ],
+
+          "progressions": [
+            {
+              "level": "Semana 1",
+              "modification": "8-10cm distância, 15 reps + 20s hold",
+              "when_to_use": "Início, dorsiflexão < 35°"
+            },
+            {
+              "level": "Semana 2-3",
+              "modification": "10-12cm distância, adicionar banda de distração",
+              "when_to_use": "Após ganhos iniciais"
+            },
+            {
+              "level": "Semana 3-4",
+              "modification": "12-15cm distância, adicionar peso leve sobre joelho (5kg)",
+              "when_to_use": "Preparação para Fase 2"
+            }
+          ],
+
+          "scientific_rationale": "Dorsiflexão inadequada força compensação em forward lean do tronco para manter centro de massa sobre base de apoio (Macrum et al., 2012). Cada grau de dorsiflexão ganho reduz necessidade de inclinação anterior."
+        },
+
+        {
+          "exercise_id": "goblet_squat_tempo_vertical",
+          "name": "Goblet Squat com Ênfase em Torso Vertical",
+          "primary_targets": ["Padrão de agachamento", "Consciência postural", "Quadríceps"],
+          "equipment": ["Kettlebell 10-16kg", "Espelho lateral"],
+          "sets": 4,
+          "reps": 10,
+          "tempo": "3-1-3-0 (3s descida, 1s pausa, 3s subida)",
+          "rest": "90s",
+
+          "execution_cues": [
+            "Kettlebell em goblet position - peso frontal naturalmente mantém tronco ereto",
+            "Posicionar em frente a espelho lateral para feedback visual constante",
+            "Descer em 3s focando mentalmente em manter 'peito orgulhoso' e ereto",
+            "Comando interno: 'levar cotovelos entre os joelhos' em vez de 'inclinar para frente'",
+            "Pausar 1s no fundo mantendo posição mais vertical possível",
+            "Subir mantendo mesmo ângulo de tronco",
+            "Comparar ângulo com filmagens prévias - objetivo é redução progressiva de forward lean",
+            "Aceitar que algum forward lean é normal e necessário"
+          ],
+
+          "common_errors": [
+            {
+              "error": "Ainda inclina excessivamente apesar do peso frontal",
+              "correction": "Indicação de limitação de tornozelo ou quadríceps - focar nesses déficits separadamente"
+            },
+            {
+              "error": "Tenta ficar muito vertical sacrificando profundidade",
+              "correction": "Permitir inclinação necessária, não forçar vertical absoluto"
+            },
+            {
+              "error": "Perde posição sob fadiga",
+              "correction": "Reduzir reps, manter qualidade, aumentar volume gradualmente"
+            }
+          ],
+
+          "progressions": [
+            {
+              "level": "Semana 1-2",
+              "modification": "10-12kg, foco em consciência, OK ter forward lean significativo ainda",
+              "when_to_use": "Estabelecer baseline e desenvolver propriocepção"
+            },
+            {
+              "level": "Semana 2-3",
+              "modification": "12-16kg, tentar reduzir forward lean 5-10° comparado ao baseline",
+              "when_to_use": "Após melhora de mobilidade de tornozelo"
+            },
+            {
+              "level": "Semana 3-4",
+              "modification": "16-20kg, consolidar padrão otimizado",
+              "when_to_use": "Preparação para retorno ao back squat"
+            }
+          ],
+
+          "regressions": [
+            {
+              "alternative": "Goblet Squat com cunhas sob calcanhares",
+              "when_to_use": "Se mobilidade de tornozelo severamente limitante",
+              "adjustment": "Cunhas 2.5-5° permitem tronco mais ereto temporariamente"
+            }
+          ],
+
+          "personalization_rules": {
+            "anthropometry_long_femurs": {
+              "note": "Forward lean MAIOR é esperado e NORMAL. Não tentar forçar vertical absoluto.",
+              "modification": "Aceitar 10-15° mais forward lean que atletas com fêmures curtos",
+              "target": "Otimizar dentro das limitações biomecânicas individuais"
+            },
+            "anthropometry_short_torso": {
+              "note": "Combinação com fêmures longos maximiza necessidade de forward lean",
+              "modification": "Considerar front squat como variação primária permanentemente"
+            },
+            "training_age_beginner": {
+              "sets": 3,
+              "reps": 8,
+              "note": "Ênfase em aprendizado de sensação, não performance"
+            }
+          },
+
+          "scientific_rationale": "Goblet squat com peso frontal desloca centro de massa anteriormente, permitindo tíbia mais vertical e reduzindo necessidade de forward lean (Dan John, 2010). Excelente ferramenta de ensino para ângulo ótimo de tronco."
+        },
+
+        {
+          "exercise_id": "front_squat_introduction",
+          "name": "Front Squat - Introdução ao Padrão Ereto",
+          "primary_targets": ["Quadríceps", "Padrão de tronco ereto", "Mobilidade de ombros"],
+          "equipment": ["Barra", "Rack"],
+          "sets": 4,
+          "reps": 8,
+          "tempo": "2-0-2-0",
+          "rest": "120s",
+
+          "execution_cues": [
+            "Front squat FORÇA tronco mais ereto devido à posição da barra",
+            "Barra em rack position: sobre ombros anteriores, cotovelos altos",
+            "Alternativa: cross-arm grip se mobilidade de ombros limitada",
+            "Iniciar com barra vazia focando 100% em manter tronco vertical",
+            "Descer mantendo cotovelos apontados para frente/cima (evita que caiam e barra role)",
+            "Sentir quadríceps trabalhando mais intensamente que em back squat",
+            "Aceitar profundidade pode ser ligeiramente menor que back squat inicialmente",
+            "Objetivo: estabelecer capacidade de agachar com tronco ereto"
+          ],
+
+          "common_errors": [
+            {
+              "error": "Cotovelos caem para baixo permitindo forward lean",
+              "correction": "Comando constante: 'cotovelos altos', pode usar cue de 'estrangular-se com barra'"
+            },
+            {
+              "error": "Barra rola para frente dos dedos",
+              "correction": "Relaxar grip, barra apoia em ombros não nas mãos, ajustar posição"
+            },
+            {
+              "error": "Mobilidade de ombros insuficiente para rack position",
+              "correction": "Usar cross-arm grip ou straps temporariamente enquanto trabalha mobilidade"
+            }
+          ],
+
+          "progressions": [
+            {
+              "level": "Semana 1-2",
+              "modification": "Barra vazia, estabelecer rack position confortável, 8 reps",
+              "when_to_use": "Introdução ao movimento"
+            },
+            {
+              "level": "Semana 2-3",
+              "modification": "Barra + 10-20kg, consolidar padrão",
+              "when_to_use": "Após dominar técnica básica"
+            },
+            {
+              "level": "Semana 3-4",
+              "modification": "30-40% do back squat 1RM, estabelecer como variação regular",
+              "when_to_use": "Preparação para uso contínuo"
+            }
+          ],
+
+          "regressions": [
+            {
+              "alternative": "Goblet Squat (já incluído)",
+              "when_to_use": "Se rack position muito desconfortável",
+              "adjustment": "Continuar com goblet por mais tempo"
+            },
+            {
+              "alternative": "Safety Bar Squat",
+              "when_to_use": "Se disponível, pode ser mais confortável que front squat tradicional",
+              "adjustment": "Safety bar permite posição mais ereta sem demanda de mobilidade de ombros"
+            }
+          ],
+
+          "personalization_rules": {
+            "anthropometry_long_femurs": {
+              "note": "Front squat é IDEAL para esta antropometria - minimiza forward lean natural",
+              "modification": "Considerar front squat como variação primária de agachamento"
+            },
+            "injury_history_shoulder": {
+              "modification": "Cross-arm grip ou straps, avaliar conforto",
+              "caution": "Não forçar rack position se dor no ombro"
+            },
+            "injury_history_wrist": {
+              "modification": "Cross-arm grip, usar straps, considerar safety bar",
+              "caution": "Rack position pode ser provocativo para punhos"
+            },
+            "training_age_beginner": {
+              "sets": 3,
+              "reps": 6,
+              "note": "Aprendizado técnico é prioridade, não volume"
+            }
+          },
+
+          "scientific_rationale": "Front squat mantém tronco significativamente mais ereto que back squat (15-20° diferença) devido à posição frontal da barra (Swinton et al., 2012). Aumenta demanda sobre quadríceps (116% vs 100% no back squat) e reduz torque extensor de quadril."
+        },
+
+        {
+          "exercise_id": "split_squat_vertical_emphasis",
+          "name": "Split Squat com Ênfase em Torso Vertical",
+          "primary_targets": ["Quadríceps", "Controle unilateral", "Padrão de tronco ereto"],
+          "equipment": ["Halteres leves (5-10kg) opcional"],
+          "sets": 3,
+          "reps": "10 cada perna",
+          "tempo": "2-0-2-0",
+          "rest": "60s entre pernas",
+
+          "execution_cues": [
+            "Posição split stance: um pé à frente, outro atrás",
+            "Tronco completamente ereto/vertical - não inclinar para frente",
+            "Descer verticalmente flexionando ambos os joelhos",
+            "Joelho da frente rastreia sobre pé (não ultrapassa dedos)",
+            "Calcanhar de trás pode levantar (é normal)",
+            "Foco: descer sem inclinar tronco - movimento puro de flexão de joelhos",
+            "Subir empurrando principalmente com perna da frente",
+            "Se usar halteres: segurar ao lado do corpo com braços estendidos"
+          ],
+
+          "common_errors": [
+            {
+              "error": "Inclina tronco para frente habitualmente",
+              "correction": "Comando 'orgulho no peito', olhar para frente não para baixo, pode usar espelho"
+            },
+            {
+              "error": "Stance muito curto ou muito longo",
+              "correction": "Ajustar distância - deve permitir descida vertical sem joelho ultrapassar muito os dedos"
+            },
+            {
+              "error": "Perda de equilíbrio",
+              "correction": "Segurar em apoio leve se necessário, progredir para sem apoio"
+            }
+          ],
+
+          "progressions": [
+            {
+              "level": "Iniciante",
+              "modification": "Peso corporal, pode segurar em apoio",
+              "when_to_use": "Primeiras sessões ou déficit de equilíbrio"
+            },
+            {
+              "level": "Padrão",
+              "modification": "Halteres 5-8kg cada mão",
+              "when_to_use": "Após dominar padrão básico"
+            },
+            {
+              "level": "Avançado",
+              "modification": "10-12kg cada mão ou elevar pé de trás (Bulgarian split squat)",
+              "when_to_use": "Quando muito fácil"
+            }
+          ],
+
+          "scientific_rationale": "Split squat permite foco em manter tronco ereto sem complexidade de agachamento bilateral. Desenvolve força de quadríceps e controle postural em padrão simplificado."
+        },
+
+        {
+          "exercise_id": "hip_flexor_stretch_couch",
+          "name": "Alongamento de Flexores do Quadril (Couch Stretch)",
+          "primary_targets": ["Flexores do quadril", "Reto femoral", "Psoas"],
+          "equipment": ["Parede ou sofá", "Almofada para joelho"],
+          "sets": 3,
+          "reps": "Hold 45-60s cada lado",
+          "tempo": "Estático",
+          "rest": "30s entre lados",
+
+          "execution_cues": [
+            "Posição de ajoelhado, um joelho no chão encostado na parede",
+            "Pé de trás em dorsiflexão contra parede (variação avançada)",
+            "Pé da frente plantado à frente em lunge position",
+            "Erigir tronco verticalmente - não inclinar para frente",
+            "Empurrar quadril para frente contraindo glúteo da perna de trás",
+            "Sentir alongamento intenso na frente do quadril e coxa da perna de trás",
+            "Respirar profundamente, aumentar alongamento a cada expiração",
+            "Hold por 45-60s - tempo prolongado essencial"
+          ],
+
+          "common_errors": [
+            {
+              "error": "Inclina tronco para frente reduzindo alongamento",
+              "correction": "Foco em manter vertical, peito orgulhoso"
+            },
+            {
+              "error": "Não empurra quadril suficientemente para frente",
+              "correction": "Contração ativa de glúteo, pensar em levar púbis em direção ao umbigo"
+            },
+            {
+              "error": "Arqueia lombar excessivamente",
+              "correction": "Engajar core levemente, posterior pelvic tilt suave"
+            }
+          ],
+
+          "progressions": [
+            {
+              "level": "Iniciante",
+              "modification": "Pé de trás apoiado no chão (não na parede), hold 30-45s",
+              "when_to_use": "Se couch stretch completo muito intenso"
+            },
+            {
+              "level": "Padrão",
+              "modification": "Pé de trás na parede, hold 45-60s",
+              "when_to_use": "Maioria dos casos"
+            },
+            {
+              "level": "Avançado",
+              "modification": "Adicionar rotação de tronco ou overhead reach durante hold",
+              "when_to_use": "Quando alongamento básico fica fácil"
+            }
+          ],
+
+          "scientific_rationale": "Tensão em flexores do quadril (especialmente psoas e reto femoral) limita extensão de quadril, forçando compensação em forward lean do tronco durante agachamento (Mills et al., 2015). Alongamento regular melhora mecânica de agachamento."
+        }
+      ]
+    },
+
+    {
+      "phase_number": 2,
+      "name": "Fortalecimento de Quadríceps e Integração",
+      "duration_typical": "14-21 dias",
+      "frequency": "4x por semana",
+      "focus": "Desenvolver força de quadríceps para suportar posição mais ereta, integrar controle ao back squat, otimizar setup individual",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Front Squat Força Relativa",
+            "target": "Front squat com 60-70% do back squat 1RM por 5 reps",
+            "measurement_method": "Teste de carga - comparação entre variações"
+          },
+          {
+            "test": "Bulgarian Split Squat Carregado",
+            "target": "10 reps por perna com halteres 12kg mantendo tronco ereto",
+            "measurement_method": "Observação visual - zero forward lean"
+          },
+          {
+            "test": "Back Squat Otimizado",
+            "target": "5 reps com 70% 1RM com forward lean reduzido em 30-50% vs baseline (se tratável)",
+            "measurement_method": "Filmagem lateral comparativa"
+          }
+        ],
+        "subjective_markers": [
+          "Sensação de quadríceps sendo limitante em agachamento (bom sinal)",
+          "Confiança em manter posição mais ereta",
+          "Compreensão de setup ótimo individual"
+        ],
+        "minimum_time": "14 dias",
+        "all_criteria_required": false,
+        "minimum_criteria": 2
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "front_squat_progressive",
+          "name": "Front Squat com Progressão de Carga",
+          "sets": 5,
+          "reps": 5,
+          "tempo": "2-0-X-0",
+          "rest": "180s",
+          "execution_cues": [
+            "Progressão: Semana 1-2: 40-50% back squat 1RM, Semana 3-4: 50-60%",
+            "Foco em desenvolver front squat como variação primária ou secundária",
+            "Manter técnica impecável mesmo com carga aumentando"
+          ]
+        },
+        {
+          "exercise_id": "bulgarian_split_squat_heavy",
+          "name": "Bulgarian Split Squat com Carga",
+          "sets": 4,
+          "reps": 8,
+          "tempo": "2-0-2-0",
+          "rest": "90s",
+          "execution_cues": [
+            "Halteres 10-15kg cada mão progressivamente",
+            "Manter tronco vertical - teste de controle unilateral"
+          ]
+        },
+        {
+          "exercise_id": "tempo_back_squat_high_bar",
+          "name": "Tempo Back Squat (High Bar)",
+          "sets": 4,
+          "reps": 6,
+          "tempo": "4-1-2-0",
+          "rest": "150s",
+          "execution_cues": [
+            "High bar position (sobre trapézios) permite tronco mais ereto que low bar",
+            "50-60% 1RM com tempo controlado",
+            "Consciência de ângulo de tronco durante toda descida",
+            "Comparar com filmagem baseline"
+          ]
+        },
+        {
+          "exercise_id": "leg_press_quad_emphasis",
+          "name": "Leg Press com Ênfase em Quadríceps",
+          "sets": 4,
+          "reps": 12,
+          "rest": "90s",
+          "execution_cues": [
+            "Pés mais baixos no plataforma = maior demanda de quadríceps",
+            "Desenvolver força de quadríceps sem complexidade técnica de agachamento"
+          ]
+        }
+      ]
+    }
+  ],
+
+  "return_to_exercise_criteria": {
+    "full_return_requirements": [
+      {
+        "category": "Mobilidade",
+        "tests": [
+          "Dorsiflexão ≥ 40° bilateral",
+          "Hip flexor flexibility adequada"
+        ]
+      },
+      {
+        "category": "Força",
+        "tests": [
+          "Front squat 60-70% do back squat 1RM",
+          "Bulgarian split squat 12kg x 10 reps vertical"
+        ]
+      },
+      {
+        "category": "Padrão",
+        "tests": [
+          "Back squat mostra melhora de 30-50% se tratável",
+          "OU compreensão e aceitação de que forward lean é antropométrico",
+          "Front squat estabelecido como variação primária se apropriado"
+        ]
+      }
+    ],
+
+    "permanent_modifications": [
+      "Se antropometria (fêmures longos): forward lean é NORMAL. Front squat pode ser melhor escolha.",
+      "High bar position geralmente superior a low bar para minimizar lean.",
+      "Sapatos de agachamento (cunha) podem ajudar permanentemente.",
+      "Manutenção de mobilidade de tornozelo 2-3x/semana."
+    ]
+  },
+
+  "contraindications": {
+    "absolute": [
+      "Lesão lombar aguda",
+      "Dor lombar severa com forward lean"
+    ],
+    "relative": [
+      "História de hérnia de disco - forward lean aumenta torque de flexão lombar",
+      "Limitação estrutural de tornozelo (cirurgia prévia, artrodese)"
+    ]
+  },
+
+  "red_flags": {
+    "stop_protocol_immediately": [
+      "Dor lombar > 5/10",
+      "Irradiação para pernas",
+      "Sintomas neurológicos"
+    ]
+  },
+
+  "scientific_references": [
+    {
+      "authors": "Swinton, P.A., et al.",
+      "year": 2012,
+      "title": "A biomechanical comparison of the traditional squat, powerlifting squat, and box squat",
+      "journal": "Journal of Strength and Conditioning Research",
+      "key_finding": "Front squat reduz forward lean em 15-20° comparado a back squat"
+    },
+    {
+      "authors": "Macrum, E., et al.",
+      "year": 2012,
+      "title": "Effect of limited ankle dorsiflexion on lower extremity mechanics",
+      "journal": "Journal of Sport Rehabilitation",
+      "key_finding": "Cada grau de limitação de dorsiflexão aumenta forward lean"
+    }
+  ]
+}

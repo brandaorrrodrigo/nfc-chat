@@ -1,0 +1,470 @@
+{
+  "protocol_id": "asymmetric_loading_mild_v1",
+  "deviation": "asymmetric-loading",
+  "severity": "mild",
+  "version": "1.0.0",
+  "last_updated": "2025-01-15",
+
+  "overview": {
+    "description": "Protocolo corretivo para carga assimétrica leve entre lados durante agachamento (< 10% diferença). Shift lateral visível mas sutil. Foco em identificar causa, fortalecer lado fraco, e reeducar padrão simétrico.",
+    "typical_presentation": "Leve shift lateral visível durante agachamento, geralmente para um lado consistente. Diferença < 10% em análise de plataforma de força. Sem dor. Pode não ser perceptível ao atleta. Padrão inconsistente - mais pronunciado sob fadiga.",
+    "primary_causes": [
+      "Assimetria leve de força entre lados (comum em atletas unilaterais)",
+      "Histórico de lesão prévia criando padrão de evitação",
+      "Diferença leve de mobilidade entre tornozelos/quadris",
+      "Escoliose leve ou assimetria postural",
+      "Dominância natural de um lado não corrigida",
+      "Falta de consciência do desvio"
+    ],
+    "expected_duration": "3-6 semanas com prática 4x/semana",
+    "success_rate": "85-90% de correção ou melhora significativa"
+  },
+
+  "goals_hierarchy": [
+    {
+      "priority": 1,
+      "goal": "Identificar lado fraco e causa da assimetria",
+      "measurable_outcome": "Testes unilaterais revelam déficit mensurável"
+    },
+    {
+      "priority": 2,
+      "goal": "Equalizar força entre lados",
+      "measurable_outcome": "Diferença < 5% em testes unilaterais"
+    },
+    {
+      "priority": 3,
+      "goal": "Desenvolver consciência do shift e capacidade de corrigir",
+      "measurable_outcome": "Atleta identifica e corrige assimetria em tempo real"
+    },
+    {
+      "priority": 4,
+      "goal": "Integrar simetria ao padrão de agachamento sob carga",
+      "measurable_outcome": "Back squat com 80% 1RM com distribuição simétrica visual"
+    }
+  ],
+
+  "phases": [
+    {
+      "phase_number": 1,
+      "name": "Avaliação e Fortalecimento Unilateral",
+      "duration_typical": "14-21 dias",
+      "frequency": "5x por semana",
+      "focus": "Identificar déficits específicos, fortalecer lado fraco preferencialmente, desenvolver consciência de assimetria",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Single-Leg Squat Test",
+            "target": "Cada perna: 10 reps em caixa com forma equivalente",
+            "measurement_method": "Filmagem comparativa - identificar diferenças"
+          },
+          {
+            "test": "Single-Leg RDL Balance",
+            "target": "8 reps cada perna sem desequilíbrio significativo",
+            "measurement_method": "Observação de controle e estabilidade"
+          },
+          {
+            "test": "Bulgarian Split Squat Strength",
+            "target": "10 reps com mesma carga bilateral - identificar lado mais fraco",
+            "measurement_method": "Dificuldade equivalente em ambos os lados"
+          },
+          {
+            "test": "Bilateral Squat Awareness",
+            "target": "Atleta consegue identificar para qual lado tende a shiftar",
+            "measurement_method": "Auto-relato e demonstração consciente"
+          }
+        ],
+        "subjective_markers": [
+          "Consciência clara de qual lado é mais fraco ou mais forte",
+          "Sensação de diferença entre lados durante unilaterais",
+          "Capacidade de sentir shift durante agachamento bilateral"
+        ],
+        "minimum_time": "14 dias",
+        "all_criteria_required": false,
+        "minimum_criteria": 3
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "single_leg_squat_assessment",
+          "name": "Single-Leg Squat para Avaliação",
+          "primary_targets": ["Identificar assimetrias", "Força unilateral", "Controle motor"],
+          "equipment": ["Caixa ou banco", "TRX para assistência"],
+          "sets": "3 cada perna",
+          "reps": 8,
+          "tempo": "2-0-2-0",
+          "rest": "60s entre pernas",
+
+          "execution_cues": [
+            "Single-leg squat a caixa (altura que permite 90° flexão de joelho)",
+            "Perna livre estendida à frente ou atrás",
+            "Observar diferenças entre lados:",
+            "  - Qual lado é mais difícil?",
+            "  - Qual perde equilíbrio mais facilmente?",
+            "  - Qual apresenta valgo ou compensações?",
+            "Filmar ambos os lados para comparação direta",
+            "Usar assistência leve de TRX se necessário para manter forma",
+            "OBJETIVO: diagnóstico, não performance máxima"
+          ],
+
+          "common_errors": [
+            {
+              "error": "Usar assistência excessiva mascarando assimetria",
+              "correction": "Assistência mínima apenas para segurança, não para facilitar"
+            },
+            {
+              "error": "Não filmar ou observar diferenças sistematicamente",
+              "correction": "Documentar achados - qual lado mais fraco, quais compensações"
+            }
+          ],
+
+          "progressions": [
+            {
+              "level": "Avaliação inicial",
+              "modification": "Com TRX, identificar assimetrias",
+              "when_to_use": "Primeira sessão"
+            },
+            {
+              "level": "Padrão",
+              "modification": "Reduzir assistência progressivamente",
+              "when_to_use": "Ao longo da fase"
+            }
+          ],
+
+          "scientific_rationale": "Exercícios unilaterais revelam assimetrias não aparentes em movimentos bilaterais. Lado dominante pode compensar por lado fraco em agachamento bilateral (Myer et al., 2014)."
+        },
+
+        {
+          "exercise_id": "bulgarian_split_squat_asymmetric_loading",
+          "name": "Bulgarian Split Squat - Sobrecarga do Lado Fraco",
+          "primary_targets": ["Equalizar força", "Corrigir assimetria"],
+          "equipment": ["Banco", "Halteres"],
+          "sets": "Lado fraco: 4 sets, Lado forte: 3 sets",
+          "reps": 10,
+          "tempo": "2-0-2-0",
+          "rest": "90s",
+
+          "execution_cues": [
+            "Identificar lado mais fraco através de teste",
+            "Protocolo assimétrico: fazer 1 set EXTRA no lado fraco",
+            "Exemplo: Se perna esquerda é mais fraca:",
+            "  - Esquerda: 4 sets x 10 reps",
+            "  - Direita: 3 sets x 10 reps",
+            "Usar mesma carga bilateral para comparação justa",
+            "Progressão: quando lado fraco equalizar, voltar a volume simétrico",
+            "Bulgarian split squat padrão: pé de trás elevado, peso corporal ou halteres"
+          ],
+
+          "common_errors": [
+            {
+              "error": "Usar cargas diferentes entre lados",
+              "correction": "MESMA carga - volume extra no lado fraco equaliza, não carga maior"
+            },
+            {
+              "error": "Forma pior no lado fraco aceitando compensação",
+              "correction": "Reduzir carga se necessário para manter forma equivalente"
+            }
+          ],
+
+          "progressions": [
+            {
+              "level": "Semana 1-2",
+              "modification": "Peso corporal ou halteres 6-8kg, 4 sets lado fraco vs 3 forte",
+              "when_to_use": "Estabelecer linha de base"
+            },
+            {
+              "level": "Semana 2-3",
+              "modification": "Halteres 8-12kg, continuar protocolo assimétrico",
+              "when_to_use": "Progressão de carga mantendo volume extra"
+            },
+            {
+              "level": "Semana 3+",
+              "modification": "Quando lados equalizarem: retornar a 4x10 bilateral simétrico",
+              "when_to_use": "Após equalização"
+            }
+          ],
+
+          "personalization_rules": {
+            "injury_history_unilateral": {
+              "note": "Se histórico de lesão em um lado explica fraqueza, progressão conservadora no lado lesionado",
+              "modification": "Pode precisar mais tempo (6-8 semanas) para equalizar"
+            },
+            "sport_specific_asymmetry": {
+              "note": "Atletas unilaterais (tenistas, arremessadores) têm assimetria esperada",
+              "modification": "Meta é minimizar, não eliminar completamente"
+            }
+          },
+
+          "scientific_rationale": "Volume extra no lado mais fraco (volume load matching) é método eficaz para correção de assimetrias sem sobrecarregar lado forte. Permite equalização em 4-6 semanas (Beneka et al., 2005)."
+        },
+
+        {
+          "exercise_id": "single_leg_rdl_balance",
+          "name": "Single-Leg RDL com Ênfase em Equilíbrio",
+          "primary_targets": ["Força unilateral", "Propriocepção", "Controle motor"],
+          "equipment": ["Kettlebell ou halter 6-12kg"],
+          "sets": 3,
+          "reps": "10 cada perna",
+          "tempo": "2-1-2-0",
+          "rest": "60s entre pernas",
+
+          "execution_cues": [
+            "RDL unipodal com peso contralateral",
+            "Foco em controle e estabilidade, não apenas força",
+            "Observar qual perna tem mais dificuldade em manter equilíbrio",
+            "Dificuldade de equilíbrio indica déficit de controle neuromuscular",
+            "Mesma carga bilateral, contar reps/qualidade de execução"
+          ],
+
+          "progressions": [
+            {
+              "level": "Iniciante",
+              "modification": "6-8kg, pode tocar dedo do pé livre no chão entre reps",
+              "when_to_use": "Se equilíbrio muito desafiador"
+            },
+            {
+              "level": "Padrão",
+              "modification": "10-12kg, perna livre suspensa",
+              "when_to_use": "Maioria dos casos de assimetria leve"
+            }
+          ],
+
+          "scientific_rationale": "RDL unilateral testa força E controle neuromuscular. Assimetrias de equilíbrio frequentemente acompanham assimetrias de força (Stastny et al., 2015)."
+        },
+
+        {
+          "exercise_id": "single_leg_press_comparison",
+          "name": "Leg Press Unilateral Comparativo",
+          "primary_targets": ["Quantificar diferença de força"],
+          "equipment": ["Máquina de leg press"],
+          "sets": "3 cada perna",
+          "reps": 10,
+          "tempo": "2-0-2-0",
+          "rest": "90s",
+
+          "execution_cues": [
+            "Leg press com uma perna por vez",
+            "Usar MESMA carga bilateral",
+            "Qual perna atinge falha primeiro?",
+            "Qual é mais difícil subjetivamente?",
+            "Quantificar: se esquerda faz 10 reps mas direita faz apenas 7 com mesma carga = assimetria clara",
+            "Dados objetivos guiam protocolo de correção"
+          ],
+
+          "scientific_rationale": "Leg press unilateral permite quantificação objetiva de assimetria em ambiente controlado sem demanda de equilíbrio."
+        },
+
+        {
+          "exercise_id": "goblet_squat_feedback_mirror",
+          "name": "Goblet Squat com Feedback Visual de Simetria",
+          "primary_targets": ["Consciência de shift", "Correção ativa"],
+          "equipment": ["Kettlebell 12-16kg", "Espelho frontal"],
+          "sets": 4,
+          "reps": 10,
+          "tempo": "3-1-3-0",
+          "rest": "90s",
+
+          "execution_cues": [
+            "Posicionar em frente a espelho frontal",
+            "Goblet squat mantendo observação constante no espelho",
+            "Objetivo: identificar visualmente qualquer shift lateral",
+            "Quando detectar shift: PARAR, corrigir, continuar",
+            "Desenvolvimento de auto-monitoramento em tempo real",
+            "Usar linha de referência no espelho (fita no chão) para simetria",
+            "Progressivamente reduzir dependência de espelho - internalizar feedback"
+          ],
+
+          "progressions": [
+            {
+              "level": "Semana 1-2",
+              "modification": "Com espelho, correção consciente constante",
+              "when_to_use": "Desenvolvimento de consciência"
+            },
+            {
+              "level": "Semana 3-4",
+              "modification": "Reduzir uso de espelho, confiar em propriocepção",
+              "when_to_use": "Internalização de feedback"
+            }
+          ],
+
+          "scientific_rationale": "Feedback visual externo facilita aprendizado de padrão simétrico. Progressão para feedback interno (proprioceptivo) é essencial para transferência a treino livre (Wulf et al., 2010)."
+        }
+      ]
+    },
+
+    {
+      "phase_number": 2,
+      "name": "Integração de Simetria ao Treino com Carga",
+      "duration_typical": "14-21 dias",
+      "frequency": "4x por semana",
+      "focus": "Transferir equalização ao back squat com carga, consolidar controle simétrico, monitoramento contínuo",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Back Squat Symmetry",
+            "target": "70-80% 1RM por 5 reps com distribuição simétrica visual",
+            "measurement_method": "Filmagem frontal - sem shift lateral perceptível"
+          },
+          {
+            "test": "Unilateral Strength Equivalence",
+            "target": "Diferença < 5% em todos os testes unilaterais",
+            "measurement_method": "Re-teste dos exercícios da Fase 1"
+          }
+        ],
+        "minimum_time": "14 dias",
+        "all_criteria_required": false,
+        "minimum_criteria": 1
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "paused_back_squat_symmetry",
+          "name": "Paused Back Squat com Foco em Simetria",
+          "sets": 4,
+          "reps": 5,
+          "tempo": "3-3-2-0",
+          "rest": "180s",
+          "execution_cues": [
+            "60-70% 1RM com pause de 3s no fundo",
+            "Durante pausa: verificar mentalmente distribuição de peso",
+            "Sentir pressão equivalente em ambos os pés",
+            "Correção ativa se sentir shift",
+            "Filmar frontalmente para verificação"
+          ]
+        },
+        {
+          "exercise_id": "tempo_back_squat",
+          "name": "Tempo Back Squat",
+          "sets": 5,
+          "reps": 5,
+          "tempo": "4-1-2-0",
+          "rest": "180s",
+          "execution_cues": [
+            "60-70% 1RM, descida em 4s",
+            "Tempo lento permite feedback proprioceptivo constante",
+            "Identificar e corrigir qualquer tendência a shift",
+            "Progressão de carga apenas se simetria mantida"
+          ]
+        },
+        {
+          "exercise_id": "unilateral_maintenance",
+          "name": "Manutenção Unilateral",
+          "note": "Continuar 1-2 exercícios unilaterais por sessão permanentemente para prevenção de recorrência"
+        }
+      ]
+    }
+  ],
+
+  "return_to_exercise_criteria": {
+    "full_return_requirements": [
+      {
+        "category": "Força Simétrica",
+        "tests": [
+          "Bulgarian split squat: mesma carga e dificuldade bilateral",
+          "Single-leg RDL: equivalência em ambos os lados",
+          "Leg press unilateral: < 5% diferença"
+        ]
+      },
+      {
+        "category": "Padrão Bilateral",
+        "tests": [
+          "Back squat 85% 1RM sem shift visível",
+          "Paused squat mantém simetria",
+          "Filmagem frontal confirma distribuição equivalente"
+        ]
+      }
+    ],
+
+    "ongoing_maintenance": "Incluir 1-2 exercícios unilaterais por sessão de membro inferior PERMANENTEMENTE. Monitorar assimetria mensalmente com filmagem. Qualquer recorrência = retornar a Fase 1 imediatamente."
+  },
+
+  "contraindications": {
+    "absolute": [
+      "Lesão aguda unilateral não reabilitada",
+      "Discrepância de comprimento de membros > 2cm (requer avaliação ortopédica)"
+    ],
+    "relative": [
+      "Escoliose moderada a severa - assimetria pode ter componente estrutural",
+      "Histórico de cirurgia unilateral - progressão conservadora"
+    ]
+  },
+
+  "red_flags": {
+    "stop_protocol_immediately": [
+      "Dor unilateral > 5/10",
+      "Piora da assimetria apesar de protocolo",
+      "Sensação de instabilidade em um lado",
+      "Sintomas neurológicos unilaterais"
+    ],
+    "seek_medical_evaluation": [
+      "Assimetria aumenta após 4 semanas de protocolo",
+      "Dor inexplicada em um lado",
+      "Discrepância de membros não diagnosticada previamente",
+      "Escoliose estrutural não avaliada"
+    ]
+  },
+
+  "scientific_references": [
+    {
+      "authors": "Myer, G.D., et al.",
+      "year": 2014,
+      "title": "Trunk and hip control neuromuscular training for the prevention of knee joint injury",
+      "journal": "Clinics in Sports Medicine",
+      "key_finding": "Assimetrias unilaterais aumentam risco de lesão, treino corretivo eficaz"
+    },
+    {
+      "authors": "Beneka, A., et al.",
+      "year": 2005,
+      "title": "Muscle imbalance: assessment and treatment",
+      "journal": "Journal of Bodywork and Movement Therapies",
+      "key_finding": "Volume extra no lado fraco equaliza assimetria em 4-6 semanas"
+    },
+    {
+      "authors": "Stastny, P., et al.",
+      "year": 2015,
+      "title": "Strengthening the gluteus medius using various bodyweight and resistance exercises",
+      "journal": "Strength and Conditioning Journal",
+      "key_finding": "Exercícios unilaterais revelam e corrigem assimetrias"
+    },
+    {
+      "authors": "Wulf, G., et al.",
+      "year": 2010,
+      "title": "Attentional focus and motor learning: a review of 15 years",
+      "journal": "International Review of Sport and Exercise Psychology",
+      "key_finding": "Feedback externo facilita aprendizado, transição para interno necessária"
+    }
+  ],
+
+  "personalization_rules": {
+    "training_age": {
+      "beginner": {
+        "modifications": "Assimetrias são comuns em iniciantes, correção rápida esperada",
+        "duration_adjustment": "Padrão 3-6 semanas"
+      },
+      "advanced": {
+        "modifications": "Assimetria pode estar estabelecida há anos, pode precisar mais tempo",
+        "duration_adjustment": "+20-30% se padrão muito estabelecido"
+      }
+    },
+    "sport_specific": {
+      "unilateral_sports": {
+        "sports": ["Tênis", "Baseball", "Golfe", "Esgrima"],
+        "note": "Alguma assimetria é ESPERADA e pode ser funcional. Meta: minimizar, não eliminar.",
+        "target": "< 10% diferença aceitável permanentemente"
+      },
+      "bilateral_sports": {
+        "sports": ["Corrida", "Ciclismo", "Natação", "Levantamento de peso"],
+        "note": "Simetria é mais crítica. Meta: < 5% diferença.",
+        "target": "Simetria máxima necessária para performance e prevenção"
+      }
+    },
+    "injury_history": {
+      "previous_unilateral_injury": {
+        "conditions": ["LCA reconstruction", "Meniscectomy", "Ankle sprain severo"],
+        "modifications": "Fraqueza residual esperada. Progressão conservadora. Pode nunca equalizar 100%.",
+        "note": "95% equalização é sucesso, não 100%"
+      }
+    }
+  }
+}

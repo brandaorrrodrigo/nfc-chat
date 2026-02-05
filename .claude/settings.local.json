@@ -12,7 +12,22 @@
       "Bash(npx prisma:*)",
       "Bash(DRY_RUN=true npx tsx:*)",
       "Bash(npx tsx:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(awk:*)",
+      "Bash(lsof:*)",
+      "Bash(npm run dev)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(curl:*)",
+      "Bash(vercel --version:*)",
+      "Bash(tree:*)",
+      "Bash(grep:*)",
+      "Bash(while read user)",
+      "Bash(do grep -q \"  ''$user'':\" app/comunidades/[slug]/page.tsx)",
+      "Bash(echo:*)",
+      "Bash(done)",
+      "Bash(test:*)",
+      "Bash(find:*)"
     ]
   }
 }

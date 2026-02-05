@@ -1,0 +1,325 @@
+// Prisma Schema para NutriFitCoach - Sistema de Análise Biomecânica
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ═══════════════════════════════════════════════════════════
+// USUÁRIOS E AUTENTICAÇÃO
+// ═══════════════════════════════════════════════════════════
+
+model User {
+  id                  String   @id @default(uuid())
+  email               String   @unique
+  name                String?
+  subscription_tier   String   @default("free") // free, pro, coach
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+
+  // Relações
+  video_analyses      VideoAnalysis[]
+  user_profile        UserProfile?
+
+  @@index([email])
+  @@index([subscription_tier])
+  @@map("users")
+}
+
+model UserProfile {
+  id                  String   @id @default(uuid())
+  user_id             String   @unique
+  user                User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  // Dados antropométricos
+  height_cm           Float?
+  weight_kg           Float?
+  age                 Int?
+  gender              String?  // male, female, other
+
+  // Histórico de lesões
+  injury_history      Json?    // Array de lesões: [{type, date, severity, location}]
+
+  // Nível de treinamento
+  training_age_years  Float?   // Anos de treino
+  training_level      String?  // beginner, intermediate, advanced
+
+  // Objetivos
+  goals               Json?    // Array de objetivos
+
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+
+  @@map("user_profiles")
+}
+
+// ═══════════════════════════════════════════════════════════
+// ANÁLISES DE VÍDEO
+// ═══════════════════════════════════════════════════════════
+
+model VideoAnalysis {
+  id                  String   @id @default(uuid())
+  user_id             String
+  user                User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  // Vídeo
+  video_path          String
+  video_url           String?
+  video_duration      Int?     // Duração em ms
+
+  // Exercício
+  exercise_id         String   // back-squat, deadlift, etc
+  exercise_name       String?
+
+  // Tipo de análise
+  analysis_tier       String   // quick, deep
+
+  // Performance
+  processing_time_ms  Int
+  cache_hit           Boolean  @default(false)
+
+  // Status
+  status              String   @default("pending") // pending, processing, completed, failed
+  error_message       String?
+
+  // Timestamps
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+  completed_at        DateTime?
+
+  // Relações
+  quick_result        QuickAnalysisResult?
+  deep_result         DeepAnalysisResult?
+  protocols           CorrectiveProtocol[]
+
+  @@index([user_id])
+  @@index([exercise_id])
+  @@index([status])
+  @@index([created_at])
+  @@map("video_analyses")
+}
+
+// ═══════════════════════════════════════════════════════════
+// QUICK ANALYSIS (Comparação com Gold Standard)
+// ═══════════════════════════════════════════════════════════
+
+model QuickAnalysisResult {
+  id                  String   @id @default(uuid())
+  video_analysis_id   String   @unique
+  video_analysis      VideoAnalysis @relation(fields: [video_analysis_id], references: [id], onDelete: Cascade)
+
+  // Score e classificação
+  overall_score       Float    // 0-10
+  classification      String   // EXCELENTE, BOM, REGULAR, RUIM, CRÍTICO
+
+  // Similaridade com gold standard
+  similarity_to_gold  Float    // 0-1
+
+  // Dados dos frames
+  frames_data         Json     // Array de IFrameAnalysis
+
+  // Desvios detectados (agregados)
+  deviations_detected Json     // Array de IAggregatedDeviation
+
+  // Performance
+  processing_time_ms  Int
+
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+
+  @@index([overall_score])
+  @@index([classification])
+  @@map("quick_analysis_results")
+}
+
+// ═══════════════════════════════════════════════════════════
+// DEEP ANALYSIS (RAG + LLM)
+// ═══════════════════════════════════════════════════════════
+
+model DeepAnalysisResult {
+  id                  String   @id @default(uuid())
+  video_analysis_id   String   @unique
+  video_analysis      VideoAnalysis @relation(fields: [video_analysis_id], references: [id], onDelete: Cascade)
+
+  // Contexto científico (RAG)
+  scientific_context  Json     // Array de documentos recuperados
+  rag_sources_used    Json     // IDs e scores dos docs
+
+  // Análise narrativa (LLM)
+  llm_narrative       String   @db.Text
+  llm_model_used      String   // gpt-4, claude-3, etc
+  llm_tokens_used     Int?
+
+  // Prescrições personalizadas
+  personalized_cues   Json     // Array de dicas específicas
+  risk_assessment     Json     // Avaliação de risco de lesão
+
+  // Plano de ação
+  action_plan         Json     // Plano estruturado de correção
+
+  // Performance
+  processing_time_ms  Int
+  rag_retrieval_time  Int?
+  llm_generation_time Int?
+
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+
+  @@map("deep_analysis_results")
+}
+
+// ═══════════════════════════════════════════════════════════
+// CORRECTIVE PROTOCOLS (Rule-Based)
+// ═══════════════════════════════════════════════════════════
+
+model CorrectiveProtocol {
+  id                  String   @id @default(uuid())
+  video_analysis_id   String
+  video_analysis      VideoAnalysis @relation(fields: [video_analysis_id], references: [id], onDelete: Cascade)
+
+  // Desvio alvo
+  deviation_type      String   // knee_valgus, butt_wink, etc
+  deviation_severity  String   // mild, moderate, severe
+
+  // Protocolo
+  protocol_id         String   // asymmetric_loading_moderate_v1
+  protocol_version    String   // 1.0.0
+
+  // Conteúdo do protocolo
+  protocol_data       Json     // Protocolo completo (phases, exercises, etc)
+
+  // Personalização
+  user_modifications  Json?    // Modificações baseadas no perfil do usuário
+
+  // Progresso
+  completion_status   String   @default("not_started") // not_started, in_progress, completed
+  current_phase       Int?
+
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+
+  @@index([video_analysis_id])
+  @@index([deviation_type])
+  @@index([completion_status])
+  @@map("corrective_protocols")
+}
+
+// ═══════════════════════════════════════════════════════════
+// GOLD STANDARDS (Padrões Ouro)
+// ═══════════════════════════════════════════════════════════
+
+model GoldStandard {
+  id                  String   @id @default(uuid())
+
+  // Exercício
+  exercise_id         String   @unique
+  exercise_name       String
+  version             String
+
+  // Dados das fases
+  phases_data         Json     // {eccentric_top, eccentric_mid, isometric_bottom, concentric}
+
+  // Pesos para similaridade
+  similarity_weights  Json     // {knee: 0.3, hip: 0.25, ...}
+
+  // Compensações comuns
+  common_compensations Json    // Array de ICommonCompensation
+
+  // Metadados
+  created_by          String?
+  validated_by        String?
+  validation_date     DateTime?
+
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+
+  @@index([exercise_id])
+  @@map("gold_standards")
+}
+
+// ═══════════════════════════════════════════════════════════
+// JOB QUEUE (BullMQ tracking)
+// ═══════════════════════════════════════════════════════════
+
+model JobTracking {
+  id                  String   @id @default(uuid())
+
+  // Job info
+  job_id              String   @unique // BullMQ job ID
+  queue_name          String   // hybrid-video-analysis
+
+  // Job data
+  video_analysis_id   String?
+  user_id             String
+
+  // Status
+  status              String   // waiting, active, completed, failed
+  progress            Int      @default(0) // 0-100
+
+  // Performance
+  started_at          DateTime?
+  completed_at        DateTime?
+  failed_at           DateTime?
+  duration_ms         Int?
+
+  // Erros
+  error_message       String?
+  error_stack         String?  @db.Text
+  attempts            Int      @default(0)
+
+  // Resultado
+  result              Json?
+
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+
+  @@index([job_id])
+  @@index([user_id])
+  @@index([status])
+  @@index([created_at])
+  @@map("job_tracking")
+}
+
+// ═══════════════════════════════════════════════════════════
+// MÉTRICAS E ANALYTICS
+// ═══════════════════════════════════════════════════════════
+
+model AnalysisMetrics {
+  id                  String   @id @default(uuid())
+
+  // Referência
+  video_analysis_id   String
+
+  // Tempos de processamento
+  extraction_time_ms  Int?
+  mediapipe_time_ms   Int?
+  quick_analysis_time_ms Int
+  deep_analysis_time_ms Int?
+  protocols_time_ms   Int?
+  total_time_ms       Int
+
+  // Cache
+  cache_hit_l1        Boolean  @default(false)
+  cache_hit_l2        Boolean  @default(false)
+  cache_hit_l3        Boolean  @default(false)
+
+  // Decisão
+  deep_analysis_triggered Boolean
+  decision_triggers   Json     // Array de triggers
+
+  // Recursos
+  frames_extracted    Int?
+  frames_analyzed     Int
+  rag_docs_retrieved  Int?
+  llm_tokens_used     Int?
+
+  created_at          DateTime @default(now())
+
+  @@index([video_analysis_id])
+  @@index([created_at])
+  @@map("analysis_metrics")
+}

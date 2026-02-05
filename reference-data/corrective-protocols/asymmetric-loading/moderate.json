@@ -1,0 +1,219 @@
+{
+  "protocol_id": "asymmetric_loading_moderate_v1",
+  "deviation": "asymmetric-loading",
+  "severity": "moderate",
+  "version": "1.0.0",
+  "last_updated": "2025-01-15",
+
+  "overview": {
+    "description": "Protocolo para assimetria moderada (10-20% diferença). Shift lateral claro e consistente. Pode haver histórico de lesão ou assimetria estrutural leve. Foco em correção intensiva e possível aceitação de assimetria residual.",
+    "typical_presentation": "Shift lateral óbvio durante agachamento, sempre para o mesmo lado. Diferença 10-20% em análise de força. Pode haver dor leve no lado mais carregado (NRS 2-4/10). Atleta geralmente percebe assimetria. Histórico possível de lesão prévia.",
+    "primary_causes": [
+      "Histórico de lesão unilateral com perda de força não reabilitada",
+      "Assimetria significativa de mobilidade entre lados",
+      "Escoliose funcional ou estrutural",
+      "Discrepância leve de comprimento de membros (< 1.5cm)",
+      "Anos de padrão compensatório estabelecido",
+      "Esporte unilateral sem correção"
+    ],
+    "expected_duration": "8-12 semanas com prática intensiva",
+    "success_rate": "60-70% de melhora significativa. Alguns casos mantêm 5-10% assimetria residual."
+  },
+
+  "goals_hierarchy": [
+    {
+      "priority": 1,
+      "goal": "Identificar causa raiz da assimetria",
+      "measurable_outcome": "Diagnóstico claro via testes (força, mobilidade, estrutural)"
+    },
+    {
+      "priority": 2,
+      "goal": "Reduzir diferença de força para < 10%",
+      "measurable_outcome": "Testes unilaterais mostram melhora > 50%"
+    },
+    {
+      "priority": 3,
+      "goal": "Reduzir shift lateral em back squat",
+      "measurable_outcome": "Filmagem mostra melhora de 50%+ vs baseline"
+    },
+    {
+      "priority": 4,
+      "goal": "Eliminar dor associada",
+      "measurable_outcome": "Dor < 2/10 consistente"
+    },
+    {
+      "priority": 5,
+      "goal": "Aceitar possível assimetria residual (5-10%)",
+      "measurable_outcome": "Treino sustentável mesmo se não perfeito"
+    }
+  ],
+
+  "phases": [
+    {
+      "phase_number": 1,
+      "name": "Diagnóstico e Correção Intensiva",
+      "duration_typical": "28-35 dias",
+      "frequency": "5-6x por semana",
+      "focus": "Identificar causa, protocolo agressivo de equalização, estabelecer linha de base",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Unilateral Strength Assessment",
+            "target": "Diferença reduzida de 20% → 10-12%",
+            "measurement_method": "Single-leg press 10RM test comparativo"
+          },
+          {
+            "test": "Mobility Symmetry",
+            "target": "Dorsiflexão bilateral equivalente (< 5° diferença)",
+            "measurement_method": "Wall test bilateral"
+          },
+          {
+            "test": "Visual Shift Reduction",
+            "target": "Filmagem frontal mostra shift 30-50% menor",
+            "measurement_method": "Análise comparativa com baseline"
+          }
+        ],
+        "minimum_time": "28 dias"
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "bulgarian_split_squat_extreme_asymmetric",
+          "name": "Bulgarian Split Squat - Protocolo Extremo Assimétrico",
+          "sets": "Lado fraco: 5 sets, Lado forte: 3 sets",
+          "reps": "12",
+          "execution_cues": [
+            "Protocolo AGRESSIVO: 5 sets lado fraco vs 3 lado forte",
+            "Diferencial de 2 sets para correção intensiva",
+            "Mesma carga bilateral",
+            "Manter por 4-6 semanas até equalização"
+          ]
+        },
+        {
+          "exercise_id": "single_leg_press_volume",
+          "name": "Leg Press Unilateral Alto Volume",
+          "sets": "Fraco: 5, Forte: 3",
+          "reps": 15,
+          "execution_cues": [
+            "Volume extremo no lado fraco",
+            "Isolamento sem demanda de equilíbrio",
+            "Progressão de carga agressiva no lado fraco"
+          ]
+        },
+        {
+          "exercise_id": "step_up_weighted_asymmetric",
+          "name": "Step-Up Carregado Assimétrico",
+          "sets": "Fraco: 4, Forte: 3",
+          "reps": 10,
+          "execution_cues": [
+            "Halteres 10-15kg",
+            "Caixa 40-50cm altura",
+            "Volume extra no lado fraco"
+          ]
+        },
+        {
+          "exercise_id": "single_leg_rdl_heavy",
+          "name": "Single-Leg RDL Pesado",
+          "sets": "Fraco: 4, Forte: 3",
+          "reps": 8,
+          "execution_cues": [
+            "KB/halter 12-16kg",
+            "Foco em lado fraco",
+            "Desenvolver força posterior unilateral"
+          ]
+        },
+        {
+          "exercise_id": "goblet_squat_offset_loading",
+          "name": "Goblet Squat com Carga Deslocada (Avançado)",
+          "sets": 3,
+          "reps": 8,
+          "execution_cues": [
+            "TÉCNICA AVANÇADA: Segurar KB deslocado para lado FORTE",
+            "Força lado fraco trabalhar mais para compensar",
+            "Usar com cautela, pode exacerbar se mal executado"
+          ]
+        }
+      ]
+    },
+
+    {
+      "phase_number": 2,
+      "name": "Integração e Consolidação",
+      "duration_typical": "28-35 dias",
+      "frequency": "4-5x por semana",
+      "focus": "Transferir ganhos ao back squat, consolidar simetria, preparar para possível assimetria residual",
+
+      "exercises": [
+        {
+          "exercise_id": "tempo_back_squat_symmetry",
+          "name": "Tempo Back Squat",
+          "sets": 5,
+          "reps": 5,
+          "tempo": "5-2-2-0",
+          "execution_cues": [
+            "60-70% 1RM, descida 5s + pause 2s",
+            "Feedback proprioceptivo máximo",
+            "Filmar frontalmente toda sessão"
+          ]
+        },
+        {
+          "exercise_id": "safety_bar_squat",
+          "name": "Safety Bar Squat",
+          "note": "Se disponível, pode revelar assimetria diferente. Explorar variações."
+        }
+      ]
+    },
+
+    {
+      "phase_number": 3,
+      "name": "Aceitação e Manutenção",
+      "duration_typical": "Ongoing",
+      "focus": "Aceitar 5-10% assimetria residual se estrutural, manutenção permanente",
+
+      "exercises": [
+        {
+          "exercise_id": "unilateral_permanent_maintenance",
+          "name": "Manutenção Unilateral Permanente",
+          "frequency": "2-3x por semana FOREVER",
+          "note": "Continuar volume extra no lado fraco permanentemente"
+        }
+      ]
+    }
+  ],
+
+  "return_to_exercise_criteria": {
+    "realistic_expectations": "Casos moderados frequentemente mantêm 5-10% assimetria residual. Se estrutural (escoliose, discrepância de membros), perfeição não é possível. Meta: treino sustentável sem dor.",
+
+    "full_return_requirements": [
+      {
+        "category": "Força",
+        "tests": ["< 10% diferença em todos unilaterais (ideal < 5% mas aceitável até 10%)"]
+      },
+      {
+        "category": "Padrão",
+        "tests": ["Shift visual reduzido 60%+", "Treino sem dor"]
+      }
+    ],
+
+    "permanent_modifications": [
+      "Exercícios unilaterais 2-3x/semana PERMANENTEMENTE",
+      "Monitoramento mensal com filmagem",
+      "Volume extra persistente no lado fraco se necessário"
+    ]
+  },
+
+  "contraindications": {
+    "absolute": ["Lesão aguda não reabilitada", "Discrepância > 2cm sem correção ortótica"],
+    "relative": ["Escoliose estrutural severa", "Pós-cirúrgico recente unilateral"]
+  },
+
+  "red_flags": {
+    "stop_immediately": ["Dor > 5/10 unilateral", "Piora da assimetria", "Sintomas neurológicos"]
+  },
+
+  "special_considerations": {
+    "structural_causes": "Se escoliose ou discrepância de membros, perfeição não é possível. Ortopedia pode ajudar (palmilha, correção postural). Aceitação é crítica.",
+    "post_injury": "Após LCA reconstruction ou cirurgia significativa, 95% equalização é excelente resultado. 100% pode não ser realista."
+  }
+}

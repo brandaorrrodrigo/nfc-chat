@@ -1,0 +1,268 @@
+{
+  "exercise_id": "bench_press_flat",
+  "version": "1.0.0",
+  "created_at": "2025-02-05",
+  "validated_by": "NFC Biomechanics Team",
+  "evidence_sources": [
+    "NSCA Essentials of Strength Training and Conditioning 4th Ed",
+    "Lehman GJ. The influence of grip width and forearm pronation/supination on upper-body myoelectric activity during the flat bench press. J Strength Cond Res. 2005",
+    "Guia de Estudos Peitoral Maior - Cinesiologia Aplicada",
+    "Schoenfeld BJ. The Mechanisms of Muscle Hypertrophy and Their Application to Resistance Training. J Strength Cond Res. 2010"
+  ],
+
+  "exercise_metadata": {
+    "category": "upper_body_compound_push",
+    "primary_muscles": ["pectoralis_major_sternal", "pectoralis_major_clavicular", "triceps_brachii"],
+    "secondary_muscles": ["anterior_deltoid", "serratus_anterior", "coracobrachialis"],
+    "equipment": "barbell",
+    "difficulty": "beginner_to_intermediate",
+    "joint_actions": {
+      "shoulder": "horizontal_adduction",
+      "elbow": "extension",
+      "scapula": "protraction_retraction"
+    }
+  },
+
+  "phases": {
+    "isometric_top": {
+      "duration_percentage": 10,
+      "description": "Posição inicial com braços estendidos, barra sobre o peitoral",
+      "key_points": [
+        "Braços totalmente estendidos (lockout)",
+        "Barra alinhada verticalmente sobre linha mamilar",
+        "Escápulas retraídas e deprimidas (ombros 'encaixados')",
+        "Pés firmemente plantados no chão",
+        "Arco lombar natural mantido",
+        "Glúteos em contato com banco"
+      ],
+      "angles": {
+        "elbow_left": {
+          "ideal": 175,
+          "acceptable_range": [170, 180],
+          "tolerance": 10,
+          "measurement_method": "shoulder-elbow-wrist",
+          "scientific_rationale": "Extensão quase completa do cotovelo sem hiperextensão, mantém tensão nos tríceps"
+        },
+        "elbow_right": {
+          "ideal": 175,
+          "acceptable_range": [170, 180],
+          "tolerance": 10,
+          "measurement_method": "shoulder-elbow-wrist",
+          "scientific_rationale": "Extensão quase completa do cotovelo sem hiperextensão"
+        },
+        "shoulder_horizontal_left": {
+          "ideal": 90,
+          "acceptable_range": [85, 95],
+          "tolerance": 10,
+          "measurement_method": "torso_midline-shoulder-elbow_horizontal_plane",
+          "scientific_rationale": "Ombro em posição neutra de adução horizontal, barra sobre peitoral"
+        },
+        "shoulder_horizontal_right": {
+          "ideal": 90,
+          "acceptable_range": [85, 95],
+          "tolerance": 10,
+          "measurement_method": "torso_midline-shoulder-elbow_horizontal_plane",
+          "scientific_rationale": "Ombro em posição neutra de adução horizontal"
+        },
+        "grip_width_angle": {
+          "ideal": 75,
+          "acceptable_range": [65, 85],
+          "tolerance": 15,
+          "measurement_method": "elbow-shoulder-opposite_shoulder",
+          "scientific_rationale": "Grip width de ~1.5x bi-acromial distance otimiza ativação peitoral e reduz stress no ombro (Lehman 2005)"
+        }
+      }
+    },
+
+    "eccentric": {
+      "duration_percentage": 40,
+      "description": "Descida controlada da barra em direção ao peitoral médio/inferior",
+      "key_points": [
+        "Descida controlada (2-3 segundos típico)",
+        "Cotovelos formam ângulo de ~45-75° com tronco (não 90°)",
+        "Barra desce em trajetória levemente diagonal (não vertical pura)",
+        "Escápulas mantêm retração durante descida",
+        "Antebraços permanecem verticais (visto de frente)",
+        "Inspiração durante descida"
+      ],
+      "angles": {
+        "elbow_left": {
+          "ideal": 90,
+          "acceptable_range": [80, 100],
+          "tolerance": 15,
+          "measurement_method": "shoulder-elbow-wrist",
+          "scientific_rationale": "Flexão de cotovelo a ~90° no ponto de contato com peitoral, otimiza torque e ativação muscular"
+        },
+        "elbow_right": {
+          "ideal": 90,
+          "acceptable_range": [80, 100],
+          "tolerance": 15,
+          "measurement_method": "shoulder-elbow-wrist",
+          "scientific_rationale": "Flexão de cotovelo a ~90° no ponto de contato com peitoral"
+        },
+        "shoulder_horizontal_left": {
+          "ideal": 45,
+          "acceptable_range": [35, 60],
+          "tolerance": 15,
+          "measurement_method": "torso_midline-shoulder-elbow_horizontal_plane",
+          "scientific_rationale": "Abdução horizontal de 45-60° otimiza ativação peitoral e reduz impingement risk (vs 90° que aumenta stress)"
+        },
+        "shoulder_horizontal_right": {
+          "ideal": 45,
+          "acceptable_range": [35, 60],
+          "tolerance": 15,
+          "measurement_method": "torso_midline-shoulder-elbow_horizontal_plane",
+          "scientific_rationale": "Abdução horizontal de 45-60° otimiza safety e muscle activation"
+        },
+        "forearm_vertical_left": {
+          "ideal": 90,
+          "acceptable_range": [85, 95],
+          "tolerance": 8,
+          "measurement_method": "elbow-wrist-vertical_reference",
+          "scientific_rationale": "Antebraço perpendicular ao solo maximiza transferência de força"
+        },
+        "forearm_vertical_right": {
+          "ideal": 90,
+          "acceptable_range": [85, 95],
+          "tolerance": 8,
+          "measurement_method": "elbow-wrist-vertical_reference",
+          "scientific_rationale": "Antebraço perpendicular ao solo maximiza transferência de força"
+        }
+      },
+      "critical_checkpoints": [
+        {
+          "name": "touch_point_location",
+          "description": "Barra toca peitoral na altura da linha mamilar ou 2-3cm abaixo (não no pescoço ou abdômen alto)",
+          "detection_method": "bar_contact_y between nipple_line and nipple_line-3cm",
+          "risk_if_failed": "medium",
+          "injury_mechanisms": "Toque muito alto aumenta stress no ombro anterior e impingement risk"
+        },
+        {
+          "name": "elbow_flare_angle",
+          "description": "Cotovelos não devem abrir excessivamente (>75° com tronco), nem fechar muito (<30°)",
+          "detection_method": "elbow_torso_angle between 30° and 75°",
+          "risk_if_failed": "high",
+          "injury_mechanisms": "Flare excessivo (>75°) aumenta impingement e stress na cápsula anterior do ombro"
+        },
+        {
+          "name": "scapular_retraction_maintained",
+          "description": "Escápulas mantêm retração e depressão durante toda amplitude",
+          "detection_method": "scapular_position_stability, no_protraction_during_descent",
+          "risk_if_failed": "medium",
+          "injury_mechanisms": "Perda de retração escapular aumenta stress no manguito rotador"
+        }
+      ]
+    },
+
+    "isometric_bottom": {
+      "duration_percentage": 5,
+      "description": "Barra em contato com peitoral, pausa técnica (competição powerlifting)",
+      "key_points": [
+        "Barra toca peitoral levemente (sem afundar)",
+        "Tensão muscular mantida",
+        "Sem bounce/quique",
+        "Preparação para fase concêntrica"
+      ],
+      "angles": {
+        "elbow_left": {
+          "ideal": 90,
+          "acceptable_range": [80, 100],
+          "tolerance": 15,
+          "measurement_method": "shoulder-elbow-wrist"
+        },
+        "elbow_right": {
+          "ideal": 90,
+          "acceptable_range": [80, 100],
+          "tolerance": 15,
+          "measurement_method": "shoulder-elbow-wrist"
+        },
+        "shoulder_horizontal_left": {
+          "ideal": 45,
+          "acceptable_range": [35, 60],
+          "tolerance": 15,
+          "measurement_method": "torso_midline-shoulder-elbow_horizontal_plane"
+        },
+        "shoulder_horizontal_right": {
+          "ideal": 45,
+          "acceptable_range": [35, 60],
+          "tolerance": 15,
+          "measurement_method": "torso_midline-shoulder-elbow_horizontal_plane"
+        }
+      }
+    },
+
+    "concentric": {
+      "duration_percentage": 45,
+      "description": "Fase concêntrica, empurrando barra de volta à posição inicial",
+      "key_points": [
+        "Drive explosivo através dos pés (leg drive)",
+        "Trajetória levemente diagonal, barra retorna sobre ombros",
+        "Cotovelos estendem enquanto aduzem horizontalmente",
+        "Expiração durante subida (ou Valsalva mantida)",
+        "Lockout completo no topo"
+      ],
+      "angles": {
+        "elbow_left": {
+          "ideal": 135,
+          "acceptable_range": [120, 150],
+          "tolerance": 15,
+          "measurement_method": "shoulder-elbow-wrist",
+          "scientific_rationale": "Extensão progressiva de cotovelo durante fase concêntrica"
+        },
+        "elbow_right": {
+          "ideal": 135,
+          "acceptable_range": [120, 150],
+          "tolerance": 15,
+          "measurement_method": "shoulder-elbow-wrist",
+          "scientific_rationale": "Extensão progressiva de cotovelo"
+        },
+        "shoulder_horizontal_left": {
+          "ideal": 70,
+          "acceptable_range": [60, 80],
+          "tolerance": 12,
+          "measurement_method": "torso_midline-shoulder-elbow_horizontal_plane",
+          "scientific_rationale": "Adução horizontal progressiva retornando à posição inicial"
+        },
+        "shoulder_horizontal_right": {
+          "ideal": 70,
+          "acceptable_range": [60, 80],
+          "tolerance": 12,
+          "measurement_method": "torso_midline-shoulder-elbow_horizontal_plane",
+          "scientific_rationale": "Adução horizontal progressiva"
+        }
+      }
+    }
+  },
+
+  "biomechanical_constraints": {
+    "max_elbow_flexion": 110,
+    "min_elbow_flexion": 0,
+    "optimal_grip_width_multiplier": 1.5,
+    "optimal_elbow_tuck_angle": 45,
+    "max_elbow_flare_angle": 75,
+    "min_elbow_tuck_angle": 30,
+    "bilateral_symmetry_threshold_degrees": 8,
+    "safety_limits": {
+      "shoulder_impingement_risk_angle": 90,
+      "max_bar_bounce_cm": 0,
+      "max_glute_lift_cm": 2
+    }
+  },
+
+  "similarity_weights": {
+    "elbow": 0.30,
+    "shoulder_horizontal": 0.30,
+    "forearm_vertical": 0.20,
+    "bar_path": 0.15,
+    "symmetry": 0.05
+  },
+
+  "common_deviations_preview": [
+    "excessive_elbow_flare",
+    "bar_bounce",
+    "insufficient_rom",
+    "asymmetric_press",
+    "loss_of_scapular_retraction",
+    "glute_lift"
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "exercise_id": "barbell_row_bent",
+  "name": "Bent-Over Barbell Row",
+  "name_pt": "Remada Curvada com Barra",
+  "version": "1.0.0",
+  "status": "validated",
+  "created_at": "2025-02-05T00:00:00Z",
+  "updated_at": "2025-02-05T00:00:00Z",
+  "validated_by": [
+    "NFC Biomechanics Team"
+  ],
+
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2025-02-05",
+      "changes": [
+        "Initial gold standard creation",
+        "Biomechanical angles based on Fenwick et al (2009) trunk muscle activation study",
+        "Trunk angle range defined (45-70°) for different rowing styles",
+        "Lumbar safety parameters established",
+        "Scapular retraction sequencing criteria defined"
+      ],
+      "author": "NFC Biomechanics Team"
+    }
+  ],
+
+  "validation_criteria": {
+    "minimum_samples": 50,
+    "expert_reviews": 3,
+    "inter_rater_reliability": 0.85,
+    "video_quality_requirements": {
+      "fps": 30,
+      "resolution_min": "720p",
+      "angles_required": ["lateral", "frontal", "posterior"]
+    }
+  },
+
+  "usage_statistics": {
+    "total_analyses": 0,
+    "average_similarity_score": null,
+    "common_deviations_frequency": {}
+  },
+
+  "related_exercises": [
+    "pendlay_row",
+    "yates_row",
+    "dumbbell_row",
+    "tbar_row",
+    "seal_row"
+  ],
+
+  "tags": [
+    "upper_body",
+    "compound",
+    "barbell",
+    "pull",
+    "back",
+    "horizontal_pull",
+    "foundational"
+  ],
+
+  "difficulty_level": {
+    "technical": "intermediate",
+    "strength": "intermediate",
+    "mobility": "moderate"
+  },
+
+  "prerequisites": {
+    "mobility": [
+      "hip_flexion >= 90°",
+      "hamstring_flexibility adequate"
+    ],
+    "stability": [
+      "lumbar_spine_stability",
+      "hip_hinge_pattern_proficient",
+      "scapular_control"
+    ],
+    "strength": [
+      "romanian_deadlift >= bodyweight",
+      "inverted_row >= 10_reps"
+    ]
+  }
+}

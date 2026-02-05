@@ -1,0 +1,442 @@
+{
+  "exercise_id": "barbell_row_bent",
+  "version": "1.0.0",
+  "created_at": "2025-02-05",
+  "total_deviations_cataloged": 8,
+  "evidence_base_references": [
+    "Fenwick CM et al. Comparison of different rowing exercises: trunk muscle activation and lumbar spine motion, load, and stiffness. J Strength Cond Res. 2009",
+    "Lehman GJ et al. An unstable support surface does not increase scapulothoracic stabilizing muscle activity. Man Ther. 2008",
+    "McGill SM. Low Back Disorders. 3rd Ed. 2015"
+  ],
+
+  "deviations": [
+    {
+      "id": "lumbar_flexion",
+      "name": "Flexão Lombar (Perda de Lordose Neutra)",
+      "name_en": "Lumbar Flexion (Loss of Neutral Lordosis)",
+      "description": "Coluna lombar flexiona (arredonda) sob carga durante o row, perdendo curvatura neutra. DESVIO CRÍTICO DE SEGURANÇA.",
+      "aliases": ["rounded lower back", "cat back", "costas arredondadas"],
+
+      "biomechanical_cause": {
+        "primary": "Core fraco ou má ativação de extensores lombares em posição de hip hinge",
+        "secondary": ["Carga excessiva", "Isquiotibiais curtos", "Fadiga", "Má técnica de setup"],
+        "risk_factors": ["Histórico de dor lombar", "Core fraco", "Mobilidade inadequada de quadril"]
+      },
+
+      "detection_method": {
+        "primary": "lumbar_curvature < neutral_lordosis - 10°",
+        "secondary": "visible_rounding of lower back",
+        "requires_landmarks": ["lumbar_spine", "thoracic_spine", "sacrum"],
+        "calculation": "lumbar_angle compared to neutral baseline",
+        "detection_phase": "all phases (setup, pull, hold)"
+      },
+
+      "severity_thresholds": {
+        "mild": {"lumbar_flexion": "5-10 degrees from neutral", "injury_risk": "moderate", "performance_impact": "Increased disc stress", "intervention": "Reduce load, core work"},
+        "moderate": {"lumbar_flexion": "10-20 degrees", "injury_risk": "high (disc herniation risk)", "performance_impact": "Dangerous spinal loading", "intervention": "Significant load reduction"},
+        "severe": {"lumbar_flexion": ">20 degrees (significant rounding)", "injury_risk": "CRITICAL (imminent disc injury)", "performance_impact": "Extremely dangerous", "intervention": "STOP IMMEDIATELY"}
+      },
+
+      "evidence_base": {
+        "prevalence": "25-40% especially with fatigue",
+        "injury_correlation": "Lumbar flexion in hip hinge position dramatically increases disc shear (McGill SM, 2015)",
+        "biomechanical_impact": "Same mechanism as deadlift lumbar flexion - direct path to disc herniation",
+        "correction_efficacy": "Requires fundamental retraining"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Chest up", "Arch lower back", "Proud chest", "Neutral spine"],
+        "corrective_exercises": [
+          {
+            "name": "Bird dogs",
+            "target": "Lumbar stability in extended position",
+            "sets": 3,
+            "reps": 10,
+            "frequency": "Daily"
+          },
+          {
+            "name": "Romanian deadlift (RDL)",
+            "target": "Hip hinge pattern with lumbar control",
+            "sets": 4,
+            "reps": 8,
+            "frequency": "3x/week"
+          },
+          {
+            "name": "Supported rows (chest-supported)",
+            "target": "Remove lumbar loading temporarily",
+            "sets": 3,
+            "reps": 12,
+            "frequency": "Until lumbar control achieved"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "excessive_body_english",
+      "name": "Uso Excessivo de Momentum (Body English)",
+      "name_en": "Excessive Body English (Momentum)",
+      "description": "Usa momentum excessivo do tronco para 'jogar' a barra para cima ao invés de pull controlado",
+      "aliases": ["momentum rowing", "cheating", "trunk momentum", "usando o corpo todo"],
+
+      "biomechanical_cause": {
+        "primary": "Carga excessiva ou tentativa de mover mais peso",
+        "secondary": ["Ego lifting", "Má técnica aprendida", "Fadiga"],
+        "risk_factors": ["Carga >80% capacidade real", "Falta de instrução sobre trunk stability"]
+      },
+
+      "detection_method": {
+        "primary": "trunk_angle_change > 10° during single rep",
+        "secondary": "trunk_vertical_velocity_spike during pull",
+        "requires_landmarks": ["shoulder", "hip", "knee"],
+        "calculation": "trunk_angle_variance from setup to top of pull",
+        "detection_phase": "concentric_pull"
+      },
+
+      "severity_thresholds": {
+        "mild": {"trunk_angle_change": "8-15 degrees", "injury_risk": "low-moderate", "performance_impact": "Some momentum used, reduces muscle activation", "intervention": "Cueing for control"},
+        "moderate": {"trunk_angle_change": "15-25 degrees", "injury_risk": "moderate (lumbar stress from dynamic loading)", "performance_impact": "Significant momentum, minimal back activation", "intervention": "Reduce load 20-30%"},
+        "severe": {"trunk_angle_change": ">25 degrees (essentially swinging)", "injury_risk": "high (dynamic lumbar loading)", "performance_impact": "Not a row, just swinging weight", "intervention": "Major load reduction, re-teach"}
+      },
+
+      "evidence_base": {
+        "prevalence": "40-60% when load is too heavy",
+        "injury_correlation": "Dynamic trunk motion increases lumbar injury risk significantly",
+        "biomechanical_impact": "Reduces lats and rhomboid activation by 30-50%, increases injury risk (Fenwick CM, 2009)",
+        "correction_efficacy": "Immediately correctable with load reduction"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Fixed trunk angle", "No swinging", "Control the pull", "Trunk stays still"],
+        "corrective_exercises": [
+          {
+            "name": "Pendlay row (strict, touch and go from floor)",
+            "target": "Forces reset between reps, eliminates momentum",
+            "sets": 4,
+            "reps": 6,
+            "frequency": "Every row session"
+          },
+          {
+            "name": "Chest-supported row",
+            "target": "Eliminates ability to use trunk momentum",
+            "sets": 3,
+            "reps": 10,
+            "frequency": "2x/week"
+          }
+        ],
+        "load_modification": ["Reduce load by 25-35% to achieve strict form"]
+      }
+    },
+
+    {
+      "id": "insufficient_scapular_retraction",
+      "name": "Retração Escapular Insuficiente",
+      "name_en": "Insufficient Scapular Retraction",
+      "description": "Não retrai escápulas adequadamente no topo do pull, pull dominado por braços",
+      "aliases": ["no scapular squeeze", "arms only rowing", "não aperta escápulas"],
+
+      "biomechanical_cause": {
+        "primary": "Fraqueza ou má ativação de rombóides e trapézio médio",
+        "secondary": ["Pull dominado por bíceps", "Má compreensão de movimento", "Carga muito leve ou muito pesada"],
+        "risk_factors": ["Fraqueza de costas superior", "Má instrução sobre sequência de pull"]
+      },
+
+      "detection_method": {
+        "primary": "scapular_retraction < 10° at top of pull",
+        "secondary": "scapular_distance_change < 2cm (medial borders não se aproximam)",
+        "requires_landmarks": ["scapula_medial_border_left", "scapula_medial_border_right", "spine"],
+        "calculation": "distance_change(scapula_to_spine) from bottom to top",
+        "detection_phase": "isometric_top"
+      },
+
+      "severity_thresholds": {
+        "mild": {"retraction_deficit": "Partial retraction (5-10° missing)", "injury_risk": "low", "performance_impact": "Suboptimal rhomboid/trap activation (20-30% loss)", "intervention": "Cueing, lighter load for practice"},
+        "moderate": {"retraction_deficit": "Minimal retraction (<5°)", "injury_risk": "low", "performance_impact": "Mostly arm pull, 40-50% reduced back activation", "intervention": "Scapular activation work"},
+        "severe": {"retraction_deficit": "No visible retraction", "injury_risk": "low but wrong exercise essentially", "performance_impact": "Bicep curl variant, minimal back work", "intervention": "Fundamental re-teaching"}
+      },
+
+      "evidence_base": {
+        "prevalence": "30-50% of untrained individuals",
+        "biomechanical_impact": "Rowing without scapular retraction reduces trap/rhomboid activation by 40-60% (Lehman GJ, 2008)",
+        "correction_efficacy": "High with focused activation and cueing"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Squeeze shoulder blades together at top", "Pull elbows back AND squeeze", "Think 'pinch a pencil between shoulder blades'"],
+        "corrective_exercises": [
+          {
+            "name": "Scapular rows (very light, retraction emphasis)",
+            "target": "Isolate scapular retraction movement",
+            "sets": 3,
+            "reps": 15,
+            "frequency": "Daily, pre-rowing"
+          },
+          {
+            "name": "Face pulls",
+            "target": "Retraction and external rotation",
+            "sets": 3,
+            "reps": 15,
+            "frequency": "3x/week"
+          },
+          {
+            "name": "Prone Y-T-W raises",
+            "target": "Scapular retractor strength",
+            "sets": 3,
+            "reps": 10,
+            "frequency": "3x/week"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "pull_with_arms_only",
+      "name": "Pull Dominado por Braços (Sem Iniciar com Escápulas)",
+      "name_en": "Arm-Dominant Pull (Not Initiating with Scapulae)",
+      "description": "Pull inicia com flexão de cotovelo ao invés de retração escapular, sequência incorreta",
+      "aliases": ["bicep rowing", "elbows first", "braços puxam primeiro"],
+
+      "biomechanical_cause": {
+        "primary": "Má coordenação motora ou incompreensão de sequência correta",
+        "secondary": ["Bíceps dominantes", "Fraqueza de costas", "Má instrução"],
+        "risk_factors": ["Histórico de treino arms-dominant", "Falta de consciência escapular"]
+      },
+
+      "detection_method": {
+        "primary": "elbow_flexion_initiates before scapular_retraction_initiates",
+        "secondary": "elbow_angle_change > 20° before scapular_movement > 5°",
+        "requires_landmarks": ["elbow", "scapula", "shoulder"],
+        "calculation": "time_sequence: scapular_retraction should precede elbow_flexion by >0.1s",
+        "detection_phase": "early concentric_pull (first 20%)"
+      },
+
+      "severity_thresholds": {
+        "mild": {"sequence_reversal": "Slight, near-simultaneous", "injury_risk": "low", "performance_impact": "Reduced back activation (15-25%)", "intervention": "Sequencing cueing"},
+        "moderate": {"sequence_reversal": "Clear elbow flexion first", "injury_risk": "low-moderate (bicep tendon stress)", "performance_impact": "Significant reduction (30-40%) in back work", "intervention": "Tempo training, 'scap first' emphasis"},
+        "severe": {"sequence_reversal": "Complete arm curl with minimal scap movement", "injury_risk": "moderate (bicep overload)", "performance_impact": "Not a back exercise, bicep curl variant", "intervention": "Complete re-teaching"}
+      },
+
+      "evidence_base": {
+        "prevalence": "25-40% especially in beginners",
+        "biomechanical_impact": "Incorrect sequencing reduces lat/rhomboid activation significantly",
+        "correction_efficacy": "High with tempo training and cueing"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Scapulae back FIRST, then elbows", "Start with shoulder blades", "Pull shoulder blades together before bending elbows"],
+        "corrective_exercises": [
+          {
+            "name": "Scapular retraction drills (no elbow bend)",
+            "target": "Isolate and learn scapular initiation",
+            "sets": 3,
+            "reps": 12,
+            "frequency": "Daily, pre-rowing"
+          },
+          {
+            "name": "Tempo rows (3-0-1-0: 3s pull emphasizing scap first)",
+            "target": "Slow pull forces correct sequence",
+            "sets": 3,
+            "reps": 8,
+            "frequency": "Every row session initially"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "incorrect_touch_point",
+      "name": "Ponto de Toque Incorreto",
+      "name_en": "Incorrect Touch Point",
+      "description": "Barra toca em local incorreto (pescoço/peito alto ou pelve baixa) ao invés de umbigo/esterno inferior",
+      "aliases": ["wrong pull height", "bar too high or too low", "altura errada"],
+
+      "biomechanical_cause": {
+        "primary": "Má compreensão de trajetória ou tentativa de usar momentum",
+        "secondary": ["Elbow flare (toca muito alto)", "Carga inadequada"],
+        "risk_factors": ["Má instrução", "Trying to 'cheat' ROM"]
+      },
+
+      "detection_method": {
+        "primary": "bar_touch_y < umbilicus_y - 5cm OR bar_touch_y > lower_sternum_y + 5cm",
+        "secondary": "bar not touching intended point",
+        "requires_landmarks": ["bar_position", "umbilicus", "lower_sternum"],
+        "calculation": "bar_contact_point_y compared to target zone (umbilicus to lower sternum)",
+        "detection_phase": "isometric_top"
+      },
+
+      "severity_thresholds": {
+        "mild": {"deviation": "2-5cm from optimal zone", "injury_risk": "low", "performance_impact": "Suboptimal muscle activation pattern", "intervention": "Cueing, visual feedback"},
+        "moderate": {"deviation": "5-10cm from zone (touching chest or pelvis)", "injury_risk": "low-moderate", "performance_impact": "Wrong muscle emphasis (too high = delts, too low = lats only)", "intervention": "Technique correction"},
+        "severe": {"deviation": ">10cm (touching neck or below pelvis)", "injury_risk": "moderate (if touching neck)", "performance_impact": "Essentially wrong exercise", "intervention": "Re-teaching"}
+      },
+
+      "evidence_base": {
+        "prevalence": "20-35%",
+        "biomechanical_impact": "Touch point dramatically affects which back muscles are emphasized",
+        "correction_efficacy": "High with visual feedback"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Pull to belly button area", "Touch between navel and bottom of sternum", "Not to chest, not to pelvis"],
+        "corrective_exercises": [
+          {
+            "name": "Rows with visual marker on shirt",
+            "target": "Learn correct touch point",
+            "sets": 3,
+            "reps": 10,
+            "frequency": "Until consistent"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "asymmetric_pull",
+      "name": "Pull Assimétrico",
+      "name_en": "Asymmetric Pull",
+      "description": "Um lado puxa mais que o outro, causando rotação de tronco ou barra inclinada",
+      "aliases": ["uneven row", "rotation", "one side stronger"],
+
+      "biomechanical_cause": {
+        "primary": "Assimetria de força bilateral",
+        "secondary": ["Histórico de lesão", "Dominância lateral", "Escoliose"],
+        "risk_factors": ["Lesão prévia unilateral", "Déficit de mobilidade"]
+      },
+
+      "detection_method": {
+        "primary": "trunk_rotation > 10° OR bar_tilt > 5°",
+        "secondary": "elbow_height_difference > 5cm at top",
+        "requires_landmarks": ["shoulder_left", "shoulder_right", "elbow_left", "elbow_right", "bar"],
+        "calculation": "compare(elbow_left_height, elbow_right_height) AND trunk_rotation_angle",
+        "detection_phase": "concentric_pull and isometric_top"
+      },
+
+      "severity_thresholds": {
+        "mild": {"asymmetry": "5-10 degrees rotation or tilt", "injury_risk": "low-moderate", "performance_impact": "Slight imbalance", "intervention": "Awareness, unilateral work"},
+        "moderate": {"asymmetry": "10-15 degrees", "injury_risk": "moderate (spinal rotation under load)", "performance_impact": "Visible asymmetry", "intervention": "Reduce load, single-arm rows"},
+        "severe": {"asymmetry": ">15 degrees", "injury_risk": "high (spinal injury risk)", "performance_impact": "Dangerous", "intervention": "Stop barbell rows, unilateral phase"}
+      },
+
+      "evidence_base": {
+        "prevalence": "15-25%",
+        "biomechanical_impact": "Asymmetric loading with spinal rotation increases injury risk",
+        "correction_efficacy": "Moderate to high with unilateral training"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Pull evenly both sides", "No rotation", "Keep shoulders level"],
+        "corrective_exercises": [
+          {
+            "name": "Single-arm dumbbell rows",
+            "target": "Address weaker side",
+            "sets": 3,
+            "reps": "10 each, start weaker",
+            "frequency": "3x/week"
+          },
+          {
+            "name": "TRX rows (single-arm)",
+            "target": "Unilateral stability",
+            "sets": 3,
+            "reps": 10,
+            "frequency": "2x/week"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "stance_too_narrow",
+      "name": "Stance Muito Estreito",
+      "name_en": "Stance Too Narrow",
+      "description": "Pés muito juntos, reduzindo base de suporte e estabilidade",
+      "aliases": ["feet together", "narrow stance", "pés juntos"],
+
+      "biomechanical_cause": {
+        "primary": "Má setup ou falta de instrução sobre stance adequado",
+        "secondary": ["Copying wrong technique"],
+        "risk_factors": ["Má instrução", "Falta de awareness"]
+      },
+
+      "detection_method": {
+        "primary": "stance_width < 0.5x shoulder_width",
+        "secondary": "feet closer than hip-width",
+        "requires_landmarks": ["foot_left", "foot_right", "hip_left", "hip_right"],
+        "calculation": "distance(foot_left, foot_right) / distance(hip_left, hip_right)",
+        "detection_phase": "setup and all phases"
+      },
+
+      "severity_thresholds": {
+        "mild": {"stance_ratio": "0.7-0.9x hip width", "injury_risk": "low", "performance_impact": "Reduced stability", "intervention": "Widen stance cueing"},
+        "moderate": {"stance_ratio": "0.5-0.7x hip width", "injury_risk": "moderate (balance issues)", "performance_impact": "Significant instability", "intervention": "Fundamental setup correction"},
+        "severe": {"stance_ratio": "<0.5x (feet nearly together)", "injury_risk": "high (loss of balance possible)", "performance_impact": "Very unstable", "intervention": "Immediate correction"}
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Feet hip-width or shoulder-width apart", "Wider stance for stability"],
+        "setup_instruction": ["Practice setup without load first"]
+      }
+    },
+
+    {
+      "id": "grip_too_narrow",
+      "name": "Pegada Muito Estreita",
+      "name_en": "Grip Too Narrow",
+      "description": "Mãos muito próximas na barra, reduzindo ROM e mudando ênfase muscular",
+      "aliases": ["narrow grip", "hands too close", "pegada estreita"],
+
+      "biomechanical_cause": {
+        "primary": "Má instrução ou confusão com close-grip variant",
+        "secondary": ["Copying wrong technique"],
+        "risk_factors": ["Falta de instrução"]
+      },
+
+      "detection_method": {
+        "primary": "grip_width < 1.0x shoulder_width",
+        "secondary": "hands closer than shoulder-width",
+        "requires_landmarks": ["wrist_left", "wrist_right", "shoulder_left", "shoulder_right"],
+        "calculation": "distance(wrist_left, wrist_right) / distance(shoulder_left, shoulder_right)",
+        "detection_phase": "setup"
+      },
+
+      "severity_thresholds": {
+        "mild": {"grip_ratio": "1.0-1.2x shoulder width", "injury_risk": "low", "performance_impact": "Shifts emphasis to lower lats/triceps", "intervention": "Widen grip"},
+        "moderate": {"grip_ratio": "0.8-1.0x", "injury_risk": "low", "performance_impact": "Significantly different exercise (close-grip row)", "intervention": "Widen to 1.3-1.5x shoulder width"},
+        "severe": {"grip_ratio": "<0.8x (very narrow)", "injury_risk": "moderate (elbow stress)", "performance_impact": "Wrong exercise selection", "intervention": "Fundamental re-teaching"}
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Hands 1.3-1.5x shoulder-width apart", "Wider grip for standard row"],
+        "grip_reference": ["Use shoulder-width as minimum, slightly wider preferred"]
+      }
+    }
+  ],
+
+  "common_combinations": [
+    {
+      "combination": ["lumbar_flexion", "excessive_body_english"],
+      "prevalence": "high",
+      "cause": "Load too heavy causes both momentum and loss of lumbar control",
+      "synergistic_effect": "EXTREMELY DANGEROUS - combines two major injury mechanisms",
+      "priority": "Reduce load immediately, address lumbar control",
+      "correction_approach": "Major load reduction (40-50%), fundamental re-teaching"
+    },
+    {
+      "combination": ["insufficient_scapular_retraction", "pull_with_arms_only"],
+      "prevalence": "very high",
+      "cause": "Related - both stem from poor scapular awareness/activation",
+      "priority": "Address scapular sequencing",
+      "correction_approach": "Scapular isolation drills, tempo training"
+    }
+  ],
+
+  "detection_priority": [
+    "lumbar_flexion",
+    "excessive_body_english",
+    "insufficient_scapular_retraction",
+    "pull_with_arms_only",
+    "asymmetric_pull",
+    "incorrect_touch_point",
+    "stance_too_narrow",
+    "grip_too_narrow"
+  ]
+}

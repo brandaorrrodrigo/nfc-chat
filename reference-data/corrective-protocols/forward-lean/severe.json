@@ -1,0 +1,177 @@
+{
+  "protocol_id": "forward_lean_severe_v1",
+  "deviation": "forward-lean",
+  "severity": "severe",
+  "version": "1.0.0",
+  "last_updated": "2025-01-15",
+
+  "overview": {
+    "description": "Protocolo para forward lean severo (> 25° além do ótimo, tronco aproxima-se de horizontal). Casos críticos com dor lombar significativa. Requer avaliação profissional e possível transição permanente para variações alternativas.",
+    "typical_presentation": "Tronco extremamente inclinado, quase horizontal em profundidades moderadas. Dor lombar moderada a severa (NRS 4-7/10). Limitação severa de mobilidade. Pode haver histórico de lesão. Back squat tradicional pode ser CONTRAINDICADO permanentemente.",
+    "primary_causes": [
+      "Restrição severa de dorsiflexão (< 25°)",
+      "Fraqueza extrema de quadríceps",
+      "Histórico de lesão lombar alterando padrão",
+      "Possível limitação estrutural de tornozelo",
+      "Anos de padrão inadequado estabelecido"
+    ],
+    "expected_duration": "12-20 semanas, possivelmente permanente modificações",
+    "success_rate": "40-50% retorno a back squat. Maioria transiciona para front squat/alternativas.",
+    "warning": "OBRIGATÓRIO: Avaliação profissional. Back squat pode ser contraindicado. Front squat/alternativas são solução primária."
+  },
+
+  "goals_hierarchy": [
+    {
+      "priority": 1,
+      "goal": "Eliminar dor lombar",
+      "measurable_outcome": "Dor < 3/10 consistente"
+    },
+    {
+      "priority": 2,
+      "goal": "Estabelecer variação de agachamento segura",
+      "measurable_outcome": "Front squat, safety bar, ou belt squat sem dor"
+    },
+    {
+      "priority": 3,
+      "goal": "Ganhos básicos de mobilidade",
+      "measurable_outcome": "Dorsiflexão ≥ 30°, hip flexors melhorados"
+    },
+    {
+      "priority": 4,
+      "goal": "Aceitar que back squat tradicional pode não ser apropriado",
+      "measurable_outcome": "Programa sustentável com variações alternativas"
+    }
+  ],
+
+  "phases": [
+    {
+      "phase_number": 1,
+      "name": "Redução de Dor e Mobilidade Básica",
+      "duration_typical": "28-42 dias",
+      "frequency": "Mobilidade diária, treino 3-4x/semana",
+      "focus": "Eliminar dor, mobilidade básica, introduzir front squat, educar sobre limitações",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Pain Reduction",
+            "target": "Dor < 3/10",
+            "measurement_method": "NRS"
+          },
+          {
+            "test": "Ankle Mobility",
+            "target": "Ganho de 5-8cm no wall test",
+            "measurement_method": "Medição"
+          },
+          {
+            "test": "Front Squat Introduction",
+            "target": "Barra vazia x 10 reps sem dor",
+            "measurement_method": "Execução básica"
+          }
+        ],
+        "minimum_time": "28 dias"
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "ankle_mobilization_daily",
+          "name": "Mobilização Diária de Tornozelo",
+          "frequency": "2-3x/dia",
+          "note": "Wall mobilization, progressão gradual, pode usar sapatos elevados permanentemente"
+        },
+        {
+          "exercise_id": "hip_flexor_release",
+          "name": "Release de Flexores de Quadril",
+          "note": "Couch stretch prolongado, foam rolling"
+        },
+        {
+          "exercise_id": "front_squat_learning",
+          "name": "Aprendizado de Front Squat",
+          "note": "Barra vazia, volume baixo, estabelecer como variação primária"
+        },
+        {
+          "exercise_id": "goblet_squat_elevated",
+          "name": "Goblet Squat com Elevação",
+          "note": "Cunhas sob calcanhares, permite treinar sem dor"
+        }
+      ]
+    },
+
+    {
+      "phase_number": 2,
+      "name": "Transição para Variações Alternativas",
+      "duration_typical": "42-56 dias",
+      "frequency": "4x/semana",
+      "focus": "Front squat como primário, explorar safety bar/belt squat, aceitar que back squat pode não retornar",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Front Squat Strength",
+            "target": "Estabelecer 1RM front squat como referência",
+            "measurement_method": "Teste"
+          },
+          {
+            "test": "Pain Free Training",
+            "target": "4 semanas sem dor",
+            "measurement_method": "Monitoramento"
+          }
+        ]
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "front_squat_progressive",
+          "name": "Front Squat - Variação Primária",
+          "note": "Progressão normal de carga, estabelecer como movimento principal PERMANENTEMENTE"
+        },
+        {
+          "exercise_id": "safety_bar_squat",
+          "name": "Safety Bar Squat",
+          "note": "Se disponível, excelente alternativa"
+        },
+        {
+          "exercise_id": "belt_squat",
+          "name": "Belt Squat",
+          "note": "Se disponível, zero estresse lombar"
+        }
+      ]
+    }
+  ],
+
+  "return_to_exercise_criteria": {
+    "realistic_expectations": "CRÍTICO: Maioria dos casos severos NUNCA retorna a back squat tradicional. Front squat e alternativas são solução permanente, não temporária. Isso NÃO é falha.",
+
+    "permanent_modifications": [
+      "Front squat como agachamento primário PERMANENTEMENTE",
+      "Safety bar squat como alternativa",
+      "Belt squat se disponível",
+      "Sapatos de agachamento (cunha) permanentes",
+      "Considerar leg press, hack squat como complementares",
+      "Back squat tradicional pode estar CONTRAINDICADO permanentemente"
+    ]
+  },
+
+  "contraindications": {
+    "absolute": [
+      "Lesão lombar não reabilitada",
+      "Hérnia de disco sintomática",
+      "Espondilolistese",
+      "Dor severa com forward lean"
+    ]
+  },
+
+  "red_flags": {
+    "stop_immediately": [
+      "Dor > 6/10",
+      "Irradiação",
+      "Sintomas neurológicos"
+    ]
+  },
+
+  "special_considerations": {
+    "professional_supervision": "OBRIGATÓRIA para casos severos. Fisioterapeuta deve guiar.",
+    "exercise_selection": "Foco em variações que minimizam forward lean. Performance não deve ser medida por back squat.",
+    "psychological_support": "Aceitação de que back squat pode não ser apropriado é crítica. Educação sobre variações igualmente válidas."
+  }
+}

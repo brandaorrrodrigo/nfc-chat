@@ -1,0 +1,292 @@
+{
+  "exercise_id": "deadlift_conventional",
+  "version": "1.0.0",
+  "created_at": "2025-02-05",
+  "validated_by": "NFC Biomechanics Team",
+  "evidence_sources": [
+    "NSCA Essentials of Strength Training and Conditioning 4th Ed",
+    "McGill SM. Low Back Disorders: Evidence-Based Prevention and Rehabilitation. 3rd Ed. 2015",
+    "Hales M. Improving the Deadlift: Understanding Biomechanical Constraints and Physiological Adaptations to Resistance Exercise. Strength Cond J. 2010",
+    "Escamilla RF et al. A three-dimensional biomechanical analysis of the deadlift. Med Sci Sports Exerc. 2000"
+  ],
+
+  "exercise_metadata": {
+    "category": "posterior_chain_compound",
+    "primary_muscles": ["erector_spinae", "gluteus_maximus", "hamstrings", "quadriceps"],
+    "secondary_muscles": ["trapezius", "latissimus_dorsi", "forearm_flexors", "core"],
+    "equipment": "barbell",
+    "difficulty": "advanced",
+    "joint_actions": {
+      "hip": "extension",
+      "knee": "extension",
+      "spine": "isometric_stabilization",
+      "shoulder": "isometric_stabilization"
+    }
+  },
+
+  "phases": {
+    "setup_position": {
+      "duration_percentage": 15,
+      "description": "Posição inicial, setup antes da puxada",
+      "key_points": [
+        "Pés hip-width apart, sob a barra (barra sobre meio do pé)",
+        "Canela quase tocando barra (1-2cm distância)",
+        "Quadril mais alto que joelhos, mais baixo que ombros",
+        "Coluna neutra (lordose lombar natural preservada)",
+        "Escápulas diretamente sobre barra (vista lateral)",
+        "Braços verticais, grip shoulder-width",
+        "Olhar neutro ou levemente para cima"
+      ],
+      "angles": {
+        "knee_left": {
+          "ideal": 115,
+          "acceptable_range": [105, 125],
+          "tolerance": 15,
+          "measurement_method": "hip-knee-ankle",
+          "scientific_rationale": "Flexão moderada de joelho (~60-70° de flexão a partir de extensão) permite quadril adequadamente posicionado e torque ótimo (Hales 2010)"
+        },
+        "knee_right": {
+          "ideal": 115,
+          "acceptable_range": [105, 125],
+          "tolerance": 15,
+          "measurement_method": "hip-knee-ankle",
+          "scientific_rationale": "Flexão moderada de joelho para setup adequado"
+        },
+        "hip": {
+          "ideal": 70,
+          "acceptable_range": [60, 80],
+          "tolerance": 15,
+          "measurement_method": "shoulder-hip-knee",
+          "scientific_rationale": "Quadril em flexão de ~70° no setup, mais alto que joelhos (diferencia de squat), otimiza posterior chain activation"
+        },
+        "trunk": {
+          "ideal": 45,
+          "acceptable_range": [35, 55],
+          "tolerance": 15,
+          "measurement_method": "vertical-spine_angle",
+          "scientific_rationale": "Tronco ~45° no setup do conventional (vs ~15° no sumo), tronco mais horizontal aumenta demanda de erectores (Escamilla 2000)"
+        },
+        "ankle_left": {
+          "ideal": 75,
+          "acceptable_range": [70, 82],
+          "tolerance": 10,
+          "measurement_method": "knee-ankle-foot",
+          "scientific_rationale": "Dorsiflexão moderada, canela próxima à barra"
+        },
+        "ankle_right": {
+          "ideal": 75,
+          "acceptable_range": [70, 82],
+          "tolerance": 10,
+          "measurement_method": "knee-ankle-foot",
+          "scientific_rationale": "Dorsiflexão moderada"
+        },
+        "shoulder_protraction": {
+          "ideal": 0,
+          "acceptable_range": [-5, 5],
+          "tolerance": 8,
+          "measurement_method": "scapula_position_relative_to_neutral",
+          "scientific_rationale": "Escápulas neutras ou levemente retraídas, ombros 'encaixados', protração excessiva aumenta risco lombar"
+        }
+      },
+      "critical_checkpoints": [
+        {
+          "name": "lumbar_neutrality_setup",
+          "description": "Coluna lombar em lordose natural, SEM flexão lombar (cat back)",
+          "detection_method": "lumbar_curvature >= natural_lordosis, no_flexion",
+          "risk_if_failed": "critical",
+          "injury_mechanisms": "Flexão lombar sob carga aumenta dramaticamente shear stress nos discos L4-L5 e L5-S1 (McGill 2015)"
+        },
+        {
+          "name": "bar_over_midfoot",
+          "description": "Barra posicionada sobre meio do pé (não dedos ou calcanhar)",
+          "detection_method": "bar_x_position == midfoot_x ± 2cm",
+          "risk_if_failed": "medium",
+          "injury_mechanisms": "Barra muito anterior aumenta momento de flexão lombar e torna levantamento ineficiente"
+        },
+        {
+          "name": "shoulders_over_bar",
+          "description": "Ombros (escápulas) diretamente sobre ou levemente à frente da barra (vista lateral)",
+          "detection_method": "shoulder_x >= bar_x - 5cm",
+          "risk_if_failed": "medium",
+          "injury_mechanisms": "Ombros muito atrás da barra indica setup inadequado e aumenta arm angle desvantajoso"
+        }
+      ]
+    },
+
+    "pull_initial": {
+      "duration_percentage": 35,
+      "description": "Fase inicial da puxada, barra sai do chão até joelhos",
+      "key_points": [
+        "Drive através dos pés, 'empurrando o chão'",
+        "Joelhos e quadris estendem simultaneamente",
+        "Ângulo do tronco permanece relativamente constante",
+        "Barra desliza rente às canelas",
+        "Coluna neutra rigorosamente mantida",
+        "Braços retos (sem puxada com bíceps)"
+      ],
+      "angles": {
+        "knee_left": {
+          "ideal": 145,
+          "acceptable_range": [135, 155],
+          "tolerance": 15,
+          "measurement_method": "hip-knee-ankle",
+          "scientific_rationale": "Extensão progressiva de joelhos, barra passa joelhos com joelhos ~30° de flexão"
+        },
+        "knee_right": {
+          "ideal": 145,
+          "acceptable_range": [135, 155],
+          "tolerance": 15,
+          "measurement_method": "hip-knee-ankle",
+          "scientific_rationale": "Extensão progressiva de joelhos"
+        },
+        "hip": {
+          "ideal": 90,
+          "acceptable_range": [80, 100],
+          "tolerance": 15,
+          "measurement_method": "shoulder-hip-knee",
+          "scientific_rationale": "Quadril estende progressivamente mas não completamente ainda (lockout ocorre após)"
+        },
+        "trunk": {
+          "ideal": 50,
+          "acceptable_range": [42, 58],
+          "tolerance": 12,
+          "measurement_method": "vertical-spine_angle",
+          "scientific_rationale": "Ângulo do tronco mantém-se similar ao setup inicial (não sobe primeiro - evita 'squatting the deadlift')"
+        }
+      }
+    },
+
+    "lockout": {
+      "duration_percentage": 25,
+      "description": "Fase final, barra passa joelhos até lockout completo",
+      "key_points": [
+        "Quadris empurram para frente (hip thrust)",
+        "Joelhos completam extensão",
+        "Ombros retraem levemente",
+        "Postura ereta, sem hiperextensão lombar excessiva",
+        "Peito alto, olhar à frente"
+      ],
+      "angles": {
+        "knee_left": {
+          "ideal": 175,
+          "acceptable_range": [170, 180],
+          "tolerance": 10,
+          "measurement_method": "hip-knee-ankle",
+          "scientific_rationale": "Extensão completa de joelhos no lockout"
+        },
+        "knee_right": {
+          "ideal": 175,
+          "acceptable_range": [170, 180],
+          "tolerance": 10,
+          "measurement_method": "hip-knee-ankle",
+          "scientific_rationale": "Extensão completa de joelhos"
+        },
+        "hip": {
+          "ideal": 180,
+          "acceptable_range": [175, 185],
+          "tolerance": 10,
+          "measurement_method": "shoulder-hip-knee",
+          "scientific_rationale": "Quadril em extensão completa, glúteos contraídos maximamente"
+        },
+        "trunk": {
+          "ideal": 0,
+          "acceptable_range": [-5, 5],
+          "tolerance": 10,
+          "measurement_method": "vertical-spine_angle",
+          "scientific_rationale": "Tronco vertical no lockout, sem hiperextensão lombar excessiva (>10°)"
+        },
+        "shoulder_retraction": {
+          "ideal": 10,
+          "acceptable_range": [5, 15],
+          "tolerance": 8,
+          "measurement_method": "scapula_retraction_degrees",
+          "scientific_rationale": "Retração escapular leve no lockout, peito alto, evita ombros arredondados"
+        }
+      },
+      "critical_checkpoints": [
+        {
+          "name": "no_hyperextension_lockout",
+          "description": "Lockout completo SEM hiperextensão lombar excessiva (lumbar extension < 10° beyond neutral)",
+          "detection_method": "lumbar_extension_angle < neutral + 10°",
+          "risk_if_failed": "high",
+          "injury_mechanisms": "Hiperextensão lombar aumenta compressão posterior das facetas articulares"
+        },
+        {
+          "name": "symmetric_lockout",
+          "description": "Extensão simétrica bilateral de quadris e joelhos",
+          "detection_method": "bilateral_hip_angle_difference < 5°, bilateral_knee_difference < 5°",
+          "risk_if_failed": "medium",
+          "injury_mechanisms": "Assimetria indica compensação e aumenta carga unilateral"
+        }
+      ]
+    },
+
+    "eccentric_descent": {
+      "duration_percentage": 25,
+      "description": "Descida controlada da barra ao chão",
+      "key_points": [
+        "Movimento reverso da subida",
+        "Quadris quebram primeiro (hinge movement)",
+        "Joelhos flexionam após barra passar joelhos",
+        "Controle de velocidade (não soltar)",
+        "Coluna neutra mantida"
+      ],
+      "angles": {
+        "knee_left": {
+          "ideal": 140,
+          "acceptable_range": [130, 150],
+          "tolerance": 15,
+          "measurement_method": "hip-knee-ankle",
+          "scientific_rationale": "Joelhos flexionam moderadamente após barra passar altura dos joelhos"
+        },
+        "knee_right": {
+          "ideal": 140,
+          "acceptable_range": [130, 150],
+          "tolerance": 15,
+          "measurement_method": "hip-knee-ankle",
+          "scientific_rationale": "Flexão moderada de joelhos"
+        },
+        "hip": {
+          "ideal": 95,
+          "acceptable_range": [85, 105],
+          "tolerance": 15,
+          "measurement_method": "shoulder-hip-knee",
+          "scientific_rationale": "Quadril flexiona primeiro (hip hinge), joelhos depois"
+        }
+      }
+    }
+  },
+
+  "biomechanical_constraints": {
+    "max_knee_flexion": 130,
+    "min_knee_flexion_setup": 90,
+    "max_trunk_forward_lean_setup": 60,
+    "min_trunk_forward_lean_setup": 30,
+    "max_lumbar_flexion_degrees": 5,
+    "max_lumbar_hyperextension_lockout": 10,
+    "bilateral_symmetry_threshold_degrees": 5,
+    "bar_to_shin_distance_cm_setup": 2,
+    "safety_limits": {
+      "lumbar_flexion_critical": 10,
+      "cervical_hyperextension_max": 20,
+      "bar_drift_away_from_body_cm": 5
+    }
+  },
+
+  "similarity_weights": {
+    "hip": 0.30,
+    "trunk": 0.25,
+    "knee": 0.20,
+    "bar_path": 0.15,
+    "symmetry": 0.10
+  },
+
+  "common_deviations_preview": [
+    "lumbar_flexion",
+    "hips_rise_first",
+    "bar_drift_forward",
+    "rounded_shoulders",
+    "excessive_lockout_hyperextension",
+    "knees_cave_in"
+  ]
+}

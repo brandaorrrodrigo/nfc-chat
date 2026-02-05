@@ -1,0 +1,671 @@
+{
+  "protocol_id": "knee_valgus_severe_v1",
+  "deviation": "knee-valgus",
+  "severity": "severe",
+  "version": "1.0.0",
+  "last_updated": "2025-01-15",
+
+  "overview": {
+    "description": "Protocolo corretivo para valgo severo de joelho (> 20° de adução femoral ou valgo dinâmico que resulta em dor significativa/lesão). Este é um caso crítico que requer intervenção intensiva, possivelmente supervisão profissional, e progressão muito gradual.",
+    "typical_presentation": "Colapso medial extremo e consistente dos joelhos durante qualquer movimento de agachamento. Frequentemente associado a dor patelofemoral moderada a severa (NRS 4-7/10). Pode haver histórico de lesões relacionadas (condromalácia patelar, tendinite patelar, ITBS). Padrão profundamente enraizado. Possível déficit estrutural ou neurológico subjacente.",
+    "primary_causes": [
+      "Fraqueza severa e/ou inibição do complexo glúteo médio/mínimo (< 50% força comparado ao normal)",
+      "Padrão motor compensatório fortemente estabelecido (anos de movimento inadequado)",
+      "Possível déficit estrutural (Q-angle elevado, anteversão femoral, genu valgum estrutural)",
+      "Hiperatividade extrema de adutores e TFL criando desequilíbrio muscular severo",
+      "Déficit significativo de controle de core e estabilidade lombo-pélvica",
+      "Possível limitação de mobilidade de tornozelo ou quadril contribuindo significativamente",
+      "História de lesão prévia que alterou padrão de movimento"
+    ],
+    "expected_duration": "8-16 semanas com prática diária e possivelmente supervisão profissional",
+    "success_rate": "60-70% de melhora significativa (redução > 50%) com adesão completa. Alguns casos podem ter componente estrutural limitando correção total.",
+    "warning": "CRÍTICO: Casos severos devem ser avaliados por fisioterapeuta ou médico ortopedista antes de iniciar protocolo. Pode haver contraindicação ou necessidade de intervenção adicional."
+  },
+
+  "goals_hierarchy": [
+    {
+      "priority": 1,
+      "goal": "Estabelecer ativação básica e consciente de glúteo médio",
+      "measurable_outcome": "Capacidade de contrair glúteo médio isoladamente com palpação por 20s, realizar 15 clamshells com forma perfeita"
+    },
+    {
+      "priority": 2,
+      "goal": "Reduzir valgo para faixa moderada (< 20°) em movimentos básicos sem carga",
+      "measurable_outcome": "Bodyweight squat com valgo reduzido em 40%+ comparado ao baseline"
+    },
+    {
+      "priority": 3,
+      "goal": "Desenvolver força fundamental de abdutores de quadril",
+      "measurable_outcome": "Side plank 30s, lateral band walks 20 passos sem compensação, single-leg balance 45s"
+    },
+    {
+      "priority": 4,
+      "goal": "Eliminar ou reduzir significativamente dor associada",
+      "measurable_outcome": "Dor durante atividades diárias reduzida para NRS < 3/10"
+    },
+    {
+      "priority": 5,
+      "goal": "Estabelecer controle motor básico em padrões de agachamento assistidos",
+      "measurable_outcome": "Box squat com barra vazia, goblet squat 8kg sem aumento do valgo"
+    },
+    {
+      "priority": 6,
+      "goal": "Progressão muito gradual para movimentos com carga leve",
+      "measurable_outcome": "Retorno ao treino com cargas 40-50% das prévias mantendo valgo < 15°"
+    }
+  ],
+
+  "phases": [
+    {
+      "phase_number": 1,
+      "name": "Ativação Fundamental e Redução de Dor",
+      "duration_typical": "21-28 dias",
+      "frequency": "Diária (exercícios de ativação 2x/dia idealmente)",
+      "focus": "Estabelecer conexão neuromuscular básica com glúteo médio, iniciar fortalecimento em posições isoladas, reduzir dor e inflamação, educação sobre mecânica corporal",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Ativação Isolada de Glúteo Médio",
+            "target": "Contração isométrica sustentada por 30s com palpação confirmando ativação primária",
+            "measurement_method": "Palpação + sensação subjetiva de 'queimação' na região lateral do quadril"
+          },
+          {
+            "test": "Clamshell Básico",
+            "target": "3x20 repetições com banda média mantendo forma perfeita sem compensação",
+            "measurement_method": "Observação visual de pelve estável, sem rotação, ativação isolada"
+          },
+          {
+            "test": "Bodyweight Squat Assistido",
+            "target": "10 repetições com valgo reduzido em 30% comparado ao baseline",
+            "measurement_method": "Filmagem frontal ou avaliação visual - melhora clara mesmo que não perfeito"
+          },
+          {
+            "test": "Redução de Dor",
+            "target": "Dor em repouso e durante AVDs reduzida para NRS < 4/10",
+            "measurement_method": "Auto-relato diário em diário de dor"
+          }
+        ],
+        "subjective_markers": [
+          "Atleta é capaz de 'sentir' glúteo médio trabalhando",
+          "Redução perceptível de desconforto no joelho",
+          "Compreensão clara das cues de movimento correto",
+          "Motivação e engajamento com protocolo"
+        ],
+        "minimum_time": "21 dias de prática diária consistente",
+        "all_criteria_required": false,
+        "minimum_criteria": 3,
+        "note": "Casos severos podem precisar de 4-6 semanas na Fase 1. Não apressar progressão."
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "glute_med_activation_supine",
+          "name": "Ativação de Glúteo Médio em Decúbito Dorsal",
+          "primary_targets": ["Glúteo médio - ativação neural básica"],
+          "equipment": ["Colchonete"],
+          "sets": 3,
+          "reps": "Hold 15-20s",
+          "tempo": "Isométrico",
+          "rest": "45s",
+          "execution_cues": [
+            "Deitar de costas, joelhos flexionados, pés no chão largura dos quadris",
+            "Elevar quadril em ponte (glute bridge)",
+            "No topo da ponte: fazer pequenas abduções dos joelhos (empurrar joelhos para fora)",
+            "Manter quadril elevado enquanto faz as micro-abduções",
+            "Focar em sentir lateral dos quadris (glúteo médio) trabalhando",
+            "Esta é posição mais fácil para aprender a ativar glúteo médio isoladamente",
+            "Fazer palpação com as mãos na lateral dos quadris"
+          ],
+          "common_errors": [
+            {"error": "Não sentir trabalho nos glúteos", "correction": "Reduzir altura da ponte, focar apenas nas micro-abduções"},
+            {"error": "Cãibras nos isquiotibiais", "correction": "Aproximar pés dos glúteos, reduzir altura da ponte"}
+          ],
+          "progressions": [
+            {"level": "Iniciante", "modification": "Hold 10s, sem abduções - apenas ativação em ponte", "when_to_use": "Primeira semana"},
+            {"level": "Padrão", "modification": "Hold 20s com micro-abduções", "when_to_use": "Após dominar básico"},
+            {"level": "Avançado", "modification": "Single-leg bridge com micro-abduções", "when_to_use": "Final da Fase 1"}
+          ],
+          "scientific_rationale": "Posição supina reduz demandas de estabilização, permitindo foco exclusivo em ativação. Essencial para casos onde conexão neural está severamente comprometida (Selkowitz et al., 2013).",
+          "personalization_rules": {
+            "training_age_beginner": {"sets": 2, "reps": "Hold 10-15s", "note": "Foco total em estabelecer sensação"},
+            "injury_history_lower_back": {"modification": "Ponte mais baixa, não hiperextender", "caution": "Deve sentir glúteos, não lombar"}
+          }
+        },
+        {
+          "exercise_id": "side_lying_hip_abduction",
+          "name": "Abdução de Quadril em Decúbito Lateral",
+          "primary_targets": ["Glúteo médio", "Glúteo mínimo"],
+          "equipment": ["Colchonete"],
+          "sets": 4,
+          "reps": 20,
+          "tempo": "2-1-2-1",
+          "rest": "60s",
+          "execution_cues": [
+            "Decúbito lateral, corpo em linha reta, perna de baixo ligeiramente flexionada para estabilidade",
+            "Perna de cima completamente estendida, pé em posição neutra (não apontado nem flexionado)",
+            "Abduzir perna superior diretamente para o lado - movimento puro no plano frontal",
+            "Elevar até 30-45°, não mais (amplitude excessiva recruta TFL e quadrado lombar)",
+            "Pausar 1s no topo, sentir contração na lateral do quadril",
+            "Descer com controle, não deixar gravidade fazer o trabalho",
+            "Manter pelve perpendicular ao solo - não rolar para trás",
+            "Fazer palpação do glúteo médio com mão livre"
+          ],
+          "common_errors": [
+            {"error": "Rotação externa do quadril (turning out)", "correction": "Manter pé/joelho apontando para frente, rotação neutra"},
+            {"error": "Rotação posterior da pelve", "correction": "Mão na crista ilíaca anterior, mantê-la apontando para frente"},
+            {"error": "Amplitude excessiva", "correction": "Reduzir para 30° - qualidade sobre quantidade"}
+          ],
+          "progressions": [
+            {"level": "Iniciante", "modification": "15 reps, amplitude reduzida (20-25°)", "when_to_use": "Primeira 2 semanas"},
+            {"level": "Padrão", "modification": "20 reps, 30-40° amplitude", "when_to_use": "Semanas 3-4"},
+            {"level": "Avançado", "modification": "Adicionar tornozeleira 1-2kg", "when_to_use": "Preparação para Fase 2"}
+          ],
+          "scientific_rationale": "Abdução pura em decúbito lateral ativa glúteo médio (70% MVIC) com mínima compensação quando executada corretamente (Distefano et al., 2009).",
+          "personalization_rules": {
+            "training_age_beginner": {"sets": 3, "reps": 15},
+            "injury_history_hip": {"modification": "Avaliar ROM sem dor, ajustar amplitude", "caution": "Parar se dor no quadril"}
+          }
+        },
+        {
+          "exercise_id": "clamshell_basic",
+          "name": "Clamshell Básico com Ênfase em Controle",
+          "primary_targets": ["Glúteo médio", "Rotadores externos"],
+          "equipment": ["Colchonete", "Mini-band leve"],
+          "sets": 4,
+          "reps": 15,
+          "tempo": "2-2-2-1",
+          "rest": "60s",
+          "execution_cues": [
+            "Decúbito lateral, joelhos flexionados 90°, pés juntos",
+            "Mini-band ao redor dos joelhos (resistência leve inicialmente)",
+            "Abrir joelho superior mantendo pés em contato",
+            "HOLD de 2 segundos no topo com contração voluntária máxima",
+            "Fazer palpação constante com mão livre - deve sentir glúteo médio trabalhando intensamente",
+            "Descida lenta em 2 segundos - controle excêntrico",
+            "Evitar qualquer compensação de quadrado lombar ou rotação pélvica"
+          ],
+          "scientific_rationale": "Clamshell é gold standard para ativação de glúteo médio em casos de fraqueza severa (Distefano et al., 2009 - 79% MVIC).",
+          "personalization_rules": {
+            "if_cramping": "Reduzir amplitude e reps, pausas mais longas entre séries",
+            "if_no_activation": "Retornar ao exercício 1 (activação supina), progredir mais devagar"
+          }
+        },
+        {
+          "exercise_id": "wall_sit_isometric",
+          "name": "Wall Sit Isométrico com Bola entre Joelhos",
+          "primary_targets": ["Quadríceps", "Glúteos", "Adutores (mínimo)"],
+          "equipment": ["Parede", "Bola pequena ou almofada"],
+          "sets": 3,
+          "reps": "Hold 20-30s",
+          "tempo": "Isométrico",
+          "rest": "90s",
+          "execution_cues": [
+            "Costas contra parede, descer até 90° flexão de joelho (ou menos se muito desafiador)",
+            "Colocar bola pequena ou almofada entre os joelhos",
+            "Apertar suavemente a bola (ativa adutores) ENQUANTO empurra joelhos para fora (ativa abdutores)",
+            "Este padrão de co-contração é fundamental para estabilidade de joelho",
+            "Manter posição sem permitir joelhos colapsarem medialmente",
+            "Distribuir peso uniformemente nos dois pés"
+          ],
+          "common_errors": [
+            {"error": "Joelhos colapsam mesmo com bola", "correction": "Reduzir profundidade (120° flexão), comando verbal constante"},
+            {"error": "Perda de posição antes de 20s", "correction": "Reduzir profundidade ou tempo, progredir gradualmente"}
+          ],
+          "progressions": [
+            {"level": "Iniciante", "modification": "120° flexão, hold 15s", "when_to_use": "Primeiras sessões"},
+            {"level": "Padrão", "modification": "90° flexão, hold 30s", "when_to_use": "Após 2 semanas"},
+            {"level": "Avançado", "modification": "Single-leg wall sit (sem bola)", "when_to_use": "Transição para Fase 2"}
+          ],
+          "scientific_rationale": "Isométricos em posições seguras permitem fortalecimento sem risco de movimento compensatório. Co-contração de adutores e abdutores estabiliza joelho (Stastny et al., 2015).",
+          "personalization_rules": {
+            "injury_history_knee": {"modification": "Profundidade muito conservadora inicialmente", "caution": "Zero dor tolerada"}
+          }
+        },
+        {
+          "exercise_id": "standing_hip_abduction_assisted",
+          "name": "Abdução de Quadril em Pé com Apoio",
+          "primary_targets": ["Glúteo médio", "Equilíbrio básico"],
+          "equipment": ["Suporte (parede/cadeira)", "Mini-band (opcional)"],
+          "sets": 3,
+          "reps": 15,
+          "tempo": "1-1-1-0",
+          "rest": "45s",
+          "execution_cues": [
+            "Em pé, segurar em suporte para equilíbrio com uma mão",
+            "Perna de apoio levemente flexionada (soft knee)",
+            "Abduzir perna livre lateralmente mantendo pé apontando para frente",
+            "Movimento controlado, não balançar ou usar momentum",
+            "Sentir trabalho na lateral do quadril da perna de apoio (estabilização) E perna que move",
+            "Manter torso ereto, evitar inclinação lateral"
+          ],
+          "progressions": [
+            {"level": "Iniciante", "modification": "Apoio com as duas mãos se necessário", "when_to_use": "Primeira semana"},
+            {"level": "Padrão", "modification": "Apoio com uma mão", "when_to_use": "Maioria dos casos"},
+            {"level": "Avançado", "modification": "Adicionar mini-band ao redor de tornozelos", "when_to_use": "Final da Fase 1"}
+          ],
+          "scientific_rationale": "Exercício em pé começa a integrar controle de equilíbrio com ativação, essencial para transferência funcional.",
+          "personalization_rules": {
+            "training_age_beginner": {"sets": 2, "reps": 12}
+          }
+        },
+        {
+          "exercise_id": "box_squat_assisted",
+          "name": "Box Squat Assistido com Banda e Cues",
+          "primary_targets": ["Padrão de agachamento", "Controle de joelho"],
+          "equipment": ["Caixa/banco altura apropriada", "Mini-band", "TRX/apoio (opcional)"],
+          "sets": 3,
+          "reps": 10,
+          "tempo": "3-1-2-0",
+          "rest": "120s",
+          "execution_cues": [
+            "Mini-band ao redor dos joelhos",
+            "Posicionar-se em frente à caixa (altura que permite 90° flexão ou menos)",
+            "Pode segurar em TRX ou apoio leve se necessário para equilíbrio",
+            "Descer lentamente em 3 segundos empurrando joelhos ATIVAMENTE para fora",
+            "Sentar completamente na caixa, pausar 1s mantendo tensão",
+            "Subir em 2s mantendo pressão para fora contra banda",
+            "Foco EXCLUSIVO em alinhamento de joelhos, não profundidade ou carga",
+            "Filmar de frente sempre que possível para feedback visual"
+          ],
+          "common_errors": [
+            {"error": "Valgo persiste apesar de banda e cues", "correction": "Aumentar altura da caixa, reduzir profundidade, pode precisar mais tempo na Fase 1"},
+            {"error": "Perda de controle ao sentar", "correction": "Descida ainda mais lenta (4-5s), caixa pode estar muito baixa"}
+          ],
+          "progressions": [
+            {"level": "Iniciante", "modification": "Caixa alta (mínima flexão), apoio significativo", "when_to_use": "Primeiras 2-3 semanas"},
+            {"level": "Padrão", "modification": "Caixa a 90° flexão, apoio mínimo ou sem", "when_to_use": "Semanas 3-4"},
+            {"level": "Avançado", "modification": "Reduzir apoio, adicionar kettlebell leve (4-6kg) goblet", "when_to_use": "Preparação para Fase 2"}
+          ],
+          "scientific_rationale": "Box squat limita profundidade e fornece feedback tátil claro, ideal para aprendizado de padrão em casos severos (Myer et al., 2008).",
+          "personalization_rules": {
+            "training_age_beginner": {"sets": 2, "reps": 8},
+            "injury_history_knee": {"modification": "Altura máxima da caixa permitindo zero dor", "caution": "Dor = altura muito baixa"}
+          }
+        }
+      ]
+    },
+
+    {
+      "phase_number": 2,
+      "name": "Fortalecimento Progressivo e Controle Motor",
+      "duration_typical": "28-35 dias",
+      "frequency": "4-5x por semana",
+      "focus": "Desenvolvimento de força significativa de abdutores, integração gradual de movimentos dinâmicos, progressão de carga muito conservadora, consolidação de padrões motores",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Side Plank com Abdução",
+            "target": "30 segundos com 10 abduções por lado",
+            "measurement_method": "Cronômetro + contagem de reps com forma perfeita"
+          },
+          {
+            "test": "Goblet Squat Leve",
+            "target": "10 repetições com 12kg mantendo valgo < 15° (redução de 60%+ do baseline)",
+            "measurement_method": "Filmagem frontal comparativa"
+          },
+          {
+            "test": "Bulgarian Split Squat Básico",
+            "target": "8 repetições por perna peso corporal sem valgo perceptível",
+            "measurement_method": "Observação visual - alinhamento knee-over-toe"
+          },
+          {
+            "test": "Lateral Band Walks",
+            "target": "20 passos cada direção com banda pesada mantendo quarter squat",
+            "measurement_method": "Forma mantida durante todos os passos"
+          }
+        ],
+        "subjective_markers": [
+          "Dor reduzida para NRS < 2/10 durante exercícios",
+          "Confiança aumentada em movimentos de agachamento",
+          "Controle consciente de joelhos durante movimento",
+          "Fadiga muscular nos glúteos (não joelhos) após treino"
+        ],
+        "minimum_time": "28 dias",
+        "all_criteria_required": false,
+        "minimum_criteria": 3
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "copenhagen_plank_modified",
+          "name": "Copenhagen Plank Modificado",
+          "primary_targets": ["Adutores", "Glúteo médio", "Core"],
+          "equipment": ["Banco"],
+          "sets": 3,
+          "reps": "Hold 20-30s",
+          "rest": "90s",
+          "execution_cues": [
+            "Versão modificada: perna inferior apoiada no chão para reduzir dificuldade",
+            "Prancha lateral, perna superior apoiada em banco",
+            "Elevar quadril mantendo corpo em linha reta",
+            "Sentir trabalho nos adutores e abdutores simultaneamente"
+          ],
+          "progressions": [
+            {"level": "Iniciante", "modification": "Ambas pernas apoiadas, hold 15s"},
+            {"level": "Padrão", "modification": "Perna inferior suspensa, hold 25s"},
+            {"level": "Avançado", "modification": "Adicionar hip dips"}
+          ],
+          "scientific_rationale": "Copenhagen essencial para desenvolver força completa de quadril (Ishøi et al., 2016)."
+        },
+        {
+          "exercise_id": "single_leg_rdl_assisted",
+          "name": "RDL Unipodal Assistido",
+          "primary_targets": ["Glúteos", "Isquiotibiais", "Equilíbrio"],
+          "equipment": ["TRX ou apoio", "Peso leve opcional"],
+          "sets": 3,
+          "reps": 10,
+          "tempo": "2-1-2-0",
+          "rest": "90s",
+          "execution_cues": [
+            "Segurar TRX para assistência no equilíbrio",
+            "Hip hinge unipodal mantendo pelve nivelada",
+            "CRÍTICO: joelho de apoio não pode colapsar medialmente",
+            "Progressão muito gradual de profundidade e depois peso"
+          ],
+          "progressions": [
+            {"level": "Iniciante", "modification": "TRX com assistência significativa, pode tocar pé livre no chão"},
+            {"level": "Padrão", "modification": "Assistência mínima, perna livre suspensa"},
+            {"level": "Avançado", "modification": "Kettlebell 6-10kg"}
+          ],
+          "scientific_rationale": "Desenvolve força unilateral e controle de quadril essencial para movimentos funcionais."
+        },
+        {
+          "exercise_id": "goblet_squat_progressive",
+          "name": "Goblet Squat com Progressão de Carga",
+          "primary_targets": ["Quadríceps", "Glúteos", "Padrão de agachamento"],
+          "equipment": ["Kettlebell (6-16kg progressão)", "Mini-band"],
+          "sets": 4,
+          "reps": 10,
+          "tempo": "3-1-2-0",
+          "rest": "120s",
+          "execution_cues": [
+            "Manter banda nos joelhos durante TODAS as séries",
+            "Progressão de carga: Semana 1-2: 6-8kg, Semana 3-4: 10-12kg, Semana 5+: 14-16kg",
+            "Tempo controlado, foco em qualidade absoluta",
+            "Usar cotovelos para empurrar joelhos para fora durante descida",
+            "Filmar regularmente para monitorar progresso"
+          ],
+          "progressions": [
+            {"level": "Semana 1-2 Fase 2", "modification": "6-8kg, profundidade a 90° flexão"},
+            {"level": "Semana 3-4", "modification": "10-12kg, full depth se mobilidade permite"},
+            {"level": "Semana 5+", "modification": "14-16kg, preparação para barra"}
+          ],
+          "scientific_rationale": "Goblet squat permite progressão de carga segura mantendo tronco ereto (Dan John, 2010)."
+        },
+        {
+          "exercise_id": "banded_lateral_walks_heavy",
+          "name": "Lateral Band Walks Progressivo",
+          "primary_targets": ["Glúteo médio", "Resistência muscular"],
+          "equipment": ["Mini-band (progressão média para pesada)"],
+          "sets": 4,
+          "reps": "20 passos cada direção",
+          "tempo": "Controlado",
+          "rest": "60s",
+          "execution_cues": [
+            "Progressão de resistência ao longo da Fase 2",
+            "Manter quarter squat perfeito durante todos os passos",
+            "Tensão constante na banda",
+            "Foco em sentir queimação nos abdutores"
+          ],
+          "progressions": [
+            {"level": "Semana 1-2", "modification": "Banda média, 15 passos"},
+            {"level": "Semana 3-4", "modification": "Banda pesada, 20 passos"},
+            {"level": "Semana 5+", "modification": "Banda extra-pesada ou duas bandas"}
+          ],
+          "scientific_rationale": "Volume alto de trabalho de glúteo médio essencial para hipertrofia e força em casos severos."
+        },
+        {
+          "exercise_id": "step_ups_controlled",
+          "name": "Step-Ups Controlados",
+          "primary_targets": ["Quadríceps", "Glúteos", "Controle unilateral"],
+          "equipment": ["Caixa baixa (8-12 polegadas)"],
+          "sets": 3,
+          "reps": 10,
+          "tempo": "2-0-2-0",
+          "rest": "90s",
+          "execution_cues": [
+            "Altura MUITO conservadora inicialmente",
+            "Foco total em manter joelho da perna de cima alinhado sobre pé",
+            "Subir apenas com perna de cima - perna de baixo apenas toca chão",
+            "Qualquer sinal de valgo = reduzir altura ou retornar a exercícios anteriores"
+          ],
+          "progressions": [
+            {"level": "Iniciante", "modification": "Caixa 6-8 polegadas"},
+            {"level": "Padrão", "modification": "10-12 polegadas"},
+            {"level": "Avançado", "modification": "Adicionar knee drive ou halteres leves"}
+          ],
+          "scientific_rationale": "Step-ups desenvolvem força unilateral essencial, mas devem ser introduzidos muito gradualmente em casos severos."
+        }
+      ]
+    },
+
+    {
+      "phase_number": 3,
+      "name": "Integração Funcional e Preparação para Retorno",
+      "duration_typical": "21-28 dias",
+      "frequency": "3-4x por semana",
+      "focus": "Integração de força ao treino com barra, exposição a cargas moderadas, consolidação de padrões, preparação para retorno a treino regular (embora com restrições de carga inicialmente)",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Back Squat com Barra",
+            "target": "5 repetições com barra vazia ou 40-50% do 1RM prévio, valgo < 15°",
+            "measurement_method": "Filmagem frontal mostra melhora de 70%+ do baseline"
+          },
+          {
+            "test": "Bulgarian Split Squat Carregado",
+            "target": "10 reps por perna com 8kg halteres sem valgo perceptível",
+            "measurement_method": "Observação visual"
+          },
+          {
+            "test": "Testes de Força de Abdutores",
+            "target": "Copenhagen plank 40s, lateral walks com banda pesada 25 passos sem fadiga",
+            "measurement_method": "Cronômetro e contagem"
+          }
+        ],
+        "subjective_markers": [
+          "Zero dor durante treino (NRS 0-1/10)",
+          "Confiança em movimentos de agachamento",
+          "Controle torna-se mais automático (menos atenção consciente necessária)",
+          "Sensação de força nos glúteos"
+        ],
+        "minimum_time": "21 dias",
+        "all_criteria_required": false,
+        "minimum_criteria": 3
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "back_squat_intro",
+          "name": "Back Squat - Introdução com Banda",
+          "primary_targets": ["Padrão completo de agachamento com barra"],
+          "equipment": ["Barra", "Rack", "Mini-band"],
+          "sets": 4,
+          "reps": 8,
+          "tempo": "3-1-2-0",
+          "rest": "180s",
+          "execution_cues": [
+            "Banda SEMPRE nos joelhos inicialmente",
+            "Progressão: Semana 1-2: barra vazia, Semana 3: adicionar 10-20kg APENAS se forma perfeita",
+            "Filmar TODAS as séries de trabalho",
+            "Qualquer sinal de valgo > 15° = parar progressão de carga",
+            "Prioridade absoluta: qualidade > carga"
+          ],
+          "progressions": [
+            {"level": "Conservador", "modification": "Barra vazia por 3-4 semanas até padrão totalmente consolidado"},
+            {"level": "Moderado", "modification": "Adicionar 2.5-5kg por semana SE forma perfeita"},
+            {"level": "Meta realista", "modification": "Atingir 40-50% do 1RM prévio com forma aceitável (valgo < 15°)"}
+          ],
+          "scientific_rationale": "Retorno ao back squat deve ser extremamente gradual em casos severos. Expectativa de carga deve ser ajustada permanentemente.",
+          "warning": "Em casos severos, pode NUNCA ser apropriado retornar a cargas prévias. Foco deve ser em movimento sem dor e risco de lesão, não performance máxima."
+        },
+        {
+          "exercise_id": "bulgarian_split_squat_loaded",
+          "name": "Bulgarian Split Squat com Progressão de Carga",
+          "primary_targets": ["Força unilateral", "Teste de controle"],
+          "equipment": ["Banco", "Halteres (6-12kg)"],
+          "sets": 3,
+          "reps": 10,
+          "rest": "90s",
+          "execution_cues": [
+            "Progressão de carga: 6kg → 8kg → 10kg ao longo de 3-4 semanas",
+            "Movimento unilateral revela qualquer assimetria ou déficit residual",
+            "Valgo aqui é alerta de que protocolo não está completo"
+          ],
+          "scientific_rationale": "BSS é teste excelente de controle unilateral antes de retorno completo."
+        },
+        {
+          "exercise_id": "drop_landing_intro",
+          "name": "Drop Landing Progressivo (se aplicável ao esporte)",
+          "primary_targets": ["Controle de aterrissagem", "Prevenção de lesões"],
+          "equipment": ["Step 6-12 polegadas"],
+          "sets": 3,
+          "reps": 8,
+          "rest": "120s",
+          "execution_cues": [
+            "APENAS introduzir se relevante para atividade do atleta",
+            "Altura muito conservadora - 6 polegadas inicialmente",
+            "Valgo na aterrissagem = não progrediu o suficiente",
+            "Pode levar meses para dominar este exercício em casos severos"
+          ],
+          "warning": "Muitos casos severos podem não ser apropriados para pliométricos. Avaliar individualmente."
+        }
+      ]
+    }
+  ],
+
+  "return_to_exercise_criteria": {
+    "realistic_expectations": "CRÍTICO: Em casos severos, especialmente com componente estrutural, correção 100% pode não ser possível. Meta realista é redução de 60-70% do valgo, eliminação de dor, e retorno funcional seguro. Cargas máximas podem precisar ser permanentemente reduzidas.",
+
+    "full_return_requirements": [
+      {
+        "category": "Controle Motor",
+        "tests": [
+          "Back squat com 50% do 1RM prévio (ou barra + 20-30kg) com valgo < 15° por 5 reps",
+          "Goblet squat 20kg - 15 reps mantendo forma",
+          "Bulgarian split squat 10kg - 10 reps por perna sem valgo"
+        ]
+      },
+      {
+        "category": "Força de Abdutores",
+        "tests": [
+          "Copenhagen plank 45 segundos",
+          "Lateral band walks (banda pesada) - 30 passos sem fadiga",
+          "Single-leg RDL 14kg - 10 reps por perna com controle perfeito"
+        ]
+      },
+      {
+        "category": "Funcional",
+        "tests": [
+          "Filmagem mostra melhora de 70%+ no valgo",
+          "Zero dor (NRS 0-1/10)",
+          "Capacidade de auto-monitorar e auto-corrigir",
+          "Confiança em movimentos de agachamento"
+        ]
+      }
+    ],
+
+    "staged_return_protocol": {
+      "month_1_post": "Cargas máximas 40-50% das prévias, volume 60-70%, banda obrigatória em aquecimento",
+      "month_2_post": "Cargas 50-60%, volume 80%, monitoramento constante",
+      "month_3_post": "Cargas até 70%, volume 90-100%, começar remover banda se padrão estável",
+      "month_4+": "Progressão muito gradual. Alguns casos podem estabilizar em 70-80% das cargas prévias permanentemente",
+      "ongoing": "Manutenção de exercícios corretivos PERMANENTEMENTE. Qualquer recidiva = retornar imediatamente à Fase 1."
+    },
+
+    "permanent_modifications": [
+      "Warm-up obrigatório: 2x15 clamshells, 2x15 lateral band walks, 1x30s Copenhagen plank",
+      "Filmar agachamentos semanalmente por 6 meses, depois mensalmente",
+      "Considerar alterações permanentes de exercise selection (preferir front squat vs back squat, goblet vs barbell, etc.)",
+      "Aceitar que algumas cargas/exercícios podem não ser apropriados permanentemente",
+      "Focar em longevidade e ausência de lesões vs performance máxima"
+    ]
+  },
+
+  "contraindications": {
+    "absolute": [
+      "Lesão aguda de joelho não reabilitada",
+      "Dor severa em repouso (NRS > 6/10)",
+      "Instabilidade articular não controlada",
+      "Genu valgum estrutural severo (> 30°) - pode necessitar intervenção cirúrgica",
+      "Fratura ou patologia óssea ativa"
+    ],
+    "relative": [
+      "Artrose moderada a severa - protocolo pode precisar modificações significativas",
+      "Histórico de múltiplas lesões de joelho - supervisão profissional obrigatória",
+      "Condromalácia patelar severa (grau III-IV)",
+      "Déficits neurológicos contribuindo para padrão",
+      "Discrepância de comprimento de membros > 2cm"
+    ],
+    "require_professional_clearance": [
+      "Todos os casos severos devem ser avaliados por fisioterapeuta ou ortopedista",
+      "Histórico de cirurgia de joelho",
+      "Dor que não responde a repouso relativo",
+      "Suspeita de componente estrutural significativo"
+    ]
+  },
+
+  "red_flags": {
+    "stop_protocol_immediately": [
+      "Dor aguda severa (> 7/10) durante exercício",
+      "Edema articular significativo que não resolve em 48h",
+      "Piora do valgo após 4+ semanas de protocolo consistente",
+      "Desenvolvimento de nova dor (quadril, tornozelo, lombar) sugerindo compensação",
+      "Travamento, bloqueio ou instabilidade do joelho",
+      "Sintomas neurológicos (parestesias, fraqueza)"
+    ],
+    "seek_immediate_medical_evaluation": [
+      "Qualquer dos red flags acima",
+      "Derrame articular recorrente ou persistente",
+      "Dor noturna não-mecânica",
+      "Perda súbita de amplitude de movimento",
+      "Sinais de infecção (calor, vermelhidão, febre)"
+    ]
+  },
+
+  "scientific_references": [
+    {
+      "authors": "Distefano, L.J., et al.",
+      "year": 2009,
+      "title": "Gluteal muscle activation during common therapeutic exercises",
+      "journal": "Journal of Orthopaedic & Sports Physical Therapy",
+      "key_finding": "Clamshell e abdução lateral produzem maior ativação de glúteo médio"
+    },
+    {
+      "authors": "Myer, G.D., et al.",
+      "year": 2008,
+      "title": "Neuromuscular training reduces performance deficits and lower-extremity injuries in female athletes",
+      "journal": "Journal of Strength and Conditioning Research",
+      "key_finding": "Treinamento neuromuscular focado reduz valgo e risco de lesão"
+    },
+    {
+      "authors": "Ishøi, L., et al.",
+      "year": 2016,
+      "title": "The Copenhagen Adduction exercise",
+      "journal": "British Journal of Sports Medicine",
+      "key_finding": "Copenhagen plank ativa simultaneamente adutores e abdutores essenciais para estabilidade"
+    },
+    {
+      "authors": "Hewett, T.E., et al.",
+      "year": 2005,
+      "title": "Biomechanical measures predict ACL injury risk in female athletes",
+      "journal": "American Journal of Sports Medicine",
+      "key_finding": "Valgo dinâmico é fator de risco primário para lesão de LCA"
+    }
+  ],
+
+  "special_considerations": {
+    "structural_vs_functional": "É crítico diferenciar valgo funcional (corrigível com treino) vs estrutural (limitações anatômicas). Avaliação profissional pode incluir: medição de ângulo Q, avaliação de anteversão femoral, genu valgum estático. Casos com componente estrutural significativo podem ter teto de melhora.",
+
+    "psychological_aspects": "Casos severos frequentemente vêm com histórico de dor/lesão e medo de movimento. Educação sobre segurança, progressão gradual e celebração de pequenas vitórias são essenciais para adesão.",
+
+    "timeline_reality": "8-16 semanas é estimativa mínima. Muitos casos severos requerem 4-6 meses para melhora significativa e 1-2 anos para estabilização completa. Expectativas realistas são cruciais.",
+
+    "professional_supervision": "Fortemente recomendado supervisão de fisioterapeuta especializado em reabilitação de joelho, especialmente nas Fases 1 e 2. Investimento em profissional qualificado pode prevenir anos de problema crônico.",
+
+    "activity_modification": "Pode ser necessário modificar permanentemente escolha de exercícios, cargas, e volume de treino. Front squats podem ser mais apropriados que back squats, goblet squats que barbell, etc. Foco em longevidade vs performance máxima."
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "exercise_id": "deadlift_conventional",
+  "name": "Conventional Deadlift",
+  "name_pt": "Levantamento Terra Convencional",
+  "version": "1.0.0",
+  "status": "validated",
+  "created_at": "2025-02-05T00:00:00Z",
+  "updated_at": "2025-02-05T00:00:00Z",
+  "validated_by": [
+    "NFC Biomechanics Team"
+  ],
+
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2025-02-05",
+      "changes": [
+        "Initial gold standard creation",
+        "Biomechanical angles based on Escamilla et al (2000) 3D analysis",
+        "Lumbar safety parameters from McGill (2015) research",
+        "Setup position criteria from Hales (2010)",
+        "Critical checkpoints for spine neutrality established"
+      ],
+      "author": "NFC Biomechanics Team"
+    }
+  ],
+
+  "validation_criteria": {
+    "minimum_samples": 50,
+    "expert_reviews": 3,
+    "inter_rater_reliability": 0.85,
+    "video_quality_requirements": {
+      "fps": 30,
+      "resolution_min": "720p",
+      "angles_required": ["lateral", "frontal", "posterior"]
+    }
+  },
+
+  "usage_statistics": {
+    "total_analyses": 0,
+    "average_similarity_score": null,
+    "common_deviations_frequency": {}
+  },
+
+  "related_exercises": [
+    "deadlift_sumo",
+    "romanian_deadlift",
+    "trap_bar_deadlift",
+    "deficit_deadlift"
+  ],
+
+  "tags": [
+    "posterior_chain",
+    "compound",
+    "barbell",
+    "pull",
+    "powerlifting",
+    "full_body",
+    "foundational"
+  ],
+
+  "difficulty_level": {
+    "technical": "advanced",
+    "strength": "advanced",
+    "mobility": "moderate"
+  },
+
+  "prerequisites": {
+    "mobility": [
+      "hip_flexion >= 90°",
+      "ankle_dorsiflexion >= 20°",
+      "thoracic_extension adequate"
+    ],
+    "stability": [
+      "lumbar_spine_stability",
+      "core_bracing_proficiency"
+    ],
+    "strength": [
+      "hip_hinge_pattern_proficient",
+      "kettlebell_deadlift >= bodyweight"
+    ]
+  }
+}

@@ -1,0 +1,148 @@
+{
+  "protocol_id": "asymmetric_loading_severe_v1",
+  "deviation": "asymmetric-loading",
+  "severity": "severe",
+  "version": "1.0.0",
+  "last_updated": "2025-01-15",
+
+  "overview": {
+    "description": "Protocolo para assimetria severa (> 20% diferença ou assimetria estrutural significativa). Shift extremo e óbvio. Componente estrutural provável. Foco em maximizar função e aceitar limitações.",
+    "typical_presentation": "Shift lateral extremo e consistente. Diferença > 20% em testes. Dor moderada a severa no lado sobrecarregado (NRS 4-7/10). Histórico claro de lesão severa ou condição estrutural (escoliose severa, discrepância > 1.5cm). Back squat bilateral pode ser CONTRAINDICADO.",
+    "primary_causes": [
+      "Histórico de cirurgia unilateral (LCA, menisco, quadril)",
+      "Escoliose estrutural severa",
+      "Discrepância de comprimento de membros > 1.5cm",
+      "Lesão neurológica com perda de controle unilateral",
+      "Artrose unilateral severa",
+      "Anos de compensação severa não corrigida"
+    ],
+    "expected_duration": "12-20 semanas, modificações PERMANENTES",
+    "success_rate": "30-40% equalização significativa. Maioria mantém 10-20% assimetria. Foco em função sem dor.",
+    "warning": "OBRIGATÓRIO: Avaliação médica/fisioterapia. Pode haver contraindicação estrutural. Back squat bilateral pode precisar ser eliminado permanentemente."
+  },
+
+  "goals_hierarchy": [
+    {
+      "priority": 1,
+      "goal": "Eliminar dor",
+      "measurable_outcome": "Dor < 3/10 com modificações"
+    },
+    {
+      "priority": 2,
+      "goal": "Estabelecer treino funcional mesmo com assimetria",
+      "measurable_outcome": "Programa sustentável de unilaterais"
+    },
+    {
+      "priority": 3,
+      "goal": "Aceitar limitações permanentes",
+      "measurable_outcome": "Compreensão de que back squat bilateral pode não retornar"
+    },
+    {
+      "priority": 4,
+      "goal": "Maximizar função do lado fraco dentro de limitações",
+      "measurable_outcome": "Qualquer ganho mensurável é sucesso"
+    }
+  ],
+
+  "phases": [
+    {
+      "phase_number": 1,
+      "name": "Redução de Dor e Avaliação Estrutural",
+      "duration_typical": "28-42 dias",
+      "frequency": "3-4x/semana (evitar sobrecarga)",
+      "focus": "Eliminar dor, avaliar causa estrutural, estabelecer se back squat é apropriado",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Pain Reduction",
+            "target": "Dor < 3/10",
+            "measurement_method": "NRS diário"
+          },
+          {
+            "test": "Structural Assessment",
+            "target": "Determinar se causa é estrutural vs funcional",
+            "measurement_method": "Avaliação profissional + testes"
+          }
+        ],
+        "minimum_time": "28 dias"
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "unilateral_only_phase",
+          "name": "Fase Exclusivamente Unilateral",
+          "note": "ELIMINAR back squat bilateral temporariamente. Foco em unilaterais: split squats, step-ups, single-leg press, lunges. Lado fraco recebe volume duplo."
+        },
+        {
+          "exercise_id": "pain_free_alternatives",
+          "name": "Alternativas Sem Dor",
+          "note": "Explorar: leg press bilateral (pode distribuir melhor), hack squat, belt squat se disponível. Encontrar o que funciona SEM DOR."
+        }
+      ]
+    },
+
+    {
+      "phase_number": 2,
+      "name": "Estabelecer Treino Modificado Permanente",
+      "duration_typical": "Ongoing",
+      "focus": "Programa sustentável com unilaterais como primários, possível eliminação permanente de back squat bilateral",
+
+      "exercises": [
+        {
+          "exercise_id": "unilateral_primary_forever",
+          "name": "Unilaterais como Movimentos Primários",
+          "note": "Bulgarian split squat, step-ups, single-leg press como SUBSTITUTOS PERMANENTES de back squat. Não é falha - é adaptação inteligente."
+        },
+        {
+          "exercise_id": "modified_bilateral_cautious",
+          "name": "Bilaterais Modificados (se tolerados)",
+          "note": "Safety bar squat, belt squat, front squat podem ser tentados. Se shift persiste ou dor retorna: eliminar."
+        }
+      ]
+    }
+  ],
+
+  "return_to_exercise_criteria": {
+    "realistic_expectations": "CRÍTICO: Back squat bilateral tradicional pode estar CONTRAINDICADO PERMANENTEMENTE. Treino com unilaterais é SOLUÇÃO VÁLIDA, não temporária. Sucesso = função sem dor, não simetria perfeita.",
+
+    "permanent_modifications": [
+      "Unilaterais (split squats, step-ups, single-leg press) como movimentos primários PERMANENTEMENTE",
+      "Back squat bilateral pode ser eliminado permanentemente",
+      "Se discrepância de membros: palmilha/correção ortótica obrigatória",
+      "Se escoliose: trabalho postural contínuo",
+      "Aceitar 10-20% assimetria residual",
+      "Foco em FUNÇÃO e ausência de DOR, não perfeição"
+    ]
+  },
+
+  "contraindications": {
+    "absolute": [
+      "Lesão não reabilitada",
+      "Escoliose severa progressiva",
+      "Artrose severa unilateral",
+      "Dor severa com bilateral"
+    ]
+  },
+
+  "red_flags": {
+    "stop_immediately": [
+      "Dor > 6/10",
+      "Piora progressiva",
+      "Sintomas neurológicos",
+      "Instabilidade"
+    ]
+  },
+
+  "special_considerations": {
+    "professional_supervision": "OBRIGATÓRIA. Ortopedista ou fisioterapeuta deve guiar.",
+
+    "structural_limitations": "Se escoliose severa, discrepância > 1.5cm, ou pós-cirúrgico severo: limitações permanentes. Radiografia pode revelar contraindicações. Aceitação é CRÍTICA.",
+
+    "psychological_support": "Casos severos lutam com aceitação de que back squat bilateral pode não retornar. Educação: unilaterais são igualmente válidos. Performance em split squat é TÃO legítima quanto back squat. Mentalidade deve mudar.",
+
+    "exercise_library_expansion": "Focar em: Bulgarian split squats, walking lunges, step-ups variados, single-leg press, single-leg RDL, pistol squats, skater squats. Biblioteca enorme de unilaterais eficazes existe.",
+
+    "success_redefinition": "Sucesso NÃO é retornar a back squat simétrico. Sucesso É: treinar sem dor, desenvolver força funcional, manter qualidade de vida. Muitos atletas de elite usam primariamente unilaterais por escolha, não necessidade."
+  }
+}

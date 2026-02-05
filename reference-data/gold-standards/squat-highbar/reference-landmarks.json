@@ -1,0 +1,139 @@
+{
+  "exercise_id": "squat_highbar",
+  "version": "1.0.0",
+  "coordinate_system": "mediapipe_world",
+  "description": "Coordenadas 3D normalizadas de referência para o agachamento high-bar em posição bottom (profundidade máxima)",
+
+  "reference_frame": "bottom_position",
+  "frame_description": "Posição de maior profundidade do agachamento, hip crease abaixo da linha do joelho",
+
+  "landmarks": {
+    "nose": {
+      "x": 0.0,
+      "y": 1.65,
+      "z": 0.0,
+      "visibility": 0.95,
+      "description": "Referência de altura e alinhamento de cabeça"
+    },
+    "left_shoulder": {
+      "x": -0.18,
+      "y": 1.45,
+      "z": 0.05,
+      "visibility": 0.98,
+      "description": "Ombro esquerdo, indica posição da barra"
+    },
+    "right_shoulder": {
+      "x": 0.18,
+      "y": 1.45,
+      "z": 0.05,
+      "visibility": 0.98,
+      "description": "Ombro direito, simetria horizontal"
+    },
+    "left_hip": {
+      "x": -0.15,
+      "y": 0.95,
+      "z": 0.10,
+      "visibility": 0.90,
+      "description": "Quadril esquerdo em flexão profunda"
+    },
+    "right_hip": {
+      "x": 0.15,
+      "y": 0.95,
+      "z": 0.10,
+      "visibility": 0.90,
+      "description": "Quadril direito em flexão profunda"
+    },
+    "left_knee": {
+      "x": -0.15,
+      "y": 0.50,
+      "z": 0.25,
+      "visibility": 0.95,
+      "description": "Joelho esquerdo, ângulo ~85° de flexão"
+    },
+    "right_knee": {
+      "x": 0.15,
+      "y": 0.50,
+      "z": 0.25,
+      "visibility": 0.95,
+      "description": "Joelho direito, ângulo ~85° de flexão"
+    },
+    "left_ankle": {
+      "x": -0.12,
+      "y": 0.08,
+      "z": 0.15,
+      "visibility": 0.92,
+      "description": "Tornozelo esquerdo em dorsiflexão (~25-30°)"
+    },
+    "right_ankle": {
+      "x": 0.12,
+      "y": 0.08,
+      "z": 0.15,
+      "visibility": 0.92,
+      "description": "Tornozelo direito em dorsiflexão (~25-30°)"
+    },
+    "left_heel": {
+      "x": -0.12,
+      "y": 0.0,
+      "z": 0.0,
+      "visibility": 0.85,
+      "description": "Calcanhar esquerdo firmemente plantado"
+    },
+    "right_heel": {
+      "x": 0.12,
+      "y": 0.0,
+      "z": 0.0,
+      "visibility": 0.85,
+      "description": "Calcanhar direito firmemente plantado"
+    },
+    "spine_mid": {
+      "x": 0.0,
+      "y": 1.15,
+      "z": 0.08,
+      "visibility": 0.85,
+      "description": "Ponto médio da coluna, avalia inclinação do tronco"
+    }
+  },
+
+  "key_vectors": {
+    "trunk_vector": {
+      "start": "spine_mid",
+      "end": "left_shoulder",
+      "description": "Vetor do tronco para calcular inclinação anterior"
+    },
+    "femur_left_vector": {
+      "start": "left_hip",
+      "end": "left_knee",
+      "description": "Vetor do fêmur esquerdo"
+    },
+    "femur_right_vector": {
+      "start": "right_hip",
+      "end": "right_knee",
+      "description": "Vetor do fêmur direito"
+    },
+    "tibia_left_vector": {
+      "start": "left_knee",
+      "end": "left_ankle",
+      "description": "Vetor da tíbia esquerda"
+    },
+    "tibia_right_vector": {
+      "start": "right_knee",
+      "end": "right_ankle",
+      "description": "Vetor da tíbia direita"
+    }
+  },
+
+  "normalization_reference": {
+    "height": 1.75,
+    "height_description": "Altura de referência do indivíduo (175cm)",
+    "stance_width": 0.45,
+    "stance_description": "Largura de stance (shoulder-width)"
+  },
+
+  "notes": [
+    "Coordenadas assumem indivíduo de 175cm de altura em stance shoulder-width",
+    "Valores de y representam altura em metros a partir do chão",
+    "Valores de x representam distância lateral do centro (negativo = esquerda, positivo = direita)",
+    "Valores de z representam profundidade (positivo = anterior ao corpo)",
+    "Visibilidade varia de 0.0 a 1.0, sendo 1.0 completamente visível"
+  ]
+}

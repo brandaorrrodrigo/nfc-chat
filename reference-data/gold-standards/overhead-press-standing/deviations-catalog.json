@@ -1,0 +1,474 @@
+{
+  "exercise_id": "overhead_press_standing",
+  "version": "1.0.0",
+  "created_at": "2025-02-05",
+  "total_deviations_cataloged": 9,
+  "evidence_base_references": [
+    "McKean MR et al. The standing overhead press. Strength Cond J. 2010",
+    "Saeterbakken AH et al. Effects of body position and loading modality on muscle activity. J Strength Cond Res. 2013",
+    "Schick EE et al. A comparison of muscle activation between a Smith machine and free weight bench press. J Strength Cond Res. 2010"
+  ],
+
+  "deviations": [
+    {
+      "id": "excessive_layback",
+      "name": "Inclinação Posterior Excessiva (Layback)",
+      "name_en": "Excessive Layback",
+      "description": "Tronco inclina excessivamente para trás (>20°) durante o press, transformando-o em um incline press e aumentando stress lombar",
+      "aliases": ["excessive lean back", "turning into incline press", "layback excessivo"],
+
+      "biomechanical_cause": {
+        "primary": "Falta de mobilidade overhead ou tentativa de criar vantagem mecânica",
+        "secondary": ["Carga excessiva", "Mobilidade inadequada de ombro", "Core fraco", "Má técnica aprendida"],
+        "risk_factors": ["Mobilidade de ombro <180°", "Histórico de dor lombar", "Carga >85% 1RM"]
+      },
+
+      "detection_method": {
+        "primary": "trunk_extension > 20° from vertical",
+        "secondary": "lumbar_extension > 15° from neutral",
+        "requires_landmarks": ["shoulder", "hip", "knee"],
+        "calculation": "angle_between(vertical_line, trunk_vector)",
+        "detection_phase": "press_initial and lockout"
+      },
+
+      "severity_thresholds": {
+        "mild": {"layback_angle": "15-20 degrees", "injury_risk": "low-moderate", "performance_impact": "Slight shift to incline press mechanics", "intervention": "Mobility work, cueing"},
+        "moderate": {"layback_angle": "20-30 degrees", "injury_risk": "moderate (lumbar stress)", "performance_impact": "Becomes incline press, increased lumbar loading", "intervention": "Reduce load, core strengthening"},
+        "severe": {"layback_angle": ">30 degrees", "injury_risk": "high (lumbar hyperextension injury risk)", "performance_impact": "Essentially incline press, dangerous for spine", "intervention": "Stop, fundamental re-teaching"}
+      },
+
+      "evidence_base": {
+        "prevalence": "30-45% especially with heavy loads",
+        "injury_correlation": "Excessive layback increases lumbar shear forces significantly (McKean MR, 2010)",
+        "biomechanical_impact": "Transforms overhead press into incline press, reduces deltoid anterior activation",
+        "correction_efficacy": "High with mobility improvement and conscious control"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Minimal lean", "Stay upright", "Squeeze glutes to prevent lean", "Head through after bar passes"],
+        "corrective_exercises": [
+          {
+            "name": "Overhead press seated",
+            "target": "Remove ability to lean back, forces overhead mobility",
+            "sets": 3,
+            "reps": 8,
+            "frequency": "2x/week"
+          },
+          {
+            "name": "Wall-facing overhead press",
+            "target": "Cannot lean back (face too close to wall)",
+            "sets": 3,
+            "reps": 8,
+            "frequency": "1x/week"
+          },
+          {
+            "name": "Overhead mobility work (wall slides, band dislocations)",
+            "target": "Improve shoulder flexion ROM",
+            "sets": 3,
+            "reps": 15,
+            "frequency": "Daily"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "bar_drift_forward",
+      "name": "Barra se Afasta para Frente",
+      "name_en": "Bar Drifts Forward",
+      "description": "Barra move em trajetória com desvio anterior excessivo ao invés de vertical ou levemente para trás sobre a cabeça",
+      "aliases": ["bar path forward", "bar swings forward", "barra vai para frente"],
+
+      "biomechanical_cause": {
+        "primary": "Má trajetória de press ou falta de controle motor",
+        "secondary": ["Cabeça não se move para trás", "Mobilidade inadequada", "Fraqueza de deltoides"],
+        "risk_factors": ["Mobilidade overhead limitada", "Má consciência de bar path"]
+      },
+
+      "detection_method": {
+        "primary": "bar_x_displacement_forward > 8cm from start_x",
+        "secondary": "bar not directly over midfoot at lockout",
+        "requires_landmarks": ["bar_position", "midfoot"],
+        "calculation": "horizontal_distance(bar_x, start_bar_x) at various heights",
+        "detection_phase": "press_initial through lockout"
+      },
+
+      "severity_thresholds": {
+        "mild": {"forward_drift": "5-10 cm", "injury_risk": "low", "performance_impact": "Increased moment arm, 10-15% harder", "intervention": "Bar path cueing"},
+        "moderate": {"forward_drift": "10-15 cm", "injury_risk": "moderate (shoulder stress, potential loss of control)", "performance_impact": "Significantly harder, may miss lift", "intervention": "Reduce load, video feedback"},
+        "severe": {"forward_drift": ">15 cm", "injury_risk": "high (bar may need to be bailed forward)", "performance_impact": "Will likely miss lift, dangerous", "intervention": "Fundamental path re-teaching"}
+      },
+
+      "evidence_base": {
+        "prevalence": "25-40%",
+        "biomechanical_impact": "Each cm forward increases shoulder moment arm significantly",
+        "correction_efficacy": "High with video feedback and cueing"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Press back slightly", "Bar over head, not in front", "Finish with bar over midfoot"],
+        "corrective_exercises": [
+          {
+            "name": "Behind-the-neck press (if mobile enough)",
+            "target": "Forces vertical path",
+            "sets": 3,
+            "reps": 8,
+            "frequency": "1x/week (only if adequate mobility)"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "incomplete_lockout",
+      "name": "Lockout Incompleto",
+      "name_en": "Incomplete Lockout",
+      "description": "Cotovelos não completam extensão total overhead, permanecendo levemente flexionados",
+      "aliases": ["soft lockout", "partial ROM", "não completa"],
+
+      "biomechanical_cause": {
+        "primary": "Fraqueza de tríceps ou deltoides no final do ROM",
+        "secondary": ["Carga excessiva", "Fadiga", "Mobilidade overhead inadequada"],
+        "risk_factors": ["Tríceps fracos", "Mobilidade <180° de flexão de ombro"]
+      },
+
+      "detection_method": {
+        "primary": "elbow_angle < 170° at top position",
+        "secondary": "shoulder_flexion_angle < 175° (não alcança vertical)",
+        "requires_landmarks": ["shoulder", "elbow", "wrist"],
+        "calculation": "angle(shoulder, elbow, wrist)",
+        "detection_phase": "lockout_overhead"
+      },
+
+      "severity_thresholds": {
+        "mild": {"elbow_flexion_remaining": "5-10 degrees", "injury_risk": "low", "performance_impact": "Incomplete rep, won't count in competition", "intervention": "Lockout training"},
+        "moderate": {"elbow_flexion_remaining": "10-20 degrees", "injury_risk": "low", "performance_impact": "Significantly incomplete", "intervention": "Triceps strengthening, reduce load"},
+        "severe": {"elbow_flexion_remaining": ">20 degrees", "injury_risk": "low", "performance_impact": "Barely pressed, not a valid rep", "intervention": "Major load reduction"}
+      },
+
+      "evidence_base": {
+        "prevalence": "15-25% at near-maximal loads",
+        "biomechanical_impact": "Indicates weakness in final ROM",
+        "correction_efficacy": "High with targeted triceps work"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Lock out completely", "Fully extend arms", "Shrug shoulders at top"],
+        "corrective_exercises": [
+          {
+            "name": "Overhead triceps extensions",
+            "target": "Strengthen triceps in stretched position",
+            "sets": 3,
+            "reps": 12,
+            "frequency": "2x/week"
+          },
+          {
+            "name": "Pin press (from forehead height)",
+            "target": "Strengthen lockout from dead stop",
+            "sets": 3,
+            "reps": 6,
+            "frequency": "1x/week"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "asymmetric_press",
+      "name": "Press Assimétrico",
+      "name_en": "Asymmetric Press",
+      "description": "Um braço press mais que o outro, causando barra inclinada ou rotação",
+      "aliases": ["uneven press", "bar tilted", "press torto"],
+
+      "biomechanical_cause": {
+        "primary": "Assimetria de força entre lados",
+        "secondary": ["Histórico de lesão unilateral", "Dominância lateral excessiva"],
+        "risk_factors": ["Lesão prévia de ombro", "Déficit de mobilidade unilateral"]
+      },
+
+      "detection_method": {
+        "primary": "bar_tilt > 5°",
+        "secondary": "elbow_extension_rate_difference > 20%",
+        "requires_landmarks": ["bar_left_end", "bar_right_end", "elbow_left", "elbow_right"],
+        "calculation": "angle(bar_left_y - bar_right_y)",
+        "detection_phase": "press_initial and lockout"
+      },
+
+      "severity_thresholds": {
+        "mild": {"bar_tilt": "3-7 degrees", "injury_risk": "low", "performance_impact": "Slight imbalance", "intervention": "Unilateral work"},
+        "moderate": {"bar_tilt": "7-12 degrees", "injury_risk": "moderate (overload of one side)", "performance_impact": "Visible tilt, reduced efficiency", "intervention": "Dumbbell work, reduce load"},
+        "severe": {"bar_tilt": ">12 degrees", "injury_risk": "high (possible bar drop)", "performance_impact": "Dangerous", "intervention": "Stop barbell, unilateral phase"}
+      },
+
+      "evidence_base": {
+        "prevalence": "10-20%",
+        "correction_efficacy": "70-80% with unilateral training"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Press evenly", "Keep bar level"],
+        "corrective_exercises": [
+          {
+            "name": "Single-arm dumbbell overhead press",
+            "target": "Address weaker side",
+            "sets": 3,
+            "reps": "10 each, start weaker",
+            "frequency": "3x/week"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "elbow_flare",
+      "name": "Cotovelos Muito Abertos",
+      "name_en": "Excessive Elbow Flare",
+      "description": "Cotovelos abrem excessivamente para os lados ao invés de permanecerem mais à frente do corpo",
+      "aliases": ["elbows out", "cotovelos para os lados"],
+
+      "biomechanical_cause": {
+        "primary": "Má técnica ou tentativa de gerar mais força",
+        "secondary": ["Fraqueza de deltoides anteriores", "Compensação"],
+        "risk_factors": ["Má instrução"]
+      },
+
+      "detection_method": {
+        "primary": "elbow_position too lateral (x-axis) relative to shoulders",
+        "secondary": "elbow_torso_angle > 60° in frontal plane",
+        "requires_landmarks": ["elbow_left", "elbow_right", "shoulder_left", "shoulder_right"],
+        "calculation": "lateral_distance(elbow_x, shoulder_x)",
+        "detection_phase": "press_initial"
+      },
+
+      "severity_thresholds": {
+        "mild": {"flare_angle": "45-60 degrees", "injury_risk": "low", "performance_impact": "Suboptimal mechanics", "intervention": "Cueing"},
+        "moderate": {"flare_angle": "60-75 degrees", "injury_risk": "moderate (shoulder impingement risk)", "performance_impact": "Increased shoulder stress", "intervention": "Technique correction"},
+        "severe": {"flare_angle": ">75 degrees (near perpendicular)", "injury_risk": "high (impingement)", "performance_impact": "Dangerous", "intervention": "Stop, re-teach"}
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Elbows forward", "Elbows in front of bar"],
+        "corrective_exercises": [
+          {
+            "name": "Z-press (seated on floor)",
+            "target": "Forces proper elbow position",
+            "sets": 3,
+            "reps": 8,
+            "frequency": "1x/week"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "insufficient_overhead_mobility",
+      "name": "Mobilidade Overhead Insuficiente",
+      "name_en": "Insufficient Overhead Mobility",
+      "description": "Não consegue alcançar posição overhead verdadeira (180° flexão de ombro) sem compensações",
+      "aliases": ["tight shoulders", "can't reach overhead", "ombros travados"],
+
+      "biomechanical_cause": {
+        "primary": "Restrição de cápsula posterior do ombro ou torácica",
+        "secondary": ["Má mobilidade torácica", "Tríceps curtos"],
+        "risk_factors": ["Estilo de vida sedentário", "Postura cifótica"]
+      },
+
+      "detection_method": {
+        "primary": "shoulder_flexion_max < 175° at lockout",
+        "secondary": "requires_excessive_layback to compensate (>15°)",
+        "requires_landmarks": ["shoulder", "elbow", "torso"],
+        "calculation": "angle(torso_vector, shoulder_to_elbow_vector)",
+        "detection_phase": "lockout_overhead"
+      },
+
+      "severity_thresholds": {
+        "mild": {"shoulder_flexion": "170-175 degrees", "injury_risk": "low-moderate", "performance_impact": "Minor compensations needed", "intervention": "Mobility work"},
+        "moderate": {"shoulder_flexion": "160-170 degrees", "injury_risk": "moderate (forces compensations)", "performance_impact": "Significant layback or incomplete ROM", "intervention": "Aggressive mobility protocol"},
+        "severe": {"shoulder_flexion": "<160 degrees", "injury_risk": "high (dangerous compensations)", "performance_impact": "Cannot safely perform exercise", "intervention": "Do not perform standing OHP yet, mobility focus"}
+      },
+
+      "evidence_base": {
+        "prevalence": "20-35% have <180° shoulder flexion",
+        "biomechanical_impact": "Forces lumbar hyperextension or incomplete ROM",
+        "correction_efficacy": "Moderate, requires consistent mobility work"
+      },
+
+      "corrective_protocol": {
+        "corrective_exercises": [
+          {
+            "name": "Wall slides",
+            "target": "Shoulder flexion mobility",
+            "sets": 3,
+            "reps": 15,
+            "frequency": "Daily"
+          },
+          {
+            "name": "Band dislocations",
+            "target": "Shoulder capsule mobility",
+            "sets": 3,
+            "reps": 12,
+            "frequency": "Daily"
+          },
+          {
+            "name": "Thoracic extension on foam roller",
+            "target": "Thoracic mobility (often limits overhead)",
+            "sets": 3,
+            "duration": "60s",
+            "frequency": "Daily"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "pressing_from_forehead",
+      "name": "Pressionar da Testa ao Invés de Ombros",
+      "name_en": "Pressing from Forehead Instead of Shoulders",
+      "description": "Setup incorreto com barra na testa/nariz ao invés de ombros/clavículas, reduzindo ROM e eficácia",
+      "aliases": ["high start position", "short ROM", "barra muito alta"],
+
+      "biomechanical_cause": {
+        "primary": "Má técnica de setup ou tentativa de encurtar ROM",
+        "secondary": ["Fraqueza na parte inferior do movimento", "Má instrução"],
+        "risk_factors": ["Ego lifting", "Falta de instrução"]
+      },
+
+      "detection_method": {
+        "primary": "bar_start_height > clavicle_height + 15cm",
+        "secondary": "elbow_angle_at_start > 120° (should be ~90°)",
+        "requires_landmarks": ["bar_position", "clavicle", "elbow"],
+        "calculation": "distance(bar_y, clavicle_y)",
+        "detection_phase": "rack_position"
+      },
+
+      "severity_thresholds": {
+        "mild": {"rom_reduction": "10-15%", "injury_risk": "low", "performance_impact": "Incomplete training stimulus", "intervention": "Correct start position"},
+        "moderate": {"rom_reduction": "15-30%", "injury_risk": "low", "performance_impact": "Significantly reduced stimulus", "intervention": "Re-teach setup"},
+        "severe": {"rom_reduction": ">30% (essentially partial reps)", "injury_risk": "low", "performance_impact": "Wrong exercise", "intervention": "Fundamental re-teaching"}
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Start from shoulders/clavicles", "Full ROM", "Bar touches shoulders"],
+        "corrective_exercises": [
+          {
+            "name": "Strict press from rack position",
+            "target": "Reinforce proper start position",
+            "sets": 4,
+            "reps": 6,
+            "frequency": "Every session"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "push_press_instead_of_strict",
+      "name": "Usar Leg Drive (Push Press) em Vez de Strict Press",
+      "name_en": "Using Leg Drive (Push Press) Instead of Strict Press",
+      "description": "Usa dip and drive das pernas para ajudar no press, transformando em push press ao invés de strict overhead press",
+      "aliases": ["leg drive", "push press", "dip and drive", "usando pernas"],
+
+      "biomechanical_cause": {
+        "primary": "Carga excessiva ou tentativa de gerar momentum",
+        "secondary": ["Fraqueza de ombros", "Fadiga", "Má instrução sobre diferença"],
+        "risk_factors": ["Ego lifting", "Confusão entre variações"]
+      },
+
+      "detection_method": {
+        "primary": "knee_flexion_dip > 10° before press initiation",
+        "secondary": "vertical_velocity_bar > expected from upper body only",
+        "requires_landmarks": ["knee", "bar_position"],
+        "calculation": "knee_angle_change before bar_begins_moving_upward",
+        "detection_phase": "transition from rack_position to press_initial"
+      },
+
+      "severity_thresholds": {
+        "mild": {"knee_dip": "5-10 degrees (slight knee bend)", "injury_risk": "low", "performance_impact": "Not a strict press, but minor leg assist", "intervention": "Conscious control, reduce load"},
+        "moderate": {"knee_dip": "10-20 degrees (clear dip)", "injury_risk": "low", "performance_impact": "This is a push press, not strict", "intervention": "Reduce load significantly"},
+        "severe": {"knee_dip": ">20 degrees (deep dip and drive)", "injury_risk": "low", "performance_impact": "Completely different exercise", "intervention": "Wrong exercise, re-teach strict press"}
+      },
+
+      "evidence_base": {
+        "prevalence": "30-50% use some leg drive when fatigued or load is heavy",
+        "biomechanical_impact": "Leg drive can add 15-25% to overhead press capability",
+        "correction_efficacy": "Easily correctable with load reduction"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["No leg drive", "Strict press", "Knees locked", "Upper body only"],
+        "load_modification": ["Reduce load by 15-20% to allow strict press"]
+      }
+    },
+
+    {
+      "id": "loss_of_midline_stability",
+      "name": "Perda de Estabilidade de Core (Midline)",
+      "name_en": "Loss of Midline Stability",
+      "description": "Core não mantém estabilidade, tronco ondula ou perde rigidez durante press",
+      "aliases": ["core instability", "wobbling", "loss of tension"],
+
+      "biomechanical_cause": {
+        "primary": "Core fraco ou má respiração/bracing",
+        "secondary": ["Fadiga", "Carga excessiva", "Má técnica de bracing"],
+        "risk_factors": ["Core fraco", "Inexperiência com bracing"]
+      },
+
+      "detection_method": {
+        "primary": "trunk_angle_variability > 8° during single rep",
+        "secondary": "observational - visible wobbling",
+        "requires_landmarks": ["shoulder", "hip"],
+        "calculation": "variance(trunk_angle) within rep",
+        "detection_phase": "press_initial through lockout"
+      },
+
+      "severity_thresholds": {
+        "mild": {"angle_variance": "5-10 degrees", "injury_risk": "low-moderate", "performance_impact": "Reduced efficiency", "intervention": "Bracing education"},
+        "moderate": {"angle_variance": "10-15 degrees", "injury_risk": "moderate (spinal instability)", "performance_impact": "Significant force loss", "intervention": "Core strengthening"},
+        "severe": {"angle_variance": ">15 degrees (visible wobbling)", "injury_risk": "high", "performance_impact": "Dangerous", "intervention": "Stop, fundamental core work"}
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": ["Big breath and brace", "Tight core throughout", "Squeeze glutes"],
+        "corrective_exercises": [
+          {
+            "name": "Planks (especially weighted)",
+            "target": "Core anti-extension strength",
+            "sets": 3,
+            "duration": "45-60s",
+            "frequency": "Daily"
+          },
+          {
+            "name": "Pallof press",
+            "target": "Anti-rotation core strength",
+            "sets": 3,
+            "reps": 12,
+            "frequency": "3x/week"
+          }
+        ]
+      }
+    }
+  ],
+
+  "common_combinations": [
+    {
+      "combination": ["excessive_layback", "insufficient_overhead_mobility"],
+      "prevalence": "very high",
+      "cause": "Lack of overhead mobility forces layback compensation",
+      "synergistic_effect": "Dangerous for lumbar spine",
+      "priority": "Address mobility first",
+      "correction_approach": "Aggressive overhead mobility work, reduce loads"
+    }
+  ],
+
+  "detection_priority": [
+    "excessive_layback",
+    "insufficient_overhead_mobility",
+    "bar_drift_forward",
+    "incomplete_lockout",
+    "asymmetric_press",
+    "loss_of_midline_stability",
+    "push_press_instead_of_strict",
+    "elbow_flare",
+    "pressing_from_forehead"
+  ]
+}

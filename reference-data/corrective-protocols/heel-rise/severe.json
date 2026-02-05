@@ -1,0 +1,104 @@
+{
+  "protocol_id": "heel_rise_severe_v1",
+  "deviation": "heel-rise",
+  "severity": "severe",
+  "version": "1.0.0",
+  "last_updated": "2025-01-15",
+
+  "overview": {
+    "description": "Protocolo para heel rise severo (> 4cm ou incapacidade de manter calcanhares no chão). Limitação estrutural provável. Foco em maximizar mobilidade disponível e estabelecer modificações permanentes.",
+    "typical_presentation": "Calcanhares levantam imediatamente na descida. Incapacidade de agachar com calcanhares no chão mesmo em profundidades rasas. Dorsiflexão < 25°. Pode haver histórico de lesão/cirurgia de tornozelo.",
+    "primary_causes": [
+      "Restrição severa estrutural de tornozelo (< 25° dorsiflexão)",
+      "Cirurgia prévia de tornozelo com perda de ROM",
+      "Artrose de tornozelo",
+      "Encurtamento severo de tendão de Aquiles",
+      "Anatomia óssea limitante"
+    ],
+    "expected_duration": "12-20 semanas, modificações PERMANENTES",
+    "success_rate": "30-40% melhora funcional. Maioria requer elevação permanente ou variações alternativas.",
+    "warning": "Avaliação profissional recomendada. Limitação pode ser estrutural não modificável. Sapatos elevados são solução primária."
+  },
+
+  "goals_hierarchy": [
+    {
+      "priority": 1,
+      "goal": "Maximizar dorsiflexão dentro de limitações estruturais",
+      "measurable_outcome": "Ganho de qualquer ROM mensurável (5-10°)"
+    },
+    {
+      "priority": 2,
+      "goal": "Estabelecer treino funcional com modificações",
+      "measurable_outcome": "Sapatos elevados + variações apropriadas"
+    },
+    {
+      "priority": 3,
+      "goal": "Aceitar limitações permanentes",
+      "measurable_outcome": "Programa sustentável sem frustração"
+    }
+  ],
+
+  "phases": [
+    {
+      "phase_number": 1,
+      "name": "Mobilização Máxima e Aceitação",
+      "duration_typical": "28-42 dias",
+      "frequency": "Mobilidade diária, treino 3-4x/semana",
+      "focus": "Tentar maximizar ROM, mas preparar para modificações permanentes",
+
+      "exercises": [
+        {
+          "exercise_id": "ankle_mob_max_effort",
+          "name": "Mobilização Máxima",
+          "frequency": "3x/dia",
+          "note": "Todas as técnicas: carga, distração, alongamento prolongado. Alguns casos ganham apenas 2-5°. Aceitar."
+        },
+        {
+          "exercise_id": "elevated_squat_training",
+          "name": "Treino com Elevação Significativa",
+          "note": "Cunhas 10-20° ou sapatos especializados IMEDIATAMENTE. É solução primária, não temporária."
+        }
+      ]
+    },
+
+    {
+      "phase_number": 2,
+      "name": "Estabelecer Treino Modificado Permanente",
+      "duration_typical": "Ongoing",
+      "frequency": "Normal",
+      "focus": "Treino sustentável com modificações permanentes",
+
+      "exercises": [
+        {
+          "exercise_id": "squat_with_elevation_permanent",
+          "name": "Agachamento com Elevação Permanente",
+          "note": "Sapatos de agachamento (1-1.5 inch heel) ou cunhas permanentes. Leg press, hack squat como alternativas."
+        }
+      ]
+    }
+  ],
+
+  "return_to_exercise_criteria": {
+    "realistic_expectations": "CRÍTICO: Casos severos geralmente têm limitação ESTRUTURAL permanente. Agachamento sem elevação pode NUNCA ser possível. Não é falha. Modificação é sucesso.",
+
+    "permanent_modifications": [
+      "Sapatos de agachamento (1-1.5 inch heel) OBRIGATÓRIOS",
+      "Cunhas significativas (15-20°) para agachamento livre",
+      "Leg press preferível a back squat livre",
+      "Hack squat com pés elevados",
+      "Front squat pode ser ligeiramente melhor que back squat",
+      "Mobilidade de tornozelo permanente mesmo com elevação"
+    ]
+  },
+
+  "contraindications": {
+    "absolute": ["Lesão aguda", "Artrose severa sintomática"],
+    "relative": ["Cirurgia prévia com restrição permanente"]
+  },
+
+  "special_considerations": {
+    "structural_assessment": "Radiografia pode revelar limitação óssea permanente. Aceitação é crítica.",
+    "equipment_investment": "Sapatos de agachamento de qualidade (Nike Romaleos, Adidas Adipower, etc.) são investimento necessário.",
+    "alternative_exercises": "Ênfase em leg press, hack squat, split squats onde elevação de calcanhar não é problema."
+  }
+}

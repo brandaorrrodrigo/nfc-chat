@@ -1,0 +1,934 @@
+{
+  "exercise_id": "bench_press_flat",
+  "version": "1.0.0",
+  "created_at": "2025-02-05",
+  "total_deviations_cataloged": 10,
+  "evidence_base_references": [
+    "Lehman GJ. The influence of grip width and forearm pronation/supination on upper-body myoelectric activity during the flat bench press. J Strength Cond Res. 2005",
+    "Green CM, Comfort P. The affect of grip width on bench press performance and risk of injury. Strength Cond J. 2007",
+    "Duffey MJ. A biomechanical analysis of the bench press. Med Sci Sports Exerc. 2000",
+    "Barnett C et al. Effects of variations of the bench press exercise on the EMG activity of five shoulder muscles. J Strength Cond Res. 1995"
+  ],
+
+  "deviations": [
+    {
+      "id": "excessive_elbow_flare",
+      "name": "Abertura Excessiva de Cotovelos (Elbow Flare)",
+      "name_en": "Excessive Elbow Flare",
+      "description": "Cotovelos abrem excessivamente para os lados (>75-80° com o tronco) durante a descida, aumentando risco de impingimento do ombro",
+      "aliases": ["elbows out", "90-degree elbows", "T-position", "cotovelos muito abertos"],
+
+      "biomechanical_cause": {
+        "primary": "Má técnica aprendida ou imitação de técnicas obsoletas",
+        "secondary": [
+          "Peitoral superior fraco relativo ao médio/inferior",
+          "Má ativação de serrato anterior",
+          "Falta de retração escapular",
+          "Grip excessivamente largo"
+        ],
+        "risk_factors": [
+          "Histórico de dor no ombro",
+          "Impingimento subacromial preexistente",
+          "Má mobilidade de rotação interna de ombro",
+          "Instrução inadequada"
+        ]
+      },
+
+      "detection_method": {
+        "primary": "elbow_torso_angle > 75° in sagittal plane",
+        "secondary": "elbow_perpendicular_to_torso (90° flare)",
+        "requires_landmarks": ["shoulder", "elbow", "hip", "torso_midline"],
+        "calculation": "angle_between(torso_vector, shoulder_to_elbow_vector)",
+        "detection_phase": "eccentric descent and isometric_bottom",
+        "bilateral_comparison": true
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "elbow_flare_angle": "65-75 degrees",
+          "injury_risk": "low-moderate",
+          "performance_impact": "Suboptimal pec activation",
+          "intervention": "Cueing to tuck elbows slightly"
+        },
+        "moderate": {
+          "elbow_flare_angle": "75-85 degrees",
+          "injury_risk": "moderate (impingement risk)",
+          "performance_impact": "Increased shoulder stress, reduced pec activation",
+          "intervention": "Active correction, may need to reduce load"
+        },
+        "severe": {
+          "elbow_flare_angle": ">85 degrees (near 90°, T-position)",
+          "injury_risk": "high (anterior shoulder impingement, rotator cuff stress)",
+          "performance_impact": "Significantly increased injury risk, poor mechanics",
+          "intervention": "Stop, re-teach technique from scratch"
+        }
+      },
+
+      "associated_compensations": [
+        "loss_of_scapular_retraction",
+        "touch_point_too_high",
+        "reduced_rom"
+      ],
+
+      "differential_diagnosis": [
+        {
+          "condition": "Intentional powerlifting technique variation",
+          "differentiator": "Some lifters use wider flare successfully, but with specific setup",
+          "assessment": "Check for pain, experience level"
+        }
+      ],
+
+      "evidence_base": {
+        "prevalence": "30-50% of untrained lifters use excessive flare (Green & Comfort, 2007)",
+        "injury_correlation": "Elbow flare >75° associated with 2-3x increased shoulder pain incidence (Green & Comfort, 2007)",
+        "biomechanical_impact": "Increases subacromial impingement risk, reduces force production",
+        "correction_efficacy": "Immediate improvement with cueing in 90% of cases"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": [
+          "Tuck elbows to 45-degree angle",
+          "Point elbows towards hips",
+          "Not straight out to sides",
+          "Think 'A' shape, not 'T' shape"
+        ],
+        "corrective_exercises": [
+          {
+            "name": "Floor press with proper elbow tuck",
+            "target": "Learn proper arm path with ROM limitation",
+            "sets": 3,
+            "reps": 10,
+            "frequency": "2x/week",
+            "progression": "Transfer to bench press"
+          },
+          {
+            "name": "Band pull-aparts",
+            "target": "Scapular retraction and posterior delt activation",
+            "sets": 3,
+            "reps": 15,
+            "frequency": "Daily",
+            "progression": "Heavier band"
+          },
+          {
+            "name": "Narrow-grip bench press",
+            "target": "Force elbow tucking pattern",
+            "sets": 3,
+            "reps": 8,
+            "frequency": "1x/week",
+            "progression": "Increase load"
+          }
+        ],
+        "return_to_exercise_criteria": [
+          "Can maintain 45-60° elbow angle consistently",
+          "No shoulder pain",
+          "Proper touch point achieved"
+        ]
+      }
+    },
+
+    {
+      "id": "bar_bounce",
+      "name": "Quique de Barra no Peitoral",
+      "name_en": "Bar Bounce",
+      "description": "Barra quica no peitoral no fundo do movimento ao invés de pausa controlada ou toque suave",
+      "aliases": ["bouncing", "chest bounce", "peitoral como trampolim"],
+
+      "biomechanical_cause": {
+        "primary": "Uso de momentum para compensar fraqueza ou falta de controle",
+        "secondary": [
+          "Carga excessiva",
+          "Má técnica",
+          "Pressa/impaciência",
+          "Tentativa de 'superar' ponto de sticking"
+        ],
+        "risk_factors": [
+          "Ego lifting",
+          "Falta de instrução sobre pausa",
+          "Competição informal (sem árbitro)"
+        ]
+      },
+
+      "detection_method": {
+        "primary": "bar_vertical_velocity_reversal without pause (acceleration > 2 m/s²)",
+        "secondary": "chest_compression > 2cm",
+        "requires_landmarks": ["bar_position", "chest_surface"],
+        "calculation": "velocity_at_touch AND acceleration_at_reversal",
+        "detection_phase": "isometric_bottom transition",
+        "accelerometer_useful": true
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "bounce_depth": "Slight compression, minimal elastic rebound",
+          "injury_risk": "low",
+          "performance_impact": "Minor - reduces time under tension slightly",
+          "intervention": "Cueing for controlled touch"
+        },
+        "moderate": {
+          "bounce_depth": "Visible compression, clear bounce",
+          "injury_risk": "moderate (rib/sternum contusion, chest wall injury)",
+          "performance_impact": "Using momentum instead of strength, doesn't count in competition",
+          "intervention": "Pause training, reduce load"
+        },
+        "severe": {
+          "bounce_depth": "Heavy bounce, aggressive compression",
+          "injury_risk": "high (rib fracture possible, sternum injury, breast tissue trauma in women)",
+          "performance_impact": "Dangerous, invalid lift",
+          "intervention": "Stop immediately, significant load reduction"
+        }
+      },
+
+      "associated_compensations": [
+        "insufficient_rom",
+        "loss_of_control"
+      ],
+
+      "evidence_base": {
+        "prevalence": "20-40% of gym lifters use some degree of bounce",
+        "injury_correlation": "Rib stress fractures reported in extreme cases",
+        "biomechanical_impact": "Reduces eccentric and isometric strength requirement",
+        "correction_efficacy": "Immediately correctable with load reduction and pause training"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": [
+          "Touch and press, don't bounce",
+          "Light kiss to chest",
+          "Control the descent"
+        ],
+        "corrective_exercises": [
+          {
+            "name": "Pause bench press (2-3 second pause)",
+            "target": "Eliminate momentum, build strength from dead stop",
+            "sets": 4,
+            "reps": 5,
+            "frequency": "Every bench session",
+            "progression": "Increase pause duration, then load"
+          },
+          {
+            "name": "Pin press / Board press",
+            "target": "Build strength in sticking point",
+            "sets": 3,
+            "reps": 6,
+            "frequency": "1x/week",
+            "progression": "Increase load"
+          }
+        ],
+        "load_modification": [
+          "Reduce load by 20-30% to achieve controlled touch"
+        ],
+        "return_to_exercise_criteria": [
+          "Can perform controlled touch at working weight",
+          "No bounce visible"
+        ]
+      }
+    },
+
+    {
+      "id": "insufficient_rom",
+      "name": "Amplitude de Movimento Insuficiente",
+      "name_en": "Insufficient Range of Motion",
+      "description": "Barra não desce até tocar o peitoral (ou próximo), resultando em ROM parcial",
+      "aliases": ["partial reps", "short ROM", "não toca o peitoral"],
+
+      "biomechanical_cause": {
+        "primary": "Carga excessiva ou fraqueza na porção inferior do movimento",
+        "secondary": [
+          "Ego lifting",
+          "Medo de profundidade",
+          "Má técnica aprendida",
+          "Dor no ombro (evitação)"
+        ],
+        "risk_factors": [
+          "Falta de força na parte inferior",
+          "Histórico de dor no ombro",
+          "Comparação com outros (usando cargas maiores incorretamente)"
+        ]
+      },
+
+      "detection_method": {
+        "primary": "bar_to_chest_distance_min > 5cm",
+        "secondary": "elbow_flexion_angle_max < 80° (should be ~90°)",
+        "requires_landmarks": ["bar_position", "chest_surface", "elbow"],
+        "calculation": "min(distance(bar_y, chest_y)) during eccentric phase",
+        "detection_phase": "isometric_bottom"
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "rom_deficit": "Bar stops 3-5cm from chest",
+          "injury_risk": "low",
+          "performance_impact": "Reduced pec stretch activation (10-15%)",
+          "intervention": "Cueing, reduce load slightly"
+        },
+        "moderate": {
+          "rom_deficit": "Bar stops 5-10cm from chest",
+          "injury_risk": "low (but incomplete training stimulus)",
+          "performance_impact": "Significantly reduced training effect (30%+)",
+          "intervention": "Significant load reduction"
+        },
+        "severe": {
+          "rom_deficit": "Bar stops >10cm from chest (less than 1/2 ROM)",
+          "injury_risk": "low (but essentially wrong exercise)",
+          "performance_impact": "Minimal pec activation, wrong exercise",
+          "intervention": "Restart with proper ROM from beginning"
+        }
+      },
+
+      "associated_compensations": [
+        "excessive_load",
+        "bar_bounce_attempt_without_reaching"
+      ],
+
+      "evidence_base": {
+        "prevalence": "15-25% don't achieve full ROM (Duffey MJ, 2000)",
+        "biomechanical_impact": "Full ROM increases pec activation by 20-30% vs partial (Barnett C et al, 1995)",
+        "correction_efficacy": "Immediately correctable with load reduction"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": [
+          "Touch chest every rep",
+          "Full range of motion",
+          "Control to chest, not just lower arms"
+        ],
+        "corrective_exercises": [
+          {
+            "name": "Paused bench press (touch and pause)",
+            "target": "Reinforce full ROM requirement",
+            "sets": 4,
+            "reps": 6,
+            "frequency": "Every session",
+            "progression": "Increase load while maintaining ROM"
+          },
+          {
+            "name": "Dumbbell bench press",
+            "target": "Allows deeper ROM, builds bottom strength",
+            "sets": 3,
+            "reps": 10,
+            "frequency": "1x/week",
+            "progression": "Increase load"
+          }
+        ],
+        "load_modification": [
+          "Reduce load by 30-40% to achieve full ROM"
+        ],
+        "return_to_exercise_criteria": [
+          "Consistently touches chest every rep",
+          "No compensations at full ROM"
+        ]
+      }
+    },
+
+    {
+      "id": "asymmetric_press",
+      "name": "Pressão Assimétrica",
+      "name_en": "Asymmetric Press",
+      "description": "Um braço estende mais rápido ou mais completamente que o outro, causando barra inclinada",
+      "aliases": ["uneven press", "one arm stronger", "barra torta", "bar tilt"],
+
+      "biomechanical_cause": {
+        "primary": "Assimetria de força entre lados",
+        "secondary": [
+          "Histórico de lesão unilateral",
+          "Dominância lateral",
+          "Má ativação neuromuscular de um lado",
+          "Rotação de tronco durante movimento"
+        ],
+        "risk_factors": [
+          "Retorno recente de lesão",
+          "Déficit de força unilateral",
+          "Má estabilização escapular de um lado"
+        ]
+      },
+
+      "detection_method": {
+        "primary": "bar_tilt_angle > 5° (bar not horizontal)",
+        "secondary": "elbow_extension_rate_difference > 20% between sides",
+        "requires_landmarks": ["bar_left_end", "bar_right_end", "elbow_left", "elbow_right"],
+        "calculation": "angle(bar_left_y - bar_right_y) AND compare(left_elbow_velocity, right_elbow_velocity)",
+        "detection_phase": "concentric phase",
+        "bilateral_comparison": true
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "bar_tilt": "3-7 degrees",
+          "force_asymmetry": "10-15% difference",
+          "injury_risk": "low",
+          "performance_impact": "Slight reduction in total force",
+          "intervention": "Awareness cueing, unilateral work"
+        },
+        "moderate": {
+          "bar_tilt": "7-12 degrees",
+          "force_asymmetry": "15-25% difference",
+          "injury_risk": "moderate (overload of one side, possible shoulder injury)",
+          "performance_impact": "Visible bar tilt, reduced efficiency",
+          "intervention": "Unilateral strengthening, reduce load"
+        },
+        "severe": {
+          "bar_tilt": ">12 degrees",
+          "force_asymmetry": ">25% difference",
+          "injury_risk": "high (severe overload, loss of control possible)",
+          "performance_impact": "Dangerous, possible bar drop",
+          "intervention": "Stop barbell press, unilateral training phase"
+        }
+      },
+
+      "associated_compensations": [
+        "trunk_rotation",
+        "scapular_asymmetry",
+        "contralateral_compensation"
+      ],
+
+      "evidence_base": {
+        "prevalence": "10-20% show >10% asymmetry",
+        "injury_correlation": "Asymmetry >20% associated with increased injury risk",
+        "correction_efficacy": "70-85% improvement with 6-week unilateral training"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": [
+          "Press both arms equally",
+          "Keep bar level",
+          "Lock out together"
+        ],
+        "corrective_exercises": [
+          {
+            "name": "Dumbbell bench press (start with weaker arm)",
+            "target": "Address weaker side directly",
+            "sets": 3,
+            "reps": "10 each arm, weaker arm first",
+            "frequency": "2-3x/week",
+            "progression": "Match weaker side, don't let stronger compensate"
+          },
+          {
+            "name": "Single-arm dumbbell press",
+            "target": "Unilateral strength and stability",
+            "sets": 3,
+            "reps": 8,
+            "frequency": "2x/week",
+            "progression": "Increase load on weaker side first"
+          },
+          {
+            "name": "Push-ups with hands on different heights",
+            "target": "Proprioceptive awareness of asymmetry",
+            "sets": 3,
+            "reps": 10,
+            "frequency": "Daily",
+            "progression": "Equal height as strength balances"
+          }
+        ],
+        "return_to_exercise_criteria": [
+          "Bilateral strength asymmetry <10%",
+          "Bar stays level during press"
+        ]
+      }
+    },
+
+    {
+      "id": "loss_of_scapular_retraction",
+      "name": "Perda de Retração Escapular",
+      "name_en": "Loss of Scapular Retraction",
+      "description": "Escápulas perdem retração durante o movimento, ombros 'desencaixam' e arredondam para frente",
+      "aliases": ["scapular protraction", "shoulders come off bench", "ombros desenroscam"],
+
+      "biomechanical_cause": {
+        "primary": "Fraqueza ou má ativação de retratores escapulares (rombóides, trapézio médio)",
+        "secondary": [
+          "Má técnica de setup",
+          "Fadiga muscular",
+          "Carga excessiva",
+          "Falta de consciência de posição escapular"
+        ],
+        "risk_factors": [
+          "Postura cifótica habitual",
+          "Fraqueza de costas",
+          "Peitoral dominante"
+        ]
+      },
+
+      "detection_method": {
+        "primary": "scapular_position_change > 3cm protraction during rep",
+        "secondary": "shoulder_width_increase > 5cm from setup to bottom",
+        "requires_landmarks": ["scapula_medial_border", "spine", "shoulder"],
+        "calculation": "distance_change(scapula_to_spine) from setup to isometric_bottom",
+        "detection_phase": "eccentric and isometric_bottom"
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "protraction_distance": "1-2 cm",
+          "injury_risk": "low-moderate",
+          "performance_impact": "Reduced stability, slight force loss",
+          "intervention": "Cueing, activation exercises"
+        },
+        "moderate": {
+          "protraction_distance": "2-4 cm",
+          "injury_risk": "moderate (increased anterior shoulder stress, rotator cuff load)",
+          "performance_impact": "Significant stability loss, reduced force transfer",
+          "intervention": "Scapular strengthening, reduce load"
+        },
+        "severe": {
+          "protraction_distance": ">4 cm (complete loss of retraction)",
+          "injury_risk": "high (shoulder impingement, instability)",
+          "performance_impact": "Dangerous, loss of shoulder stability",
+          "intervention": "Stop, fundamental scapular control training"
+        }
+      },
+
+      "associated_compensations": [
+        "excessive_elbow_flare",
+        "shoulder_internal_rotation",
+        "reduced_force_production"
+      },
+
+      "evidence_base": {
+        "prevalence": "25-40% show some loss of retraction",
+        "injury_correlation": "Loss of retraction increases anterior shoulder stress significantly",
+        "biomechanical_impact": "Reduces shoulder stability, increases impingement risk",
+        "correction_efficacy": "High with proper activation and strengthening"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": [
+          "Squeeze shoulder blades together and keep them there",
+          "Pin shoulders to bench",
+          "Create a shelf with your back"
+        ],
+        "corrective_exercises": [
+          {
+            "name": "Scapular wall slides",
+            "target": "Retraction control and endurance",
+            "sets": 3,
+            "reps": 15,
+            "frequency": "Daily",
+            "progression": "Add light resistance band"
+          },
+          {
+            "name": "Prone Y-T-W raises",
+            "target": "Scapular retractor strength",
+            "sets": 3,
+            "reps": 10,
+            "frequency": "3x/week",
+            "progression": "Add light weights"
+          },
+          {
+            "name": "Band pull-aparts (horizontal)",
+            "target": "Retractor activation and endurance",
+            "sets": 3,
+            "reps": 20,
+            "frequency": "Daily, especially pre-bench",
+            "progression": "Heavier band"
+          }
+        ],
+        "setup_emphasis": [
+          "Retract and depress scapulae BEFORE unracking",
+          "Maintain throughout entire set"
+        ],
+        "return_to_exercise_criteria": [
+          "Can maintain retraction through entire set",
+          "Scapular endurance sufficient for working sets"
+        ]
+      }
+    },
+
+    {
+      "id": "glute_lift",
+      "name": "Elevação de Glúteos (Perda de Contato com Banco)",
+      "name_en": "Glute Lift (Loss of Bench Contact)",
+      "description": "Glúteos se elevam do banco durante o movimento, geralmente durante a fase concêntrica ou ao tentar gerar leg drive excessivo",
+      "aliases": ["butt off bench", "hip bridge during press", "glúteos saem do banco"],
+
+      "biomechanical_cause": {
+        "primary": "Leg drive excessivo ou mal direcionado",
+        "secondary": [
+          "Tentativa de gerar momentum",
+          "Carga muito pesada",
+          "Má técnica de leg drive",
+          "Arco muito exagerado"
+        ],
+        "risk_factors": [
+          "Ego lifting",
+          "Competição (tentativa de qualquer jeito)",
+          "Má instrução sobre leg drive"
+        ]
+      },
+
+      "detection_method": {
+        "primary": "glute_y > bench_surface_y + 2cm",
+        "secondary": "loss_of_three_points_of_contact (head, shoulders, glutes)",
+        "requires_landmarks": ["hip", "bench_surface"],
+        "calculation": "distance(hip_y, bench_y)",
+        "detection_phase": "typically during concentric, but can occur any phase"
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "lift_height": "1-2 cm (slight loss of contact)",
+          "injury_risk": "low",
+          "performance_impact": "Lift would not count in powerlifting, but minimal injury risk",
+          "intervention": "Cueing, reduce leg drive"
+        },
+        "moderate": {
+          "lift_height": "2-5 cm (clear separation)",
+          "injury_risk": "moderate (spinal hyperextension, instability)",
+          "performance_impact": "Invalid lift, loss of stability",
+          "intervention": "Reduce load, re-teach leg drive"
+        },
+        "severe": {
+          "lift_height": ">5 cm (major lift, almost bridging)",
+          "injury_risk": "high (lumbar hyperextension injury possible)",
+          "performance_impact": "Dangerous, completely invalid technique",
+          "intervention": "Stop immediately, fundamental technique re-education"
+        }
+      },
+
+      "associated_compensations": [
+        "excessive_arch",
+        "reduced_rom_effective",
+        "instability"
+      ],
+
+      "evidence_base": {
+        "prevalence": "10-20% in powerlifting attempts",
+        "injury_correlation": "Associated with lumbar hyperextension injuries",
+        "biomechanical_impact": "Creates instability, reduces effective ROM illegally",
+        "correction_efficacy": "Easily correctable with cueing and load management"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": [
+          "Glutes stay on bench",
+          "Three points of contact: head, shoulders, butt",
+          "Leg drive through feet, not up into hips"
+        ],
+        "corrective_exercises": [
+          {
+            "name": "Bench press with feet up",
+            "target": "Eliminate leg drive temptation, focus on upper body",
+            "sets": 3,
+            "reps": 8,
+            "frequency": "1x/week",
+            "progression": "Transfer correct feeling to feet-down version"
+          }
+        ],
+        "load_modification": [
+          "Reduce load to level where glute contact maintained"
+        ],
+        "return_to_exercise_criteria": [
+          "Can maintain glute contact through entire set",
+          "Leg drive appropriate, not excessive"
+        ]
+      }
+    },
+
+    {
+      "id": "improper_bar_path",
+      "name": "Trajetória de Barra Incorreta",
+      "name_en": "Improper Bar Path",
+      "description": "Barra não move em trajetória levemente diagonal otimizada (lower chest to over shoulders), mas sim reta vertical ou com desvio excessivo",
+      "aliases": ["bar path deviation", "straight vertical path", "trajetória errada"],
+
+      "biomechanical_cause": {
+        "primary": "Má compreensão de trajetória ótima ou tentativa de simplificar movimento",
+        "secondary": [
+          "Falta de instrução",
+          "Tentativa de copiar squat (trajetória vertical)",
+          "Má ativação muscular"
+        ],
+        "risk_factors": [
+          "Autodidata sem vídeo",
+          "Instrução inadequada"
+        ]
+      },
+
+      "detection_method": {
+        "primary": "bar_path_horizontal_displacement < 3cm OR > 10cm",
+        "secondary": "bar_path_straightness_score (deviation from ideal parabolic arc)",
+        "requires_landmarks": ["bar_position"],
+        "calculation": "track bar_x_position over time, compare to ideal arc",
+        "detection_phase": "entire movement"
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "deviation": "Slightly more or less arc than optimal (3-5cm off)",
+          "injury_risk": "low",
+          "performance_impact": "Minor efficiency loss (5-10%)",
+          "intervention": "Cueing"
+        },
+        "moderate": {
+          "deviation": "Significantly off (5-10cm), either too straight or too curved",
+          "injury_risk": "moderate (increased shoulder stress if too vertical)",
+          "performance_impact": "Reduced efficiency (10-20%)",
+          "intervention": "Video feedback, specific cueing"
+        },
+        "severe": {
+          "deviation": "Highly aberrant path (>10cm off, or backward arc)",
+          "injury_risk": "high (if moving backward toward face)",
+          "performance_impact": "Dangerous, very inefficient",
+          "intervention": "Fundamental re-teaching"
+        }
+      },
+
+      "evidence_base": {
+        "biomechanical_impact": "Optimal path reduces shoulder moment arm, increases efficiency",
+        "correction_efficacy": "High with video feedback"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": [
+          "Lower to nipple line, press back over shoulders",
+          "Slight J-curve path",
+          "Not straight up and down"
+        ],
+        "corrective_exercises": [
+          {
+            "name": "Bench press with video feedback",
+            "target": "Visual learning of correct bar path",
+            "sets": 3,
+            "reps": 8,
+            "frequency": "Every session initially",
+            "progression": "Internalize correct path"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "incorrect_grip_width",
+      "name": "Largura de Pegada Incorreta",
+      "name_en": "Incorrect Grip Width",
+      "description": "Pegada muito larga (>1.8x bi-acromial) ou muito estreita (<1.2x bi-acromial) para bench press padrão",
+      "aliases": ["grip too wide", "grip too narrow", "pegada errada"],
+
+      "biomechanical_cause": {
+        "primary": "Má instrução ou tentativa de otimizar sem conhecimento biomecânico",
+        "secondary": [
+          "Cópia de estilos específicos inadequados",
+          "Falta de feedback"
+        ],
+        "risk_factors": [
+          "Autodidata",
+          "Confusão com close-grip ou wide-grip variants"
+        ]
+      },
+
+      "detection_method": {
+        "primary": "grip_width_ratio < 1.2x OR > 1.8x biacromial_distance",
+        "secondary": "forearm_angle_at_bottom != ~90° vertical",
+        "requires_landmarks": ["wrist_left", "wrist_right", "shoulder_left", "shoulder_right"],
+        "calculation": "distance(wrist_left, wrist_right) / distance(shoulder_left, shoulder_right)",
+        "detection_phase": "setup and all phases"
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "grip_ratio": "1.2-1.3x or 1.7-1.8x (slightly narrow or wide)",
+          "injury_risk": "low",
+          "performance_impact": "Slight shift in muscle emphasis",
+          "intervention": "May be acceptable depending on goals"
+        },
+        "moderate": {
+          "grip_ratio": "1.0-1.2x or 1.8-2.0x (notably narrow or wide)",
+          "injury_risk": "moderate (too wide = shoulder stress, too narrow = elbow/triceps stress)",
+          "performance_impact": "Suboptimal muscle activation, may increase injury risk",
+          "intervention": "Adjust grip width"
+        },
+        "severe": {
+          "grip_ratio": "<1.0x or >2.0x (extreme)",
+          "injury_risk": "high (too wide = severe shoulder risk, too narrow = wrong exercise essentially)",
+          "performance_impact": "Dangerous or wrong exercise selection",
+          "intervention": "Immediate correction"
+        }
+      },
+
+      "evidence_base": {
+        "prevalence": "Varies widely based on coaching",
+        "injury_correlation": "Grip >1.8x associated with increased shoulder injury risk (Lehman GJ, 2005)",
+        "biomechanical_impact": "Grip width significantly affects muscle activation patterns (Lehman GJ, 2005)",
+        "correction_efficacy": "Immediate, once identified"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": [
+          "Hands 1.5x shoulder width apart",
+          "Forearms vertical at bottom",
+          "Index finger on ring mark for reference (powerlifting bars)"
+        ],
+        "assessment": [
+          "Measure biacromial distance",
+          "Calculate optimal grip (~1.5x)"
+        ]
+      }
+    },
+
+    {
+      "id": "breathing_dysfunction",
+      "name": "Disfunção Respiratória",
+      "name_en": "Breathing Dysfunction",
+      "description": "Padrão respiratório inadequado, tipicamente expiração prematura ou falta de estabilização torácica",
+      "aliases": ["exhale too early", "no breath hold", "perda de IAP"],
+
+      "biomechanical_cause": {
+        "primary": "Técnica respiratória inadequada",
+        "secondary": [
+          "Falta de instrução",
+          "Medo de Valsalva",
+          "Fadiga"
+        ],
+        "risk_factors": [
+          "Inexperiência",
+          "Desinformação sobre respiração"
+        ]
+      },
+
+      "detection_method": {
+        "primary": "observational - loss of torso rigidity",
+        "secondary": "chest_circumference_decrease during eccentric/isometric",
+        "requires_landmarks": ["chest_circumference"],
+        "calculation": "chest_expansion_maintenance",
+        "detection_phase": "eccentric through early concentric"
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "breath_loss": "Partial, brief",
+          "injury_risk": "low",
+          "performance_impact": "Minor stability loss",
+          "intervention": "Breathing technique instruction"
+        },
+        "moderate": {
+          "breath_loss": "Significant, early exhale",
+          "injury_risk": "moderate (reduced stability)",
+          "performance_impact": "Reduced force production (10-15%)",
+          "intervention": "Valsalva training"
+        },
+        "severe": {
+          "breath_loss": "Complete, no stabilization",
+          "injury_risk": "high (loss of torso stability)",
+          "performance_impact": "Major force loss, instability",
+          "intervention": "Fundamental breathing education"
+        }
+      },
+
+      "evidence_base": {
+        "biomechanical_impact": "Proper breathing increases torso stability and force production",
+        "correction_efficacy": "High with education"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": [
+          "Big breath at top, hold through rep",
+          "Exhale only after bar passes sticking point or at top",
+          "Expand chest, maintain pressure"
+        ],
+        "education": [
+          "Teach proper Valsalva or forced exhale technique",
+          "Practice bracing"
+        ]
+      }
+    },
+
+    {
+      "id": "feet_unstable",
+      "name": "Instabilidade de Pés/Leg Drive Inadequado",
+      "name_en": "Foot Instability / Inadequate Leg Drive",
+      "description": "Pés não firmemente plantados, ou leg drive ausente/mal executado",
+      "aliases": ["feet sliding", "no leg drive", "pés soltos"],
+
+      "biomechanical_cause": {
+        "primary": "Má técnica de setup ou falta de conhecimento sobre leg drive",
+        "secondary": [
+          "Pés muito à frente",
+          "Sapatos inadequados",
+          "Banco muito alto"
+        ],
+        "risk_factors": [
+          "Falta de instrução",
+          "Setup inadequado"
+        ]
+      },
+
+      "detection_method": {
+        "primary": "foot_position_change > 3cm during rep",
+        "secondary": "observational - feet not driving",
+        "requires_landmarks": ["foot_left", "foot_right"],
+        "calculation": "distance_change(foot_position)",
+        "detection_phase": "concentric primarily"
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "foot_movement": "Slight (<3cm)",
+          "injury_risk": "low",
+          "performance_impact": "Missing some leg drive benefit (5-10% force)",
+          "intervention": "Cueing"
+        },
+        "moderate": {
+          "foot_movement": "Moderate (3-5cm)",
+          "injury_risk": "low-moderate (instability)",
+          "performance_impact": "Significant leg drive loss (10-20% force)",
+          "intervention": "Foot positioning work"
+        },
+        "severe": {
+          "foot_movement": "Severe (>5cm, feet sliding)",
+          "injury_risk": "moderate (can cause loss of control)",
+          "performance_impact": "No leg drive, instability",
+          "intervention": "Fundamental setup re-teaching"
+        }
+      },
+
+      "evidence_base": {
+        "biomechanical_impact": "Proper leg drive can increase bench press force by 10-15%",
+        "correction_efficacy": "High with proper instruction"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": [
+          "Plant feet firmly",
+          "Drive through floor",
+          "Create tension from feet to hands"
+        ],
+        "setup_modification": [
+          "Feet flat or on toes, but stable position",
+          "Knees bent appropriately",
+          "Create leg tension before unrack"
+        ]
+      }
+    }
+  ],
+
+  "common_combinations": [
+    {
+      "combination": ["excessive_elbow_flare", "loss_of_scapular_retraction"],
+      "prevalence": "high",
+      "cause": "Combined poor upper back strength and technique",
+      "synergistic_effect": "Significantly increases shoulder injury risk",
+      "priority": "Address scapular retraction first",
+      "correction_approach": "Scapular strengthening + elbow tuck cueing"
+    },
+    {
+      "combination": ["bar_bounce", "insufficient_rom"],
+      "prevalence": "moderate",
+      "cause": "Excessive load leading to multiple compensations",
+      "synergistic_effect": "Completely invalid lift technique",
+      "priority": "Reduce load dramatically",
+      "correction_approach": "Load reduction + pause training"
+    }
+  ],
+
+  "detection_priority": [
+    "excessive_elbow_flare",
+    "loss_of_scapular_retraction",
+    "bar_bounce",
+    "insufficient_rom",
+    "glute_lift",
+    "asymmetric_press",
+    "improper_bar_path",
+    "incorrect_grip_width",
+    "breathing_dysfunction",
+    "feet_unstable"
+  ]
+}

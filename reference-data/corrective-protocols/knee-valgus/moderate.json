@@ -1,0 +1,1195 @@
+{
+  "protocol_id": "knee_valgus_moderate_v1",
+  "deviation": "knee-valgus",
+  "severity": "moderate",
+  "version": "1.0.0",
+  "last_updated": "2025-01-15",
+
+  "overview": {
+    "description": "Protocolo corretivo para valgo moderado de joelho (10-20° de adução femoral). Padrão consistente e persistente de colapso medial durante movimento de agachamento, com possível compensação de tornozelo e quadril. Pode haver desconforto leve no joelho.",
+    "typical_presentation": "Joelhos colapsam medialmente de forma consistente durante descida do agachamento, especialmente sob carga ou fadiga. Pode apresentar algum desconforto patelofemoral (NRS 2-4/10). Padrão persiste mesmo com cueing verbal. Possível história de pequenos episódios de dor.",
+    "primary_causes": [
+      "Fraqueza significativa do complexo glúteo médio/mínimo (Distefano et al., 2009)",
+      "Déficit de controle motor estabelecido do quadril (Myer et al., 2008)",
+      "Hiperatividade/dominância do tensor da fáscia lata e adutores",
+      "Possível fraqueza de rotadores externos profundos do quadril",
+      "Déficit de estabilidade central (core) permitindo compensações",
+      "Possível limitação de mobilidade de tornozelo contribuindo para padrão"
+    ],
+    "expected_duration": "4-8 semanas com prática consistente (4-5x/semana)",
+    "success_rate": "70-80% de melhora significativa com adesão rigorosa ao protocolo"
+  },
+
+  "goals_hierarchy": [
+    {
+      "priority": 1,
+      "goal": "Reduzir valgo dinâmico para < 10° durante agachamento sem carga",
+      "measurable_outcome": "Filmagem frontal mostra redução de 50%+ no ângulo de valgo comparado ao baseline"
+    },
+    {
+      "priority": 2,
+      "goal": "Desenvolver força isométrica e concêntrica de abdutores de quadril",
+      "measurable_outcome": "Side plank com abdução por 45s, Copenhagen plank 30s, clamshell com banda pesada 25 reps"
+    },
+    {
+      "priority": 3,
+      "goal": "Estabelecer controle motor robusto em padrões unilaterais e bilaterais",
+      "measurable_outcome": "10 pistol squats assistidos por perna, 15 Bulgarian split squats com 12kg sem valgo"
+    },
+    {
+      "priority": 4,
+      "goal": "Reintegrar agachamento com carga progressiva mantendo alinhamento",
+      "measurable_outcome": "Back squat com 70% do 1RM prévio com valgo < 10° por 5 repetições"
+    },
+    {
+      "priority": 5,
+      "goal": "Eliminar ou reduzir significativamente desconforto patelofemoral associado",
+      "measurable_outcome": "Dor durante agachamento reduzida a NRS < 2/10"
+    }
+  ],
+
+  "phases": [
+    {
+      "phase_number": 1,
+      "name": "Restauração de Força e Controle Motor Básico",
+      "duration_typical": "10-14 dias",
+      "frequency": "5x por semana (diário idealmente)",
+      "focus": "Fortalecimento intensivo de abdutores, estabelecimento de ativação neuromuscular consistente, redução de compensações primárias",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Contração Isométrica Glúteo Médio em Carga",
+            "target": "Prancha lateral por 45 segundos com 15 abduções de quadril mantendo pelve estável",
+            "measurement_method": "Cronômetro + observação visual de estabilidade pélvica sem drop"
+          },
+          {
+            "test": "Clamshell com Resistência Pesada",
+            "target": "3x20 repetições com banda de resistência pesada mantendo isolamento perfeito",
+            "measurement_method": "Palpação confirma ativação primária de glúteo médio, zero compensação de quadrado lombar"
+          },
+          {
+            "test": "Single Leg Balance com Perturbação",
+            "target": "45 segundos por perna com mini perturbações (leve empurrão) sem perda de alinhamento",
+            "measurement_method": "Joelho mantém posição neutra, sem Trendelenburg, sem valgo reflexo"
+          },
+          {
+            "test": "Goblet Squat com Feedback",
+            "target": "15 repetições com 16kg mantendo valgo < 10° (redução de 50% do baseline)",
+            "measurement_method": "Filmagem frontal com análise angular ou avaliação visual qualificada"
+          }
+        ],
+        "subjective_markers": [
+          "Atleta relata consciência clara de ativação de glúteo médio",
+          "Capacidade de auto-corrigir valgo durante movimento em tempo real",
+          "Redução de fadiga precoce dos abdutores (maior resistência muscular)",
+          "Redução de qualquer desconforto patelofemoral para NRS < 3/10"
+        ],
+        "minimum_time": "10 dias de prática consistente",
+        "all_criteria_required": false,
+        "minimum_criteria": 3
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "copenhagen_plank_progression",
+          "name": "Copenhagen Plank (Prancha Copenhague)",
+          "primary_targets": ["Adutores", "Glúteo médio", "Oblíquos", "Core"],
+          "equipment": ["Banco ou superfície elevada"],
+          "sets": 3,
+          "reps": "Hold 20-30s",
+          "tempo": "Isométrico",
+          "rest": "90s entre séries",
+
+          "execution_cues": [
+            "Prancha lateral com perna superior apoiada em banco (altura joelho)",
+            "Perna inferior pode estar suspensa (avançado) ou apoiada no chão (modificado)",
+            "Corpo em linha reta da cabeça aos pés",
+            "Elevar quadril mantendo pelve nivelada e estável",
+            "Sentir trabalho intenso nos adutores da perna de cima E abdutores da perna de baixo",
+            "Manter posição sem permitir queda do quadril",
+            "Respiração contínua - não prender ar"
+          ],
+
+          "common_errors": [
+            {
+              "error": "Queda progressiva do quadril durante hold",
+              "correction": "Iniciar com versão modificada (perna inferior apoiada), reduzir tempo de hold"
+            },
+            {
+              "error": "Rotação do tronco para frente ou trás",
+              "correction": "Imaginar parede atrás das costas, manter ombros empilhados verticalmente"
+            },
+            {
+              "error": "Tensão excessiva no pescoço",
+              "correction": "Manter pescoço em linha neutra, olhar para frente"
+            }
+          ],
+
+          "progressions": [
+            {
+              "level": "Iniciante",
+              "modification": "Perna inferior apoiada no chão, hold 20s",
+              "when_to_use": "Primeiras sessões de severidade moderada"
+            },
+            {
+              "level": "Padrão",
+              "modification": "Perna inferior suspensa, hold 30s",
+              "when_to_use": "Após 4-5 sessões com sucesso na versão iniciante"
+            },
+            {
+              "level": "Avançado",
+              "modification": "Adicionar hip dips (elevar e baixar quadril) durante hold",
+              "when_to_use": "Quando 30s ficarem confortáveis"
+            }
+          ],
+
+          "regressions": [
+            {
+              "alternative": "Side Plank com abdução (do protocolo mild)",
+              "when_to_use": "Se Copenhagen plank causar desconforto nos adutores ou muito desafiador",
+              "adjustment": "Retornar ao exercício do protocolo mild temporariamente"
+            }
+          ],
+
+          "personalization_rules": {
+            "training_age_beginner": {
+              "sets": 2,
+              "reps": "Hold 15s",
+              "note": "Usar versão modificada (perna inferior apoiada) por mais tempo"
+            },
+            "training_age_advanced": {
+              "sets": 3,
+              "reps": "Hold 35-40s",
+              "note": "Pode progredir para hip dips mais cedo"
+            },
+            "injury_history_groin": {
+              "modification": "Versão modificada obrigatória, progressão muito gradual",
+              "caution": "Parar se dor nos adutores > 2/10, risco de strain"
+            },
+            "injury_history_hip": {
+              "modification": "Monitorar impingement, ajustar posicionamento se necessário",
+              "caution": "Avaliar conforto no quadril da perna de cima"
+            }
+          },
+
+          "scientific_rationale": "Copenhagen plank produz ativação bilateral (adutores E abdutores) essencial para estabilidade completa do quadril (Ishøi et al., 2016). Exercício superior para desenvolver força excêntrica de adutores, que trabalham sinergicamente com abdutores no controle de valgo."
+        },
+
+        {
+          "exercise_id": "banded_lateral_walk_heavy",
+          "name": "Lateral Band Walk com Resistência Pesada",
+          "primary_targets": ["Glúteo médio", "Glúteo mínimo", "TFL"],
+          "equipment": ["Mini-band (resistência pesada ou dupla banda)"],
+          "sets": 4,
+          "reps": "15 passos laterais cada direção",
+          "tempo": "Controlado - 1.5s por passo",
+          "rest": "60s entre séries",
+
+          "execution_cues": [
+            "Banda ao redor das coxas logo acima dos joelhos",
+            "Quarter squat position mantida durante todo exercício",
+            "Manter tensão máxima constante na banda - nunca relaxar",
+            "Passos laterais controlados, sentir queimação intensa nos abdutores",
+            "Evitar compensação com flexores do quadril ou quadrado lombar",
+            "Manter tronco ereto, core ativado, olhar para frente",
+            "Fazer passos em todas direções: lateral puro, diagonal frente, diagonal trás"
+          ],
+
+          "common_errors": [
+            {
+              "error": "Perda de profundidade do quarter squat sob fadiga",
+              "correction": "Reduzir número de passos mantendo qualidade, descansar adequadamente"
+            },
+            {
+              "error": "Compensação com inclinação lateral do tronco",
+              "correction": "Manter core mais rígido, pode reduzir resistência da banda temporariamente"
+            },
+            {
+              "error": "Passos muito rápidos perdendo controle",
+              "correction": "Reduzir velocidade, focar em contração consciente a cada passo"
+            }
+          ],
+
+          "progressions": [
+            {
+              "level": "Iniciante",
+              "modification": "Banda de resistência média, 12 passos",
+              "when_to_use": "Transição do protocolo mild, primeiras sessões"
+            },
+            {
+              "level": "Padrão",
+              "modification": "Banda pesada, 15 passos, incluir diagonais",
+              "when_to_use": "Maioria dos casos de valgo moderado"
+            },
+            {
+              "level": "Avançado",
+              "modification": "Duas bandas sobrepostas ou banda extra-pesada, 20 passos",
+              "when_to_use": "Preparação para Fase 2, quando 15 passos ficarem fáceis"
+            }
+          ],
+
+          "regressions": [
+            {
+              "alternative": "Monster walk com banda média (do protocolo mild)",
+              "when_to_use": "Se fadiga excessiva impedir manutenção de forma",
+              "adjustment": "Retornar temporariamente ao protocolo mild"
+            }
+          ],
+
+          "personalization_rules": {
+            "training_age_beginner": {
+              "sets": 3,
+              "reps": "12 passos",
+              "note": "Permitir resistência média por mais tempo"
+            },
+            "training_age_advanced": {
+              "sets": 4,
+              "reps": "18-20 passos",
+              "note": "Pode usar resistência extra-pesada mais cedo"
+            },
+            "injury_history_knee": {
+              "modification": "Reduzir profundidade do quarter squat se desconforto",
+              "caution": "Monitorar dor patelofemoral, não deve aumentar"
+            }
+          },
+
+          "scientific_rationale": "Aumento de resistência progressiva é essencial para desenvolver força de glúteo médio suficiente para controlar valgo sob carga (Cambridge et al., 2012). Resistência pesada produz ativação próxima a máxima (>70% MVIC)."
+        },
+
+        {
+          "exercise_id": "single_leg_rdl",
+          "name": "Romanian Deadlift Unipodal (Single-Leg RDL)",
+          "primary_targets": ["Glúteo máximo", "Glúteo médio", "Isquiotibiais", "Estabilizadores"],
+          "equipment": ["Kettlebell ou halter (8-16kg)"],
+          "sets": 3,
+          "reps": 10,
+          "tempo": "2-1-2-0 (2s descida, 1s pausa, 2s subida)",
+          "rest": "90s entre pernas",
+
+          "execution_cues": [
+            "Apoiar em uma perna, joelho levemente flexionado (soft knee)",
+            "Segurar peso na mão contralateral (peso à esquerda se apoio na perna direita)",
+            "Inclinar tronco para frente pela flexão do quadril, não pela coluna",
+            "Perna livre estende para trás formando linha reta com tronco",
+            "CRÍTICO: manter pelve nivelada (quadril da perna livre não roda para cima)",
+            "Descer até tronco aproximadamente paralelo ao solo",
+            "Sentir alongamento nos isquiotibiais da perna de apoio",
+            "Subir contraindo glúteo e isquiotibiais, manter estabilidade pélvica",
+            "Joelho da perna de apoio NÃO deve rotar medialmente durante movimento"
+          ],
+
+          "common_errors": [
+            {
+              "error": "Rotação externa excessiva da pelve (quadril da perna livre sobe)",
+              "correction": "Comando: 'mantenha quadris nivelados', reduzir amplitude, pode tocar dedo do pé livre no chão"
+            },
+            {
+              "error": "Valgo do joelho de apoio (alerta CRÍTICO)",
+              "correction": "Reduzir carga, comando 'joelho para fora', considerar segurar em apoio leve"
+            },
+            {
+              "error": "Flexão lombar durante descida",
+              "correction": "Reduzir amplitude, focar em hip hinge puro, core mais rígido"
+            }
+          ],
+
+          "progressions": [
+            {
+              "level": "Iniciante",
+              "modification": "Peso corporal ou kettlebell leve (4-8kg), pode tocar pé livre no chão",
+              "when_to_use": "Primeiras 3-4 sessões ou déficit significativo de equilíbrio"
+            },
+            {
+              "level": "Padrão",
+              "modification": "Kettlebell 10-14kg, perna livre suspensa",
+              "when_to_use": "Maioria dos casos de valgo moderado"
+            },
+            {
+              "level": "Avançado",
+              "modification": "16-20kg, aumentar amplitude até mão quase toca o chão",
+              "when_to_use": "Preparação para Fase 2"
+            }
+          ],
+
+          "regressions": [
+            {
+              "alternative": "RDL bilateral com banda ao redor dos joelhos",
+              "when_to_use": "Se equilíbrio muito desafiador ou valgo persistente em unilateral",
+              "adjustment": "Duas pernas, banda fornece feedback de manter joelhos abertos"
+            }
+          ],
+
+          "personalization_rules": {
+            "training_age_beginner": {
+              "sets": 3,
+              "reps": 8,
+              "note": "Permitir tocar pé livre no chão por mais tempo"
+            },
+            "training_age_advanced": {
+              "sets": 4,
+              "reps": 12,
+              "note": "Progredir carga mais rapidamente"
+            },
+            "injury_history_hamstring": {
+              "modification": "Amplitude reduzida inicialmente, progressão gradual de ROM",
+              "caution": "Parar se dor nos isquiotibiais > 2/10"
+            },
+            "injury_history_lower_back": {
+              "modification": "Ênfase máxima em manter coluna neutra, pode reduzir amplitude",
+              "caution": "Zero flexão lombar tolerada"
+            }
+          },
+
+          "scientific_rationale": "Single-leg RDL exige controle significativo de glúteo médio para prevenir drop pélvico e valgo do joelho (Stastny et al., 2015). Exercício funcional que desenvolve força posterior de cadeia e estabilidade unilateral simultaneamente."
+        },
+
+        {
+          "exercise_id": "clamshell_weighted",
+          "name": "Clamshell com Carga Externa",
+          "primary_targets": ["Glúteo médio", "Glúteo mínimo", "Rotadores externos do quadril"],
+          "equipment": ["Colchonete", "Anilha ou kettlebell (2.5-7.5kg)", "Mini-band"],
+          "sets": 4,
+          "reps": 20,
+          "tempo": "2-2-2-1 (2s subida, 2s hold, 2s descida, 1s pausa)",
+          "rest": "60s entre séries",
+
+          "execution_cues": [
+            "Decúbito lateral, mini-band ao redor dos joelhos + peso sobre joelho superior",
+            "Segurar peso com mão livre mantendo-o estável sobre joelho",
+            "Executar clamshell com forma perfeita apesar da carga adicional",
+            "Hold de 2 segundos no topo com contração máxima do glúteo médio",
+            "Controle total na descida - resistir à gravidade + peso",
+            "Manter pelve perpendicular ao solo durante todo movimento",
+            "Fazer palpação do glúteo médio com mão livre entre séries para confirmar ativação"
+          ],
+
+          "common_errors": [
+            {
+              "error": "Compensação com quadrado lombar devido ao peso",
+              "correction": "Reduzir carga, focar em isolamento puro do glúteo"
+            },
+            {
+              "error": "Perda do tempo de hold no topo",
+              "correction": "Reduzir reps mantendo qualidade do hold de 2s"
+            },
+            {
+              "error": "Movimento muito rápido na descida",
+              "correction": "Contar 2 segundos na descida, controle excêntrico é crucial"
+            }
+          ],
+
+          "progressions": [
+            {
+              "level": "Iniciante",
+              "modification": "Anilha 2.5kg ou kettlebell 4kg",
+              "when_to_use": "Primeiras 2-3 sessões com carga"
+            },
+            {
+              "level": "Padrão",
+              "modification": "5kg",
+              "when_to_use": "Maioria dos casos após adaptação"
+            },
+            {
+              "level": "Avançado",
+              "modification": "7.5-10kg ou aumentar hold para 3s",
+              "when_to_use": "Quando 20 reps ficarem fáceis"
+            }
+          ],
+
+          "regressions": [
+            {
+              "alternative": "Clamshell com banda pesada apenas (sem peso)",
+              "when_to_use": "Se peso causar compensação significativa",
+              "adjustment": "Usar banda mais pesada em vez de adicionar peso externo"
+            }
+          ],
+
+          "personalization_rules": {
+            "training_age_beginner": {
+              "sets": 3,
+              "reps": 15,
+              "note": "Iniciar com 2.5kg, progressão lenta"
+            },
+            "training_age_advanced": {
+              "sets": 4,
+              "reps": 25,
+              "note": "Pode usar cargas maiores mais cedo"
+            },
+            "injury_history_hip": {
+              "modification": "Avaliar amplitude que não causa impingement, ajustar conforme necessário",
+              "caution": "Parar se dor no quadril"
+            }
+          },
+
+          "scientific_rationale": "Sobrecarga progressiva é princípio fundamental para hipertrofia e ganho de força. Adição de carga externa ao clamshell aumenta demanda sobre glúteo médio além do que banda sozinha permite (Selkowitz et al., 2013)."
+        },
+
+        {
+          "exercise_id": "pallof_press_squat",
+          "name": "Pallof Press com Agachamento",
+          "primary_targets": ["Core (anti-rotação)", "Glúteos", "Quadríceps"],
+          "equipment": ["Banda de resistência ou cabo", "Mini-band nos joelhos"],
+          "sets": 3,
+          "reps": 10,
+          "tempo": "2-1-2-0 (2s squat down, 1s hold, 2s up)",
+          "rest": "90s entre lados",
+
+          "execution_cues": [
+            "Banda presa em ponto fixo à altura do peito, segurar com ambas as mãos no peito",
+            "Posicionar corpo perpendicular à âncora da banda (resistência lateral)",
+            "Mini-band ao redor dos joelhos",
+            "Estender braços à frente (Pallof press) e manter posição estendida",
+            "Realizar agachamento mantendo braços estendidos e resistindo rotação",
+            "Desafio triplo: manter braços estendidos + core estável + joelhos abertos",
+            "Foco mental: zero rotação do tronco apesar da tensão lateral",
+            "Subir mantendo todas as cues"
+          ],
+
+          "common_errors": [
+            {
+              "error": "Rotação do tronco em direção à banda",
+              "correction": "Reduzir resistência da banda, core mais rígido"
+            },
+            {
+              "error": "Valgo dos joelhos devido à sobrecarga cognitiva",
+              "correction": "Reduzir profundidade ou resistência, focar em uma cue por vez"
+            },
+            {
+              "error": "Braços flexionam durante agachamento",
+              "correction": "Reduzir resistência da banda para manter braços completamente estendidos"
+            }
+          ],
+
+          "progressions": [
+            {
+              "level": "Iniciante",
+              "modification": "Banda leve, quarter squat apenas",
+              "when_to_use": "Primeiras sessões ou se exercício muito complexo"
+            },
+            {
+              "level": "Padrão",
+              "modification": "Banda média, parallel squat",
+              "when_to_use": "Maioria dos casos de valgo moderado"
+            },
+            {
+              "level": "Avançado",
+              "modification": "Banda pesada, full depth squat, ou add pulse do Pallof no bottom",
+              "when_to_use": "Preparação para Fase 2"
+            }
+          ],
+
+          "regressions": [
+            {
+              "alternative": "Pallof press em posição estática (sem squat)",
+              "when_to_use": "Se combinação muito desafiadora cognitivamente",
+              "adjustment": "Separar os desafios: fazer Pallof e squat separadamente"
+            }
+          ],
+
+          "personalization_rules": {
+            "training_age_beginner": {
+              "sets": 2,
+              "reps": 8,
+              "note": "Pode separar exercícios inicialmente"
+            },
+            "training_age_advanced": {
+              "sets": 3,
+              "reps": 12,
+              "note": "Adicionar pulses ou aumentar resistência"
+            },
+            "injury_history_lower_back": {
+              "modification": "Exercício excelente para reforçar core, manter resistência moderada",
+              "caution": "Deve sentir trabalho de core, não estresse lombar"
+            }
+          },
+
+          "scientific_rationale": "Déficit de controle de core contribui para valgo ao permitir compensações da pelve e tronco (Leetun et al., 2004). Pallof press desenvolve estabilidade anti-rotacional essencial para manter alinhamento durante agachamento."
+        }
+      ]
+    },
+
+    {
+      "phase_number": 2,
+      "name": "Fortalecimento em Padrões Funcionais Progressivos",
+      "duration_typical": "14-21 dias",
+      "frequency": "4x por semana",
+      "focus": "Integração de força ao padrão de agachamento, progressão de carga em movimentos bilaterais e unilaterais, preparação para retorno completo",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Back Squat com Carga",
+            "target": "5 repetições com 70% do 1RM prévio mantendo valgo < 10°",
+            "measurement_method": "Filmagem frontal com análise angular - comparar com baseline"
+          },
+          {
+            "test": "Bulgarian Split Squat Carregado",
+            "target": "10 repetições por perna com halteres 12kg sem valgo perceptível",
+            "measurement_method": "Observação visual - alinhamento knee-over-toe mantido"
+          },
+          {
+            "test": "Single-Leg Squat to Box",
+            "target": "8 repetições por perna com controle completo",
+            "measurement_method": "Joelho permanece sobre pé, sem valgo ou compensações de tronco"
+          },
+          {
+            "test": "Drop Jump com Aterrissagem",
+            "target": "10 aterrissagens de caixa 12 polegadas com valgo < 10°",
+            "measurement_method": "Filmagem frontal - absorção do impacto mantém alinhamento"
+          }
+        ],
+        "subjective_markers": [
+          "Controle automático do joelho - não requer pensamento consciente constante",
+          "Ausência de fadiga precoce limitando performance",
+          "Dor patelofemoral resolvida ou mínima (NRS < 2/10)",
+          "Confiança completa no padrão de movimento sob carga"
+        ],
+        "minimum_time": "14 dias de prática",
+        "all_criteria_required": false,
+        "minimum_criteria": 3
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "tempo_back_squat_banded",
+          "name": "Back Squat com Banda e Tempo Controlado",
+          "primary_targets": ["Quadríceps", "Glúteos", "Core", "Controle motor"],
+          "equipment": ["Barra", "Mini-band", "Rack"],
+          "sets": 4,
+          "reps": 8,
+          "tempo": "4-2-2-0 (4s descida, 2s pausa, 2s subida explosiva)",
+          "rest": "180s entre séries",
+
+          "execution_cues": [
+            "Mini-band ao redor dos joelhos mantida durante todas as séries",
+            "Iniciar com barra vazia ou 40% do 1RM prévio",
+            "Tempo excêntrico lento (4s) maximiza controle e feedback neural",
+            "Durante descida: pressão constante para fora contra banda",
+            "Pausa de 2s no bottom com tensão mantida",
+            "Subida explosiva (intent, não necessariamente velocidade real) mantendo joelhos abertos",
+            "Foco em qualidade perfeita de cada repetição, não carga máxima",
+            "Filmar todas as séries para monitorar alinhamento"
+          ],
+
+          "common_errors": [
+            {
+              "error": "Perda de controle na descida (velocidade aumenta)",
+              "correction": "Contar 4 segundos em voz alta, reduzir carga se necessário"
+            },
+            {
+              "error": "Valgo aparece durante pausa ou início da subida",
+              "correction": "Reduzir profundidade ou carga, reforçar comando de empurrar banda"
+            },
+            {
+              "error": "Perda de tensão na banda durante movimento",
+              "correction": "Cue constante de 'espalhar o chão', pode precisar banda mais pesada"
+            }
+          ],
+
+          "progressions": [
+            {
+              "level": "Semana 1-2 Fase 2",
+              "modification": "Barra vazia ou 40% 1RM, 4-2-2-0 tempo",
+              "when_to_use": "Início da Fase 2"
+            },
+            {
+              "level": "Semana 3-4 Fase 2",
+              "modification": "50-60% 1RM, mesmo tempo",
+              "when_to_use": "Após 6-8 sessões com forma perfeita"
+            },
+            {
+              "level": "Transição para Fase 3",
+              "modification": "70% 1RM, reduzir tempo para 3-1-2-0",
+              "when_to_use": "Preparação para retorno completo"
+            }
+          ],
+
+          "regressions": [
+            {
+              "alternative": "Box Squat com barra e banda",
+              "when_to_use": "Se dificuldade em manter forma em full depth",
+              "adjustment": "Sentar em box, controlar descida e subida"
+            }
+          ],
+
+          "personalization_rules": {
+            "training_age_beginner": {
+              "sets": 3,
+              "reps": 6,
+              "note": "Priorizar tempo e qualidade sobre carga"
+            },
+            "training_age_advanced": {
+              "sets": 5,
+              "reps": 10,
+              "note": "Pode progredir carga mais rápido se forma impecável"
+            },
+            "injury_history_knee": {
+              "modification": "Progressão muito gradual de carga, avaliar resposta 24h pós-treino",
+              "caution": "Sem aumento de dor ou edema tolerado"
+            },
+            "injury_history_back": {
+              "modification": "Considerar front squat como alternativa (tronco mais ereto)",
+              "caution": "Monitorar posição da coluna, cintos pode ser útil"
+            }
+          },
+
+          "scientific_rationale": "Tempo excêntrico controlado aumenta estímulo neural e desenvolve força excêntrica superior (Schoenfeld, 2010). Combinação de feedback tátil de banda com controle temporal otimiza aprendizado motor."
+        },
+
+        {
+          "exercise_id": "pistol_squat_assisted",
+          "name": "Pistol Squat Assistido (Agachamento Unipodal)",
+          "primary_targets": ["Quadríceps", "Glúteos", "Core", "Equilíbrio"],
+          "equipment": ["TRX ou banda suspensa", "Opcionalmente contrapeso leve"],
+          "sets": 3,
+          "reps": 8,
+          "tempo": "2-1-2-0",
+          "rest": "90s entre pernas",
+
+          "execution_cues": [
+            "Segurar TRX/banda para assistência mínima no equilíbrio",
+            "Apoiar em uma perna, outra perna estendida à frente",
+            "Descer controladamente até profundidade máxima possível",
+            "CRÍTICO: joelho de apoio rastreia sobre pé, ZERO valgo tolerado",
+            "Usar assistência apenas para equilíbrio, não para gerar força para subida",
+            "Subir primariamente com perna de apoio - glúteo e quadríceps",
+            "Manter tronco relativamente ereto, core ativado",
+            "Perna livre permanece estendida à frente durante todo movimento"
+          ],
+
+          "common_errors": [
+            {
+              "error": "Valgo do joelho de apoio (ALERTA MÁXIMO - não tolerar)",
+              "correction": "Reduzir profundidade drasticamente, aumentar assistência, voltar ao Bulgarian split squat se necessário"
+            },
+            {
+              "error": "Excesso de assistência - puxar com braços",
+              "correction": "Usar assistência apenas para equilíbrio, comando 'toque leve'"
+            },
+            {
+              "error": "Calcanhar levanta do chão",
+              "correction": "Segurar contrapeso leve (2.5kg), reduzir profundidade, trabalhar mobilidade de tornozelo"
+            }
+          ],
+
+          "progressions": [
+            {
+              "level": "Iniciante",
+              "modification": "TRX com assistência significativa, depth limitado (parallel)",
+              "when_to_use": "Primeiras tentativas de pistol squat"
+            },
+            {
+              "level": "Padrão",
+              "modification": "TRX com assistência mínima (1 dedo), full depth",
+              "when_to_use": "Após 4-6 sessões com sucesso"
+            },
+            {
+              "level": "Avançado",
+              "modification": "Sem assistência ou com contrapeso",
+              "when_to_use": "Preparação para retorno a treino de performance"
+            }
+          ],
+
+          "regressions": [
+            {
+              "alternative": "Single-leg box squat",
+              "when_to_use": "Se pistol muito desafiador ou valgo persistente",
+              "adjustment": "Sentar em box a 90° flexão de joelho, uma perna"
+            }
+          ],
+
+          "personalization_rules": {
+            "training_age_beginner": {
+              "sets": 3,
+              "reps": 5,
+              "note": "Assistência significativa permitida, foco em qualidade"
+            },
+            "training_age_advanced": {
+              "sets": 4,
+              "reps": 10,
+              "note": "Progredir para menos assistência mais rapidamente"
+            },
+            "injury_history_knee": {
+              "modification": "Avaliar cuidadosamente - pode ser provocativo, limitar profundidade",
+              "caution": "Alternativa pode ser melhor opção dependendo da patologia"
+            },
+            "anthropometry_long_femurs": {
+              "modification": "Segurar contrapeso leve é normal e aceitável para estas proporções",
+              "note": "Não é compensação mas ajuste biomecânico necessário"
+            }
+          },
+
+          "scientific_rationale": "Agachamento unipodal completo exige controle máximo de joelho e quadril, revelando qualquer déficit residual (Myer et al., 2014). Teste definitivo de controle neuromuscular antes de retorno completo."
+        },
+
+        {
+          "exercise_id": "drop_landing",
+          "name": "Drop Landing (Aterrissagem de Queda)",
+          "primary_targets": ["Controle excêntrico", "Absorção de impacto", "Prevenção de lesões"],
+          "equipment": ["Caixa ou step 8-16 polegadas"],
+          "sets": 4,
+          "reps": 8,
+          "tempo": "Queda livre - aterrissagem controlada",
+          "rest": "120s entre séries",
+
+          "execution_cues": [
+            "Posicionar em cima da caixa, pés na largura dos ombros",
+            "Dar passo para frente caindo da caixa (não pular para cima)",
+            "Ao aterrissar: absorver impacto com flexão de tornozelo, joelho e quadril",
+            "CRÍTICO: joelhos NÃO colapsam medialmente na aterrissagem",
+            "Comando mental: 'pouso suave e silencioso'",
+            "Aterrissar e estabilizar - não saltar imediatamente",
+            "Olhar para frente, não para baixo",
+            "Manter core ativado antecipadamente à aterrissagem"
+          ],
+
+          "common_errors": [
+            {
+              "error": "Valgo na aterrissagem (FALHA CRÍTICA - padrão de risco de lesão)",
+              "correction": "Reduzir altura drasticamente, voltar ao step-ups, não progredir até resolver"
+            },
+            {
+              "error": "Aterrissagem muito rígida - não absorver impacto",
+              "correction": "Comando 'pouso de ninja - silencioso', permitir mais flexão de joelho"
+            },
+            {
+              "error": "Aterrissagem apenas nos antepés",
+              "correction": "Aterrissar com pé inteiro, calcanhar toca logo após antepé"
+            }
+          ],
+
+          "progressions": [
+            {
+              "level": "Iniciante",
+              "modification": "Step 8 polegadas, pode ter mini-band nos joelhos para feedback",
+              "when_to_use": "Primeiras 2-3 sessões de aterrissagens"
+            },
+            {
+              "level": "Padrão",
+              "modification": "Caixa 12 polegadas, sem banda",
+              "when_to_use": "Maioria dos casos após adaptação inicial"
+            },
+            {
+              "level": "Avançado",
+              "modification": "16 polegadas ou drop landing + jump imediato (reactive)",
+              "when_to_use": "Preparação para retorno a esportes com saltos"
+            }
+          ],
+
+          "regressions": [
+            {
+              "alternative": "Step-down excêntrico",
+              "when_to_use": "Se valgo persistente em drop landings",
+              "adjustment": "Iniciar em cima da caixa, descer controladamente uma perna por vez"
+            }
+          ],
+
+          "personalization_rules": {
+            "training_age_beginner": {
+              "sets": 3,
+              "reps": 6,
+              "note": "Altura baixa, foco extremo em qualidade"
+            },
+            "training_age_advanced": {
+              "sets": 4,
+              "reps": 10,
+              "note": "Pode progredir altura mais rapidamente"
+            },
+            "injury_history_knee": {
+              "modification": "Avaliar cuidadosamente se apropriado, pode ser contraindicado",
+              "caution": "Não fazer se histórico de LCA ou instabilidade"
+            },
+            "injury_history_ankle": {
+              "modification": "Altura muito conservadora, avaliar estabilidade de tornozelo primeiro",
+              "caution": "Risco de entorse se controle inadequado"
+            },
+            "sport_specific_needs": {
+              "basketball_volleyball_soccer": "Exercício essencial - esportes exigem controle de aterrissagem",
+              "note": "Progredir até alturas e padrões específicos do esporte"
+            }
+          },
+
+          "scientific_rationale": "Valgo dinâmico durante aterrissagem é principal fator de risco modificável para lesão de LCA (Hewett et al., 2005). Treinar controle de joelho em tarefas pliométricas é essencial para prevenção de lesões e retorno ao esporte."
+        },
+
+        {
+          "exercise_id": "lateral_lunge_loaded",
+          "name": "Lateral Lunge Carregado (Afundo Lateral)",
+          "primary_targets": ["Glúteo médio", "Adutores", "Quadríceps", "Mobilidade lateral"],
+          "equipment": ["Kettlebell ou halteres (8-16kg)"],
+          "sets": 3,
+          "reps": 10,
+          "tempo": "2-1-2-0",
+          "rest": "90s entre séries",
+
+          "execution_cues": [
+            "Pés juntos em posição inicial, segurar peso em goblet position",
+            "Dar passo lateral amplo (2-3 pés) com uma perna",
+            "Transferir peso para a perna que deu o passo",
+            "Descer em lunge flexionando joelho e quadril da perna de lado",
+            "Perna oposta permanece estendida com pé plantado",
+            "CRÍTICO: joelho da perna de trabalho alinha sobre pé, sem valgo",
+            "Descer até coxa paralela ao solo",
+            "Empurrar com perna de trabalho para retornar à posição inicial",
+            "Alternar lados ou completar todas as reps de um lado primeiro"
+          ],
+
+          "common_errors": [
+            {
+              "error": "Valgo do joelho da perna de trabalho",
+              "correction": "Reduzir amplitude e carga, comando 'joelho para fora alinha com dedos'"
+            },
+            {
+              "error": "Torso inclina muito para frente",
+              "correction": "Reduzir carga, core mais ativado, peito orgulhoso"
+            },
+            {
+              "error": "Pé da perna de trabalho roda externamente excessivamente",
+              "correction": "Pé permanece apontando para frente ou levemente aberto (< 15°)"
+            }
+          ],
+
+          "progressions": [
+            {
+              "level": "Iniciante",
+              "modification": "Peso corporal ou kettlebell 6-8kg",
+              "when_to_use": "Primeiras sessões"
+            },
+            {
+              "level": "Padrão",
+              "modification": "Kettlebell 10-14kg",
+              "when_to_use": "Maioria dos casos"
+            },
+            {
+              "level": "Avançado",
+              "modification": "16-20kg ou adicionar deficit (step sob perna estendida)",
+              "when_to_use": "Preparação para retorno completo"
+            }
+          ],
+
+          "regressions": [
+            {
+              "alternative": "Lateral squat (pés já afastados, shift lateral)",
+              "when_to_use": "Se coordenação do passo muito desafiadora",
+              "adjustment": "Começar com stance amplo, transferir peso lateralmente"
+            }
+          ],
+
+          "personalization_rules": {
+            "training_age_beginner": {
+              "sets": 3,
+              "reps": 8,
+              "note": "Sem carga inicialmente aceitável"
+            },
+            "training_age_advanced": {
+              "sets": 4,
+              "reps": 12,
+              "note": "Progressão mais rápida de carga"
+            },
+            "injury_history_groin": {
+              "modification": "Amplitude muito conservadora, progressão gradual de ROM",
+              "caution": "Parar se dor nos adutores da perna estendida"
+            },
+            "injury_history_knee": {
+              "modification": "Limitar profundidade conforme tolerância",
+              "caution": "Monitorar dor patelofemoral"
+            }
+          },
+
+          "scientific_rationale": "Movimentos no plano frontal são negligenciados mas essenciais para controle completo de joelho (Myer et al., 2006). Lateral lunge treina abdutores e adutores sinergicamente, essencial para estabilidade multiplanar."
+        }
+      ]
+    },
+
+    {
+      "phase_number": 3,
+      "name": "Consolidação e Preparação para Retorno Completo",
+      "duration_typical": "7-14 dias",
+      "frequency": "3-4x por semana",
+      "focus": "Integração final com cargas pesadas, treinar sob fadiga, exposição a padrões de movimento específicos do esporte/atividade, garantir controle automático",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Back Squat com Carga de Trabalho",
+            "target": "80-85% do 1RM prévio por 5 repetições com valgo < 5°",
+            "measurement_method": "Filmagem frontal - alinhamento mantido mesmo sob carga significativa"
+          },
+          {
+            "test": "Série de Alta Repetição sob Fadiga",
+            "target": "20 repetições de goblet squat com 20kg mantendo forma na última rep",
+            "measurement_method": "Observação da rep 20 - alinhamento não degrada sob fadiga metabólica"
+          },
+          {
+            "test": "Teste Pliométrico",
+            "target": "5 broad jumps consecutivos com aterrissagem controlada e sem valgo",
+            "measurement_method": "Filmagem frontal das aterrissagens"
+          }
+        ],
+        "subjective_markers": [
+          "Controle completamente automático - não requer monitoramento consciente",
+          "Confiança total em cargas pesadas",
+          "Zero dor ou desconforto",
+          "Sensação de força aumentada comparada ao pré-lesão/desvio"
+        ],
+        "minimum_time": "7 dias",
+        "all_criteria_required": true
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "heavy_back_squat_progressive",
+          "name": "Back Squat com Progressão de Carga Pesada",
+          "primary_targets": ["Força máxima", "Confiança sob carga", "Consolidação de padrão"],
+          "equipment": ["Barra", "Rack", "Anilhas"],
+          "sets": 5,
+          "reps": 5,
+          "tempo": "3-0-X-0 (3s descida controlada, 0s pausa, X subida explosiva)",
+          "rest": "240s entre séries",
+
+          "execution_cues": [
+            "Progressão: Semana 1: 75% 1RM, Semana 2: 80% 1RM, Semana 3: 85% 1RM",
+            "Manter todos os princípios técnicos aprendidos durante protocolo",
+            "Filmar pelo menos primeira e última séries",
+            "Cada repetição deve ser tecnicamente impecável",
+            "Se houver breakdown de forma, reduzir carga - qualidade inegociável",
+            "Usar cinto se normalmente usa, mas não como compensação de core fraco"
+          ],
+
+          "common_errors": [
+            {
+              "error": "Valgo aparece apenas nas últimas reps sob fadiga",
+              "correction": "Reduzir carga 5-10%, completar protocolo com esta carga, testar novamente após mais 1 semana"
+            },
+            {
+              "error": "Compensações surgem (forward lean, heel rise) com carga",
+              "correction": "Estas são geralmente compensações de outros déficits - avaliar mobilidade e força de outras áreas"
+            }
+          ],
+
+          "progressions": [
+            {
+              "level": "Semana 1 Fase 3",
+              "modification": "75% 1RM x 5 reps x 5 sets",
+              "when_to_use": "Início da Fase 3"
+            },
+            {
+              "level": "Semana 2 Fase 3",
+              "modification": "80% 1RM x 5 reps x 5 sets",
+              "when_to_use": "Se semana 1 perfeita"
+            },
+            {
+              "level": "Semana 3+ Fase 3",
+              "modification": "85% 1RM x 5 reps x 4-5 sets",
+              "when_to_use": "Preparação final para retorno"
+            }
+          ],
+
+          "personalization_rules": {
+            "training_age_beginner": {
+              "note": "Percentagens podem não ser relevantes - usar carga que permite 5 reps com 2 RIR (reps in reserve)"
+            },
+            "training_age_advanced": {
+              "note": "Pode testar novo 1RM após 2-3 semanas de retorno completo"
+            }
+          },
+
+          "scientific_rationale": "Exposição progressiva a cargas pesadas é essencial para consolidar padrão motor e desenvolver confiança (Stone et al., 1981). Sem esta fase, risco de recorrência aumenta significativamente."
+        },
+
+        {
+          "exercise_id": "complex_squat_jump",
+          "name": "Complex: Squat Pesado + Jump Squat",
+          "primary_targets": ["Potência", "PAP (Post-Activation Potentiation)", "Controle sob velocidade"],
+          "equipment": ["Barra", "Anilhas"],
+          "sets": 4,
+          "reps": "3 back squats pesados + 5 jump squats (barra vazia ou peso corporal)",
+          "tempo": "Squat: controlado, Jump: explosivo",
+          "rest": "180s entre complexos",
+
+          "execution_cues": [
+            "Realizar 3 back squats com 80% 1RM - foco em qualidade",
+            "Após 10-15 segundos: realizar 5 jump squats explosivos",
+            "Durante jumps: manter alinhamento perfeito de joelho na aterrissagem",
+            "Este é teste definitivo - controle sob velocidade e potência",
+            "Jump alto e pousar suave com joelhos alinhados"
+          ],
+
+          "scientific_rationale": "Combinação de carga pesada seguida de movimento explosivo treina sistema neural para manter controle em diferentes velocidades (Ebben, 2002). Essencial para esportes que exigem mudanças rápidas."
+        }
+      ]
+    }
+  ],
+
+  "return_to_exercise_criteria": {
+    "full_return_requirements": [
+      {
+        "category": "Controle Motor sob Carga",
+        "tests": [
+          "Back squat com 85% do 1RM prévio - 5 reps com valgo < 5°",
+          "20 repetições de goblet squat com 20kg - forma mantida até rep final",
+          "Pistol squat assistido - 8 reps por perna sem valgo"
+        ]
+      },
+      {
+        "category": "Força de Abdutores e Estabilizadores",
+        "tests": [
+          "Copenhagen plank - 45 segundos hold",
+          "Side plank com 20 abduções por lado mantendo estabilidade",
+          "Single-leg RDL com 16kg - 10 reps por perna sem compensação"
+        ]
+      },
+      {
+        "category": "Controle Pliométrico",
+        "tests": [
+          "Drop landing de 16 polegadas - 10 reps sem valgo",
+          "5 broad jumps consecutivos com aterrissagens controladas",
+          "Box jumps - 10 reps em caixa 24 polegadas com aterrissagem perfeita"
+        ]
+      },
+      {
+        "category": "Funcional e Sem Dor",
+        "tests": [
+          "Zero dor durante ou após treino (NRS 0-1/10)",
+          "Capacidade de auto-monitorar e auto-corrigir forma",
+          "Ausência de fadiga excessiva dos abdutores durante treino normal"
+        ]
+      }
+    ],
+    "staged_return_protocol": {
+      "week_1_post_protocol": "70% volume e 80% carga máxima prévios, manter banda durante aquecimento",
+      "week_2_post_protocol": "85% volume e 90% carga, monitorar sob fadiga",
+      "week_3_post_protocol": "100% volume, 95% carga, remover banda se padrão estável",
+      "week_4_onwards": "Retorno completo, manter exercícios de manutenção"
+    },
+    "ongoing_maintenance": "CRÍTICO: Incluir permanentemente no warm-up: 1x15 clamshells com banda pesada, 1x12 lateral band walks, 1x30s Copenhagen plank. Filmar agachamentos semanalmente por 1 mês, depois mensalmente. Qualquer recorrência = retornar à Fase 1 imediatamente."
+  },
+
+  "contraindications": {
+    "absolute": [
+      "Lesão aguda de LCA, LCM, menisco não reabilitada",
+      "Dor aguda > 5/10 durante exercícios",
+      "Instabilidade articular significativa",
+      "Fratura recente",
+      "Derrame articular não resolvido"
+    ],
+    "relative": [
+      "Síndrome patelofemoral severa - consultar fisioterapeuta",
+      "Histórico de subluxação patelar recorrente",
+      "Artrose de joelho moderada-severa",
+      "Gravidez avançada (modificações necessárias)",
+      "Déficit significativo de mobilidade de tornozelo (trabalhar paralelamente)"
+    ]
+  },
+
+  "red_flags": {
+    "stop_protocol_immediately": [
+      "Dor aguda em pontada no joelho (> 5/10)",
+      "Edema significativo pós-exercício",
+      "Sensação de instabilidade ou 'falseio'",
+      "Piora do valgo apesar de 2+ semanas de protocolo",
+      "Travamento ou bloqueio articular",
+      "Crepitação dolorosa (não-dolorosa é comum e aceitável)"
+    ],
+    "seek_medical_evaluation": [
+      "Qualquer dos red flags acima",
+      "Derrame articular recorrente",
+      "Dor não-mecânica (não relacionada a movimento)",
+      "Sintomas neurológicos (parestesias, fraqueza súbita)",
+      "Histórico de trauma recente não avaliado"
+    ]
+  },
+
+  "scientific_references": [
+    {
+      "authors": "Ishøi, L., et al.",
+      "year": 2016,
+      "title": "The Copenhagen Adduction Exercise: Activation of different hip muscle groups during rehabilitation exercises",
+      "journal": "Scandinavian Journal of Medicine & Science in Sports",
+      "volume": "26(11)",
+      "pages": "1334-1340"
+    },
+    {
+      "authors": "Hewett, T.E., et al.",
+      "year": 2005,
+      "title": "Biomechanical measures of neuromuscular control and valgus loading of the knee predict ACL injury risk",
+      "journal": "American Journal of Sports Medicine",
+      "volume": "33(4)",
+      "pages": "492-501"
+    },
+    {
+      "authors": "Myer, G.D., Ford, K.R., Hewett, T.E.",
+      "year": 2008,
+      "title": "The effects of plyometric vs. dynamic stabilization and balance training",
+      "journal": "Journal of Strength and Conditioning Research",
+      "volume": "20(2)",
+      "pages": "345-353"
+    },
+    {
+      "authors": "Leetun, D.T., et al.",
+      "year": 2004,
+      "title": "Core stability measures as risk factors for lower extremity injury in athletes",
+      "journal": "Medicine & Science in Sports & Exercise",
+      "volume": "36(6)",
+      "pages": "926-934"
+    },
+    {
+      "authors": "Schoenfeld, B.J.",
+      "year": 2010,
+      "title": "The mechanisms of muscle hypertrophy and their application to resistance training",
+      "journal": "Journal of Strength and Conditioning Research",
+      "volume": "24(10)",
+      "pages": "2857-2872"
+    },
+    {
+      "authors": "Ebben, W.P.",
+      "year": 2002,
+      "title": "Complex training: A brief review",
+      "journal": "Journal of Sports Science and Medicine",
+      "volume": "1(2)",
+      "pages": "42-46"
+    }
+  ],
+
+  "personalization_rules": {
+    "training_age": {
+      "beginner": {
+        "description": "< 1 ano de treino de força",
+        "modifications": "Progressão 30-40% mais lenta, maior ênfase em educação e qualidade",
+        "duration_adjustment": "+40-50% no tempo total"
+      },
+      "intermediate": {
+        "description": "1-3 anos",
+        "modifications": "Protocolo conforme descrito",
+        "duration_adjustment": "Tempo padrão (4-8 semanas)"
+      },
+      "advanced": {
+        "description": "> 3 anos",
+        "modifications": "Pode progredir mais rápido se critérios objetivos atendidos",
+        "duration_adjustment": "-20-25% se qualidade impecável"
+      }
+    },
+
+    "injury_history": {
+      "knee_previous": {
+        "conditions": ["LCA reconstruction", "Meniscectomy", "PFPS crônica"],
+        "modifications": "Clearance médico obrigatório, progressão muito conservadora, considerar supervisão de fisioterapeuta",
+        "red_flags": "Qualquer dor > 2/10, edema, instabilidade"
+      },
+      "hip_previous": {
+        "conditions": ["FAI", "Labral tear reparado"],
+        "modifications": "Avaliar ROM individual, ajustar profundidade conforme anatomia",
+        "red_flags": "Dor em pinçamento, limitação súbita"
+      }
+    }
+  },
+
+  "integration_notes": {
+    "concurrent_training": "Reduzir volume de treino de membro inferior em 50-60% durante Fase 1 e 2. Fase 3 integra carga progressivamente. Membro superior pode ser mantido normalmente.",
+
+    "frequency_optimization": "4-5x/semana ideal para severidade moderada. Menos de 4x compromete progresso significativamente. Descanso de 1-2 dias completo por semana é obrigatório.",
+
+    "monitoring_protocol": "Filmar agachamento frontal: pré-protocolo (baseline), final de cada fase (3 vídeos mínimo), pós-protocolo (follow-up). Quantificar ângulo de valgo se possível. Manter diário de dor (NRS 0-10) e sensação de controle (0-10)."
+  }
+}

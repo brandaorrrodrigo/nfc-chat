@@ -1,0 +1,987 @@
+{
+  "protocol_id": "butt_wink_moderate_v1",
+  "deviation": "butt-wink",
+  "severity": "moderate",
+  "version": "1.0.0",
+  "last_updated": "2025-01-15",
+
+  "overview": {
+    "description": "Protocolo corretivo para butt-wink moderado (retroversão pélvica 10-20° que ocorre acima de paralelo ou no meio da descida). Foco em mobilidade agressiva de quadril/tornozelo, fortalecimento significativo de erectores, e reeducação motora completa.",
+    "typical_presentation": "Retroversão pélvica começa acima de paralelo durante descida. Perda clara de lordose lombar visível em filmagem lateral. Pode haver desconforto lombar leve (NRS 2-4/10) após treino intenso. Padrão consistente em todas as repetições. Limitação significativa de mobilidade mensurável.",
+    "primary_causes": [
+      "Restrição significativa de flexão de quadril (< 110° com joelho flexionado)",
+      "Limitação severa de dorsiflexão de tornozelo (< 30°)",
+      "Tensão crônica de isquiotibiais limitando movimento",
+      "Fraqueza de erectores espinhais e multífidos lombares",
+      "Hiperatividade de reto abdominal causando retroversão reflexa",
+      "Padrão motor estabelecido de flexão lombar sob carga",
+      "Possível impingement femoro-acetabular (FAI) limitando flexão"
+    ],
+    "expected_duration": "6-10 semanas com prática diária de mobilidade e treino 4-5x/semana",
+    "success_rate": "70-80% de melhora significativa (redução > 60% do butt-wink)",
+    "warning": "Casos moderados com dor lombar persistente devem ser avaliados por fisioterapeuta antes de iniciar protocolo intensivo."
+  },
+
+  "goals_hierarchy": [
+    {
+      "priority": 1,
+      "goal": "Aumentar significativamente mobilidade de flexão de quadril",
+      "measurable_outcome": "Flexão de quadril ≥ 120° com joelho flexionado, sem compensação lombar"
+    },
+    {
+      "priority": 2,
+      "goal": "Restaurar dorsiflexão adequada de tornozelo",
+      "measurable_outcome": "Dorsiflexão ≥ 40° com joelho flexionado (12cm+ no wall test)"
+    },
+    {
+      "priority": 3,
+      "goal": "Desenvolver força e resistência de erectores espinhais",
+      "measurable_outcome": "Back extension hold 60s mantendo posição neutra, good mornings com barra + 20kg"
+    },
+    {
+      "priority": 4,
+      "goal": "Reeducar padrão motor de agachamento em profundidade progressiva",
+      "measurable_outcome": "Goblet squat 20kg full depth com ≤ 5° retroversão (redução de 70%+ do baseline)"
+    },
+    {
+      "priority": 5,
+      "goal": "Integrar controle ao back squat com carga",
+      "measurable_outcome": "Back squat com 60-70% 1RM a parallel ou ligeiramente abaixo sem butt-wink severo"
+    }
+  ],
+
+  "phases": [
+    {
+      "phase_number": 1,
+      "name": "Mobilidade Intensiva e Fortalecimento de Base",
+      "duration_typical": "14-21 dias",
+      "frequency": "Mobilidade 2x/dia, fortalecimento 5x/semana",
+      "focus": "Ganhos agressivos de ROM de quadril e tornozelo, estabelecer força básica de erectores, iniciar reeducação de controle pélvico",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Hip Flexion Supine",
+            "target": "115-120° flexão com joelho ao peito sem retroversão compensatória",
+            "measurement_method": "Goniômetro ou avaliação visual - lombar mantém contato com solo"
+          },
+          {
+            "test": "Wall Ankle Dorsiflexion",
+            "target": "10-12cm de distância da parede com joelho tocando sem calcanhar levantar",
+            "measurement_method": "Medição com fita métrica"
+          },
+          {
+            "test": "Back Extension Hold",
+            "target": "45 segundos em extensão isométrica no chão ou banco",
+            "measurement_method": "Cronômetro - manter tronco elevado sem assistência"
+          },
+          {
+            "test": "Goblet Squat Profundidade Controlada",
+            "target": "10 reps com 12kg descendo até início de butt-wink, parando antes da retroversão completa",
+            "measurement_method": "Filmagem lateral - identificar profundidade limite atual"
+          },
+          {
+            "test": "Deep Squat Hold",
+            "target": "45 segundos em posição profunda assistida (segurando apoio) sem desconforto",
+            "measurement_method": "Cronômetro - avaliação de tolerância à posição"
+          }
+        ],
+        "subjective_markers": [
+          "Sensação de 'abertura' significativa nos quadris",
+          "Redução de tensão crônica nos isquiotibiais e panturrilhas",
+          "Capacidade de identificar momento exato onde retroversão começa",
+          "Redução ou eliminação de desconforto lombar após treino",
+          "Melhora perceptível de profundidade controlável em agachamento"
+        ],
+        "minimum_time": "14 dias de prática consistente",
+        "all_criteria_required": false,
+        "minimum_criteria": 4
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "90_90_hip_stretch_loaded",
+          "name": "Alongamento 90/90 de Quadril com Sobrecarga",
+          "primary_targets": ["Cápsula posterior do quadril", "Mobilidade de flexão profunda"],
+          "equipment": ["Colchonete", "Peso leve 2-5kg opcional"],
+          "sets": 4,
+          "reps": "Hold 45-60s por lado",
+          "tempo": "Estático com respiração profunda",
+          "rest": "30s entre lados",
+
+          "execution_cues": [
+            "Decúbito dorsal, uma perna estendida no chão, outra em flexão de quadril/joelho 90°",
+            "Abraçar canela trazendo joelho em direção ao peito",
+            "Opcional: colocar peso leve (2-5kg) sobre canela para sobrecarga passiva",
+            "CRÍTICO: manter lombar em contato com solo - não permitir retroversão excessiva compensatória",
+            "Respirar profundamente - 4s inspiração, 6s expiração",
+            "A cada expiração: relaxar e permitir joelho se aproximar mais do peito",
+            "Sentir alongamento profundo na região posterior/lateral do quadril",
+            "Hold por 45-60s - tempo prolongado essencial para adaptação de tecidos"
+          ],
+
+          "common_errors": [
+            {
+              "error": "Retroversão excessiva da lombar para compensar falta de mobilidade de quadril",
+              "correction": "Limitar amplitude, pode colocar mão sob lombar para feedback tátil de manter neutro"
+            },
+            {
+              "error": "Perna estendida levanta do chão",
+              "correction": "Permitir leve flexão de joelho da perna estendida ou usar banda para mantê-la no chão"
+            },
+            {
+              "error": "Tensão excessiva - não relaxa no alongamento",
+              "correction": "Focar em expiração longa, reduzir intensidade, usar peso apenas se consegue relaxar"
+            }
+          ],
+
+          "progressions": [
+            {
+              "level": "Semana 1-2",
+              "modification": "Segurar atrás da coxa, hold 30-45s, sem peso",
+              "when_to_use": "Início do protocolo, limitação severa"
+            },
+            {
+              "level": "Semana 2-3",
+              "modification": "Abraçar canela, hold 45-60s, pode adicionar peso 2-3kg",
+              "when_to_use": "Após ganhos iniciais de mobilidade"
+            },
+            {
+              "level": "Semana 3-4",
+              "modification": "Com peso 4-5kg, hold 60s, adicionar CARs (rotações circulares) no final",
+              "when_to_use": "Preparação para Fase 2"
+            }
+          ],
+
+          "regressions": [
+            {
+              "alternative": "Leg Lowering Eccentric",
+              "when_to_use": "Se alongamento estático causa desconforto lombar",
+              "adjustment": "Iniciar com perna elevada, baixar lentamente até sentir início de retroversão lombar, retornar"
+            }
+          ],
+
+          "personalization_rules": {
+            "training_age_beginner": {
+              "sets": 3,
+              "reps": "Hold 30-45s",
+              "note": "Sem peso inicialmente, foco em relaxamento e respiração"
+            },
+            "training_age_advanced": {
+              "sets": 4,
+              "reps": "Hold 60-90s",
+              "note": "Pode usar peso mais pesado ou adicionar componente dinâmico"
+            },
+            "injury_history_hip": {
+              "modification": "Avaliar sensação de impingement, ajustar ângulo se necessário",
+              "caution": "Parar se dor tipo pinçamento no quadril, pode indicar FAI"
+            },
+            "injury_history_lower_back": {
+              "modification": "Enfatizar manutenção de lombar neutra, pode elevar cabeça com almofada",
+              "caution": "Zero compensação lombar tolerada"
+            }
+          },
+
+          "scientific_rationale": "Alongamento prolongado (>30s) com respiração induz relaxamento neuromuscular via inibição reflexa e adaptação de tecido conectivo (Behm & Chaouachi, 2011). Sobrecarga passiva acelera ganhos de ROM quando tolerada. Mobilidade de flexão de quadril < 110° é causa direta de butt-wink (Dill et al., 2014)."
+        },
+
+        {
+          "exercise_id": "ankle_dorsiflexion_mobilization_weighted",
+          "name": "Mobilização de Dorsiflexão com Carga",
+          "primary_targets": ["Dorsiflexão de tornozelo", "Mobilidade de sóleo e gastrocnêmio"],
+          "equipment": ["Parede", "Kettlebell ou anilha 5-10kg"],
+          "sets": 3,
+          "reps": "20 repetições + 30s hold final",
+          "tempo": "2s avançar, 2s retornar + hold estático",
+          "rest": "45s entre pernas",
+
+          "execution_cues": [
+            "Posição ajoelhada em frente à parede, pé da frente plantado",
+            "Colocar kettlebell ou anilha (5-10kg) sobre joelho da frente",
+            "Mãos na parede para equilíbrio, não para empurrar",
+            "Avançar joelho em direção à parede pressionando contra o peso",
+            "Sentir alongamento profundo na panturrilha e tendão de Aquiles",
+            "Tocar parede com joelho (ou máximo possível), hold 2s",
+            "Retornar controladamente, repetir",
+            "Após 20 reps: hold posição final por 30s contínuos",
+            "CRÍTICO: calcanhar permanece no chão durante todo movimento"
+          ],
+
+          "common_errors": [
+            {
+              "error": "Calcanhar levanta do chão",
+              "correction": "Reduzir carga e distância da parede, focar em manter calcanhar plantado"
+            },
+            {
+              "error": "Pé roda para fora (compensação)",
+              "correction": "Manter pé e joelho alinhados apontando reto para frente, pode fazer marca no chão para referência"
+            },
+            {
+              "error": "Usa braços para empurrar em vez de peso corporal e carga externa",
+              "correction": "Mãos apenas tocam parede levemente, joelho faz todo o trabalho"
+            }
+          ],
+
+          "progressions": [
+            {
+              "level": "Semana 1",
+              "modification": "Sem carga, 15 reps + 20s hold, distância 8-10cm",
+              "when_to_use": "Início, dorsiflexão < 30°"
+            },
+            {
+              "level": "Semana 2-3",
+              "modification": "5kg carga, 20 reps + 30s hold, tentar 10-12cm",
+              "when_to_use": "Após ganhos iniciais"
+            },
+            {
+              "level": "Semana 3-4",
+              "modification": "8-10kg carga, 25 reps + 45s hold, objetivo 12-15cm",
+              "when_to_use": "Preparação para Fase 2"
+            }
+          ],
+
+          "regressions": [
+            {
+              "alternative": "Wall Ankle Mobilization padrão (sem carga)",
+              "when_to_use": "Se carga causa desconforto no joelho ou tornozelo",
+              "adjustment": "Remover peso, focar em volume maior de repetições"
+            },
+            {
+              "alternative": "Seated Calf Raise Eccentric",
+              "when_to_use": "Se mobilização em pé é limitada por dor",
+              "adjustment": "Sentado, peso sobre joelhos, controle excêntrico lento"
+            }
+          ],
+
+          "personalization_rules": {
+            "training_age_beginner": {
+              "sets": 2,
+              "reps": "15 + 20s hold",
+              "note": "Sem carga por 1-2 semanas, estabelecer padrão primeiro"
+            },
+            "training_age_advanced": {
+              "sets": 4,
+              "reps": "25 + 45s hold",
+              "note": "Pode usar até 12-15kg se tolerado"
+            },
+            "injury_history_ankle": {
+              "modification": "Carga muito conservadora, avaliar estabilidade lateral",
+              "caution": "Parar se dor no tornozelo, pode indicar patologia subjacente"
+            },
+            "injury_history_achilles": {
+              "modification": "Progressão extremamente gradual, monitorar resposta 24h pós",
+              "caution": "Risco de exacerbação de tendinopatia, considerar avaliação profissional"
+            }
+          },
+
+          "scientific_rationale": "Dorsiflexão < 35-40° força compensações proximais incluindo retroversão pélvica (Macrum et al., 2012). Mobilização com carga é superior ao alongamento passivo para ganhos de ROM funcional (Hoch & McKeon, 2011). Combinação de repetições dinâmicas + hold estático maximiza adaptação."
+        },
+
+        {
+          "exercise_id": "jefferson_curl_progressive",
+          "name": "Jefferson Curl Progressivo",
+          "primary_targets": ["Controle de flexão espinhal", "Força excêntrica de erectores", "Mobilidade de cadeia posterior"],
+          "equipment": ["Kettlebell ou halter leve (4-12kg)", "Caixa ou step"],
+          "sets": 3,
+          "reps": 8,
+          "tempo": "5-1-3-0 (5s descida, 1s pausa, 3s subida)",
+          "rest": "90s",
+
+          "execution_cues": [
+            "IMPORTANTE: Exercício controverso mas eficaz quando executado corretamente",
+            "Em pé sobre caixa/step para aumentar ROM, pés juntos, segurando peso leve",
+            "Iniciar movimento flexionando cervical (queixo ao peito)",
+            "Progredir flexão SEGMENTALMENTE pela torácica e depois lombar",
+            "Descer muito lentamente (5s) - vertebra por vertebra",
+            "Sentir alongamento progressivo dos erectores e toda cadeia posterior",
+            "Permitir que peso estenda braços puxando para baixo",
+            "No fundo: pausar 1s, então reverter movimento",
+            "Subida: 'empilhar' vértebras de baixo para cima até posição ereta",
+            "Meta é controle excêntrico absoluto, não carga pesada"
+          ],
+
+          "common_errors": [
+            {
+              "error": "Velocidade excessiva perdendo controle segmentar",
+              "correction": "REDUZIR carga, focar em 5s completos na descida, contar em voz alta"
+            },
+            {
+              "error": "Movimento em bloco - não segmentado",
+              "correction": "Visualizar cada vértebra flexionando sequencialmente, começar com cat-cow para aprender padrão"
+            },
+            {
+              "error": "Carga muito pesada comprometendo controle",
+              "correction": "Jefferson curl não é exercício de força máxima - 4-8kg é ideal para maioria"
+            }
+          ],
+
+          "progressions": [
+            {
+              "level": "Semana 1-2",
+              "modification": "4-6kg, no chão (sem caixa), foco em controle segmentar",
+              "when_to_use": "Introdução ao movimento, aprendizado de padrão"
+            },
+            {
+              "level": "Semana 2-3",
+              "modification": "6-8kg, sobre caixa baixa (15cm), aumentando ROM",
+              "when_to_use": "Após dominar padrão básico"
+            },
+            {
+              "level": "Semana 3-4",
+              "modification": "8-12kg, caixa mais alta (20-30cm), full ROM",
+              "when_to_use": "Preparação para Fase 2, controle excelente"
+            }
+          ],
+
+          "regressions": [
+            {
+              "alternative": "Cat-Cow dinâmico",
+              "when_to_use": "Se Jefferson curl causa desconforto lombar",
+              "adjustment": "Retornar ao básico, estabelecer controle segmentar sem carga"
+            },
+            {
+              "alternative": "Standing Cat-Cow",
+              "when_to_use": "Transição entre quadrúpede e Jefferson curl",
+              "adjustment": "Em pé, mãos nos joelhos, flexão/extensão controlada de coluna"
+            }
+          ],
+
+          "personalization_rules": {
+            "training_age_beginner": {
+              "sets": 2,
+              "reps": 6,
+              "note": "4kg máximo inicialmente, pode fazer no chão por 2-3 semanas"
+            },
+            "training_age_advanced": {
+              "sets": 4,
+              "reps": 10,
+              "note": "Pode progredir até 12-15kg se controle perfeito"
+            },
+            "injury_history_lower_back": {
+              "modification": "CLEARANCE OBRIGATÓRIO de profissional. Pode ser contraindicado.",
+              "caution": "Não fazer se histórico de hérnia de disco sem supervisão profissional"
+            },
+            "injury_history_hamstring": {
+              "modification": "Amplitude reduzida inicialmente, progressão gradual",
+              "caution": "Sentir alongamento, não dor aguda"
+            }
+          },
+
+          "scientific_rationale": "Flexão espinhal controlada com carga desenvolve força excêntrica de erectores e tolerância a flexão lombar (McGill, 2015). Embora controverso, Jefferson curl quando executado com controle absoluto e carga apropriada pode melhorar mobilidade e resiliência de cadeia posterior. Crítico: não é exercício de força máxima mas sim de controle motor e mobilidade ativa."
+        },
+
+        {
+          "exercise_id": "back_extension_isometric",
+          "name": "Extensão Isométrica de Lombar",
+          "primary_targets": ["Erectores espinhais", "Multífidos lombares", "Resistência de extensores"],
+          "equipment": ["GHD, banco romano, ou chão"],
+          "sets": 4,
+          "reps": "Hold 30-45s",
+          "tempo": "Isométrico",
+          "rest": "60s",
+
+          "execution_cues": [
+            "Se GHD/banco: posicionar em decúbito ventral, quadris no pad, tronco livre para estender",
+            "Se no chão: decúbito ventral, mãos atrás da cabeça ou estendidas à frente",
+            "Elevar tronco até posição neutra (coluna reta, não hiperextensão)",
+            "Manter esta posição isométrica por 30-45s",
+            "Sentir trabalho intenso dos erectores lombares",
+            "Respirar continuamente - não prender ar",
+            "Olhar para baixo mantendo cervical neutra",
+            "Foco em resistência, não amplitude máxima"
+          ],
+
+          "common_errors": [
+            {
+              "error": "Hiperextensão excessiva da lombar",
+              "correction": "Elevar apenas até neutro (linha reta ombros-quadril), não além"
+            },
+            {
+              "error": "Tensão no pescoço",
+              "correction": "Manter cervical neutra, olhar para baixo, relaxar trapézios"
+            },
+            {
+              "error": "Prender respiração",
+              "correction": "Respiração contínua obrigatória - expirar mais longo que inspirar"
+            }
+          ],
+
+          "progressions": [
+            {
+              "level": "Iniciante",
+              "modification": "No chão, mãos atrás da cabeça, hold 20-30s",
+              "when_to_use": "Se muito desafiador em GHD/banco"
+            },
+            {
+              "level": "Padrão",
+              "modification": "GHD/banco, sem peso, hold 30-45s",
+              "when_to_use": "Maioria dos casos"
+            },
+            {
+              "level": "Avançado",
+              "modification": "Segurar anilha leve (2.5-5kg) no peito, ou aumentar para 60s",
+              "when_to_use": "Preparação para Fase 2"
+            }
+          ],
+
+          "regressions": [
+            {
+              "alternative": "Bird Dog Hold",
+              "when_to_use": "Se back extension causa desconforto lombar",
+              "adjustment": "Quadrúpede, estender braço e perna oposta, hold, alternar"
+            }
+          ],
+
+          "personalization_rules": {
+            "training_age_beginner": {
+              "sets": 3,
+              "reps": "Hold 20-30s",
+              "note": "Pode usar versão no chão por mais tempo"
+            },
+            "training_age_advanced": {
+              "sets": 5,
+              "reps": "Hold 45-60s",
+              "note": "Pode adicionar peso ou fazer repetições dinâmicas também"
+            },
+            "injury_history_lower_back": {
+              "modification": "Amplitude conservadora, evitar hiperextensão",
+              "caution": "Deve fortalecer mas não provocar dor"
+            }
+          },
+
+          "scientific_rationale": "Erectores espinhais fracos não conseguem manter coluna neutra durante agachamento profundo, resultando em flexão compensatória. Resistência isométrica é crítica - back squat pesado pode durar 5-8s, erectores devem sustentar posição por todo tempo (McGill, 2015)."
+        },
+
+        {
+          "exercise_id": "goblet_squat_box_progressive_depth",
+          "name": "Box Squat com Profundidade Progressiva",
+          "primary_targets": ["Padrão de agachamento", "Reeducação de controle pélvico"],
+          "equipment": ["Caixas de alturas variadas", "Kettlebell 10-16kg", "Espelho lateral"],
+          "sets": 4,
+          "reps": "8-10",
+          "tempo": "4-2-2-0 (4s descida, 2s sentado, 2s subida)",
+          "rest": "120s",
+
+          "execution_cues": [
+            "Sistema de progressão: usar caixas progressivamente mais baixas cada semana",
+            "Semana 1: Caixa alta (acima de paralelo) - estabelecer linha de base sem butt-wink",
+            "Semana 2: Reduzir 5-8cm - desafiar profundidade mantendo controle",
+            "Semana 3: Reduzir mais 5-8cm - continuar progressão",
+            "Kettlebell em goblet position",
+            "Descer MUITO lentamente (4s) até sentar completamente na caixa",
+            "Durante descida: feedback mental constante de manter 'arco lombar'",
+            "Sentar na caixa, pausar 2s mantendo tensão (não relaxar completamente)",
+            "Subir em 2s mantendo controle de pelve",
+            "Filmar de lado SEMPRE - feedback visual essencial",
+            "Parar descida se sentir início de retroversão - essa é profundidade máxima atual"
+          ],
+
+          "common_errors": [
+            {
+              "error": "Progredir profundidade muito rápido sacrificando controle",
+              "correction": "Ficar na mesma altura de caixa por 2 semanas se necessário - qualidade > profundidade"
+            },
+            {
+              "error": "Relaxar completamente ao sentar na caixa",
+              "correction": "Manter tensão muscular durante pausa - apenas tocar caixa, não descansar"
+            },
+            {
+              "error": "Velocidade excessiva na descida perdendo feedback proprioceptivo",
+              "correction": "FORÇAR 4 segundos na descida, contar em voz alta"
+            }
+          ],
+
+          "progressions": [
+            {
+              "level": "Semana 1-2",
+              "modification": "Caixa alta (5-10cm acima de paralelo), KB 10-12kg",
+              "when_to_use": "Estabelecer baseline sem butt-wink"
+            },
+            {
+              "level": "Semana 2-3",
+              "modification": "Caixa a parallel ou 5cm abaixo, KB 12-14kg",
+              "when_to_use": "Progressão de profundidade"
+            },
+            {
+              "level": "Semana 3-4",
+              "modification": "Caixa 10cm abaixo de parallel, KB 14-16kg",
+              "when_to_use": "Preparação para Fase 2"
+            }
+          ],
+
+          "regressions": [
+            {
+              "alternative": "Wall Squat com slider board",
+              "when_to_use": "Se dificuldade extrema em manter controle mesmo com caixa alta",
+              "adjustment": "Costas contra parede com ball/slider, descer controladamente"
+            }
+          ],
+
+          "personalization_rules": {
+            "training_age_beginner": {
+              "sets": 3,
+              "reps": 8,
+              "note": "Progressão de profundidade mais lenta, OK ficar 3-4 semanas em mesma altura"
+            },
+            "training_age_advanced": {
+              "sets": 4,
+              "reps": 12,
+              "note": "Pode progredir profundidade semanalmente se controle perfeito"
+            },
+            "injury_history_lower_back": {
+              "modification": "Progressão muito conservadora, priorizar controle sobre profundidade",
+              "caution": "Zero dor lombar tolerada - se dor, aumentar altura da caixa"
+            },
+            "anthropometry_long_femurs": {
+              "modification": "Pode precisar stance mais amplo, progressão de profundidade pode ser mais lenta",
+              "note": "Biomecânica individual importa - aceitar limitações antropométricas"
+            }
+          },
+
+          "scientific_rationale": "Progressão gradual de profundidade permite sistema neural adaptar controle motor sem sobrecarregar. Box fornece feedback tátil claro e limita profundidade, permitindo treino dentro de ROM controlável (Myer et al., 2008). Tempo lento maximiza feedback proprioceptivo."
+        },
+
+        {
+          "exercise_id": "dead_bug_anti_extension",
+          "name": "Dead Bug Anti-Extension",
+          "primary_targets": ["Core anti-extensão", "Controle de posição neutra lombar"],
+          "equipment": ["Colchonete"],
+          "sets": 3,
+          "reps": "10 cada lado (20 total)",
+          "tempo": "3-1-3-0 (3s estender, 1s hold, 3s retornar)",
+          "rest": "60s",
+
+          "execution_cues": [
+            "Decúbito dorsal, joelhos e quadris a 90°, braços estendidos ao teto",
+            "CRÍTICO: manter lombar em contato com solo durante TODO exercício",
+            "Expirar e engajar core (pressionar lombar contra chão)",
+            "Estender uma perna (estendendo quadril e joelho) e braço oposto simultaneamente",
+            "Descer lentamente em 3s mantendo lombar no chão",
+            "Hold 1s na posição estendida",
+            "Retornar em 3s mantendo controle",
+            "Alternar lados",
+            "Se lombar perde contato com chão: amplitude é excessiva"
+          ],
+
+          "common_errors": [
+            {
+              "error": "Lombar levanta do chão (perda de anti-extensão)",
+              "correction": "Reduzir amplitude - não estender perna/braço tão longe"
+            },
+            {
+              "error": "Movimento muito rápido",
+              "correction": "Respeitar tempo 3-1-3, controle é objetivo primário"
+            },
+            {
+              "error": "Prender respiração",
+              "correction": "Expirar durante extensão, inspirar durante retorno"
+            }
+          ],
+
+          "progressions": [
+            {
+              "level": "Iniciante",
+              "modification": "Apenas mover pernas (braços fixos) ou amplitude reduzida",
+              "when_to_use": "Se muito desafiador manter lombar no chão"
+            },
+            {
+              "level": "Padrão",
+              "modification": "Full ROM braço e perna, 20 total reps",
+              "when_to_use": "Maioria dos casos"
+            },
+            {
+              "level": "Avançado",
+              "modification": "Adicionar peso leve nos tornozelos ou mãos",
+              "when_to_use": "Quando muito fácil"
+            }
+          ],
+
+          "scientific_rationale": "Hiperatividade de reto abdominal pode causar retroversão reflexa. Dead bug ensina dissociação - mover membros mantendo coluna estável. Core forte em anti-extensão permite manter neutro durante agachamento (McGill, 2015)."
+        }
+      ]
+    },
+
+    {
+      "phase_number": 2,
+      "name": "Integração e Progressão de Carga",
+      "duration_typical": "21-28 dias",
+      "frequency": "4-5x por semana",
+      "focus": "Transferir mobilidade e controle para padrões carregados, progressão de profundidade em agachamentos, fortalecimento significativo de erectores sob carga",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Front Squat com Barra",
+            "target": "5 reps com barra vazia ou 40% 1RM a parallel mantendo coluna neutra",
+            "measurement_method": "Filmagem lateral - manutenção de lordose até profundidade máxima"
+          },
+          {
+            "test": "Goblet Squat Profundo",
+            "target": "10 reps com 20kg full depth com ≤ 5-10° retroversão (redução de 70%)",
+            "measurement_method": "Comparação com baseline - melhora significativa"
+          },
+          {
+            "test": "Good Morning com Barra",
+            "target": "10 reps com barra + 20-30kg mantendo coluna neutra",
+            "measurement_method": "Observação lateral - zero flexão lombar"
+          },
+          {
+            "test": "Paused Front Squat",
+            "target": "5 reps com 3s pause no fundo, barra vazia, sem perda de posição",
+            "measurement_method": "Controle isométrico completo"
+          }
+        ],
+        "subjective_markers": [
+          "Controle de pelve torna-se mais automático",
+          "Confiança em profundidades maiores",
+          "Ausência de desconforto lombar pós-treino",
+          "Sensação de força nos erectores"
+        ],
+        "minimum_time": "21 dias",
+        "all_criteria_required": false,
+        "minimum_criteria": 3
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "front_squat_tempo",
+          "name": "Front Squat com Tempo Controlado",
+          "primary_targets": ["Padrão de agachamento com barra", "Controle pélvico sob carga"],
+          "equipment": ["Barra", "Rack"],
+          "sets": 5,
+          "reps": 6,
+          "tempo": "4-2-2-0",
+          "rest": "180s",
+          "execution_cues": [
+            "Front squat naturalmente reduz butt-wink vs back squat (tronco mais ereto)",
+            "Progressão: Semana 1-2: barra vazia, Semana 3-4: barra + 10-20kg",
+            "Descida em 4s ultra-controlada",
+            "Pausar 2s no fundo - profundidade máxima sem retroversão",
+            "Filmar SEMPRE de lado",
+            "Se butt-wink aparecer: profundidade é excessiva, usar caixa para limitar"
+          ],
+          "progressions": [
+            {"level": "Semana 1-2", "modification": "Barra vazia, profundidade controlável"},
+            {"level": "Semana 3-4", "modification": "Barra + 10-20kg, aumentar profundidade"}
+          ],
+          "scientific_rationale": "Front squat permite tronco mais ereto reduzindo demanda de flexão lombar (Swinton et al., 2012)."
+        },
+
+        {
+          "exercise_id": "good_morning_progressive",
+          "name": "Good Morning com Progressão de Carga",
+          "primary_targets": ["Erectores espinhais", "Força isométrica de coluna"],
+          "equipment": ["Barra"],
+          "sets": 4,
+          "reps": 10,
+          "tempo": "3-1-3-0",
+          "rest": "120s",
+          "execution_cues": [
+            "Progressão: Semana 1: barra vazia, Semana 2: +10kg, Semana 3: +20kg, Semana 4: +30kg",
+            "Hip hinge perfeito mantendo coluna neutra",
+            "Descer até sentir alongamento em isquiotibiais",
+            "ZERO flexão lombar em qualquer momento",
+            "Erectores trabalham isometricamente mantendo arco",
+            "Subir contraindo glúteos e isquiotibiais"
+          ],
+          "progressions": [
+            {"level": "Semana 1-2", "modification": "Barra vazia ou +10kg"},
+            {"level": "Semana 3-4", "modification": "+20-30kg"}
+          ],
+          "scientific_rationale": "Good mornings desenvolvem força isométrica de erectores essencial para manter posição em agachamento profundo."
+        },
+
+        {
+          "exercise_id": "deficit_rdl",
+          "name": "Romanian Deadlift com Déficit",
+          "primary_targets": ["Cadeia posterior", "Controle de hip hinge profundo"],
+          "equipment": ["Barra", "Plataforma 5-10cm"],
+          "sets": 4,
+          "reps": 8,
+          "tempo": "3-1-2-0",
+          "rest": "120s",
+          "execution_cues": [
+            "Posicionar em plataforma elevada (5-10cm)",
+            "RDL padrão mas com ROM aumentado",
+            "Manter coluna neutra durante toda ROM estendida",
+            "Desafio de manter posição em amplitude extrema"
+          ],
+          "progressions": [
+            {"level": "Semana 1-2", "modification": "Barra + 30-40kg, déficit 5cm"},
+            {"level": "Semana 3-4", "modification": "Barra + 40-60kg, déficit 10cm"}
+          ],
+          "scientific_rationale": "Déficit aumenta demanda sobre erectores e cadeia posterior em ROM estendido similar a agachamento profundo."
+        },
+
+        {
+          "exercise_id": "goblet_squat_heavy",
+          "name": "Goblet Squat com Carga Progressiva",
+          "primary_targets": ["Consolidação de padrão"],
+          "equipment": ["Kettlebell 16-24kg"],
+          "sets": 4,
+          "reps": 10,
+          "tempo": "3-1-2-0",
+          "rest": "120s",
+          "execution_cues": [
+            "Progressão: 16kg → 20kg → 24kg ao longo da fase",
+            "Full depth ou máximo sem butt-wink",
+            "Pausar 1s no fundo mantendo controle",
+            "Usar cotovelos para empurrar joelhos para fora",
+            "Manter feedback mental de lordose lombar"
+          ],
+          "progressions": [
+            {"level": "Semana 1-2", "modification": "16-18kg"},
+            {"level": "Semana 3-4", "modification": "20-24kg"}
+          ],
+          "scientific_rationale": "Consolidar padrão sob carga progressiva antes de retornar ao back squat."
+        },
+
+        {
+          "exercise_id": "pallof_press_half_kneeling",
+          "name": "Pallof Press Ajoelhado",
+          "primary_targets": ["Core anti-rotação", "Estabilidade lombo-pélvica"],
+          "equipment": ["Banda de resistência"],
+          "sets": 3,
+          "reps": "10 cada lado",
+          "tempo": "1-2-1-0",
+          "rest": "60s",
+          "execution_cues": [
+            "Posição half-kneeling (um joelho no chão)",
+            "Banda presa lateralmente à altura do peito",
+            "Segurar banda no peito, estender braços à frente",
+            "Resistir rotação mantendo tronco quadrado",
+            "Hold 2s com braços estendidos",
+            "Retornar, repetir"
+          ],
+          "scientific_rationale": "Core anti-rotacional forte previne compensações de tronco durante agachamento."
+        }
+      ]
+    },
+
+    {
+      "phase_number": 3,
+      "name": "Integração ao Back Squat e Consolidação",
+      "duration_typical": "14-21 dias",
+      "frequency": "3-4x por semana",
+      "focus": "Retorno progressivo ao back squat, consolidação de padrão sob carga, manutenção de mobilidade",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Back Squat com Carga",
+            "target": "5 reps com 60-70% 1RM a profundidade controlável com ≤ 5-10° butt-wink",
+            "measurement_method": "Filmagem lateral comparativa com baseline"
+          },
+          {
+            "test": "Paused Back Squat",
+            "target": "3 reps com 50% 1RM, pause 3s, sem perda de posição",
+            "measurement_method": "Controle isométrico no fundo"
+          },
+          {
+            "test": "Teste de Mobilidade Mantida",
+            "target": "Flexão de quadril ≥ 120°, dorsiflexão ≥ 40° mantidos",
+            "measurement_method": "Reavaliação dos testes iniciais"
+          }
+        ],
+        "subjective_markers": [
+          "Controle automático de pelve",
+          "Confiança total em profundidades maiores",
+          "Zero desconforto lombar"
+        ],
+        "minimum_time": "14 dias",
+        "all_criteria_required": true
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "back_squat_progressive",
+          "name": "Back Squat - Retorno Progressivo",
+          "primary_targets": ["Integração completa"],
+          "equipment": ["Barra", "Rack"],
+          "sets": 5,
+          "reps": 5,
+          "tempo": "3-1-X-0",
+          "rest": "240s",
+          "execution_cues": [
+            "Progressão: Semana 1: 50% 1RM, Semana 2: 60% 1RM, Semana 3: 70% 1RM",
+            "Profundidade: máxima sem butt-wink significativo (pode ser acima de parallel inicialmente)",
+            "Filmar todas as séries pesadas",
+            "Se butt-wink reaparece significativamente: carga é excessiva"
+          ],
+          "progressions": [
+            {"level": "Semana 1", "modification": "50% 1RM"},
+            {"level": "Semana 2", "modification": "60% 1RM"},
+            {"level": "Semana 3", "modification": "70% 1RM"}
+          ],
+          "scientific_rationale": "Retorno gradual permite consolidação de padrão sob cargas progressivas."
+        },
+
+        {
+          "exercise_id": "tempo_squat_deep",
+          "name": "Tempo Squat Profundo",
+          "primary_targets": ["Controle em profundidade máxima"],
+          "equipment": ["Barra"],
+          "sets": 3,
+          "reps": 4,
+          "tempo": "5-3-2-0",
+          "rest": "180s",
+          "execution_cues": [
+            "Barra vazia ou carga leve (30-40% 1RM)",
+            "Descida em 5s até profundidade máxima controlável",
+            "Pausar 3s no fundo - teste definitivo de controle",
+            "Subir mantendo posição"
+          ],
+          "scientific_rationale": "Pausa longa em profundidade máxima consolida controle isométrico."
+        }
+      ]
+    }
+  ],
+
+  "return_to_exercise_criteria": {
+    "realistic_expectations": "Casos moderados podem nunca atingir profundidade ass-to-grass sem algum butt-wink devido a limitações estruturais. Meta realista: agachamento a parallel ou ligeiramente abaixo com < 10° retroversão e zero dor.",
+
+    "full_return_requirements": [
+      {
+        "category": "Mobilidade",
+        "tests": [
+          "Hip flexion ≥ 120° bilateral",
+          "Ankle dorsiflexion ≥ 40° bilateral",
+          "Deep squat hold 60s sem assistência"
+        ]
+      },
+      {
+        "category": "Força e Controle",
+        "tests": [
+          "Back extension hold 60s",
+          "Good morning barra + 30kg x 10 reps",
+          "Front squat 60% 1RM x 5 sem butt-wink"
+        ]
+      },
+      {
+        "category": "Padrão Funcional",
+        "tests": [
+          "Back squat 70% 1RM x 5 com < 10° butt-wink",
+          "Goblet squat 24kg full depth",
+          "Filmagem mostra melhora > 70% vs baseline"
+        ]
+      }
+    ],
+
+    "ongoing_maintenance": "PERMANENTE: Mobilidade de quadril e tornozelo 3-4x/semana, Jefferson curls 1-2x/semana, filmar back squat mensalmente. Butt-wink tende a retornar se mobilidade não for mantida."
+  },
+
+  "contraindications": {
+    "absolute": [
+      "Hérnia de disco lombar aguda sintomática",
+      "Espondilolistese grau III-IV",
+      "Dor lombar severa em repouso (NRS > 6/10)",
+      "Estenose espinhal severa sintomática"
+    ],
+    "relative": [
+      "Histórico de hérnia de disco - clearance profissional obrigatório para Jefferson curls",
+      "FAI (impingement femoro-acetabular) pode limitar flexão de quadril - avaliar estruturalmente",
+      "Artrite facetária lombar - progressão conservadora",
+      "Espondilolistese grau I-II - monitorar sintomas"
+    ]
+  },
+
+  "red_flags": {
+    "stop_protocol_immediately": [
+      "Dor lombar aguda > 6/10",
+      "Irradiação para membros inferiores (ciática)",
+      "Dormência ou formigamento",
+      "Perda de força em membros inferiores",
+      "Dor que piora com repouso",
+      "Sintomas vesicais ou intestinais (emergência médica)"
+    ],
+    "seek_medical_evaluation": [
+      "Qualquer dos red flags acima",
+      "Sem melhora após 4 semanas de protocolo",
+      "Piora progressiva de sintomas",
+      "Histórico de trauma não avaliado"
+    ]
+  },
+
+  "scientific_references": [
+    {
+      "authors": "Dill, K.E., et al.",
+      "year": 2014,
+      "title": "Altered knee and ankle kinematics during squatting in those with limited weight-bearing-lunge ankle-dorsiflexion range of motion",
+      "journal": "Journal of Athletic Training",
+      "key_finding": "Dorsiflexão limitada causa compensações proximais incluindo retroversão"
+    },
+    {
+      "authors": "Macrum, E., et al.",
+      "year": 2012,
+      "title": "Effect of limited ankle dorsiflexion on lower extremity mechanics",
+      "journal": "Journal of Sport Rehabilitation",
+      "key_finding": "Tornozelo com < 35° dorsiflexão resulta em butt-wink"
+    },
+    {
+      "authors": "Swinton, P.A., et al.",
+      "year": 2012,
+      "title": "A biomechanical comparison of the traditional squat, powerlifting squat, and box squat",
+      "journal": "Journal of Strength and Conditioning Research",
+      "key_finding": "Front squat reduz torque de flexão lombar vs back squat"
+    },
+    {
+      "authors": "McGill, S.M.",
+      "year": 2015,
+      "title": "Low Back Disorders: Evidence-Based Prevention and Rehabilitation",
+      "key_finding": "Força e resistência de erectores críticos para manter coluna neutra"
+    },
+    {
+      "authors": "Behm, D.G., Chaouachi, A.",
+      "year": 2011,
+      "title": "A review of the acute effects of static and dynamic stretching on performance",
+      "journal": "European Journal of Applied Physiology",
+      "key_finding": "Alongamento prolongado induz adaptações de mobilidade"
+    },
+    {
+      "authors": "Hoch, M.C., McKeon, P.O.",
+      "year": 2011,
+      "title": "Joint mobilization improves spatiotemporal postural control and range of motion in those with chronic ankle instability",
+      "journal": "Journal of Orthopaedic Research",
+      "key_finding": "Mobilização ativa superior ao alongamento passivo para ganhos de ROM"
+    }
+  ],
+
+  "personalization_rules": {
+    "training_age": {
+      "beginner": {
+        "modifications": "Progressão 40-50% mais lenta, maior ênfase em mobilidade",
+        "duration_adjustment": "+50% tempo total"
+      },
+      "intermediate": {
+        "modifications": "Protocolo padrão",
+        "duration_adjustment": "6-10 semanas"
+      },
+      "advanced": {
+        "modifications": "Pode progredir mais rápido se critérios atendidos",
+        "duration_adjustment": "-20% se qualidade impecável"
+      }
+    },
+    "injury_history": {
+      "lower_back_previous": {
+        "conditions": ["Disc herniation", "Spondylolisthesis", "Chronic LBP"],
+        "modifications": "Clearance médico obrigatório, Jefferson curl pode ser contraindicado, progressão muito conservadora",
+        "red_flags": "Dor > 3/10, irradiação, parestesias"
+      },
+      "hip_previous": {
+        "conditions": ["FAI", "Labral tear", "Hip arthroscopy"],
+        "modifications": "Mobilidade de flexão pode ter teto estrutural, aceitar limitações",
+        "red_flags": "Dor tipo pinçamento, limitação súbita"
+      }
+    },
+    "anthropometric_considerations": {
+      "long_femurs": {
+        "note": "Butt-wink mais provável devido a biomecânica. Front squat pode ser superior. Aceitar profundidade limitada.",
+        "modifications": "Stance mais amplo, considerar sapatos de agachamento, focar em front squat"
+      },
+      "short_torso": {
+        "note": "Maior demanda de flexão lombar em profundidade. Monitorar cuidadosamente.",
+        "modifications": "Progressão conservadora de profundidade"
+      }
+    }
+  }
+}

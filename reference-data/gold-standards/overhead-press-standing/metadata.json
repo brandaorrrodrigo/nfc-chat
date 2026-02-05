@@ -1,0 +1,84 @@
+{
+  "exercise_id": "overhead_press_standing",
+  "name": "Standing Overhead Press (Military Press)",
+  "name_pt": "Desenvolvimento em Pé com Barra",
+  "version": "1.0.0",
+  "status": "validated",
+  "created_at": "2025-02-05T00:00:00Z",
+  "updated_at": "2025-02-05T00:00:00Z",
+  "validated_by": [
+    "NFC Biomechanics Team"
+  ],
+
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2025-02-05",
+      "changes": [
+        "Initial gold standard creation",
+        "Biomechanical angles based on McKean et al (2010)",
+        "Scapular upward rotation requirements established",
+        "Layback parameters defined for optimal bar path",
+        "Safety limits for lumbar hyperextension set"
+      ],
+      "author": "NFC Biomechanics Team"
+    }
+  ],
+
+  "validation_criteria": {
+    "minimum_samples": 50,
+    "expert_reviews": 3,
+    "inter_rater_reliability": 0.85,
+    "video_quality_requirements": {
+      "fps": 30,
+      "resolution_min": "720p",
+      "angles_required": ["lateral", "frontal"]
+    }
+  },
+
+  "usage_statistics": {
+    "total_analyses": 0,
+    "average_similarity_score": null,
+    "common_deviations_frequency": {}
+  },
+
+  "related_exercises": [
+    "seated_overhead_press",
+    "push_press",
+    "dumbbell_shoulder_press",
+    "behind_neck_press"
+  ],
+
+  "tags": [
+    "upper_body",
+    "compound",
+    "barbell",
+    "push",
+    "shoulders",
+    "overhead",
+    "foundational"
+  ],
+
+  "difficulty_level": {
+    "technical": "intermediate",
+    "strength": "intermediate",
+    "mobility": "high"
+  },
+
+  "prerequisites": {
+    "mobility": [
+      "shoulder_flexion >= 180°",
+      "thoracic_extension adequate",
+      "overhead_reach_test_passed"
+    ],
+    "stability": [
+      "core_stability_adequate",
+      "scapular_control",
+      "single_leg_balance >= 20s"
+    ],
+    "strength": [
+      "push_up >= 15_reps",
+      "dumbbell_shoulder_press proficient"
+    ]
+  }
+}

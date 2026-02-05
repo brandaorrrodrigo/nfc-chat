@@ -1,0 +1,414 @@
+{
+  "protocol_id": "forward_lean_moderate_v1",
+  "deviation": "forward-lean",
+  "severity": "moderate",
+  "version": "1.0.0",
+  "last_updated": "2025-01-15",
+
+  "overview": {
+    "description": "Protocolo corretivo para inclinação anterior moderada do tronco (15-25° além do ótimo para antropometria). Padrão consistente que limita profundidade ou causa desconforto lombar. Foco em força significativa de quadríceps, mobilidade de tornozelo, e transição para front squat como variação primária.",
+    "typical_presentation": "Forward lean consistente e significativo durante agachamento. Tronco aproxima-se de paralelo ao solo em profundidades máximas. Pode haver desconforto lombar leve a moderado (NRS 2-5/10). Limitação clara de mobilidade de tornozelo mensurável. Após descartar antropometria, déficit é tratável mas significativo.",
+    "primary_causes": [
+      "Restrição moderada a severa de dorsiflexão (< 30°)",
+      "Fraqueza significativa de quadríceps vs cadeia posterior",
+      "Tensão crônica de flexores do quadril",
+      "Fraqueza de core anterior permitindo compensação",
+      "Histórico de lesão lombar alterando padrão motor",
+      "Posicionamento subótimo de barra (low bar aumenta lean)"
+    ],
+    "expected_duration": "6-10 semanas com prática 4-5x/semana",
+    "success_rate": "70-80% de melhora significativa quando não antropométrico"
+  },
+
+  "goals_hierarchy": [
+    {
+      "priority": 1,
+      "goal": "Restaurar dorsiflexão adequada de tornozelo",
+      "measurable_outcome": "Dorsiflexão ≥ 35-40° bilateral"
+    },
+    {
+      "priority": 2,
+      "goal": "Desenvolver força significativa de quadríceps",
+      "measurable_outcome": "Front squat ≥ 70-80% do back squat 1RM"
+    },
+    {
+      "priority": 3,
+      "goal": "Reduzir forward lean em back squat ou transicionar para front squat",
+      "measurable_outcome": "Back squat com 30-50% menos lean OU front squat como primário"
+    },
+    {
+      "priority": 4,
+      "goal": "Eliminar desconforto lombar associado",
+      "measurable_outcome": "Dor pós-treino < 2/10"
+    },
+    {
+      "priority": 5,
+      "goal": "Estabelecer setup e variação ótima individual",
+      "measurable_outcome": "High bar ou front squat dominante no programa"
+    }
+  ],
+
+  "phases": [
+    {
+      "phase_number": 1,
+      "name": "Mobilidade Agressiva e Fortalecimento de Base",
+      "duration_typical": "14-21 dias",
+      "frequency": "Mobilidade 2x/dia, treino 5x/semana",
+      "focus": "Ganhos significativos de dorsiflexão, iniciar fortalecimento de quadríceps, alongamento intensivo de flexores de quadril",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Wall Ankle Dorsiflexion",
+            "target": "10-12cm de distância bilateral",
+            "measurement_method": "Fita métrica"
+          },
+          {
+            "test": "Thomas Test Hip Flexors",
+            "target": "Coxa da perna testada permanece na mesa sem elevação",
+            "measurement_method": "Avaliação clínica - sem compensação"
+          },
+          {
+            "test": "Front Squat Strength",
+            "target": "5 reps com 50% do back squat 1RM",
+            "measurement_method": "Teste de carga"
+          },
+          {
+            "test": "Goblet Squat Depth",
+            "target": "Full depth com 16kg mantendo tronco mais ereto",
+            "measurement_method": "Filmagem lateral - melhora visual"
+          }
+        ],
+        "minimum_time": "14 dias",
+        "all_criteria_required": false,
+        "minimum_criteria": 3
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "ankle_mobilization_weighted_aggressive",
+          "name": "Mobilização de Tornozelo com Carga Pesada",
+          "primary_targets": ["Dorsiflexão", "Sóleo", "Cápsula anterior"],
+          "equipment": ["Parede", "Kettlebell 8-12kg", "Banda de distração"],
+          "sets": 4,
+          "reps": "20 + 45s hold",
+          "tempo": "2s avançar + hold prolongado",
+          "rest": "45s",
+          "execution_cues": [
+            "Wall ankle mobilization com kettlebell 8-12kg sobre joelho",
+            "Adicionar banda ao redor do tornozelo puxando para trás (distração articular)",
+            "20 repetições dinâmicas seguidas de 45s hold estático no máximo",
+            "Progressão agressiva: aumentar carga e distância semanalmente",
+            "Meta: 12-15cm distância ao final da fase"
+          ],
+          "progressions": [
+            {"level": "Semana 1-2", "modification": "8kg, 10-11cm distância"},
+            {"level": "Semana 2-3", "modification": "10-12kg, 11-13cm"},
+            {"level": "Semana 3+", "modification": "12kg, 13-15cm"}
+          ],
+          "scientific_rationale": "Mobilização com carga + distração acelera ganhos de ROM. Casos moderados requerem intervenção agressiva (Hoch & McKeon, 2011)."
+        },
+        {
+          "exercise_id": "couch_stretch_extended",
+          "name": "Couch Stretch Prolongado com PNF",
+          "primary_targets": ["Psoas", "Reto femoral", "Flexores de quadril"],
+          "equipment": ["Parede", "Almofada"],
+          "sets": 3,
+          "reps": "90-120s hold por lado",
+          "tempo": "Estático + contração-relaxamento",
+          "rest": "60s",
+          "execution_cues": [
+            "Couch stretch padrão: joelho encostado na parede, pé em dorsiflexão",
+            "Hold inicial de 60s",
+            "Adicionar PNF: contrair quadríceps por 5s (empurrar joelho contra parede), relaxar 30s",
+            "Repetir contração-relaxamento 2-3x durante hold",
+            "Total: 90-120s por lado",
+            "Deve sentir alongamento intenso mas não dor"
+          ],
+          "scientific_rationale": "PNF (Proprioceptive Neuromuscular Facilitation) aumenta ganhos de flexibilidade via inibição recíproca. Tensão de flexores de quadril é causa comum de forward lean compensatório."
+        },
+        {
+          "exercise_id": "spanish_squat_isometric",
+          "name": "Spanish Squat Isométrico",
+          "primary_targets": ["Quadríceps", "VMO", "Força isométrica"],
+          "equipment": ["Banda grossa ou cinto de treino", "Poste fixo"],
+          "sets": 4,
+          "reps": "45-60s hold",
+          "tempo": "Isométrico",
+          "rest": "90s",
+          "execution_cues": [
+            "Banda ao redor da parte posterior dos joelhos, presa em poste baixo",
+            "Encostar-se contra parede, descer em squat position (90-100° flexão)",
+            "Banda puxa tíbia para trás, forçando quadríceps trabalhar intensamente",
+            "Manter posição por 45-60s",
+            "Sentir queimação intensa nos quadríceps"
+          ],
+          "progressions": [
+            {"level": "Iniciante", "modification": "30-45s, 100° flexão"},
+            {"level": "Padrão", "modification": "45-60s, 90° flexão"},
+            {"level": "Avançado", "modification": "60s+ ou adicionar peso no colo"}
+          ],
+          "scientific_rationale": "Spanish squat isola quadríceps com ativação > 70% MVIC. Fortalecimento isométrico em ângulos específicos transfere para agachamento dinâmico (Nunes et al., 2020)."
+        },
+        {
+          "exercise_id": "front_squat_volume",
+          "name": "Front Squat - Volume Aumentado",
+          "primary_targets": ["Quadríceps", "Padrão ereto", "Força base"],
+          "equipment": ["Barra", "Rack"],
+          "sets": 5,
+          "reps": 8,
+          "tempo": "2-0-2-0",
+          "rest": "120s",
+          "execution_cues": [
+            "Progressão de carga: 40% → 50% → 60% do back squat 1RM ao longo da fase",
+            "Volume elevado (5x8) para hipertrofia e adaptação neural",
+            "Foco em manter cotovelos altos e tronco vertical",
+            "Estabelecer front squat como movimento primário"
+          ],
+          "progressions": [
+            {"level": "Semana 1-2", "modification": "40-45% back squat 1RM"},
+            {"level": "Semana 2-3", "modification": "50-55%"},
+            {"level": "Semana 3+", "modification": "55-60%"}
+          ],
+          "scientific_rationale": "Volume elevado induz hipertrofia de quadríceps necessária para suportar posição ereta. Front squat é variação superior para casos de forward lean."
+        },
+        {
+          "exercise_id": "heels_elevated_goblet_squat",
+          "name": "Goblet Squat com Calcanhares Elevados",
+          "primary_targets": ["Quadríceps", "Feedback de posição ereta"],
+          "equipment": ["Kettlebell 16-20kg", "Anilhas 2.5-5kg"],
+          "sets": 4,
+          "reps": 12,
+          "tempo": "3-1-2-0",
+          "rest": "90s",
+          "execution_cues": [
+            "Colocar anilhas 2.5-5kg sob calcanhares",
+            "Elevação simula sapatos de agachamento e compensa limitação de tornozelo temporariamente",
+            "Permite treinar tronco ereto enquanto mobilidade melhora",
+            "Goblet position com KB 16-20kg",
+            "Sentir quadríceps trabalhando mais intensamente"
+          ],
+          "note": "Elevação é ferramenta temporária. Meta é remover após ganhos de mobilidade."
+        },
+        {
+          "exercise_id": "leg_extension_quad_emphasis",
+          "name": "Leg Extension com Ênfase em Quadríceps",
+          "primary_targets": ["Quadríceps isolado", "VMO"],
+          "equipment": ["Máquina de leg extension"],
+          "sets": 4,
+          "reps": 15,
+          "tempo": "2-1-3-0 (ênfase excêntrica)",
+          "rest": "60s",
+          "execution_cues": [
+            "Isolamento puro de quadríceps",
+            "2s subida, 1s pausa no topo, 3s descida controlada",
+            "Usar carga moderada focando em controle",
+            "Complementar aos compostos"
+          ],
+          "scientific_rationale": "Leg extension permite sobrecarga isolada de quadríceps sem demanda técnica. Fortalecimento direto transfere para agachamento (Escamilla et al., 1998)."
+        }
+      ]
+    },
+
+    {
+      "phase_number": 2,
+      "name": "Fortalecimento Avançado e Integração",
+      "duration_typical": "21-28 dias",
+      "frequency": "4x por semana",
+      "focus": "Front squat como movimento primário, redução de forward lean em back squat ou aceitação de front squat permanente, cargas progressivas",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Front Squat Strength",
+            "target": "1RM front squat ≥ 75-80% do back squat 1RM",
+            "measurement_method": "Teste de força"
+          },
+          {
+            "test": "Back Squat Improved",
+            "target": "Forward lean reduzido 40-60% vs baseline OU front squat estabelecido como primário",
+            "measurement_method": "Filmagem comparativa"
+          },
+          {
+            "test": "Pain Resolution",
+            "target": "Dor lombar < 2/10 consistentemente",
+            "measurement_method": "Auto-relato"
+          }
+        ],
+        "minimum_time": "21 dias",
+        "all_criteria_required": false,
+        "minimum_criteria": 2
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "front_squat_heavy",
+          "name": "Front Squat - Progressão Pesada",
+          "sets": 5,
+          "reps": 5,
+          "tempo": "2-0-X-0",
+          "rest": "180s",
+          "execution_cues": [
+            "Progressão: 60% → 70% → 80% do back squat 1RM",
+            "5x5 para desenvolver força máxima",
+            "Estabelecer como movimento principal de agachamento"
+          ]
+        },
+        {
+          "exercise_id": "paused_front_squat",
+          "name": "Paused Front Squat",
+          "sets": 4,
+          "reps": 4,
+          "tempo": "3-3-2-0",
+          "rest": "150s",
+          "execution_cues": [
+            "60% 1RM com pause de 3s no fundo",
+            "Desenvolve força isométrica em posição ereta",
+            "Transfere para controle sob carga"
+          ]
+        },
+        {
+          "exercise_id": "safety_bar_squat",
+          "name": "Safety Bar Squat (se disponível)",
+          "sets": 4,
+          "reps": 8,
+          "tempo": "2-0-2-0",
+          "rest": "120s",
+          "execution_cues": [
+            "Safety bar permite posição mais ereta sem demanda de mobilidade de ombros",
+            "Alternativa excelente ao back squat tradicional",
+            "Pode ser variação permanente para casos moderados"
+          ]
+        },
+        {
+          "exercise_id": "belt_squat",
+          "name": "Belt Squat (se disponível)",
+          "sets": 4,
+          "reps": 12,
+          "rest": "90s",
+          "execution_cues": [
+            "Carga nos quadris via cinto, não na coluna",
+            "Permite tronco muito ereto",
+            "Excelente para volume sem estresse lombar"
+          ]
+        },
+        {
+          "exercise_id": "tempo_back_squat_high_bar",
+          "name": "Tempo Back Squat High Bar (opcional)",
+          "sets": 4,
+          "reps": 5,
+          "tempo": "4-2-2-0",
+          "rest": "180s",
+          "execution_cues": [
+            "APENAS se deseja manter back squat",
+            "High bar + tempo lento para consolidar padrão melhorado",
+            "60-70% 1RM",
+            "Comparar com baseline - deve haver melhora clara"
+          ]
+        }
+      ]
+    },
+
+    {
+      "phase_number": 3,
+      "name": "Consolidação e Decisão de Variação Primária",
+      "duration_typical": "14-21 dias",
+      "frequency": "3-4x por semana",
+      "focus": "Finalizar transição para front squat OU consolidar melhora em back squat, estabelecer programa sustentável",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Primary Squat Variation Established",
+            "target": "Front squat como primário OU back squat com melhora mantida",
+            "measurement_method": "Programa de treino definido"
+          },
+          {
+            "test": "Sustainable Training",
+            "target": "4 semanas sem dor ou regressão",
+            "measurement_method": "Monitoramento"
+          }
+        ]
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "chosen_variation_progressive",
+          "name": "Variação Escolhida - Progressão Final",
+          "note": "Front squat como primário (recomendado) OU back squat melhorado. Progredir carga e volume normalmente."
+        }
+      ]
+    }
+  ],
+
+  "return_to_exercise_criteria": {
+    "realistic_expectations": "Muitos casos moderados se beneficiam de TRANSIÇÃO PERMANENTE para front squat como variação primária. Não é falha - é otimização individual.",
+
+    "full_return_requirements": [
+      {
+        "category": "Mobilidade",
+        "tests": ["Dorsiflexão ≥ 35-40°", "Hip flexor flexibility normalizada"]
+      },
+      {
+        "category": "Força",
+        "tests": ["Front squat ≥ 75% back squat 1RM", "Spanish squat 60s"]
+      },
+      {
+        "category": "Padrão",
+        "tests": ["Front squat estabelecido como primário OU back squat com 50%+ melhora"]
+      }
+    ],
+
+    "permanent_modifications": [
+      "Front squat pode substituir back squat PERMANENTEMENTE",
+      "High bar superior a low bar",
+      "Sapatos de agachamento (cunha) podem ser permanentes",
+      "Mobilidade de tornozelo 2-3x/semana para manter ganhos"
+    ]
+  },
+
+  "contraindications": {
+    "absolute": [
+      "Lesão lombar aguda",
+      "Hérnia de disco sintomática",
+      "Espondilolistese severa"
+    ],
+    "relative": [
+      "História de lesão lombar - forward lean aumenta torque de flexão",
+      "Artrose lombar - monitorar sintomas"
+    ]
+  },
+
+  "red_flags": {
+    "stop_protocol_immediately": [
+      "Dor lombar > 5/10",
+      "Irradiação para pernas",
+      "Sintomas neurológicos",
+      "Piora progressiva"
+    ]
+  },
+
+  "scientific_references": [
+    {
+      "authors": "Swinton, P.A., et al.",
+      "year": 2012,
+      "title": "A biomechanical comparison of squat variations",
+      "journal": "J Strength Cond Res",
+      "key_finding": "Front squat reduz forward lean em 15-20° e torque lombar"
+    },
+    {
+      "authors": "Nunes, J.P., et al.",
+      "year": 2020,
+      "title": "Systematic review of isometric strength training",
+      "journal": "Sports Med",
+      "key_finding": "Treinamento isométrico específico transfere para dinâmico"
+    },
+    {
+      "authors": "Hoch, M.C., McKeon, P.O.",
+      "year": 2011,
+      "title": "Joint mobilization improves ankle ROM",
+      "journal": "J Orthop Res",
+      "key_finding": "Mobilização com distração superior ao alongamento"
+    }
+  ]
+}

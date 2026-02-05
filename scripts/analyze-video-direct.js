@@ -333,42 +333,74 @@ function generateAllRecommendations(pontosCriticos) {
   }).filter(Boolean);
 }
 
-// Prompt estruturado para Vision - retorna JSON
-const VISION_PROMPT = (frameNumber, totalFrames, exerciseType) => `
-Você é um biomecânico PhD especializado em análise de movimento.
-
-Analise este frame ${frameNumber}/${totalFrames} de um ${exerciseType}.
-
-Retorne APENAS JSON válido com esta estrutura exata:
-
-{
-  "fase": "excentrica" | "isometrica" | "concentrica",
-  "angulos_aproximados": {
-    "joelho_esq_graus": 90,
-    "joelho_dir_graus": 92,
-    "flexao_quadril_graus": 85,
-    "inclinacao_tronco_graus": 15
-  },
-  "alinhamentos": {
-    "joelhos_sobre_pes": true,
-    "joelho_esq_valgo": false,
-    "joelho_dir_valgo": false,
-    "coluna_neutra": true,
-    "peso_nos_calcanhares": true
-  },
-  "desvios_criticos": [
-    "Valgo dinâmico de joelho esquerdo de ~10°"
-  ],
-  "score": 7,
-  "justificativa": "Profundidade adequada mas joelho esquerdo colapsa medialmente"
+// Estimar fase baseado na posição no vídeo
+function estimateFase(frameNumber, totalFrames) {
+  const progress = frameNumber / totalFrames;
+  if (progress < 0.33) return 'excentrica';
+  if (progress < 0.66) return 'isometrica';
+  return 'concentrica';
 }
 
-IMPORTANTE:
-- Estime os ângulos visualmente baseado no que você vê
-- Liste APENAS desvios que você consegue VER claramente na imagem
-- Score de 1-10 baseado na qualidade técnica
-- RETORNE APENAS O JSON, sem texto antes ou depois
-`;
+// Prompt APRIMORADO para Vision - força medição precisa de ângulos
+const VISION_PROMPT = (frameNumber, totalFrames, exerciseType) => {
+  const faseEstimada = estimateFase(frameNumber, totalFrames);
+
+  // Ranges esperados por fase
+  const rangeInfo = {
+    excentrica: { joelho: '120-160°', quadril: '100-140°', tronco: '10-18°', desc: 'DESCIDA - joelhos mais estendidos' },
+    isometrica: { joelho: '85-100°', quadril: '75-95°', tronco: '18-25°', desc: 'FUNDO - flexão máxima' },
+    concentrica: { joelho: '100-160°', quadril: '90-145°', tronco: '12-20°', desc: 'SUBIDA - estendendo' }
+  };
+
+  const range = rangeInfo[faseEstimada];
+
+  return `Você é um GONIÔMETRO HUMANO especializado em biomecânica.
+
+Analise o frame ${frameNumber} de ${totalFrames} de um ${exerciseType}.
+
+CONTEXTO TEMPORAL:
+- Este é o frame ${frameNumber} de ${totalFrames}
+- Fase provável: ${faseEstimada.toUpperCase()} (${range.desc})
+- Ângulos esperados para esta fase: Joelho ${range.joelho}, Quadril ${range.quadril}
+
+INSTRUÇÕES CRÍTICAS DE MEDIÇÃO:
+1. MEÇA ângulos com PRECISÃO usando referências anatômicas visíveis
+2. Joelho: ângulo entre FÊMUR e TÍBIA (180° = perna reta, 90° = flexão profunda)
+3. Quadril: ângulo entre TRONCO e FÊMUR (180° = em pé, 90° = sentado)
+4. Tronco: inclinação anterior em relação à vertical (0° = reto, 30° = inclinado)
+
+VARIE OS ÂNGULOS BASEADO NA POSIÇÃO REAL DO CORPO:
+- Se corpo está MAIS ALTO → joelhos MAIS estendidos (>120°)
+- Se corpo está MAIS BAIXO → joelhos MAIS flexionados (<100°)
+- Se está NO FUNDO do agachamento → máxima flexão (85-95°)
+
+Retorne APENAS JSON válido:
+
+{
+  "fase": "${faseEstimada}",
+  "angulos_aproximados": {
+    "joelho_esq_graus": [MEÇA: ${range.joelho} para fase ${faseEstimada}],
+    "joelho_dir_graus": [MEÇA: pode variar 2-5° do esquerdo],
+    "flexao_quadril_graus": [MEÇA: ${range.quadril} para fase ${faseEstimada}],
+    "inclinacao_tronco_graus": [MEÇA: ${range.tronco} para fase ${faseEstimada}]
+  },
+  "alinhamentos": {
+    "joelhos_sobre_pes": true/false,
+    "joelho_esq_valgo": true/false [joelho vai para DENTRO?],
+    "joelho_dir_valgo": true/false,
+    "coluna_neutra": true/false [lordose excessiva?],
+    "peso_nos_calcanhares": true/false
+  },
+  "desvios_criticos": [
+    "Seja ESPECÍFICO - ex: 'Valgo de 12° no joelho esquerdo no fundo'",
+    "Se NÃO VER desvio claro, retorne array vazio"
+  ],
+  "score": [5-9 baseado na qualidade técnica VISÍVEL],
+  "justificativa": "Descreva O QUE você VÊ neste frame específico - posição, ângulos, desvios"
+}
+
+CRÍTICO: Retorne APENAS o JSON. Ângulos DEVEM variar entre frames!`;
+};
 
 // Prompt para gerar relatório técnico com Llama 3.1 (COM RAG)
 const REPORT_PROMPT_WITH_RAG = (exerciseType, frameAnalyses, scientificContext) => {

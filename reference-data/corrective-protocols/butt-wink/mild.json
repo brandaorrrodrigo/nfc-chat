@@ -1,0 +1,433 @@
+{
+  "protocol_id": "butt_wink_mild_v1",
+  "deviation": "butt-wink",
+  "severity": "mild",
+  "version": "1.0.0",
+  "last_updated": "2025-01-15",
+
+  "overview": {
+    "description": "Protocolo corretivo para butt-wink leve (retroversão pélvica < 10° nos últimos 20-30° de descida do agachamento). Foco em mobilidade de quadril e tornozelo, controle de core, e consciência proprioceptiva da posição da pelve.",
+    "typical_presentation": "Retroversão pélvica leve aparece apenas em profundidades máximas (abaixo de paralelo). Não causa dor. Padrão inconsistente - ocorre em algumas repetições mas não todas. Geralmente relacionado a limitação leve de mobilidade ou falta de consciência postural.",
+    "primary_causes": [
+      "Limitação leve de mobilidade de flexão de quadril (< 120° flexão)",
+      "Restrição de mobilidade de tornozelo (dorsiflexion < 35-40°)",
+      "Falta de consciência proprioceptiva da posição pélvica",
+      "Tensão nos isquiotibiais limitando movimento",
+      "Fraqueza ou falta de controle de erectores espinhais e multífidos"
+    ],
+    "expected_duration": "3-5 semanas com prática consistente (4x/semana)",
+    "success_rate": "85-95% de resolução completa ou melhora significativa"
+  },
+
+  "goals_hierarchy": [
+    {
+      "priority": 1,
+      "goal": "Aumentar mobilidade de flexão de quadril e dorsiflexão de tornozelo",
+      "measurable_outcome": "Flexão de quadril > 120° com joelho flexionado, dorsiflexão > 40° com joelho flexionado"
+    },
+    {
+      "priority": 2,
+      "goal": "Desenvolver consciência proprioceptiva da posição neutra da pelve",
+      "measurable_outcome": "Capacidade de identificar e corrigir retroversão durante movimento em tempo real"
+    },
+    {
+      "priority": 3,
+      "goal": "Fortalecer controle isométrico de coluna em posição neutra",
+      "measurable_outcome": "Manter coluna lombar neutra durante 10 goblet squats full depth"
+    },
+    {
+      "priority": 4,
+      "goal": "Integrar controle ao padrão de agachamento completo",
+      "measurable_outcome": "Agachamento full depth sem butt-wink perceptível em 90%+ das repetições"
+    }
+  ],
+
+  "phases": [
+    {
+      "phase_number": 1,
+      "name": "Mobilidade e Consciência Postural",
+      "duration_typical": "7-14 dias",
+      "frequency": "Diária (mobilidade 2x/dia idealmente)",
+      "focus": "Aumentar ROM de quadril e tornozelo, desenvolver consciência pélvica, estabelecer capacidade de manter coluna neutra",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "90/90 Hip Flexion",
+            "target": "Joelho toca peito com lombar neutra sem compensação",
+            "measurement_method": "Decúbito dorsal, trazer joelho ao peito - sem retroversão forçada"
+          },
+          {
+            "test": "Wall Ankle Mobility",
+            "target": "Dedo do pé a 10-12cm da parede, joelho toca parede sem calcanhar levantar",
+            "measurement_method": "Medir distância com fita métrica"
+          },
+          {
+            "test": "Cat-Cow com Controle",
+            "target": "20 repetições com transições suaves entre flexão e extensão lombar",
+            "measurement_method": "Observação de controle motor segmentar"
+          },
+          {
+            "test": "Box Squat Profundo",
+            "target": "Sentar em box baixo (abaixo de paralelo) mantendo coluna neutra",
+            "measurement_method": "Observação visual lateral - manutenção de lordose"
+          }
+        ],
+        "subjective_markers": [
+          "Sensação de maior 'abertura' no quadril",
+          "Capacidade de 'sentir' diferença entre pelve neutra e em retroversão",
+          "Redução de tensão nos isquiotibiais e panturrilhas",
+          "Confiança em profundidades maiores de agachamento"
+        ],
+        "minimum_time": "7 dias",
+        "all_criteria_required": false,
+        "minimum_criteria": 3
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "90_90_hip_flexion_stretch",
+          "name": "Mobilização de Flexão de Quadril 90/90",
+          "primary_targets": ["Cápsula posterior do quadril", "Mobilidade de flexão"],
+          "equipment": ["Colchonete"],
+          "sets": 3,
+          "reps": "10 respirações por lado",
+          "tempo": "Hold com respiração",
+          "rest": "30s",
+          "execution_cues": [
+            "Decúbito dorsal, uma perna estendida, outra com quadril e joelho a 90°",
+            "Abraçar joelho trazendo em direção ao peito",
+            "Manter coluna lombar em contato com solo - não permitir retroversão excessiva",
+            "Respirar profundamente - expiração longa ajuda a relaxar",
+            "Sentir alongamento na região posterior do quadril",
+            "Progressão: trazer joelho mais próximo do peito a cada expiração"
+          ],
+          "common_errors": [
+            {"error": "Retroversão excessiva para compensar falta de mobilidade", "correction": "Limitar amplitude, focar em lombar neutra"},
+            {"error": "Perna estendida levanta do solo", "correction": "Pode flexionar levemente ou usar banda para manter no chão"}
+          ],
+          "progressions": [
+            {"level": "Iniciante", "modification": "Segurar atrás da coxa em vez de na frente da canela"},
+            {"level": "Padrão", "modification": "Abraçar canela, joelho próximo ao peito"},
+            {"level": "Avançado", "modification": "CARs (Controlled Articular Rotations) - movimentos circulares mantendo flexão"}
+          ],
+          "scientific_rationale": "Mobilidade de flexão de quadril inadequada é causa primária de butt-wink. Alongamento específico da cápsula posterior aumenta ROM disponível (Roach et al., 2015)."
+        },
+        {
+          "exercise_id": "wall_ankle_dorsiflexion_mobilization",
+          "name": "Mobilização de Dorsiflexão de Tornozelo na Parede",
+          "primary_targets": ["Dorsiflexão de tornozelo", "Mobilidade de sóleo"],
+          "equipment": ["Parede"],
+          "sets": 3,
+          "reps": "15 repetições por lado",
+          "tempo": "2s hold no final",
+          "rest": "30s",
+          "execution_cues": [
+            "Posicionar em frente à parede, um pé à frente",
+            "Dedo do pé a 8-10cm da parede inicialmente",
+            "Joelho da frente avança em direção à parede sem calcanhar levantar",
+            "Tocar parede com joelho, hold 2s, retornar",
+            "Progressão: afastar pé progressivamente da parede",
+            "Meta: 12-15cm de distância com joelho tocando parede"
+          ],
+          "common_errors": [
+            {"error": "Calcanhar levanta", "correction": "Reduzir distância da parede"},
+            {"error": "Pé roda para fora", "correction": "Manter pé apontando reto para frente, dedos alinhados com parede"}
+          ],
+          "progressions": [
+            {"level": "Limitado", "modification": "5-8cm de distância"},
+            {"level": "Padrão", "modification": "10-12cm"},
+            {"level": "Ótimo", "modification": "12-15cm ou mais"}
+          ],
+          "scientific_rationale": "Dorsiflexão < 35-40° força compensação em retroversão pélvica durante agachamento profundo (Macrum et al., 2012). Mobilização diária aumenta ROM significativamente em 2-3 semanas."
+        },
+        {
+          "exercise_id": "cat_cow_segmental",
+          "name": "Cat-Cow com Controle Segmentar",
+          "primary_targets": ["Controle motor da coluna", "Consciência de posição neutra"],
+          "equipment": ["Colchonete"],
+          "sets": 3,
+          "reps": 15,
+          "tempo": "Lento e controlado - 3s em cada direção",
+          "rest": "45s",
+          "execution_cues": [
+            "Posição quadrúpede, mãos sob ombros, joelhos sob quadris",
+            "Iniciar movimento de flexão (cat) pela lombar, depois torácica, depois cervical",
+            "Reverter para extensão (cow) na mesma ordem sequencial",
+            "Foco mental: sentir cada vértebra se movendo",
+            "Evitar movimentos bruscos - fluidez e controle",
+            "Respirar: expirar em flexão, inspirar em extensão",
+            "CRÍTICO: praticar encontrar e manter posição neutra entre extremos"
+          ],
+          "common_errors": [
+            {"error": "Movimento em bloco - sem segmentação", "correction": "Reduzir velocidade, focar em iniciar lombar e progredir superiormente"},
+            {"error": "Amplitude excessiva forçada", "correction": "ROM confortável, sem dor"}
+          ],
+          "progressions": [
+            {"level": "Iniciante", "modification": "Movimentos maiores, menos foco em segmentação"},
+            {"level": "Padrão", "modification": "Controle segmentar, encontrar posição neutra"},
+            {"level": "Avançado", "modification": "Adicionar bird-dog ou dead bug mantendo neutra"}
+          ],
+          "scientific_rationale": "Consciência postural e controle motor segmentar da coluna são essenciais para prevenir butt-wink (McGill, 2015). Cat-cow desenvolve propriocepção e capacidade de encontrar neutro."
+        },
+        {
+          "exercise_id": "goblet_squat_tempo_feedback",
+          "name": "Goblet Squat com Tempo Lento e Feedback",
+          "primary_targets": ["Padrão de agachamento", "Controle de pelve"],
+          "equipment": ["Kettlebell leve (8-12kg)", "Espelho lateral (ideal)"],
+          "sets": 4,
+          "reps": 8,
+          "tempo": "5-2-3-0 (5s descida, 2s pausa, 3s subida)",
+          "rest": "90s",
+          "execution_cues": [
+            "Segurar kettlebell em goblet position",
+            "Descer em 5 segundos MUITO lentamente",
+            "Foco mental: manter sensação de 'arco' na lombar durante TODA descida",
+            "Se sentir lombar começar a arredondar: PARAR nessa profundidade",
+            "Essa é a profundidade máxima atual sem butt-wink",
+            "Pausar 2s nessa profundidade (pode ser acima de paralelo - OK temporariamente)",
+            "Subir em 3s mantendo controle",
+            "Usar espelho lateral ou filmar para feedback visual"
+          ],
+          "common_errors": [
+            {"error": "Forçar profundidade além da mobilidade disponível", "correction": "ACEITAR profundidade limitada temporariamente - mobilidade virá"},
+            {"error": "Tempo muito rápido perdendo feedback proprioceptivo", "correction": "Respeitar 5s na descida, usar contagem em voz alta"}
+          ],
+          "progressions": [
+            {"level": "Semana 1", "modification": "Profundidade até começar sentir butt-wink - pode ser acima de paralelo"},
+            {"level": "Semana 2", "modification": "Tentar mais 2-3cm de profundidade mantendo controle"},
+            {"level": "Semana 3+", "modification": "Progressivamente aumentar profundidade conforme mobilidade melhora"}
+          ],
+          "scientific_rationale": "Tempo ultra-lento aumenta feedback proprioceptivo e permite identificar ponto exato onde controle pélvico se perde. Treino dentro de ROM controlável consolida padrão correto."
+        },
+        {
+          "exercise_id": "deep_squat_hold_assisted",
+          "name": "Deep Squat Hold Assistido (Asian Squat)",
+          "primary_targets": ["Mobilidade passiva de quadril e tornozelo", "Adaptação postural"],
+          "equipment": ["TRX, faixa, ou poste para segurar"],
+          "sets": 3,
+          "reps": "Hold 30-60s",
+          "tempo": "Estático",
+          "rest": "60s",
+          "execution_cues": [
+            "Segurar em TRX ou apoio à frente",
+            "Descer em posição de agachamento profundo",
+            "Usar apoio para manter equilíbrio e posição",
+            "Pés podem estar mais afastados que em back squat",
+            "Permitir que tronco incline para frente naturalmente",
+            "Foco: relaxar na posição, sentir alongamento nos quadris e tornozelos",
+            "Respirar profundamente, tentar 'afundar' mais a cada expiração"
+          ],
+          "common_errors": [
+            {"error": "Calcanhar levanta", "correction": "Colocar anilhas 1-2.5kg sob calcanhares temporariamente"},
+            {"error": "Tensão excessiva - não relaxa", "correction": "Usar apoio mais significativo, foco em respiração"}
+          ],
+          "progressions": [
+            {"level": "Limitado", "modification": "Hold 20-30s, pode usar cunha sob calcanhares"},
+            {"level": "Padrão", "modification": "Hold 45-60s sem cunha"},
+            {"level": "Avançado", "modification": "Reduzir assistência, eventualmente sem apoio"}
+          ],
+          "scientific_rationale": "Exposição prolongada a posições profundas induz adaptações passivas de mobilidade (Behm & Chaouachi, 2011). Asian squat hold é gold standard para desenvolver mobilidade completa de agachamento."
+        }
+      ]
+    },
+
+    {
+      "phase_number": 2,
+      "name": "Integração e Fortalecimento de Controle",
+      "duration_typical": "14-21 dias",
+      "frequency": "4x por semana",
+      "focus": "Transferir mobilidade adquirida para padrão carregado, fortalecer erectores e core em posição neutra, consolidar controle em profundidades progressivas",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Goblet Squat Full Depth",
+            "target": "10 repetições com 16kg sem butt-wink perceptível",
+            "measurement_method": "Filmagem lateral - manutenção de lordose lombar até profundidade máxima"
+          },
+          {
+            "test": "Paused Squat",
+            "target": "5 repetições com barra vazia, pause 3s no fundo sem perda de posição",
+            "measurement_method": "Observação ou filmagem lateral"
+          },
+          {
+            "test": "Front Squat",
+            "target": "5 reps com barra vazia ou 30-40% 1RM com controle completo",
+            "measurement_method": "Padrão mantido sem butt-wink"
+          }
+        ],
+        "subjective_markers": [
+          "Controle de pelve torna-se automático em profundidades moderadas",
+          "Confiança em agachamentos profundos",
+          "Sensação de força nos erectores espinhais"
+        ],
+        "minimum_time": "14 dias",
+        "all_criteria_required": false,
+        "minimum_criteria": 2
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "paused_goblet_squat",
+          "name": "Paused Goblet Squat",
+          "primary_targets": ["Controle isométrico em profundidade", "Força de erectores"],
+          "equipment": ["Kettlebell 12-20kg"],
+          "sets": 4,
+          "reps": 6,
+          "tempo": "2-3-2-0 (2s descida, 3s pause no fundo, 2s subida)",
+          "rest": "120s",
+          "execution_cues": [
+            "Descer até profundidade máxima SEM butt-wink",
+            "Pausar 3 segundos completos no bottom position",
+            "Durante pausa: manter tensão ativa, respirar no topo do peito",
+            "Sentir erectores espinhais trabalhando para manter posição",
+            "Se começar perder posição neutra: profundidade é excessiva",
+            "Progressão de carga ao longo das semanas"
+          ],
+          "progressions": [
+            {"level": "Semana 1-2", "modification": "12-14kg kettlebell"},
+            {"level": "Semana 3-4", "modification": "16-20kg"}
+          ],
+          "scientific_rationale": "Pausa isométrica na posição mais desafiadora desenvolve força e controle específicos. Transferência superior ao padrão de movimento real."
+        },
+        {
+          "exercise_id": "front_squat_introduction",
+          "name": "Front Squat - Introdução",
+          "primary_targets": ["Padrão de agachamento com barra", "Torque extensor de coluna"],
+          "equipment": ["Barra", "Rack"],
+          "sets": 4,
+          "reps": 8,
+          "tempo": "3-0-2-0",
+          "rest": "150s",
+          "execution_cues": [
+            "Front squat naturalmente reduz butt-wink comparado a back squat",
+            "Posição frontal da barra mantém tronco mais ereto",
+            "Iniciar com barra vazia focando 100% em profundidade sem butt-wink",
+            "Adicionar carga MUITO gradualmente apenas quando padrão perfeito"
+          ],
+          "progressions": [
+            {"level": "Semana 1-2", "modification": "Barra vazia, foco em profundidade"},
+            {"level": "Semana 3-4", "modification": "Barra + 20-30kg se forma perfeita"}
+          ],
+          "scientific_rationale": "Front squat é superior ao back squat para cases de butt-wink devido a menor torque de flexão lombar (Swinton et al., 2012)."
+        },
+        {
+          "exercise_id": "good_morning_light",
+          "name": "Good Morning com Carga Leve",
+          "primary_targets": ["Erectores espinhais", "Controle isométrico de coluna"],
+          "equipment": ["Barra vazia ou PVC"],
+          "sets": 3,
+          "reps": 12,
+          "tempo": "3-1-3-0",
+          "rest": "90s",
+          "execution_cues": [
+            "Barra sobre ombros (high bar position)",
+            "Hip hinge mantendo coluna completamente neutra",
+            "Descer até sentir alongamento nos isquiotibiais",
+            "CRÍTICO: zero flexão lombar tolerada",
+            "Erectores devem trabalhar isometricamente mantendo arco",
+            "Retornar à posição ereta contraindo glúteos e isquiotibiais"
+          ],
+          "common_errors": [
+            {"error": "Flexão lombar durante descida", "correction": "Reduzir amplitude drasticamente - hip hinge termina onde lombar começa flexionar"}
+          ],
+          "progressions": [
+            {"level": "Iniciante", "modification": "PVC ou barra vazia, amplitude reduzida"},
+            {"level": "Padrão", "modification": "Barra vazia, full ROM mantendo neutro"}
+          ],
+          "scientific_rationale": "Good mornings fortalecem erectores espinhais e multífidos essenciais para manter coluna neutra sob carga (McGill, 2015)."
+        },
+        {
+          "exercise_id": "tempo_back_squat",
+          "name": "Tempo Back Squat",
+          "primary_targets": ["Integração ao back squat", "Consolidação de padrão"],
+          "equipment": ["Barra", "Rack"],
+          "sets": 4,
+          "reps": 5,
+          "tempo": "4-2-2-0 (4s descida, 2s pause, 2s subida)",
+          "rest": "180s",
+          "execution_cues": [
+            "Iniciar com barra vazia ou 40% 1RM",
+            "Descida ultra-controlada em 4 segundos",
+            "Pausar 2s na profundidade máxima sem butt-wink",
+            "Pode ser acima de paralelo inicialmente - progredir profundidade com semanas",
+            "Filmar SEMPRE de lado para monitorar lombar"
+          ],
+          "progressions": [
+            {"level": "Semana 1-2", "modification": "Barra vazia, profundidade até manter neutro"},
+            {"level": "Semana 3-4", "modification": "40-50% 1RM, aumentar profundidade gradualmente"}
+          ],
+          "scientific_rationale": "Tempo lento maximiza controle motor e feedback. Pausa consolida capacidade de manter posição sob tensão."
+        }
+      ]
+    }
+  ],
+
+  "return_to_exercise_criteria": {
+    "full_return_requirements": [
+      {
+        "category": "Mobilidade",
+        "tests": [
+          "Hip flexion > 120° cada lado",
+          "Ankle dorsiflexion > 40° cada lado",
+          "Deep squat hold 60s sem apoio com calcanhares no chão"
+        ]
+      },
+      {
+        "category": "Controle Motor",
+        "tests": [
+          "Goblet squat 20kg x 10 reps full depth sem butt-wink",
+          "Front squat 50% 1RM x 5 reps sem butt-wink",
+          "Back squat com 60-70% 1RM x 5 reps sem butt-wink perceptível"
+        ]
+      }
+    ],
+    "ongoing_maintenance": "Manter rotina de mobilidade de quadril e tornozelo 3x/semana permanentemente. Cat-cow diário. Filmar agachamentos mensalmente para monitorar."
+  },
+
+  "contraindications": {
+    "absolute": [
+      "Hérnia de disco lombar sintomática aguda",
+      "Espondilolistese de alto grau",
+      "Dor lombar severa (NRS > 6/10)"
+    ],
+    "relative": [
+      "História de hérnia de disco - progressão conservadora",
+      "Estenose espinhal - avaliar tolerância",
+      "Anatomia óssea limitante (impingement femoro-acetabular pode limitar flexão de quadril)"
+    ]
+  },
+
+  "red_flags": {
+    "stop_protocol_immediately": [
+      "Dor lombar aguda > 5/10",
+      "Irradiação para membros inferiores",
+      "Dormência ou formigamento",
+      "Perda de força em membros inferiores"
+    ]
+  },
+
+  "scientific_references": [
+    {
+      "authors": "Macrum, E., et al.",
+      "year": 2012,
+      "title": "Effect of limited ankle dorsiflexion on lower extremity mechanics during overhead squat",
+      "journal": "Journal of Sport Rehabilitation",
+      "key_finding": "Dorsiflexão inadequada força compensações proximais incluindo retroversão pélvica"
+    },
+    {
+      "authors": "McGill, S.M.",
+      "year": 2015,
+      "title": "Low Back Disorders: Evidence-Based Prevention and Rehabilitation",
+      "key_finding": "Controle motor de coluna e consciência postural são críticos para prevenção de lesões lombares"
+    },
+    {
+      "authors": "Behm, D.G., Chaouachi, A.",
+      "year": 2011,
+      "title": "A review of the acute effects of static and dynamic stretching on performance",
+      "journal": "European Journal of Applied Physiology",
+      "key_finding": "Alongamento prolongado induz adaptações de mobilidade"
+    }
+  ]
+}

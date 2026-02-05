@@ -1,0 +1,81 @@
+{
+  "exercise_id": "bench_press_flat",
+  "name": "Flat Barbell Bench Press",
+  "name_pt": "Supino Reto com Barra",
+  "version": "1.0.0",
+  "status": "validated",
+  "created_at": "2025-02-05T00:00:00Z",
+  "updated_at": "2025-02-05T00:00:00Z",
+  "validated_by": [
+    "NFC Biomechanics Team"
+  ],
+
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2025-02-05",
+      "changes": [
+        "Initial gold standard creation",
+        "Biomechanical angles based on Lehman (2005) grip width research",
+        "Shoulder safety parameters established (45-75° elbow flare)",
+        "Evidence from Guia de Estudos Peitoral Maior integrated",
+        "Bar path and touch point criteria defined"
+      ],
+      "author": "NFC Biomechanics Team"
+    }
+  ],
+
+  "validation_criteria": {
+    "minimum_samples": 50,
+    "expert_reviews": 3,
+    "inter_rater_reliability": 0.85,
+    "video_quality_requirements": {
+      "fps": 30,
+      "resolution_min": "720p",
+      "angles_required": ["lateral", "frontal", "overhead"]
+    }
+  },
+
+  "usage_statistics": {
+    "total_analyses": 0,
+    "average_similarity_score": null,
+    "common_deviations_frequency": {}
+  },
+
+  "related_exercises": [
+    "bench_press_incline",
+    "bench_press_decline",
+    "dumbbell_press_flat",
+    "close_grip_bench_press"
+  ],
+
+  "tags": [
+    "upper_body",
+    "compound",
+    "barbell",
+    "push",
+    "powerlifting",
+    "chest",
+    "foundational"
+  ],
+
+  "difficulty_level": {
+    "technical": "beginner",
+    "strength": "beginner",
+    "mobility": "low"
+  },
+
+  "prerequisites": {
+    "mobility": [
+      "shoulder_horizontal_abduction >= 45°",
+      "thoracic_extension adequate"
+    ],
+    "stability": [
+      "scapular_retraction_control",
+      "core_stability_adequate"
+    ],
+    "strength": [
+      "push_up >= 10_reps"
+    ]
+  }
+}

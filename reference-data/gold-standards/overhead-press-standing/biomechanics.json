@@ -1,0 +1,297 @@
+{
+  "exercise_id": "overhead_press_standing",
+  "version": "1.0.0",
+  "created_at": "2025-02-05",
+  "validated_by": "NFC Biomechanics Team",
+  "evidence_sources": [
+    "NSCA Essentials of Strength Training and Conditioning 4th Ed",
+    "Saeterbakken AH et al. The Effects of Bench Press Variations in Competitive Athletes on Muscle Activity and Performance. J Hum Kinet. 2017",
+    "Neumann DA. Cinesiologia do Aparelho Musculoesquelético (2011)",
+    "McKean MR et al. The standing overhead press. Strength Cond J. 2010"
+  ],
+
+  "exercise_metadata": {
+    "category": "upper_body_compound_push",
+    "primary_muscles": ["deltoid_anterior", "deltoid_lateral", "triceps_brachii"],
+    "secondary_muscles": ["upper_pectoralis", "serratus_anterior", "trapezius", "core"],
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "joint_actions": {
+      "shoulder": "flexion_abduction",
+      "elbow": "extension",
+      "scapula": "upward_rotation",
+      "spine": "isometric_stabilization"
+    }
+  },
+
+  "phases": {
+    "rack_position": {
+      "duration_percentage": 10,
+      "description": "Posição inicial, barra apoiada nos ombros/clavículas",
+      "key_points": [
+        "Barra apoiada sobre clavículas/deltoide anterior",
+        "Cotovelos ligeiramente à frente da barra",
+        "Postura ereta, core ativado",
+        "Pés hip-width, stance estável",
+        "Grip shoulder-width ou levemente mais largo",
+        "Olhar neutro à frente"
+      ],
+      "angles": {
+        "elbow_left": {
+          "ideal": 90,
+          "acceptable_range": [80, 100],
+          "tolerance": 15,
+          "measurement_method": "shoulder-elbow-wrist",
+          "scientific_rationale": "Cotovelos flexionados ~90° no rack position, antebraços verticais"
+        },
+        "elbow_right": {
+          "ideal": 90,
+          "acceptable_range": [80, 100],
+          "tolerance": 15,
+          "measurement_method": "shoulder-elbow-wrist",
+          "scientific_rationale": "Flexão de cotovelo ~90° no rack"
+        },
+        "shoulder_flexion_left": {
+          "ideal": 45,
+          "acceptable_range": [35, 55],
+          "tolerance": 15,
+          "measurement_method": "torso-shoulder-elbow_sagittal",
+          "scientific_rationale": "Ombros em flexão anterior moderada, cotovelos à frente"
+        },
+        "shoulder_flexion_right": {
+          "ideal": 45,
+          "acceptable_range": [35, 55],
+          "tolerance": 15,
+          "measurement_method": "torso-shoulder-elbow_sagittal",
+          "scientific_rationale": "Flexão anterior moderada"
+        },
+        "trunk": {
+          "ideal": 0,
+          "acceptable_range": [-5, 5],
+          "tolerance": 8,
+          "measurement_method": "vertical-spine_angle",
+          "scientific_rationale": "Tronco vertical, sem inclinação posterior (layback) ainda"
+        },
+        "hip": {
+          "ideal": 180,
+          "acceptable_range": [175, 185],
+          "tolerance": 10,
+          "measurement_method": "shoulder-hip-knee",
+          "scientific_rationale": "Quadril em extensão completa, glúteos contraídos para estabilidade"
+        }
+      }
+    },
+
+    "press_initial": {
+      "duration_percentage": 40,
+      "description": "Início da fase concêntrica, barra passa pela cabeça",
+      "key_points": [
+        "Drive vertical explosivo",
+        "Cabeça move levemente para trás (permite barra passar)",
+        "Leve extensão torácica (layback ~10°)",
+        "Cotovelos estendem progressivamente",
+        "Escápulas rodam superiormente",
+        "Core mantém rigidez"
+      ],
+      "angles": {
+        "elbow_left": {
+          "ideal": 135,
+          "acceptable_range": [120, 150],
+          "tolerance": 15,
+          "measurement_method": "shoulder-elbow-wrist",
+          "scientific_rationale": "Extensão progressiva de cotovelos durante fase concêntrica"
+        },
+        "elbow_right": {
+          "ideal": 135,
+          "acceptable_range": [120, 150],
+          "tolerance": 15,
+          "measurement_method": "shoulder-elbow-wrist",
+          "scientific_rationale": "Extensão progressiva"
+        },
+        "shoulder_flexion_left": {
+          "ideal": 120,
+          "acceptable_range": [110, 130],
+          "tolerance": 15,
+          "measurement_method": "torso-shoulder-elbow_sagittal",
+          "scientific_rationale": "Ombro em flexão/abdução progressiva, barra passando pela cabeça"
+        },
+        "shoulder_flexion_right": {
+          "ideal": 120,
+          "acceptable_range": [110, 130],
+          "tolerance": 15,
+          "measurement_method": "torso-shoulder-elbow_sagittal",
+          "scientific_rationale": "Flexão/abdução progressiva"
+        },
+        "trunk": {
+          "ideal": 10,
+          "acceptable_range": [5, 15],
+          "tolerance": 8,
+          "measurement_method": "vertical-spine_angle",
+          "scientific_rationale": "Leve extensão torácica (layback) permite barra passar pela face sem desvio anterior"
+        }
+      },
+      "critical_checkpoints": [
+        {
+          "name": "bar_path_vertical",
+          "description": "Barra move em trajetória vertical sem desvio anterior excessivo (< 5cm da linha vertical)",
+          "detection_method": "bar_horizontal_displacement < 5cm from_start_x",
+          "risk_if_failed": "medium",
+          "injury_mechanisms": "Desvio anterior aumenta momento de torque no ombro e lombar"
+        },
+        {
+          "name": "no_excessive_layback",
+          "description": "Extensão torácica limitada a ~10-15° (não >20°)",
+          "detection_method": "trunk_extension_angle < 15°",
+          "risk_if_failed": "medium",
+          "injury_mechanisms": "Layback excessivo aumenta shear stress lombar e transforma press em incline press"
+        }
+      ]
+    },
+
+    "lockout_overhead": {
+      "duration_percentage": 15,
+      "description": "Lockout completo overhead, braços totalmente estendidos",
+      "key_points": [
+        "Braços totalmente estendidos",
+        "Barra diretamente sobre mid-foot (vista lateral)",
+        "Cabeça retorna à posição neutra (à frente da barra)",
+        "Ombros elevados (shrug leve)",
+        "Escápulas em rotação superior completa",
+        "Tronco retorna à vertical"
+      ],
+      "angles": {
+        "elbow_left": {
+          "ideal": 175,
+          "acceptable_range": [170, 180],
+          "tolerance": 10,
+          "measurement_method": "shoulder-elbow-wrist",
+          "scientific_rationale": "Extensão completa de cotovelos no lockout, sem hiperextensão"
+        },
+        "elbow_right": {
+          "ideal": 175,
+          "acceptable_range": [170, 180],
+          "tolerance": 10,
+          "measurement_method": "shoulder-elbow-wrist",
+          "scientific_rationale": "Extensão completa de cotovelos"
+        },
+        "shoulder_flexion_left": {
+          "ideal": 180,
+          "acceptable_range": [170, 185],
+          "tolerance": 10,
+          "measurement_method": "torso-shoulder-elbow_sagittal",
+          "scientific_rationale": "Ombro em flexão completa (180°), braço alinhado verticalmente com tronco"
+        },
+        "shoulder_flexion_right": {
+          "ideal": 180,
+          "acceptable_range": [170, 185],
+          "tolerance": 10,
+          "measurement_method": "torso-shoulder-elbow_sagittal",
+          "scientific_rationale": "Flexão completa overhead"
+        },
+        "trunk": {
+          "ideal": 0,
+          "acceptable_range": [-5, 5],
+          "tolerance": 8,
+          "measurement_method": "vertical-spine_angle",
+          "scientific_rationale": "Tronco retorna à vertical no lockout overhead"
+        },
+        "scapular_upward_rotation": {
+          "ideal": 60,
+          "acceptable_range": [55, 65],
+          "tolerance": 10,
+          "measurement_method": "scapula_rotation_degrees",
+          "scientific_rationale": "Escápulas rodam superiormente ~60° para permitir elevação completa do braço (McKean 2010)"
+        }
+      },
+      "critical_checkpoints": [
+        {
+          "name": "bar_over_midfoot_lockout",
+          "description": "Barra diretamente sobre mid-foot no lockout (linha vertical)",
+          "detection_method": "bar_x == midfoot_x ± 3cm",
+          "risk_if_failed": "medium",
+          "injury_mechanisms": "Barra fora da linha vertical aumenta carga compensatória"
+        },
+        {
+          "name": "full_lockout_achieved",
+          "description": "Cotovelos completamente estendidos, ombros shrugged levemente",
+          "detection_method": "elbow_angle >= 170°, shoulder_elevation present",
+          "risk_if_failed": "low",
+          "injury_mechanisms": "Lockout parcial reduz ativação e indica possível deficit de mobilidade overhead"
+        }
+      ]
+    },
+
+    "eccentric_descent": {
+      "duration_percentage": 35,
+      "description": "Descida controlada da barra de volta ao rack position",
+      "key_points": [
+        "Descida controlada (não drop)",
+        "Cabeça move para trás novamente",
+        "Barra desce em trajetória vertical",
+        "Cotovelos flexionam progressivamente",
+        "Core mantém rigidez durante descida"
+      ],
+      "angles": {
+        "elbow_left": {
+          "ideal": 115,
+          "acceptable_range": [100, 130],
+          "tolerance": 15,
+          "measurement_method": "shoulder-elbow-wrist",
+          "scientific_rationale": "Flexão progressiva durante fase excêntrica"
+        },
+        "elbow_right": {
+          "ideal": 115,
+          "acceptable_range": [100, 130],
+          "tolerance": 15,
+          "measurement_method": "shoulder-elbow-wrist",
+          "scientific_rationale": "Flexão progressiva"
+        },
+        "shoulder_flexion_left": {
+          "ideal": 100,
+          "acceptable_range": [90, 110],
+          "tolerance": 15,
+          "measurement_method": "torso-shoulder-elbow_sagittal",
+          "scientific_rationale": "Redução progressiva da flexão de ombro"
+        },
+        "shoulder_flexion_right": {
+          "ideal": 100,
+          "acceptable_range": [90, 110],
+          "tolerance": 15,
+          "measurement_method": "torso-shoulder-elbow_sagittal",
+          "scientific_rationale": "Redução progressiva da flexão"
+        }
+      }
+    }
+  },
+
+  "biomechanical_constraints": {
+    "max_elbow_flexion": 110,
+    "min_elbow_flexion": 0,
+    "required_shoulder_flexion_mobility": 180,
+    "max_trunk_layback_degrees": 15,
+    "max_bar_forward_drift_cm": 5,
+    "bilateral_symmetry_threshold_degrees": 8,
+    "safety_limits": {
+      "excessive_layback": 20,
+      "bar_behind_head_distance_cm": 8,
+      "lumbar_hyperextension_max": 15
+    }
+  },
+
+  "similarity_weights": {
+    "elbow": 0.25,
+    "shoulder_flexion": 0.30,
+    "trunk": 0.20,
+    "bar_path": 0.15,
+    "symmetry": 0.10
+  },
+
+  "common_deviations_preview": [
+    "excessive_layback",
+    "bar_drift_forward",
+    "incomplete_lockout",
+    "asymmetric_press",
+    "elbow_flare",
+    "insufficient_overhead_mobility"
+  ]
+}

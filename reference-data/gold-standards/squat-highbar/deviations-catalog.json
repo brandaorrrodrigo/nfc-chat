@@ -1,0 +1,1306 @@
+{
+  "exercise_id": "squat_highbar",
+  "version": "1.0.0",
+  "created_at": "2025-02-05",
+  "total_deviations_cataloged": 12,
+  "evidence_base_references": [
+    "Powers CM. The influence of abnormal hip mechanics on knee injury. J Orthop Sports Phys Ther. 2010",
+    "Hewett TE et al. Biomechanical measures of neuromuscular control and valgus loading of the knee predict ACL injury risk. Am J Sports Med. 2005",
+    "McGill SM. Low Back Disorders: Evidence-Based Prevention and Rehabilitation. 3rd Ed. 2015",
+    "Schoenfeld BJ. Squatting Kinematics and Kinetics. J Strength Cond Res. 2010",
+    "Bell DR et al. Lean mass asymmetry influences force and power asymmetry during jumping. J Strength Cond Res. 2014",
+    "Sahrmann SA. Diagnosis and Treatment of Movement Impairment Syndromes. 2002"
+  ],
+
+  "deviations": [
+    {
+      "id": "knee_valgus",
+      "name": "Valgo Dinâmico de Joelho",
+      "name_en": "Dynamic Knee Valgus",
+      "description": "Joelhos colapsam medialmente (para dentro) durante o movimento, especialmente na fase excêntrica e no início da concêntrica",
+      "aliases": ["knee cave", "medial knee displacement", "valgus collapse", "joelhos para dentro"],
+
+      "biomechanical_cause": {
+        "primary": "Fraqueza de glúteo médio e máximo",
+        "secondary": [
+          "Má ativação de VMO (vasto medial oblíquo)",
+          "Excessiva rotação interna de quadril",
+          "Fraqueza de abdutores de quadril",
+          "Dominância de adutores",
+          "Controle neuromuscular inadequado"
+        ],
+        "risk_factors": [
+          "Histórico de lesão de LCA",
+          "Q-angle elevado (>20° mulheres, >15° homens)",
+          "Fadiga muscular",
+          "Antropometria (fêmur longo, tíbia curta)",
+          "Sexo feminino (3-6x mais prevalente)"
+        ]
+      },
+
+      "detection_method": {
+        "primary": "knee_medial_x < foot_center_x - 3cm",
+        "secondary": "frontal_plane_knee_angle < baseline - 15°",
+        "requires_landmarks": ["hip_left", "hip_right", "knee_left", "knee_right", "ankle_left", "ankle_right", "heel_left", "heel_right"],
+        "calculation": "distance(knee_x, foot_center_x) AND angle_frontal_plane(hip_center, knee, ankle)",
+        "detection_phase": "eccentric_mid to isometric_bottom",
+        "bilateral_comparison": true
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "angle_deviation": "5-10 degrees from neutral",
+          "medial_displacement": "2-5 cm",
+          "prevalence_percentage": "10-30% of reps",
+          "bilateral_asymmetry": "< 3cm difference",
+          "injury_risk": "low",
+          "performance_impact": "minimal force loss",
+          "intervention": "Cueing alone may suffice"
+        },
+        "moderate": {
+          "angle_deviation": "10-15 degrees from neutral",
+          "medial_displacement": "5-8 cm",
+          "prevalence_percentage": "30-60% of reps",
+          "bilateral_asymmetry": "3-5cm difference",
+          "injury_risk": "moderate (ACL, MCL, patellofemoral)",
+          "performance_impact": "15-25% force reduction",
+          "intervention": "Cueing + corrective exercises"
+        },
+        "severe": {
+          "angle_deviation": ">15 degrees from neutral",
+          "medial_displacement": ">8 cm",
+          "prevalence_percentage": ">60% of reps",
+          "bilateral_asymmetry": ">5cm difference",
+          "injury_risk": "high (ACL tear, MCL sprain, meniscus)",
+          "performance_impact": "30-40% force reduction, instability",
+          "intervention": "Stop exercise, rehab protocol"
+        }
+      },
+
+      "associated_compensations": [
+        "hip_adduction_excessive",
+        "foot_pronation",
+        "contralateral_pelvic_drop",
+        "ipsilateral_trunk_lean"
+      ],
+
+      "differential_diagnosis": [
+        {
+          "condition": "Structural genu valgum",
+          "differentiator": "Present at rest in standing, not purely dynamic",
+          "assessment": "Static alignment measurement"
+        },
+        {
+          "condition": "Ankle mobility limitation",
+          "differentiator": "Accompanied by heel rise and excessive forward lean",
+          "assessment": "Ankle dorsiflexion test"
+        },
+        {
+          "condition": "Hip internal rotation tightness",
+          "differentiator": "Limited hip external rotation ROM",
+          "assessment": "Hip rotation ROM test"
+        }
+      ],
+
+      "evidence_base": {
+        "prevalence": "40-70% of recreational lifters, higher in females (Powers CM, 2010)",
+        "injury_correlation": "2.7x increased ACL injury risk in females with knee valgus (Hewett TE, 2005)",
+        "biomechanical_impact": "Increases medial knee joint loading by 30-50% (Hewett TE, 2005)",
+        "correction_efficacy": "85% improvement with 6-week targeted glute med strengthening (Myer GD, 2008)"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": [
+          "Push knees out",
+          "Spread the floor with your feet",
+          "Screw feet into ground (external rotation)",
+          "Point knees over toes"
+        ],
+        "corrective_exercises": [
+          {
+            "name": "Clamshells",
+            "target": "Gluteus medius",
+            "sets": 3,
+            "reps": 15,
+            "frequency": "Daily",
+            "progression": "Add resistance band"
+          },
+          {
+            "name": "Monster walks (lateral band walks)",
+            "target": "Hip abductors",
+            "sets": 3,
+            "reps": "20 steps each direction",
+            "frequency": "3x/week",
+            "progression": "Heavier band, deeper squat position"
+          },
+          {
+            "name": "Single-leg RDL",
+            "target": "Hip stability and glute activation",
+            "sets": 3,
+            "reps": 10,
+            "frequency": "3x/week",
+            "progression": "Add weight"
+          },
+          {
+            "name": "Banded squats",
+            "target": "Squat pattern with abduction resistance",
+            "sets": 3,
+            "reps": 12,
+            "frequency": "Every squat session",
+            "progression": "Heavier band, add load"
+          }
+        ],
+        "mobility_work": [
+          "Hip internal rotator stretching",
+          "Adductor stretching"
+        ],
+        "return_to_exercise_criteria": [
+          "Can perform 20 bodyweight squats without valgus",
+          "Can perform 3x15 single-leg exercises with control",
+          "Bilateral symmetry < 2cm displacement"
+        ]
+      }
+    },
+
+    {
+      "id": "butt_wink",
+      "name": "Butt Wink (Retroversão Pélvica no Fundo)",
+      "name_en": "Butt Wink (Posterior Pelvic Tilt at Bottom)",
+      "description": "Pelve bascula posteriormente no fundo do agachamento, causando flexão lombar e perda da lordose neutra",
+      "aliases": ["lumbar flexion bottom", "pelvic tuck", "sacral tilting", "perda de lordose lombar"],
+
+      "biomechanical_cause": {
+        "primary": "Limitação de mobilidade de quadril em flexão",
+        "secondary": [
+          "Isquiotibiais encurtados",
+          "Cápsula posterior do quadril rígida",
+          "Má propriocepção pélvica",
+          "Core fraco (não mantém posição neutra)",
+          "Antropometria desfavorável (fêmur longo)"
+        ],
+        "risk_factors": [
+          "Mobilidade inadequada de quadril",
+          "Histórico de dor lombar",
+          "Estilo de vida sedentário",
+          "Comprimento femoral relativo alto",
+          "Tentativa de profundidade excessiva"
+        ]
+      },
+
+      "detection_method": {
+        "primary": "pelvis_tilt_change > 15° posterior from top to bottom",
+        "secondary": "lumbar_flexion > 20° from neutral lordosis",
+        "requires_landmarks": ["hip_left", "hip_right", "sacrum", "lumbar_spine_mid", "thoracic_spine"],
+        "calculation": "angle_change(sacrum_to_lumbar_vector, hip_to_shoulder_vector) from eccentric_top to isometric_bottom",
+        "detection_phase": "transition from eccentric_mid to isometric_bottom",
+        "visual_indicator": "Rounding of lower back, pelvis 'tucking under'"
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "pelvic_tilt": "10-15 degrees posterior",
+          "lumbar_flexion": "10-15 degrees from neutral",
+          "depth_occurrence": "Only below parallel (deep squat)",
+          "injury_risk": "low-moderate",
+          "performance_impact": "Minimal, mostly at max depth",
+          "intervention": "Monitor, may be acceptable if pain-free"
+        },
+        "moderate": {
+          "pelvic_tilt": "15-25 degrees posterior",
+          "lumbar_flexion": "15-25 degrees from neutral",
+          "depth_occurrence": "At parallel or slightly below",
+          "injury_risk": "moderate (disc shear stress)",
+          "performance_impact": "Increased disc loading, reduced power transfer",
+          "intervention": "Limit depth, mobility work"
+        },
+        "severe": {
+          "pelvic_tilt": ">25 degrees posterior",
+          "lumbar_flexion": ">25 degrees from neutral",
+          "depth_occurrence": "Above parallel",
+          "injury_risk": "high (disc herniation risk, L4-L5, L5-S1)",
+          "performance_impact": "Significant spinal loading, loss of stability",
+          "intervention": "Stop deep squats, aggressive mobility protocol"
+        }
+      },
+
+      "associated_compensations": [
+        "heel_rise",
+        "excessive_trunk_lean",
+        "reduced_depth_instinctive",
+        "increased_stance_width"
+      ],
+
+      "differential_diagnosis": [
+        {
+          "condition": "Normal spinal flexion pattern",
+          "differentiator": "Minimal pelvic tilt (<10°), maintained throughout ROM",
+          "assessment": "Some degree of butt wink may be anatomically normal"
+        },
+        {
+          "condition": "Hip impingement (FAI)",
+          "differentiator": "Pain in anterior hip or groin at depth",
+          "assessment": "FABER test, hip impingement test"
+        }
+      ],
+
+      "evidence_base": {
+        "prevalence": "30-50% of squatters exhibit some degree (Sahrmann SA, 2002)",
+        "injury_correlation": "Increased posterior disc shear forces by 300-400N at L5-S1 (McGill SM, 2015)",
+        "biomechanical_impact": "Loss of intra-abdominal pressure, reduced force transfer (McGill SM, 2015)",
+        "correction_efficacy": "70% improvement with 8-week hip mobility protocol (Cook G, 2010)"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": [
+          "Stop at parallel until depth is earned",
+          "Chest up, maintain arch",
+          "Pull hip flexors open",
+          "Imagine tail extending behind you"
+        ],
+        "corrective_exercises": [
+          {
+            "name": "90/90 hip stretch",
+            "target": "Hip capsule posterior, hip flexion ROM",
+            "sets": 3,
+            "duration": "60-90 seconds each side",
+            "frequency": "Daily",
+            "progression": "Loaded stretch, PNF stretching"
+          },
+          {
+            "name": "Hamstring flossing",
+            "target": "Hamstring length",
+            "sets": 3,
+            "reps": 10,
+            "frequency": "Daily",
+            "progression": "Increase ROM"
+          },
+          {
+            "name": "Goblet squat to box (adjustable height)",
+            "target": "Proprioception, depth control",
+            "sets": 4,
+            "reps": 8,
+            "frequency": "Every squat session",
+            "progression": "Gradually lower box height"
+          },
+          {
+            "name": "Dead bug variations",
+            "target": "Core stability, pelvic control",
+            "sets": 3,
+            "reps": 10,
+            "frequency": "3x/week",
+            "progression": "Add anti-extension challenges"
+          }
+        ],
+        "mobility_work": [
+          "Hip flexor stretching (couch stretch)",
+          "Hip capsule mobilization",
+          "Thoracic extension work"
+        ],
+        "return_to_exercise_criteria": [
+          "Hip flexion ROM > 120° pain-free",
+          "Can squat to parallel with <10° pelvic tilt",
+          "Toe-touch test passes (hands to floor)"
+        ]
+      }
+    },
+
+    {
+      "id": "excessive_forward_lean",
+      "name": "Inclinação Excessiva de Tronco para Frente",
+      "name_en": "Excessive Forward Trunk Lean",
+      "description": "Tronco inclina excessivamente para frente durante o agachamento, aumentando ângulo com a vertical além do esperado para highbar",
+      "aliases": ["forward trunk lean", "good morning squat", "chest down", "tronco tombando"],
+
+      "biomechanical_cause": {
+        "primary": "Limitação de mobilidade de tornozelo (dorsiflexão)",
+        "secondary": [
+          "Quadríceps fracos (não controlam descida)",
+          "Core fraco (não mantém postura)",
+          "Dominância de cadeia posterior",
+          "Má percepção de postura",
+          "Tentativa de manter calcanhar no chão com mobilidade inadequada"
+        ],
+        "risk_factors": [
+          "Tornozelos rígidos (<30° dorsiflexão)",
+          "Histórico de lesão de tornozelo",
+          "Comprimento femoral relativo alto",
+          "Sapatos inadequados (salto elevado)",
+          "Má consciência corporal"
+        ]
+      },
+
+      "detection_method": {
+        "primary": "trunk_angle > 35° from vertical in highbar",
+        "secondary": "center_of_mass displacement > 8cm anterior to midfoot",
+        "requires_landmarks": ["shoulder", "hip", "knee", "ankle", "heel"],
+        "calculation": "angle_between(vertical_reference, line(shoulder_midpoint, hip_midpoint))",
+        "detection_phase": "eccentric_mid and isometric_bottom",
+        "comparison": "Highbar should be ~20-30°, Lowbar ~35-45°"
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "trunk_angle": "30-40 degrees from vertical",
+          "shift_magnitude": "5-8 cm anterior to midfoot",
+          "compensation": "Controllable, maintains balance",
+          "injury_risk": "low",
+          "performance_impact": "Increased erector spinae demand, minimal leg drive loss",
+          "intervention": "Ankle mobility work, cueing"
+        },
+        "moderate": {
+          "trunk_angle": "40-55 degrees from vertical",
+          "shift_magnitude": "8-12 cm anterior to midfoot",
+          "compensation": "Difficulty maintaining, balance challenged",
+          "injury_risk": "moderate (lumbar stress)",
+          "performance_impact": "25-35% reduced quad activation, becomes more posterior chain",
+          "intervention": "Limit depth, aggressive ankle mobility, consider squat shoes"
+        },
+        "severe": {
+          "trunk_angle": ">55 degrees from vertical",
+          "shift_magnitude": ">12 cm anterior to midfoot",
+          "compensation": "Loss of control, near fall forward or converts to good morning",
+          "injury_risk": "high (spinal, loss of balance)",
+          "performance_impact": "Essentially becomes Romanian deadlift/good morning, minimal quad",
+          "intervention": "Stop barbell squats temporarily, goblet/front squats only"
+        }
+      },
+
+      "associated_compensations": [
+        "heel_rise",
+        "reduced_depth",
+        "knee_anteriorization_insufficient",
+        "hip_shift_posterior"
+      ],
+
+      "differential_diagnosis": [
+        {
+          "condition": "Lowbar squat technique",
+          "differentiator": "Expected for lowbar (40-50° is normal)",
+          "assessment": "Check bar position"
+        },
+        {
+          "condition": "Intentional good morning squat",
+          "differentiator": "Hips rise first, knees extend early",
+          "assessment": "Phase analysis of joint angles"
+        }
+      ],
+
+      "evidence_base": {
+        "prevalence": "25-40% with ankle dorsiflexion <30° (Bell DR et al, 2013)",
+        "injury_correlation": "2.8x increase in lumbar loading vs upright posture (Schoenfeld BJ, 2010)",
+        "biomechanical_impact": "Shifts load from quads to posterior chain, increases spinal moment arm (Schoenfeld BJ, 2010)",
+        "correction_efficacy": "90% improvement in trunk angle with 4-week ankle mobility (Kim SH et al, 2015)"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": [
+          "Chest up",
+          "Lead with chest, not hips",
+          "Stay upright",
+          "Push knees forward over toes"
+        ],
+        "corrective_exercises": [
+          {
+            "name": "Ankle dorsiflexion mobilization (wall test)",
+            "target": "Ankle dorsiflexion ROM",
+            "sets": 3,
+            "duration": "90 seconds each side",
+            "frequency": "Daily",
+            "progression": "Increase distance from wall"
+          },
+          {
+            "name": "Goblet squat",
+            "target": "Upright torso pattern, counterbalance",
+            "sets": 4,
+            "reps": 10,
+            "frequency": "Every training session",
+            "progression": "Increase load, remove counterbalance"
+          },
+          {
+            "name": "Front squat",
+            "target": "Force upright posture",
+            "sets": 3,
+            "reps": 6,
+            "frequency": "2x/week",
+            "progression": "Add load gradually"
+          },
+          {
+            "name": "Heel-elevated squats",
+            "target": "Reduce ankle mobility requirement temporarily",
+            "sets": 3,
+            "reps": 10,
+            "frequency": "2x/week",
+            "progression": "Gradually reduce heel elevation"
+          }
+        ],
+        "mobility_work": [
+          "Calf stretching (gastrocnemius and soleus)",
+          "Ankle joint mobilization",
+          "Thoracic extension drills"
+        ],
+        "equipment_considerations": [
+          "Consider Olympic weightlifting shoes (elevated heel)",
+          "Use 2.5-5lb plates under heels temporarily"
+        ],
+        "return_to_exercise_criteria": [
+          "Ankle dorsiflexion > 30° (knee to wall test > 12cm)",
+          "Can squat to parallel with <30° trunk lean",
+          "No heel rise during movement"
+        ]
+      }
+    },
+
+    {
+      "id": "heel_rise",
+      "name": "Elevação de Calcanhar",
+      "name_en": "Heel Rise",
+      "description": "Calcanhares se elevam do chão durante a descida ou no fundo do agachamento, transferindo peso para os dedos",
+      "aliases": ["heel lift", "heel off ground", "weight on toes", "calcanhar sai do chão"],
+
+      "biomechanical_cause": {
+        "primary": "Limitação crítica de dorsiflexão de tornozelo (<25°)",
+        "secondary": [
+          "Gastrocnêmio/sóleo encurtados",
+          "Má distribuição de peso (muito anterior)",
+          "Compensação por má técnica",
+          "Sapatos inadequados"
+        ],
+        "risk_factors": [
+          "Histórico de lesão de tornozelo",
+          "Uso frequente de salto alto",
+          "Mobilidade inadequada",
+          "Antropometria (tíbia longa relativa)"
+        ]
+      },
+
+      "detection_method": {
+        "primary": "heel_y > floor_level + 0.5cm",
+        "secondary": "pressure_shift to forefoot (if using force plate)",
+        "requires_landmarks": ["heel_left", "heel_right", "floor_reference"],
+        "calculation": "distance(heel_landmark_y, floor_y)",
+        "detection_phase": "eccentric_mid to isometric_bottom",
+        "bilateral_comparison": true
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "heel_lift_height": "0.5-1 cm",
+          "occurrence": "Only at max depth",
+          "bilateral_symmetry": "Symmetric",
+          "injury_risk": "low",
+          "performance_impact": "Minor instability",
+          "intervention": "Mobility work"
+        },
+        "moderate": {
+          "heel_lift_height": "1-2 cm",
+          "occurrence": "Below parallel",
+          "bilateral_symmetry": "Possible asymmetry",
+          "injury_risk": "moderate (ankle instability, balance)",
+          "performance_impact": "Reduced force production, instability",
+          "intervention": "Limit depth, heel-elevated squats"
+        },
+        "severe": {
+          "heel_lift_height": ">2 cm",
+          "occurrence": "At or above parallel",
+          "bilateral_symmetry": "Often asymmetric",
+          "injury_risk": "high (fall risk, ankle sprain, compensatory injury)",
+          "performance_impact": "Significant instability, loss of drive",
+          "intervention": "Stop, address ankle mobility aggressively"
+        }
+      },
+
+      "associated_compensations": [
+        "excessive_forward_lean",
+        "reduced_depth",
+        "butt_wink"
+      ],
+
+      "evidence_base": {
+        "prevalence": "15-30% with ankle dorsiflexion <25° (Macrum E et al, 2012)",
+        "injury_correlation": "Increases patellofemoral joint stress, reduces stability (Schoenfeld BJ, 2010)",
+        "biomechanical_impact": "Shifts load anteriorly, reduces posterior chain engagement",
+        "correction_efficacy": "Immediately correctable with heel elevation, 80% long-term with mobility work"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": [
+          "Drive through heels",
+          "Tripod foot - weight on heel, big toe, little toe",
+          "Spread floor with feet"
+        ],
+        "corrective_exercises": [
+          {
+            "name": "Calf stretching (straight knee - gastrocnemius)",
+            "target": "Gastrocnemius length",
+            "sets": 3,
+            "duration": "60 seconds each side",
+            "frequency": "2x daily",
+            "progression": "Increase stretch intensity"
+          },
+          {
+            "name": "Calf stretching (bent knee - soleus)",
+            "target": "Soleus length",
+            "sets": 3,
+            "duration": "60 seconds each side",
+            "frequency": "2x daily",
+            "progression": "Increase stretch intensity"
+          },
+          {
+            "name": "Ankle dorsiflexion with band",
+            "target": "Ankle joint capsule mobility",
+            "sets": 3,
+            "reps": 15,
+            "frequency": "Daily",
+            "progression": "Heavier band, deeper position"
+          }
+        ],
+        "immediate_solution": [
+          "Use Olympic weightlifting shoes (0.75-1 inch heel)",
+          "Place 2.5-5lb plates under heels"
+        ],
+        "return_to_exercise_criteria": [
+          "Ankle dorsiflexion >30°",
+          "Can squat to depth with heels down"
+        ]
+      }
+    },
+
+    {
+      "id": "asymmetric_loading",
+      "name": "Assimetria de Carga Bilateral",
+      "name_en": "Bilateral Loading Asymmetry",
+      "description": "Distribuição desigual de carga entre os lados esquerdo e direito do corpo durante o movimento",
+      "aliases": ["unilateral loading", "weight shift", "lateral shift", "deslocamento lateral"],
+
+      "biomechanical_cause": {
+        "primary": "Assimetria de força ou mobilidade entre lados",
+        "secondary": [
+          "Histórico de lesão unilateral",
+          "Dominância lateral",
+          "Diferença de comprimento de membros",
+          "Escoliose ou assimetria estrutural",
+          "Controle motor inadequado"
+        ],
+        "risk_factors": [
+          "Lesão prévia",
+          "Retorno recente de lesão",
+          "Déficit de mobilidade unilateral",
+          "Má consciência corporal"
+        ]
+      },
+
+      "detection_method": {
+        "primary": "center_of_mass_x deviation > 3cm from midline",
+        "secondary": "bilateral_angle_difference > 8° (hip or knee)",
+        "requires_landmarks": ["hip_left", "hip_right", "knee_left", "knee_right", "ankle_left", "ankle_right"],
+        "calculation": "compare(left_side_angles, right_side_angles) AND com_lateral_position",
+        "detection_phase": "all phases",
+        "bilateral_comparison": true
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "lateral_shift": "2-4 cm from midline",
+          "angle_asymmetry": "5-8 degrees",
+          "force_asymmetry": "10-15% difference (if measured)",
+          "injury_risk": "low-moderate",
+          "performance_impact": "Minimal",
+          "intervention": "Awareness cueing"
+        },
+        "moderate": {
+          "lateral_shift": "4-7 cm from midline",
+          "angle_asymmetry": "8-12 degrees",
+          "force_asymmetry": "15-25% difference",
+          "injury_risk": "moderate (overload one side)",
+          "performance_impact": "Reduced force production, imbalance",
+          "intervention": "Unilateral work, reduce load"
+        },
+        "severe": {
+          "lateral_shift": ">7 cm from midline",
+          "angle_asymmetry": ">12 degrees",
+          "force_asymmetry": ">25% difference",
+          "injury_risk": "high (overuse injury on loaded side)",
+          "performance_impact": "Significant imbalance, compensatory patterns",
+          "intervention": "Stop bilateral squats, unilateral training phase"
+        }
+      },
+
+      "associated_compensations": [
+        "ipsilateral_hip_drop",
+        "contralateral_knee_valgus",
+        "trunk_lateral_flexion"
+      ],
+
+      "evidence_base": {
+        "prevalence": "15-30% show >10% asymmetry (Bell DR et al, 2014)",
+        "injury_correlation": "Limb asymmetry >15% associated with 4x injury risk (Hewett TE, 2005)",
+        "biomechanical_impact": "Overloads one side, reduces total force output",
+        "correction_efficacy": "70-80% improvement with unilateral training (McCurdy K, 2010)"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": [
+          "Stay centered",
+          "Equal weight on both feet",
+          "Drive through both heels equally"
+        ],
+        "corrective_exercises": [
+          {
+            "name": "Single-leg squat (Bulgarian split squat)",
+            "target": "Identify and address weaker side",
+            "sets": 3,
+            "reps": "10 each side, start with weaker",
+            "frequency": "3x/week",
+            "progression": "Add load"
+          },
+          {
+            "name": "Single-leg RDL",
+            "target": "Unilateral stability and strength",
+            "sets": 3,
+            "reps": 8,
+            "frequency": "3x/week",
+            "progression": "Add load"
+          },
+          {
+            "name": "Step-ups",
+            "target": "Unilateral force production",
+            "sets": 3,
+            "reps": 10,
+            "frequency": "2x/week",
+            "progression": "Increase step height, add load"
+          }
+        ],
+        "assessment": [
+          "Mobility asymmetry screening",
+          "Strength testing bilateral"
+        ],
+        "return_to_exercise_criteria": [
+          "Bilateral strength asymmetry <10%",
+          "Mobility symmetry achieved",
+          "Can perform unilateral exercises with equal quality"
+        ]
+      }
+    },
+
+    {
+      "id": "shallow_depth",
+      "name": "Profundidade Inadequada",
+      "name_en": "Insufficient Depth",
+      "description": "Não alcança profundidade mínima (crease do quadril abaixo da linha do joelho para parallel)",
+      "aliases": ["quarter squat", "half squat", "high squat", "agachamento raso"],
+
+      "biomechanical_cause": {
+        "primary": "Limitação de mobilidade (tornozelo, quadril) ou medo de profundidade",
+        "secondary": [
+          "Carga excessiva",
+          "Dor ou desconforto",
+          "Má técnica aprendida",
+          "Insegurança com carga"
+        ],
+        "risk_factors": [
+          "Mobilidade inadequada",
+          "Ego lifting (carga > capacidade)",
+          "Falta de instrução"
+        ]
+      },
+
+      "detection_method": {
+        "primary": "hip_crease_y > knee_top_y + 2cm at lowest point",
+        "secondary": "knee_flexion_angle_max > 100° (should be ~85-90° for parallel)",
+        "requires_landmarks": ["hip", "knee", "ankle"],
+        "calculation": "compare(hip_crease_height, knee_height)",
+        "detection_phase": "isometric_bottom"
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "depth_deficit": "Hip crease 2-5cm above knee",
+          "knee_angle_at_bottom": "95-105 degrees",
+          "injury_risk": "low",
+          "performance_impact": "Reduced glute activation (15-20%)",
+          "intervention": "Mobility work, depth cueing"
+        },
+        "moderate": {
+          "depth_deficit": "Hip crease 5-10cm above knee (half squat)",
+          "knee_angle_at_bottom": "105-120 degrees",
+          "injury_risk": "low (but incomplete training stimulus)",
+          "performance_impact": "Significantly reduced glute/hamstring activation (30-40%)",
+          "intervention": "Reduce load, goblet squats to depth"
+        },
+        "severe": {
+          "depth_deficit": "Hip crease >10cm above knee (quarter squat)",
+          "knee_angle_at_bottom": ">120 degrees",
+          "injury_risk": "Increased patellofemoral stress (high quad load at short ROM)",
+          "performance_impact": "Minimal posterior chain activation, incomplete movement",
+          "intervention": "Box squats to learn depth, significant load reduction"
+        }
+      },
+
+      "associated_compensations": [
+        "excessive_load",
+        "heel_rise_avoidance",
+        "mobility_compensation"
+      ],
+
+      "evidence_base": {
+        "prevalence": "30-50% don't reach parallel (Schoenfeld BJ, 2010)",
+        "injury_correlation": "Paradoxically, deeper squats may be safer for knees (Hartmann H et al, 2013)",
+        "biomechanical_impact": "Reduces glute activation by 30-40% vs full depth (Caterisano A et al, 2002)",
+        "correction_efficacy": "Depth immediately improvable with load reduction or box squats"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": [
+          "Sit back and down",
+          "Hip crease below knee",
+          "Aim for depth, not weight"
+        ],
+        "corrective_exercises": [
+          {
+            "name": "Box squats (adjustable height)",
+            "target": "Learn depth reference point",
+            "sets": 4,
+            "reps": 8,
+            "frequency": "Every squat session",
+            "progression": "Lower box height gradually"
+          },
+          {
+            "name": "Goblet squat",
+            "target": "Counterbalance allows depth",
+            "sets": 3,
+            "reps": 10,
+            "frequency": "3x/week",
+            "progression": "Increase load"
+          },
+          {
+            "name": "Pause squats at parallel",
+            "target": "Reinforce proper depth",
+            "sets": 3,
+            "reps": 5,
+            "frequency": "2x/week",
+            "progression": "Increase pause duration"
+          }
+        ],
+        "load_modification": [
+          "Reduce load to 50-60% to achieve depth",
+          "Gradually increase load while maintaining depth"
+        ],
+        "return_to_exercise_criteria": [
+          "Consistently achieves parallel or below",
+          "No compensations at depth"
+        ]
+      }
+    },
+
+    {
+      "id": "knee_hyperextension_top",
+      "name": "Hiperextensão de Joelho no Topo",
+      "name_en": "Knee Hyperextension at Top",
+      "description": "Joelhos travam com hiperextensão no lockout do topo",
+      "aliases": ["knee lockout excessive", "knee snap", "joelhos travados"],
+
+      "biomechanical_cause": {
+        "primary": "Hipermobilidade articular ou má consciência de lockout neutro",
+        "secondary": [
+          "Fraqueza de quadríceps (compensação com lockout passivo)",
+          "Padrão motor inadequado"
+        ],
+        "risk_factors": [
+          "Hipermobilidade generalizada",
+          "Sexo feminino (mais comum)",
+          "Histórico de lesão de joelho"
+        ]
+      },
+
+      "detection_method": {
+        "primary": "knee_angle > 185° at top",
+        "secondary": "knee_y displacement posterior beyond neutral",
+        "requires_landmarks": ["hip", "knee", "ankle"],
+        "calculation": "angle(hip, knee, ankle) at eccentric_top phase",
+        "detection_phase": "eccentric_top and after concentric lockout"
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "hyperextension_angle": "180-185 degrees",
+          "injury_risk": "low",
+          "performance_impact": "Minimal",
+          "intervention": "Cueing"
+        },
+        "moderate": {
+          "hyperextension_angle": "185-190 degrees",
+          "injury_risk": "moderate (posterior knee stress)",
+          "performance_impact": "Reduced stability",
+          "intervention": "Conscious control of lockout"
+        },
+        "severe": {
+          "hyperextension_angle": ">190 degrees",
+          "injury_risk": "high (LCA posterior stress, PCL)",
+          "performance_impact": "Instability",
+          "intervention": "Strengthen quads, avoid full lockout"
+        }
+      },
+
+      "evidence_base": {
+        "prevalence": "10-15% with general hypermobility (Russek LN, 1999)",
+        "injury_correlation": "Associated with increased ACL injury risk in hypermobile athletes",
+        "correction_efficacy": "Easily correctable with cueing and motor control"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": [
+          "Soft knees at top",
+          "Maintain micro-bend",
+          "Don't snap knees back"
+        ],
+        "corrective_exercises": [
+          {
+            "name": "Quad strengthening (terminal knee extension)",
+            "target": "Strengthen quads to control lockout actively",
+            "sets": 3,
+            "reps": 15,
+            "frequency": "Daily",
+            "progression": "Add resistance"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "bar_not_over_midfoot",
+      "name": "Barra Fora do Centro de Apoio",
+      "name_en": "Bar Not Over Midfoot",
+      "description": "Barra não mantém trajetória vertical sobre o meio do pé durante o movimento",
+      "aliases": ["bar drift", "bar path deviation", "perda de verticalidade"],
+
+      "biomechanical_cause": {
+        "primary": "Combinação de múltiplos desvios técnicos",
+        "secondary": [
+          "Excessive forward lean",
+          "Heel rise",
+          "Improper setup"
+        ],
+        "risk_factors": [
+          "Má técnica",
+          "Mobilidade inadequada"
+        ]
+      },
+
+      "detection_method": {
+        "primary": "bar_x_position deviation > 5cm from midfoot_x throughout movement",
+        "secondary": "tracking bar path in sagittal plane",
+        "requires_landmarks": ["bar_position", "heel", "toe"],
+        "calculation": "distance(bar_x, midfoot_x) over time",
+        "detection_phase": "all phases"
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "deviation": "3-6 cm from vertical line",
+          "injury_risk": "low",
+          "performance_impact": "Reduced efficiency (10-15%)",
+          "intervention": "Technical correction"
+        },
+        "moderate": {
+          "deviation": "6-10 cm from vertical line",
+          "injury_risk": "moderate (increased moment arms)",
+          "performance_impact": "Significant efficiency loss (20-30%)",
+          "intervention": "Address root cause (mobility/technique)"
+        },
+        "severe": {
+          "deviation": ">10 cm from vertical line",
+          "injury_risk": "high (loss of balance possible)",
+          "performance_impact": "Major efficiency loss, instability",
+          "intervention": "Reduce load, fundamental technique work"
+        }
+      },
+
+      "evidence_base": {
+        "biomechanical_impact": "Each cm of forward bar deviation increases lumbar moment by ~1% body weight (McGill SM, 2015)"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": [
+          "Bar straight up and down",
+          "Keep bar over midfoot",
+          "Drive vertically"
+        ],
+        "corrective_exercises": [
+          {
+            "name": "Tempo squats with vertical reference",
+            "target": "Bar path awareness",
+            "sets": 4,
+            "reps": 5,
+            "frequency": "Every session",
+            "progression": "Increase load while maintaining path"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "hips_rise_first",
+      "name": "Quadris Sobem Primeiro (Good Morning Pattern)",
+      "name_en": "Hips Rise First (Good Morning Squat)",
+      "description": "Quadris estendem primeiro no início da fase concêntrica, antes dos joelhos, causando aumento de inclinação do tronco",
+      "aliases": ["good morning squat", "hips shoot up", "stripper squat", "quadril sobe antes"],
+
+      "biomechanical_cause": {
+        "primary": "Quadríceps fracos relativos à cadeia posterior",
+        "secondary": [
+          "Má coordenação motora",
+          "Core fraco",
+          "Carga excessiva",
+          "Dominância de cadeia posterior"
+        ],
+        "risk_factors": [
+          "Déficit de força de quadríceps",
+          "Histórico de powerlifting (lowbar dominant)",
+          "Ego lifting"
+        ]
+      },
+
+      "detection_method": {
+        "primary": "hip_extension_rate > knee_extension_rate in first 30% of concentric",
+        "secondary": "trunk_angle_increase > 10° in early concentric",
+        "requires_landmarks": ["hip", "knee", "shoulder"],
+        "calculation": "compare(delta_hip_angle/dt, delta_knee_angle/dt) in concentric phase",
+        "detection_phase": "early concentric (0-30%)"
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "hip_knee_extension_ratio": "1.2:1 (hips extend 20% faster)",
+          "trunk_angle_increase": "5-10 degrees",
+          "injury_risk": "low",
+          "performance_impact": "Slightly inefficient",
+          "intervention": "Cueing, pause squats"
+        },
+        "moderate": {
+          "hip_knee_extension_ratio": "1.5:1 (hips extend 50% faster)",
+          "trunk_angle_increase": "10-20 degrees",
+          "injury_risk": "moderate (lumbar stress)",
+          "performance_impact": "Significant efficiency loss, becomes good morning",
+          "intervention": "Reduce load, quad strengthening"
+        },
+        "severe": {
+          "hip_knee_extension_ratio": ">2:1 (hips extend 2x faster)",
+          "trunk_angle_increase": ">20 degrees",
+          "injury_risk": "high (spinal loading)",
+          "performance_impact": "Essentially a good morning exercise, not a squat",
+          "intervention": "Stop, address quad weakness aggressively"
+        }
+      },
+
+      "associated_compensations": [
+        "excessive_forward_lean",
+        "bar_drift_forward"
+      ],
+
+      "evidence_base": {
+        "prevalence": "20-35% with quad weakness (Flanagan SP, 2003)",
+        "biomechanical_impact": "Shifts load from quads to lumbar extensors, increases spinal loading",
+        "correction_efficacy": "Improves with quad strengthening and tempo training"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": [
+          "Chest up first",
+          "Drive knees and hips together",
+          "Think 'elevator', not 'hinge'"
+        ],
+        "corrective_exercises": [
+          {
+            "name": "Pause squats (3-second pause at bottom)",
+            "target": "Eliminate momentum, force coordinated drive",
+            "sets": 4,
+            "reps": 5,
+            "frequency": "Every squat session",
+            "progression": "Increase load"
+          },
+          {
+            "name": "Front squats",
+            "target": "Force quad dominant pattern",
+            "sets": 3,
+            "reps": 6,
+            "frequency": "2x/week",
+            "progression": "Increase load"
+          },
+          {
+            "name": "Leg press / leg extensions",
+            "target": "Strengthen quads directly",
+            "sets": 3,
+            "reps": 10,
+            "frequency": "2x/week",
+            "progression": "Increase load"
+          }
+        ],
+        "return_to_exercise_criteria": [
+          "Can perform pause squats with coordinated drive",
+          "Quad strength improved (can front squat 70%+ of back squat)"
+        ]
+      }
+    },
+
+    {
+      "id": "excessive_stance_width",
+      "name": "Stance Excessivamente Largo",
+      "name_en": "Excessive Stance Width",
+      "description": "Pés posicionados muito mais largos que largura dos ombros (mais apropriado para sumo)",
+      "aliases": ["wide stance", "sumo stance", "stance muito aberto"],
+
+      "biomechanical_cause": {
+        "primary": "Compensação por mobilidade inadequada ou preferência técnica",
+        "secondary": [
+          "Tentativa de reduzir demanda de mobilidade",
+          "Má instrução",
+          "Confusão com powerlifting lowbar/sumo"
+        ],
+        "risk_factors": [
+          "Limitação de mobilidade",
+          "Falta de instrução"
+        ]
+      },
+
+      "detection_method": {
+        "primary": "stance_width > 1.5x shoulder_width",
+        "secondary": "heel_to_heel_distance > 1.5x biacromial_distance",
+        "requires_landmarks": ["heel_left", "heel_right", "shoulder_left", "shoulder_right"],
+        "calculation": "distance(heel_left, heel_right) / distance(shoulder_left, shoulder_right)",
+        "detection_phase": "setup and all phases"
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "stance_ratio": "1.3-1.5x shoulder width",
+          "injury_risk": "low",
+          "performance_impact": "Slight reduction in ROM, more hip adduction demand",
+          "intervention": "May be acceptable for some individuals"
+        },
+        "moderate": {
+          "stance_ratio": "1.5-2.0x shoulder width",
+          "injury_risk": "moderate (adductor strain, hip impingement)",
+          "performance_impact": "Significantly reduced ROM, becomes more sumo-like",
+          "intervention": "Narrow stance gradually"
+        },
+        "severe": {
+          "stance_ratio": ">2.0x shoulder width",
+          "injury_risk": "high (adductor strain)",
+          "performance_impact": "Minimal depth possible, wrong exercise selection",
+          "intervention": "This is essentially a sumo squat, not highbar conventional"
+        }
+      },
+
+      "evidence_base": {
+        "biomechanical_impact": "Wider stance increases hip adduction moment, reduces ROM (Escamilla RF, 2001)"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": [
+          "Feet shoulder-width apart",
+          "Toes slightly out (10-15°)",
+          "Not sumo stance"
+        ],
+        "corrective_exercises": [
+          {
+            "name": "Bodyweight squats with stance markers",
+            "target": "Relearn proper stance",
+            "sets": 3,
+            "reps": 15,
+            "frequency": "Daily",
+            "progression": "Add load gradually"
+          }
+        ]
+      }
+    },
+
+    {
+      "id": "cervical_hyperextension",
+      "name": "Hiperextensão Cervical",
+      "name_en": "Cervical Hyperextension",
+      "description": "Cabeça excessivamente estendida para trás, olhando muito para cima durante o movimento",
+      "aliases": ["looking up too much", "neck hyperextension", "pescoço muito para trás"],
+
+      "biomechanical_cause": {
+        "primary": "Má instrução ('look up' cue taken too far)",
+        "secondary": [
+          "Tentativa de manter tronco ereto",
+          "Mirrors no teto/frente"
+        ],
+        "risk_factors": [
+          "Histórico de dor cervical",
+          "Má consciência postural"
+        ]
+      },
+
+      "detection_method": {
+        "primary": "cervical_angle > 30° extension from neutral",
+        "secondary": "nose_to_forehead_vector pointing upward > 30°",
+        "requires_landmarks": ["nose", "ear", "shoulder"],
+        "calculation": "angle_between(ear_to_nose, ear_to_shoulder)",
+        "detection_phase": "all phases"
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "extension_angle": "15-25 degrees",
+          "injury_risk": "low",
+          "performance_impact": "Minimal",
+          "intervention": "Cueing"
+        },
+        "moderate": {
+          "extension_angle": "25-35 degrees",
+          "injury_risk": "moderate (cervical strain)",
+          "performance_impact": "Possible neck discomfort",
+          "intervention": "Neutral neck cueing"
+        },
+        "severe": {
+          "extension_angle": ">35 degrees",
+          "injury_risk": "high (cervical spine stress)",
+          "performance_impact": "Pain, possible injury",
+          "intervention": "Immediate correction, neutral gaze"
+        }
+      },
+
+      "evidence_base": {
+        "injury_correlation": "Cervical hyperextension increases facet joint loading (McGill SM, 2015)"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": [
+          "Neutral neck",
+          "Look at floor 6 feet ahead",
+          "Pack your neck",
+          "Double chin"
+        ]
+      }
+    },
+
+    {
+      "id": "breathing_dysfunction",
+      "name": "Disfunção Respiratória (Perda de IAP)",
+      "name_en": "Breathing Dysfunction (Loss of IAP)",
+      "description": "Padrão respiratório inadequado, perda de pressão intra-abdominal (IAP) durante o movimento",
+      "aliases": ["breath holding", "exhale too early", "perda de core stability"],
+
+      "biomechanical_cause": {
+        "primary": "Técnica respiratória inadequada (não usa Valsalva ou similar)",
+        "secondary": [
+          "Core fraco",
+          "Má instrução",
+          "Fadiga"
+        ],
+        "risk_factors": [
+          "Inexperiência",
+          "Cargas submáximas (não percebe necessidade)"
+        ]
+      },
+
+      "detection_method": {
+        "primary": "Observational - loss of torso rigidity, visible core collapse",
+        "secondary": "trunk_angle_instability (fluctuation >5° within phase)",
+        "requires_landmarks": ["shoulder", "hip"],
+        "calculation": "trunk_stability_coefficient (variance of trunk angle within phase)",
+        "detection_phase": "especially during isometric_bottom and early concentric"
+      },
+
+      "severity_thresholds": {
+        "mild": {
+          "iap_loss": "Partial, brief",
+          "injury_risk": "low",
+          "performance_impact": "Slight instability",
+          "intervention": "Breathing technique instruction"
+        },
+        "moderate": {
+          "iap_loss": "Significant, early exhale",
+          "injury_risk": "moderate (spinal instability)",
+          "performance_impact": "Reduced force transfer, instability",
+          "intervention": "Valsalva training, reduce load"
+        },
+        "severe": {
+          "iap_loss": "Complete, no bracing",
+          "injury_risk": "high (spinal injury possible)",
+          "performance_impact": "Major instability, potential collapse",
+          "intervention": "Stop, fundamental bracing education"
+        }
+      },
+
+      "evidence_base": {
+        "biomechanical_impact": "IAP increases spinal stability by 40% (McGill SM, 2015)",
+        "injury_correlation": "Loss of IAP associated with increased injury risk under load"
+      },
+
+      "corrective_protocol": {
+        "immediate_cues": [
+          "Big breath in at top",
+          "Hold breath through rep (or forced exhale late concentric)",
+          "Brace like someone will punch your stomach",
+          "360-degree expansion of torso"
+        ],
+        "education": [
+          "Teach Valsalva maneuver",
+          "Practice bracing without load",
+          "Belt may help kinesthetic feedback"
+        ]
+      }
+    }
+  ],
+
+  "common_combinations": [
+    {
+      "combination": ["knee_valgus", "excessive_forward_lean"],
+      "prevalence": "high",
+      "cause": "Combined ankle and hip mobility limitation with weak glutes",
+      "synergistic_effect": "Compounds injury risk significantly",
+      "priority": "Address ankle mobility first, then hip strength",
+      "correction_approach": "Parallel work on both, but ankle mobility often rate-limiting"
+    },
+    {
+      "combination": ["butt_wink", "heel_rise"],
+      "prevalence": "moderate-high",
+      "cause": "Severe combined ankle and hip mobility restriction",
+      "synergistic_effect": "Forces lumbar flexion as only compensation",
+      "priority": "Reduce depth until mobility improves",
+      "correction_approach": "Aggressive mobility work on both joints, limit depth temporarily"
+    },
+    {
+      "combination": ["butt_wink", "excessive_forward_lean"],
+      "prevalence": "moderate",
+      "cause": "Hip and ankle mobility both limited",
+      "synergistic_effect": "Multiple compensations, high spinal loading",
+      "priority": "Address mobility comprehensively",
+      "correction_approach": "Box squats at safe depth, progressive lowering"
+    },
+    {
+      "combination": ["hips_rise_first", "excessive_forward_lean"],
+      "prevalence": "high",
+      "cause": "Quad weakness and/or excessive load",
+      "synergistic_effect": "Essentially becomes Romanian deadlift",
+      "priority": "Reduce load, strengthen quads",
+      "correction_approach": "Pause squats, front squats, load reduction"
+    }
+  ],
+
+  "detection_priority": [
+    "knee_valgus",
+    "butt_wink",
+    "excessive_forward_lean",
+    "heel_rise",
+    "asymmetric_loading",
+    "hips_rise_first",
+    "shallow_depth",
+    "bar_not_over_midfoot",
+    "breathing_dysfunction",
+    "cervical_hyperextension",
+    "knee_hyperextension_top",
+    "excessive_stance_width"
+  ],
+
+  "notes": [
+    "Detection priority ordered by injury risk and prevalence",
+    "Many deviations are interconnected - addressing root mobility often fixes multiple",
+    "Severity thresholds are guidelines; individual variation exists",
+    "Evidence base strongest for knee valgus, butt wink, and forward lean",
+    "Some deviations (mild butt wink, slight forward lean) may be acceptable depending on anthropometry"
+  ]
+}

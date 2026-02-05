@@ -1,0 +1,318 @@
+{
+  "exercise_id": "squat_highbar",
+  "version": "1.0.0",
+  "created_at": "2025-02-05",
+  "validated_by": "NFC Biomechanics Team",
+  "evidence_sources": [
+    "Horschig A. The Squat Bible - The Ultimate Guide to Mastering the Squat (2016)",
+    "NSCA Essentials of Strength Training and Conditioning 4th Ed",
+    "Schoenfeld BJ. Squatting Kinematics and Kinetics and Their Application to Exercise Performance. J Strength Cond Res. 2010",
+    "Neumann DA. Cinesiologia do Aparelho Musculoesquelético - Fundamentos para Reabilitação. 2ª Ed (2011)"
+  ],
+
+  "exercise_metadata": {
+    "category": "lower_body_compound",
+    "primary_muscles": ["quadriceps", "gluteus_maximus", "hamstrings"],
+    "secondary_muscles": ["erector_spinae", "core", "gastrocnemius", "soleus"],
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "joint_actions": {
+      "hip": "flexion_extension",
+      "knee": "flexion_extension",
+      "ankle": "dorsiflexion_plantarflexion",
+      "spine": "isometric_stabilization"
+    }
+  },
+
+  "phases": {
+    "eccentric_top": {
+      "duration_percentage": 10,
+      "description": "Posição inicial ereta, preparação para descida",
+      "key_points": [
+        "Joelhos totalmente estendidos",
+        "Coluna neutra mantida",
+        "Pés largura dos ombros (stance neutral)",
+        "Barra posicionada no trapézio superior (high-bar)",
+        "Core ativado, respiração preparatória"
+      ],
+      "angles": {
+        "knee_left": {
+          "ideal": 175,
+          "acceptable_range": [170, 180],
+          "tolerance": 10,
+          "measurement_method": "hip_center-knee-ankle",
+          "scientific_rationale": "Extensão quase completa do joelho mantém tensão inicial nos quadríceps sem hiperextensão"
+        },
+        "knee_right": {
+          "ideal": 175,
+          "acceptable_range": [170, 180],
+          "tolerance": 10,
+          "measurement_method": "hip_center-knee-ankle",
+          "scientific_rationale": "Extensão quase completa do joelho mantém tensão inicial nos quadríceps sem hiperextensão"
+        },
+        "hip": {
+          "ideal": 180,
+          "acceptable_range": [175, 185],
+          "tolerance": 10,
+          "measurement_method": "shoulder-hip-knee",
+          "scientific_rationale": "Posição neutra do quadril em extensão total"
+        },
+        "trunk": {
+          "ideal": 0,
+          "acceptable_range": [-5, 5],
+          "tolerance": 10,
+          "measurement_method": "vertical-spine_angle",
+          "scientific_rationale": "Tronco perpendicular ao solo, otimizando alinhamento vertical da barra"
+        },
+        "ankle_left": {
+          "ideal": 90,
+          "acceptable_range": [85, 95],
+          "tolerance": 8,
+          "measurement_method": "knee-ankle-foot",
+          "scientific_rationale": "Posição neutra do tornozelo, pé plantado no chão"
+        },
+        "ankle_right": {
+          "ideal": 90,
+          "acceptable_range": [85, 95],
+          "tolerance": 8,
+          "measurement_method": "knee-ankle-foot",
+          "scientific_rationale": "Posição neutra do tornozelo, pé plantado no chão"
+        }
+      }
+    },
+
+    "eccentric_mid": {
+      "duration_percentage": 20,
+      "description": "Meio da fase excêntrica, joelhos e quadris flexionando simultaneamente",
+      "key_points": [
+        "Joelhos alinhados com pés (tracking over toes)",
+        "Quadril flexionando com controle",
+        "Tronco inclinando levemente para frente (necessário para equilíbrio)",
+        "Coluna mantém neutralidade",
+        "Calcanhar mantém contato com solo"
+      ],
+      "angles": {
+        "knee_left": {
+          "ideal": 110,
+          "acceptable_range": [100, 120],
+          "tolerance": 15,
+          "measurement_method": "hip_center-knee-ankle",
+          "scientific_rationale": "Flexão moderada de joelho, iniciando fase de maior torque"
+        },
+        "knee_right": {
+          "ideal": 110,
+          "acceptable_range": [100, 120],
+          "tolerance": 15,
+          "measurement_method": "hip_center-knee-ankle",
+          "scientific_rationale": "Flexão moderada de joelho, iniciando fase de maior torque"
+        },
+        "hip": {
+          "ideal": 100,
+          "acceptable_range": [90, 110],
+          "tolerance": 15,
+          "measurement_method": "shoulder-hip-knee",
+          "scientific_rationale": "Flexão de quadril acompanha flexão de joelho para manter centro de massa"
+        },
+        "trunk": {
+          "ideal": 15,
+          "acceptable_range": [10, 20],
+          "tolerance": 10,
+          "measurement_method": "vertical-spine_angle",
+          "scientific_rationale": "Leve inclinação anterior necessária para manter barra sobre centro de apoio"
+        },
+        "ankle_left": {
+          "ideal": 75,
+          "acceptable_range": [70, 80],
+          "tolerance": 8,
+          "measurement_method": "knee-ankle-foot",
+          "scientific_rationale": "Dorsiflexão progressiva, joelho avançando sobre pés"
+        },
+        "ankle_right": {
+          "ideal": 75,
+          "acceptable_range": [70, 80],
+          "tolerance": 8,
+          "measurement_method": "knee-ankle-foot",
+          "scientific_rationale": "Dorsiflexão progressiva, joelho avançando sobre pés"
+        }
+      }
+    },
+
+    "isometric_bottom": {
+      "duration_percentage": 10,
+      "description": "Fundo do agachamento, profundidade máxima (ATG ou parallel)",
+      "key_points": [
+        "Profundidade: crease do quadril abaixo da linha do joelho (parallel ou abaixo)",
+        "Joelhos estáveis, alinhados com pés",
+        "Calcanhares firmemente no chão (tripod foot maintained)",
+        "Coluna mantém curvatura neutra (sem buttwink excessivo)",
+        "Core maximamente ativado",
+        "Olhar fixo à frente ou levemente para cima"
+      ],
+      "angles": {
+        "knee_left": {
+          "ideal": 85,
+          "acceptable_range": [75, 95],
+          "tolerance": 15,
+          "measurement_method": "hip_center-knee-ankle",
+          "scientific_rationale": "Flexão profunda de joelho (85-95°) necessária para profundidade adequada, ainda dentro de limites seguros articulares"
+        },
+        "knee_right": {
+          "ideal": 85,
+          "acceptable_range": [75, 95],
+          "tolerance": 15,
+          "measurement_method": "hip_center-knee-ankle",
+          "scientific_rationale": "Flexão profunda de joelho (85-95°) necessária para profundidade adequada"
+        },
+        "hip": {
+          "ideal": 80,
+          "acceptable_range": [70, 90],
+          "tolerance": 15,
+          "measurement_method": "shoulder-hip-knee",
+          "scientific_rationale": "Flexão profunda de quadril com ativação máxima de glúteos e isquiotibiais no stretch-reflex"
+        },
+        "trunk": {
+          "ideal": 25,
+          "acceptable_range": [20, 35],
+          "tolerance": 12,
+          "measurement_method": "vertical-spine_angle",
+          "scientific_rationale": "Inclinação anterior maior no highbar (vs lowbar) para manter barra sobre meio do pé, conforme Horschig 2016"
+        },
+        "ankle_left": {
+          "ideal": 65,
+          "acceptable_range": [60, 72],
+          "tolerance": 10,
+          "measurement_method": "knee-ankle-foot",
+          "scientific_rationale": "Dorsiflexão máxima (25-30° a partir de 90°), requisito crítico para profundidade sem descolamento do calcanhar"
+        },
+        "ankle_right": {
+          "ideal": 65,
+          "acceptable_range": [60, 72],
+          "tolerance": 10,
+          "measurement_method": "knee-ankle-foot",
+          "scientific_rationale": "Dorsiflexão máxima (25-30° a partir de 90°), requisito crítico para profundidade"
+        }
+      },
+      "critical_checkpoints": [
+        {
+          "name": "knee_alignment_with_toes",
+          "description": "Joelhos devem permanecer alinhados com 2º dedo do pé, sem valgismo (knee cave) ou varismo excessivo",
+          "detection_method": "knee_x_position within toes_x ± 5cm, bilateral symmetry < 3cm",
+          "risk_if_failed": "high",
+          "injury_mechanisms": "Knee valgus aumenta stress sobre LCA, menisco medial e retináculo patelar"
+        },
+        {
+          "name": "heel_contact_maintained",
+          "description": "Calcanhares mantêm contato com solo, pés em tripod position",
+          "detection_method": "heel_y == floor_level, pressure distribution balanced",
+          "risk_if_failed": "medium",
+          "injury_mechanisms": "Perda de contato do calcanhar indica falta de mobilidade de tornozelo ou compensação inadequada"
+        },
+        {
+          "name": "lumbar_neutrality",
+          "description": "Coluna lombar mantém curva neutra, sem flexão excessiva (butt wink > 15°)",
+          "detection_method": "pelvis_tilt_change < 15° from top to bottom",
+          "risk_if_failed": "high",
+          "injury_mechanisms": "Butt wink excessivo aumenta shear stress nos discos lombares L4-L5 e L5-S1"
+        },
+        {
+          "name": "depth_adequacy",
+          "description": "Hip crease desce abaixo da linha superior da patela (parallel ou ATG)",
+          "detection_method": "hip_crease_y < knee_top_y",
+          "risk_if_failed": "low",
+          "injury_mechanisms": "Profundidade inadequada reduz ativação de glúteos e aumenta stress patelofemoral"
+        }
+      ]
+    },
+
+    "concentric": {
+      "duration_percentage": 60,
+      "description": "Fase concêntrica, retornando à posição inicial",
+      "key_points": [
+        "Movimento iniciado simultaneamente por quadris e joelhos",
+        "Drive através dos calcanhares",
+        "Joelhos mantêm alinhamento (sem valgismo)",
+        "Tronco retorna gradualmente à vertical",
+        "Expiração progressiva durante subida",
+        "Velocidade controlada, sem perda de tensão"
+      ],
+      "angles": {
+        "knee_left": {
+          "ideal": 120,
+          "acceptable_range": [110, 130],
+          "tolerance": 15,
+          "measurement_method": "hip_center-knee-ankle",
+          "scientific_rationale": "Extensão progressiva de joelho durante fase concêntrica"
+        },
+        "knee_right": {
+          "ideal": 120,
+          "acceptable_range": [110, 130],
+          "tolerance": 15,
+          "measurement_method": "hip_center-knee-ankle",
+          "scientific_rationale": "Extensão progressiva de joelho durante fase concêntrica"
+        },
+        "hip": {
+          "ideal": 115,
+          "acceptable_range": [105, 125],
+          "tolerance": 15,
+          "measurement_method": "shoulder-hip-knee",
+          "scientific_rationale": "Extensão de quadril em sincronia com joelhos, evitando good morning pattern"
+        },
+        "trunk": {
+          "ideal": 18,
+          "acceptable_range": [12, 24],
+          "tolerance": 10,
+          "measurement_method": "vertical-spine_angle",
+          "scientific_rationale": "Tronco retorna gradualmente à vertical conforme quadris e joelhos estendem"
+        },
+        "ankle_left": {
+          "ideal": 78,
+          "acceptable_range": [72, 84],
+          "tolerance": 8,
+          "measurement_method": "knee-ankle-foot",
+          "scientific_rationale": "Redução progressiva da dorsiflexão"
+        },
+        "ankle_right": {
+          "ideal": 78,
+          "acceptable_range": [72, 84],
+          "tolerance": 8,
+          "measurement_method": "knee-ankle-foot",
+          "scientific_rationale": "Redução progressiva da dorsiflexão"
+        }
+      }
+    }
+  },
+
+  "biomechanical_constraints": {
+    "max_knee_flexion": 95,
+    "min_knee_flexion": 75,
+    "max_trunk_forward_lean": 45,
+    "min_trunk_forward_lean": 0,
+    "knee_toe_alignment_tolerance_cm": 5,
+    "bilateral_symmetry_threshold_degrees": 8,
+    "required_ankle_mobility_dorsiflexion_degrees": 30,
+    "max_buttwink_degrees": 15,
+    "safety_limits": {
+      "knee_valgus_max_degrees": 15,
+      "lumbar_flexion_max_degrees": 20,
+      "forward_knee_travel_max_cm": 12,
+      "heel_lift_max_cm": 0.5
+    }
+  },
+
+  "similarity_weights": {
+    "knee": 0.30,
+    "hip": 0.25,
+    "trunk": 0.20,
+    "ankle": 0.15,
+    "symmetry": 0.10
+  },
+
+  "common_deviations_preview": [
+    "knee_valgus",
+    "heel_lift",
+    "excessive_forward_lean",
+    "buttwink",
+    "shallow_depth",
+    "asymmetric_loading"
+  ]
+}

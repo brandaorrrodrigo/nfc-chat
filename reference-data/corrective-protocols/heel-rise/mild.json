@@ -1,0 +1,301 @@
+{
+  "protocol_id": "heel_rise_mild_v1",
+  "deviation": "heel-rise",
+  "severity": "mild",
+  "version": "1.0.0",
+  "last_updated": "2025-01-15",
+
+  "overview": {
+    "description": "Protocolo corretivo para elevação leve de calcanhares durante agachamento (< 2cm, inconsistente). Foco em mobilidade de tornozelo, alongamento de panturrilhas, e consciência proprioceptiva de manter calcanhares plantados.",
+    "typical_presentation": "Calcanhares levantam levemente do chão nos últimos graus de descida ou sob fadiga. Padrão inconsistente - não ocorre em todas as repetições. Sem dor. Geralmente relacionado a limitação leve de dorsiflexão ou falta de consciência.",
+    "primary_causes": [
+      "Limitação leve de dorsiflexão de tornozelo (30-35°)",
+      "Tensão leve em sóleo e gastrocnêmio",
+      "Falta de consciência proprioceptiva de posição do calcanhar",
+      "Déficit leve de controle motor durante descida",
+      "Posicionamento inadequado de pés (muito juntos ou apontando muito para fora)"
+    ],
+    "expected_duration": "2-4 semanas com prática diária",
+    "success_rate": "90-95% de resolução completa"
+  },
+
+  "goals_hierarchy": [
+    {
+      "priority": 1,
+      "goal": "Melhorar dorsiflexão de tornozelo para 40°+",
+      "measurable_outcome": "Wall test: 12-15cm distância com joelho tocando parede"
+    },
+    {
+      "priority": 2,
+      "goal": "Desenvolver consciência de manter calcanhares no chão",
+      "measurable_outcome": "Capacidade de identificar e corrigir elevação em tempo real"
+    },
+    {
+      "priority": 3,
+      "goal": "Alongar panturrilhas adequadamente",
+      "measurable_outcome": "Sensação de flexibilidade aumentada, ROM melhorado"
+    },
+    {
+      "priority": 4,
+      "goal": "Integrar controle ao padrão de agachamento",
+      "measurable_outcome": "10 agachamentos consecutivos sem heel rise"
+    }
+  ],
+
+  "phases": [
+    {
+      "phase_number": 1,
+      "name": "Mobilidade e Consciência",
+      "duration_typical": "7-14 dias",
+      "frequency": "Mobilidade 2x/dia, treino 4x/semana",
+      "focus": "Ganhos de dorsiflexão, alongamento de panturrilhas, desenvolver feedback proprioceptivo",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Wall Ankle Dorsiflexion",
+            "target": "12cm+ distância bilateral",
+            "measurement_method": "Fita métrica"
+          },
+          {
+            "test": "Bodyweight Squat Heel Contact",
+            "target": "10 reps consecutivas sem heel rise",
+            "measurement_method": "Observação visual ou filmagem"
+          },
+          {
+            "test": "Paused Squat Awareness",
+            "target": "Pausar no fundo por 3s mantendo calcanhares no chão conscientemente",
+            "measurement_method": "Auto-monitoramento e observação"
+          }
+        ],
+        "subjective_markers": [
+          "Sensação de maior mobilidade de tornozelo",
+          "Consciência aumentada de posição dos calcanhares",
+          "Redução de tensão nas panturrilhas"
+        ],
+        "minimum_time": "7 dias",
+        "all_criteria_required": false,
+        "minimum_criteria": 2
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "wall_ankle_mobilization_daily",
+          "name": "Mobilização de Tornozelo na Parede",
+          "primary_targets": ["Dorsiflexão", "Mobilidade de sóleo"],
+          "equipment": ["Parede"],
+          "sets": 3,
+          "reps": "15 + 30s hold",
+          "tempo": "2s avançar, 2s retornar + hold estático",
+          "rest": "30s entre pernas",
+          "execution_cues": [
+            "Wall ankle mobilization padrão",
+            "Iniciar com pé a 8-10cm da parede",
+            "Joelho avança para tocar parede sem calcanhar levantar",
+            "15 repetições dinâmicas + 30s hold final na posição máxima",
+            "Progressão: aumentar distância 1-2cm por semana",
+            "Meta: 12-15cm ao final da fase"
+          ],
+          "common_errors": [
+            {"error": "Calcanhar levanta", "correction": "Reduzir distância, trabalhar em ROM disponível"},
+            {"error": "Pé roda para fora", "correction": "Manter alinhamento reto"}
+          ],
+          "progressions": [
+            {"level": "Semana 1", "modification": "8-10cm distância"},
+            {"level": "Semana 2", "modification": "10-12cm"},
+            {"level": "Semana 3+", "modification": "12-15cm"}
+          ],
+          "scientific_rationale": "Mobilização específica de tornozelo aumenta dorsiflexão disponível, permitindo tíbia avançar sobre pé durante agachamento sem necessidade de heel rise (Dill et al., 2014)."
+        },
+        {
+          "exercise_id": "calf_stretch_straight_bent",
+          "name": "Alongamento de Panturrilha (Gastrocnêmio e Sóleo)",
+          "primary_targets": ["Gastrocnêmio", "Sóleo", "Tendão de Aquiles"],
+          "equipment": ["Parede ou step"],
+          "sets": 3,
+          "reps": "Hold 45s cada variação",
+          "tempo": "Estático",
+          "rest": "30s entre variações",
+          "execution_cues": [
+            "Variação 1 - Gastrocnêmio (joelho estendido):",
+            "  - Pé de trás estendido, calcanhar no chão",
+            "  - Inclinar corpo para frente mantendo perna de trás reta",
+            "  - Sentir alongamento na panturrilha superior",
+            "Variação 2 - Sóleo (joelho flexionado):",
+            "  - Mesma posição mas flexionar joelho de trás",
+            "  - Sentir alongamento mais baixo na panturrilha",
+            "Hold 45s cada variação, 3 sets cada músculo"
+          ],
+          "scientific_rationale": "Gastrocnêmio e sóleo ambos limitam dorsiflexão mas requerem alongamentos diferentes devido a anatomia. Gastrocnêmio cruza joelho (alongar com joelho estendido), sóleo não (alongar com joelho flexionado)."
+        },
+        {
+          "exercise_id": "goblet_squat_heel_awareness",
+          "name": "Goblet Squat com Consciência de Calcanhar",
+          "primary_targets": ["Padrão de agachamento", "Feedback proprioceptivo"],
+          "equipment": ["Kettlebell 10-12kg", "Anilhas finas sob calcanhares (opcional)"],
+          "sets": 4,
+          "reps": 10,
+          "tempo": "3-2-3-0 (3s descida, 2s pausa, 3s subida)",
+          "rest": "90s",
+          "execution_cues": [
+            "Kettlebell em goblet position",
+            "Opção: colocar anilhas finas (0.5-1kg) sob calcanhares para feedback tátil",
+            "Se calcanhar levantar: anilhas caem fazendo barulho = feedback imediato",
+            "Descer em 3s mantendo foco mental em 'enraizar' calcanhares no chão",
+            "Pausar 2s no fundo - sentir pressão dos calcanhares contra solo",
+            "Subir mantendo mesmo contato",
+            "Comando interno: 'espalhar o chão' com pés inteiros"
+          ],
+          "common_errors": [
+            {"error": "Heel rise apesar de consciência", "correction": "Indica limitação de mobilidade - mais tempo em mobilização"},
+            {"error": "Reduz profundidade excessivamente para evitar heel rise", "correction": "OK temporariamente, mobilidade permitirá profundidade maior"}
+          ],
+          "progressions": [
+            {"level": "Iniciante", "modification": "Com anilhas para feedback, profundidade até começar heel rise"},
+            {"level": "Padrão", "modification": "Sem anilhas, full depth mantendo calcanhares"},
+            {"level": "Avançado", "modification": "Aumentar carga para 16kg+"}
+          ],
+          "personalization_rules": {
+            "anthropometry_long_femurs": {
+              "note": "Maior tendência a heel rise devido a biomecânica. Aceitar que alguma elevação pode ser normal.",
+              "modification": "Foco em minimizar, não eliminar completamente"
+            }
+          }
+        },
+        {
+          "exercise_id": "heel_elevated_squat_tempo",
+          "name": "Agachamento com Calcanhares Elevados (Temporário)",
+          "primary_targets": ["Treinar profundidade enquanto mobilidade melhora"],
+          "equipment": ["Anilhas 2.5kg", "Peso corporal ou KB leve"],
+          "sets": 3,
+          "reps": 12,
+          "tempo": "2-1-2-0",
+          "rest": "90s",
+          "execution_cues": [
+            "Colocar anilhas 2.5kg sob calcanhares",
+            "Permite agachar profundamente sem heel rise enquanto trabalha mobilidade",
+            "É ferramenta TEMPORÁRIA - meta é remover após ganhos de mobilidade",
+            "Usar para manter volume de treino durante protocolo",
+            "Progressivamente reduzir elevação: 2.5kg → 1.25kg → 0"
+          ],
+          "note": "Elevação não é solução permanente. É ponte enquanto mobilidade desenvolve."
+        },
+        {
+          "exercise_id": "single_leg_calf_raise_eccentric",
+          "name": "Elevação de Panturrilha Unipodal Excêntrica",
+          "primary_targets": ["Força excêntrica de panturrilhas", "Controle de tornozelo"],
+          "equipment": ["Step ou caixa"],
+          "sets": 3,
+          "reps": "10 cada perna",
+          "tempo": "1-0-4-0 (1s subida, 0s pausa, 4s descida)",
+          "rest": "60s",
+          "execution_cues": [
+            "Posicionar em step com antepé, calcanhar livre",
+            "Subir com ambas pernas (bilateral)",
+            "Remover uma perna, descer lentamente (4s) apenas com uma",
+            "Ênfase excêntrica desenvolve força e flexibilidade simultaneamente",
+            "Descer além do nível do step (dorsiflexão ativa no final)"
+          ],
+          "scientific_rationale": "Treinamento excêntrico de panturrilhas aumenta força E flexibilidade simultaneamente. Adaptação de tecido conectivo e aumento de ROM (O'Neill et al., 2015)."
+        }
+      ]
+    },
+
+    {
+      "phase_number": 2,
+      "name": "Integração e Consolidação",
+      "duration_typical": "7-14 dias",
+      "frequency": "4x por semana",
+      "focus": "Integrar controle ao treino com carga, remover elevações se usando, consolidar padrão",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Loaded Squat No Heel Rise",
+            "target": "Back squat com 70% 1RM x 5 reps sem heel rise",
+            "measurement_method": "Filmagem ou observação"
+          },
+          {
+            "test": "Dorsiflexion Maintained",
+            "target": "12cm+ mantido em wall test",
+            "measurement_method": "Re-teste"
+          }
+        ],
+        "minimum_time": "7 dias"
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "back_squat_progressive",
+          "name": "Back Squat com Progressão de Carga",
+          "sets": 5,
+          "reps": 5,
+          "tempo": "2-0-X-0",
+          "rest": "180s",
+          "execution_cues": [
+            "Iniciar com 60% 1RM, progredir para 70-80%",
+            "Manter consciência de calcanhares durante todo movimento",
+            "Se heel rise retorna sob carga: indica força de tornozelo insuficiente"
+          ]
+        },
+        {
+          "exercise_id": "pause_squat_heel_focus",
+          "name": "Paused Squat com Foco em Calcanhares",
+          "sets": 4,
+          "reps": 4,
+          "tempo": "3-3-2-0",
+          "rest": "120s",
+          "execution_cues": [
+            "60% 1RM com pause de 3s no fundo",
+            "Durante pausa: verificar mentalmente contato dos calcanhares",
+            "Consolida controle sob carga"
+          ]
+        }
+      ]
+    }
+  ],
+
+  "return_to_exercise_criteria": {
+    "full_return_requirements": [
+      {
+        "category": "Mobilidade",
+        "tests": ["Dorsiflexão ≥ 40° (12cm+ wall test) bilateral mantida"]
+      },
+      {
+        "category": "Padrão",
+        "tests": [
+          "Back squat 80% 1RM sem heel rise",
+          "20 bodyweight squats consecutivos sem elevação",
+          "Consciência automática de posição"
+        ]
+      }
+    ],
+    "ongoing_maintenance": "Mobilidade de tornozelo 2-3x/semana permanentemente. Alongamento de panturrilhas diário se tensão retornar. Monitorar padrão mensalmente."
+  },
+
+  "contraindications": {
+    "absolute": ["Lesão aguda de tornozelo", "Fratura não consolidada"],
+    "relative": ["Tendinopatia de Aquiles ativa", "Instabilidade crônica de tornozelo"]
+  },
+
+  "red_flags": {
+    "stop_protocol_immediately": ["Dor aguda no tornozelo > 5/10", "Edema significativo", "Instabilidade súbita"]
+  },
+
+  "scientific_references": [
+    {
+      "authors": "Dill, K.E., et al.",
+      "year": 2014,
+      "title": "Altered kinematics during squatting in those with limited ankle dorsiflexion",
+      "journal": "J Athl Train",
+      "key_finding": "Dorsiflexão limitada resulta em heel rise compensatório"
+    },
+    {
+      "authors": "O'Neill, S., et al.",
+      "year": 2015,
+      "title": "Eccentric training in Achilles tendinopathy",
+      "journal": "Br J Sports Med",
+      "key_finding": "Treino excêntrico aumenta força e flexibilidade"
+    }
+  ]
+}

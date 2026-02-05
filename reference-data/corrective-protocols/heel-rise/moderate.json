@@ -1,0 +1,175 @@
+{
+  "protocol_id": "heel_rise_moderate_v1",
+  "deviation": "heel-rise",
+  "severity": "moderate",
+  "version": "1.0.0",
+  "last_updated": "2025-01-15",
+
+  "overview": {
+    "description": "Protocolo para elevação moderada de calcanhares (2-4cm, consistente). Limitação significativa de dorsiflexão. Foco em mobilização agressiva, fortalecimento de tibial anterior, e possível uso permanente de sapatos elevados.",
+    "typical_presentation": "Calcanhares levantam consistentemente durante descida, especialmente em profundidades médias a máximas. Elevação 2-4cm mensurável. Sem dor. Dorsiflexão < 30° mensurável. Padrão estabelecido.",
+    "primary_causes": [
+      "Restrição moderada a severa de dorsiflexão (< 30°)",
+      "Tensão crônica significativa de sóleo e gastrocnêmio",
+      "Fraqueza de tibial anterior",
+      "Possível limitação estrutural de tornozelo (cirurgia prévia, anatomia)",
+      "Anos de uso de sapatos com drop elevado"
+    ],
+    "expected_duration": "6-10 semanas, possível modificação permanente",
+    "success_rate": "60-70% melhora significativa. Alguns casos requerem sapatos elevados permanentemente."
+  },
+
+  "goals_hierarchy": [
+    {
+      "priority": 1,
+      "goal": "Maximizar dorsiflexão disponível",
+      "measurable_outcome": "Ganho de 5-10° dorsiflexão (objetivo: ≥ 35°)"
+    },
+    {
+      "priority": 2,
+      "goal": "Reduzir heel rise para < 2cm ou aceitar uso de elevação",
+      "measurable_outcome": "Melhora mensurável ou sapatos elevados integrados"
+    },
+    {
+      "priority": 3,
+      "goal": "Fortalecer tibial anterior e dorsiflexores",
+      "measurable_outcome": "Heel walk 30m sem fadiga"
+    },
+    {
+      "priority": 4,
+      "goal": "Treino sustentável sem limitação",
+      "measurable_outcome": "Agachamento funcional com ou sem modificação"
+    }
+  ],
+
+  "phases": [
+    {
+      "phase_number": 1,
+      "name": "Mobilização Intensiva",
+      "duration_typical": "21-28 dias",
+      "frequency": "Mobilidade 3x/dia, treino 5x/semana",
+      "focus": "Ganhos máximos de dorsiflexão, alongamento agressivo, preparar para possível modificação permanente",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Wall Ankle Test",
+            "target": "Ganho de 3-5cm (objetivo: 9-11cm mínimo)",
+            "measurement_method": "Medição pré/pós"
+          },
+          {
+            "test": "Heel Rise Reduction",
+            "target": "Redução de 50% na elevação",
+            "measurement_method": "Filmagem com medição"
+          }
+        ],
+        "minimum_time": "21 dias"
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "ankle_mobilization_loaded_distraction",
+          "name": "Mobilização com Carga e Distração",
+          "sets": 4,
+          "reps": "20 + 60s hold",
+          "frequency": "2-3x/dia",
+          "execution_cues": [
+            "Wall mobilization com kettlebell 10-12kg sobre joelho",
+            "Banda ao redor do tornozelo puxando para trás (distração articular)",
+            "20 reps dinâmicas + 60s hold final",
+            "Progressão agressiva de distância"
+          ],
+          "scientific_rationale": "Mobilização com carga + distração maximiza ganhos de ROM. Casos moderados requerem intervenção intensiva."
+        },
+        {
+          "exercise_id": "slant_board_stretch",
+          "name": "Alongamento em Slant Board",
+          "sets": 3,
+          "reps": "90-120s hold",
+          "execution_cues": [
+            "Ficar em plataforma inclinada (15-20°), calcanhares para baixo",
+            "Hold prolongado (90-120s) permite adaptação de tecido",
+            "Fazer com joelho reto E flexionado (gastro e sóleo)"
+          ]
+        },
+        {
+          "exercise_id": "heel_walk_tibial_strengthening",
+          "name": "Caminhada nos Calcanhares",
+          "sets": 3,
+          "reps": "30m cada",
+          "execution_cues": [
+            "Caminhar apenas nos calcanhares, dedos elevados",
+            "Fortalece tibial anterior",
+            "Progressão: adicionar inclinação ou peso"
+          ]
+        },
+        {
+          "exercise_id": "goblet_squat_elevated_heel",
+          "name": "Goblet Squat com Elevação",
+          "note": "Usar cunhas 5-10° enquanto mobilidade desenvolve. Pode ser PERMANENTE se ganhos insuficientes."
+        }
+      ]
+    },
+
+    {
+      "phase_number": 2,
+      "name": "Integração e Decisão de Modificação",
+      "duration_typical": "21-28 dias",
+      "frequency": "4x/semana",
+      "focus": "Integrar ganhos ao treino, decidir se sapatos elevados serão permanentes, estabelecer programa sustentável",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Final Dorsiflexion Assessment",
+            "target": "Determinar se dorsiflexão ≥ 35° foi atingida",
+            "measurement_method": "Medição definitiva"
+          },
+          {
+            "test": "Squat with/without Elevation",
+            "target": "Treino sustentável estabelecido",
+            "measurement_method": "4 semanas sem problemas"
+          }
+        ]
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "squat_variation_choice",
+          "name": "Variação de Agachamento Escolhida",
+          "note": "SE dorsiflexão ≥ 35°: treino normal. SE < 35°: sapatos elevados (0.75-1 inch heel) PERMANENTEMENTE. Não é falha - é otimização individual."
+        }
+      ]
+    }
+  ],
+
+  "return_to_exercise_criteria": {
+    "realistic_expectations": "Alguns casos moderados NUNCA atingem dorsiflexão adequada devido a estrutura. Sapatos de agachamento (elevação) são solução válida PERMANENTE.",
+
+    "permanent_modifications": [
+      "Sapatos de agachamento com elevação (0.75-1 inch) podem ser permanentes",
+      "Cunhas sob calcanhares durante agachamento são aceitáveis",
+      "Stance mais amplo pode ajudar",
+      "Mobilidade deve ser mantida 3x/semana mesmo com modificação"
+    ]
+  },
+
+  "contraindications": {
+    "absolute": ["Lesão aguda de tornozelo", "Tendinite de Aquiles severa não tratada"],
+    "relative": ["Instabilidade crônica", "Cirurgia prévia de tornozelo"]
+  },
+
+  "red_flags": {
+    "stop_immediately": ["Dor > 5/10 no tornozelo", "Edema persistente", "Perda de ROM"]
+  },
+
+  "scientific_references": [
+    {
+      "authors": "Macrum, E., et al.",
+      "year": 2012,
+      "title": "Effect of limited ankle dorsiflexion",
+      "journal": "J Sport Rehabil",
+      "key_finding": "Dorsiflexão < 30° resulta em compensações múltiplas"
+    }
+  ]
+}

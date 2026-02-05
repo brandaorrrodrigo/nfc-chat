@@ -1,0 +1,115 @@
+version: '3.8'
+
+services:
+  # ===== MediaPipe Service =====
+  mediapipe-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nfc-mediapipe-service
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      # Flask
+      FLASK_ENV: production
+      HOST: 0.0.0.0
+      PORT: 5000
+      DEBUG: "false"
+
+      # MediaPipe Model Settings
+      MODEL_COMPLEXITY: 1              # 0=lite, 1=full, 2=heavy
+      MIN_DETECTION_CONFIDENCE: 0.7
+      MIN_TRACKING_CONFIDENCE: 0.7
+
+      # Performance
+      MAX_WORKERS: 4
+      TIMEOUT_SECONDS: 120
+      MAX_FRAMES_PER_REQUEST: 20
+
+      # Logging
+      LOG_LEVEL: INFO
+      LOG_FORMAT: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+      # Temp directory
+      TEMP_DIR: /tmp/mediapipe
+
+      # Optional: Metrics
+      ENABLE_METRICS: "false"
+      METRICS_PORT: 8000
+
+    volumes:
+      # Montar diretório temporário para frames
+      - mediapipe-temp:/tmp/mediapipe
+
+      # Para desenvolvimento: montar código local (comentar em produção)
+      # - .:/app
+
+    networks:
+      - nfc-network
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+    # Limites de recursos
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+
+  # ===== Redis (para cache e BullMQ) =====
+  redis:
+    image: redis:7-alpine
+    container_name: nfc-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
+    networks:
+      - nfc-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # ===== Redis Commander (UI para debug - OPCIONAL) =====
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: nfc-redis-commander
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      REDIS_HOSTS: local:redis:6379
+    networks:
+      - nfc-network
+    depends_on:
+      - redis
+    profiles:
+      - debug  # Só inicia se usar: docker-compose --profile debug up
+
+# ===== Volumes =====
+volumes:
+  mediapipe-temp:
+    driver: local
+  redis-data:
+    driver: local
+
+# ===== Networks =====
+networks:
+  nfc-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

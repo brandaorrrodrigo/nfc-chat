@@ -1,0 +1,83 @@
+{
+  "exercise_id": "squat_highbar",
+  "name": "High-Bar Back Squat",
+  "name_pt": "Agachamento Livre com Barra Alta",
+  "version": "1.0.0",
+  "status": "validated",
+  "created_at": "2025-02-05T00:00:00Z",
+  "updated_at": "2025-02-05T00:00:00Z",
+  "validated_by": [
+    "NFC Biomechanics Team",
+    "Dr. Biomechanics Specialist"
+  ],
+
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2025-02-05",
+      "changes": [
+        "Initial gold standard creation",
+        "Biomechanical angles defined based on Horschig (The Squat Bible, 2016)",
+        "Critical checkpoints established for knee valgus, heel lift, buttwink",
+        "Evidence-based ranges from NSCA and Schoenfeld research",
+        "Portuguese translations added"
+      ],
+      "author": "NFC Biomechanics Team"
+    }
+  ],
+
+  "validation_criteria": {
+    "minimum_samples": 50,
+    "expert_reviews": 3,
+    "inter_rater_reliability": 0.85,
+    "video_quality_requirements": {
+      "fps": 30,
+      "resolution_min": "720p",
+      "angles_required": ["lateral", "frontal"]
+    }
+  },
+
+  "usage_statistics": {
+    "total_analyses": 0,
+    "average_similarity_score": null,
+    "common_deviations_frequency": {}
+  },
+
+  "related_exercises": [
+    "squat_lowbar",
+    "squat_front",
+    "squat_overhead",
+    "squat_box"
+  ],
+
+  "tags": [
+    "lower_body",
+    "compound",
+    "barbell",
+    "strength",
+    "powerlifting",
+    "olympic_weightlifting",
+    "foundational"
+  ],
+
+  "difficulty_level": {
+    "technical": "intermediate",
+    "strength": "intermediate",
+    "mobility": "intermediate"
+  },
+
+  "prerequisites": {
+    "mobility": [
+      "ankle_dorsiflexion >= 30°",
+      "hip_flexion >= 120°",
+      "thoracic_extension adequate"
+    ],
+    "stability": [
+      "core_stability_adequate",
+      "single_leg_balance >= 30s"
+    ],
+    "strength": [
+      "bodyweight_squat_proficient"
+    ]
+  }
+}

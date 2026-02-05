@@ -1,0 +1,321 @@
+{
+  "protocol_id": "butt_wink_severe_v1",
+  "deviation": "butt-wink",
+  "severity": "severe",
+  "version": "1.0.0",
+  "last_updated": "2025-01-15",
+
+  "overview": {
+    "description": "Protocolo corretivo para butt-wink severo (> 20° de retroversão pélvica, perda completa de lordose lombar). Casos críticos que requerem avaliação profissional obrigatória e possível aceitação de limitações permanentes.",
+    "typical_presentation": "Retroversão extrema começando precocemente na descida (acima de 45° flexão de joelho). Perda total de lordose lombar - coluna arredonda significativamente. Dor lombar moderada a severa (NRS 4-7/10). Histórico possível de lesões. Limitação severa de mobilidade.",
+    "primary_causes": [
+      "Restrição severa de flexão de quadril (< 100°)",
+      "Dorsiflexão severamente limitada (< 25°)",
+      "Tensão extrema de isquiotibiais",
+      "Fraqueza severa de erectores",
+      "Possível FAI estrutural",
+      "Histórico de lesão lombar",
+      "Possível componente estrutural ósseo",
+      "Anos de padrão inadequado"
+    ],
+    "expected_duration": "12-20 semanas mínimo, possivelmente meses",
+    "success_rate": "50-60% de melhora significativa. Limitação estrutural em alguns casos.",
+    "warning": "OBRIGATÓRIO: Avaliação por fisioterapeuta ou ortopedista antes de iniciar. Alguns casos nunca devem agachar abaixo de paralelo."
+  },
+
+  "goals_hierarchy": [
+    {
+      "priority": 1,
+      "goal": "Estabelecer mobilidade básica funcional",
+      "measurable_outcome": "Flexão quadril ≥ 100-110°, dorsiflexão ≥ 30°"
+    },
+    {
+      "priority": 2,
+      "goal": "Eliminar ou reduzir dor lombar significativamente",
+      "measurable_outcome": "Dor AVDs < 3/10, pós-treino < 4/10"
+    },
+    {
+      "priority": 3,
+      "goal": "Desenvolver força básica de erectores",
+      "measurable_outcome": "Back extension 30s, controle consciente"
+    },
+    {
+      "priority": 4,
+      "goal": "Estabelecer profundidade segura (pode ser limitada)",
+      "measurable_outcome": "Box squat seguro sem dor ou butt-wink severo"
+    },
+    {
+      "priority": 5,
+      "goal": "Retorno com modificações permanentes",
+      "measurable_outcome": "Agachamento funcional mesmo limitado, zero dor"
+    }
+  ],
+
+  "phases": [
+    {
+      "phase_number": 1,
+      "name": "Mobilidade Fundamental e Redução de Dor",
+      "duration_typical": "28-42 dias",
+      "frequency": "Mobilidade 2-3x/dia, fortalecimento 4-5x/semana",
+      "focus": "Ganhos básicos de mobilidade, reduzir dor, ativar erectores, educar sobre limitações",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Hip Flexion Supine",
+            "target": "100-110° sem dor severa",
+            "measurement_method": "Goniômetro - melhora do baseline"
+          },
+          {
+            "test": "Wall Ankle Test",
+            "target": "6-8cm distância",
+            "measurement_method": "Medição"
+          },
+          {
+            "test": "Pain Reduction",
+            "target": "Repouso < 2/10, movimento < 4/10",
+            "measurement_method": "Diário NRS"
+          },
+          {
+            "test": "Back Extension",
+            "target": "20-30s",
+            "measurement_method": "Cronômetro"
+          }
+        ],
+        "minimum_time": "28 dias",
+        "all_criteria_required": false,
+        "minimum_criteria": 3
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "hip_flexion_stretch_gentle",
+          "name": "Mobilização Suave de Flexão de Quadril",
+          "sets": 5,
+          "reps": "60-90s hold por lado",
+          "frequency": "2-3x/dia",
+          "execution_cues": [
+            "Decúbito dorsal, abraçar joelho",
+            "Progressão ultra-gradual - não forçar",
+            "Respiração profunda, relaxamento",
+            "Confortável, não doloroso"
+          ],
+          "personalization_rules": {
+            "injury_history_lower_back": {
+              "caution": "Iniciar com amplitude mínima, aumentar 1° por semana"
+            }
+          }
+        },
+        {
+          "exercise_id": "ankle_mobilization_daily",
+          "name": "Mobilização Diária de Tornozelo",
+          "sets": 3,
+          "reps": "15 + 30s hold",
+          "frequency": "Diária",
+          "execution_cues": [
+            "Wall ankle mobilization sem carga",
+            "Ganhos graduais",
+            "Consistência diária crítica"
+          ]
+        },
+        {
+          "exercise_id": "cat_cow_gentle",
+          "name": "Cat-Cow Suave",
+          "sets": 3,
+          "reps": 20,
+          "execution_cues": [
+            "Movimentos lentos",
+            "Encontrar posição neutra",
+            "Sem dor - reduzir amplitude se dor"
+          ]
+        },
+        {
+          "exercise_id": "bird_dog_basic",
+          "name": "Bird Dog Básico",
+          "sets": 3,
+          "reps": "8 cada lado",
+          "execution_cues": [
+            "Controle básico de core",
+            "Lombar neutra",
+            "Progressão gradual"
+          ]
+        },
+        {
+          "exercise_id": "box_squat_very_high",
+          "name": "Box Squat Muito Alto",
+          "sets": 3,
+          "reps": 10,
+          "execution_cues": [
+            "Caixa bem acima de paralelo",
+            "Estabelecer padrão sem dor",
+            "Peso corporal inicial",
+            "Zero retroversão, zero dor"
+          ]
+        }
+      ]
+    },
+
+    {
+      "phase_number": 2,
+      "name": "Progressão Conservadora",
+      "duration_typical": "42-56 dias",
+      "frequency": "4x/semana",
+      "focus": "Aumentar profundidade muito gradualmente, fortalecer erectores, estabelecer profundidade máxima individual (pode ser limitada permanentemente)",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Goblet Squat Depth",
+            "target": "Profundidade individual máxima sem butt-wink severo (pode ser acima de paralelo)",
+            "measurement_method": "Filmagem - profundidade segura"
+          },
+          {
+            "test": "Back Extension",
+            "target": "45s hold",
+            "measurement_method": "Cronômetro"
+          },
+          {
+            "test": "Pain",
+            "target": "< 3/10 consistente",
+            "measurement_method": "Auto-relato"
+          }
+        ],
+        "minimum_time": "42 dias",
+        "note": "Profundidade varia. Alguns nunca atingem paralelo - estrutura limita."
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "box_squat_progressive",
+          "name": "Box Squat Progressivo",
+          "note": "Reduzir 2-3cm a cada 2-3 semanas SE controle perfeito. Muitos estacionam acima de paralelo - ACEITAR esta realidade."
+        },
+        {
+          "exercise_id": "good_morning",
+          "name": "Good Morning",
+          "note": "Fortalecer erectores"
+        },
+        {
+          "exercise_id": "front_squat_limited",
+          "name": "Front Squat Limitado",
+          "note": "Geralmente mais seguro que back squat"
+        }
+      ]
+    },
+
+    {
+      "phase_number": 3,
+      "name": "Retorno Modificado",
+      "duration_typical": "28+ dias (permanente)",
+      "frequency": "3-4x/semana",
+      "focus": "Treino sustentável com modificações permanentes, aceitar limitações, movimentos sem dor",
+
+      "advancement_criteria": {
+        "objective_measures": [
+          {
+            "test": "Sustainable Training",
+            "target": "4 semanas sem dor ou exacerbação",
+            "measurement_method": "Monitoramento consistente"
+          }
+        ]
+      },
+
+      "exercises": [
+        {
+          "exercise_id": "modified_variations",
+          "name": "Variações Modificadas",
+          "note": "Front squat, box squat, profundidade individual podem SUBSTITUIR back squat profundo PERMANENTEMENTE"
+        }
+      ]
+    }
+  ],
+
+  "return_to_exercise_criteria": {
+    "realistic_expectations": "CRÍTICO: Muitos casos severos NUNCA devem agachar profundamente. Limitação estrutural não é falha. Meta: movimento funcional sem dor, mesmo com profundidade limitada PERMANENTEMENTE.",
+
+    "permanent_modifications": [
+      "Box squat pode substituir back squat livre",
+      "Front squat geralmente superior",
+      "Profundidade ~90° flexão pode ser permanente",
+      "Alternativas: hack squat, leg press, step-ups"
+    ],
+
+    "full_return_requirements": [
+      {
+        "category": "Dor",
+        "tests": [
+          "Zero em repouso",
+          "< 2/10 durante treino modificado",
+          "Sem exacerbações 3 meses"
+        ]
+      },
+      {
+        "category": "Funcional",
+        "tests": [
+          "Agachamento a profundidade individual sem dor",
+          "AVDs sem limitação",
+          "Treino consistente"
+        ]
+      }
+    ],
+
+    "ongoing_maintenance": "PERMANENTE E CRÍTICO: Mobilidade diária de quadril e tornozelo FOREVER. Parar mobilidade = regressão garantida. Filmar mensalmente. Manter limitações indefinidamente."
+  },
+
+  "contraindications": {
+    "absolute": [
+      "Hérnia de disco não reabilitada",
+      "Espondilolistese severa",
+      "FAI severo não operado",
+      "Artrose lombar avançada",
+      "Dor irradiante não controlada"
+    ],
+    "relative": [
+      "História de cirurgia lombar",
+      "Estenose espinhal",
+      "Osteoporose severa"
+    ]
+  },
+
+  "red_flags": {
+    "stop_immediately": [
+      "Dor > 6/10",
+      "Irradiação para pernas",
+      "Sintomas neurológicos",
+      "Piora progressiva",
+      "Dor noturna",
+      "Sintomas vesicais/intestinais"
+    ],
+    "seek_medical_evaluation": [
+      "Qualquer red flag acima",
+      "Sem melhora 4+ semanas",
+      "Piora de sintomas"
+    ]
+  },
+
+  "scientific_references": [
+    {
+      "authors": "McGill, S.M.",
+      "year": 2015,
+      "title": "Low Back Disorders: Evidence-Based Prevention and Rehabilitation",
+      "key_finding": "Alguns indivíduos não devem agachar profundamente devido a limitações estruturais anatômicas"
+    },
+    {
+      "authors": "Lamontagne, M., et al.",
+      "year": 2009,
+      "title": "The effect of cam FAI on hip and pelvic motion during maximum squat",
+      "journal": "Clinical Orthopaedics and Related Research",
+      "key_finding": "FAI limita flexão de quadril e causa compensações pélvicas"
+    }
+  ],
+
+  "special_considerations": {
+    "structural_limitations": "Avaliação de FAI, retroversão acetabular, ou outras limitações pode ser necessária. Radiografia ou MRI podem revelar contraindicações anatômicas para agachamento profundo.",
+
+    "psychological_acceptance": "Casos severos frequentemente lutam com aceitação de limitações permanentes. Alguns nunca farão 'ass-to-grass'. Educação sobre individualidade anatômica e foco em movimento livre de dor vs profundidade máxima são críticos.",
+
+    "professional_supervision": "OBRIGATÓRIA para casos severos. Fisioterapeuta especializado em coluna e quadril deve guiar protocolo. Auto-tratamento não é apropriado.",
+
+    "alternative_exercises": "Ênfase em variações que não requerem profundidade extrema: front squat, step-ups, split squats, leg press com profundidade controlada. Performance não deve ser medida por profundidade de agachamento."
+  }
+}
