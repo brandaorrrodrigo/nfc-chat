@@ -47,7 +47,35 @@ interface SeedData {
 async function seedArenasBiometria() {
   console.log('🌱 Iniciando seed de Arenas de Avaliação Biométrica...\n');
 
-  // Ler arquivo JSON
+  // 1. Criar/buscar usuário sistema
+  console.log('🔧 Criando usuários sistema...');
+  const systemUser = await prisma.user.upsert({
+    where: { id: SYSTEM_USER_ID },
+    update: {},
+    create: {
+      id: SYSTEM_USER_ID,
+      email: 'sistema@nutrifitcoach.com.br',
+      name: 'Sistema NFV',
+      password: 'not-used',
+      role: 'ADMIN',
+    },
+  });
+
+  const aiUser = await prisma.user.upsert({
+    where: { id: AI_USER_ID },
+    update: {},
+    create: {
+      id: AI_USER_ID,
+      email: 'ia-biomecanica@nutrifitcoach.com.br',
+      name: 'IA Biomecânica NFV',
+      password: 'not-used',
+      role: 'ADMIN',
+    },
+  });
+  console.log(`✓ Usuário sistema: ${systemUser.id}`);
+  console.log(`✓ Usuário IA: ${aiUser.id}\n`);
+
+  // 2. Ler arquivo JSON
   const dataPath = path.join(__dirname, '../data/arenas-biometria-seed.json');
   const rawData = fs.readFileSync(dataPath, 'utf-8');
   const seedData: SeedData = JSON.parse(rawData);
