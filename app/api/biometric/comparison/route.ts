@@ -6,14 +6,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth-config'
-import { createClient } from '@supabase/supabase-js'
+import { PrismaClient } from '@/lib/generated/prisma'
 import { JuizBiometricoService } from '@/lib/biomechanics/juiz-biometrico.service'
-import { biometricPaywall } from '@/lib/biomechanics/biometric-paywall.service'
-import { FPService } from '@/lib/fp/fp.service'
+import { FPService, InsufficientFPError } from '@/lib/fp/fp.service'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-const supabase = createClient(supabaseUrl, supabaseKey)
+const prisma = new PrismaClient()
 
 const COMPARISON_COST_FP = 25
 
@@ -43,19 +40,17 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 3. Verificar acesso com paywall
-    const paywall = await biometricPaywall.checkComparisonAccess(
-      session.user.email,
-      COMPARISON_COST_FP
-    )
+    // 3. Verificar saldo de FP
+    const fpService = new FPService()
+    const currentBalance = await fpService.getBalance(session.user.id!)
 
-    if (!paywall.allowed) {
+    if (currentBalance < COMPARISON_COST_FP) {
       return NextResponse.json(
         {
           error: 'Insufficient FitPoints',
           required_fps: COMPARISON_COST_FP,
-          current_balance: paywall.current_balance,
-          shortfall: COMPARISON_COST_FP - (paywall.current_balance || 0),
+          current_balance: currentBalance,
+          shortfall: COMPARISON_COST_FP - currentBalance,
         },
         { status: 402 }
       )
@@ -66,7 +61,7 @@ export async function POST(request: NextRequest) {
     const analysis = await juizService.analyzeComparison({
       baseline_id,
       images,
-      user_id: session.user.email,
+      user_id: session.user.id!,
       current_protocol: description,
     })
 
@@ -74,59 +69,42 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(analysis, { status: 400 })
     }
 
-    // 5. Deduzir FitPoints
-    const fpService = new FPService()
-    const deduction = await fpService.deductFitPoints({
-      user_id: session.user.email,
-      amount: COMPARISON_COST_FP,
-      category: 'biometric_comparison',
-      reference: baseline_id,
-    })
-
-    if (!deduction.success) {
-      return NextResponse.json(
-        { error: 'Failed to process payment' },
-        { status: 500 }
-      )
-    }
-
-    // 6. Salvar comparação no banco
-    const { data: comparison, error: saveError } = await supabase
-      .from('BiometricComparison')
-      .insert({
-        baseline_id,
-        user_id: session.user.email,
-        analysis_text: analysis.analysis,
-        images_metadata: JSON.stringify(images),
-        protocol_context: description,
-        cost_fps: COMPARISON_COST_FP,
-        payment_method: 'fitpoints',
-        transaction_id: deduction.transaction_id,
+    // 5. Deduzir FitPoints (dentro de uma transação)
+    try {
+      await fpService.deductFP({
+        user_id: session.user.id!,
+        amount: COMPARISON_COST_FP,
+        category: 'biometric_comparison',
+        description: `Biometric comparison for baseline ${baseline_id}`,
+        reference_id: analysis.comparison_id,
       })
-      .select()
-      .single()
 
-    if (saveError) {
-      console.error('Save error:', saveError)
-      // Reembolsar se não conseguir salvar
-      await fpService.refundFitPoints({
-        transaction_id: deduction.transaction_id!,
-        reason: 'Save failed',
+      // Obter novo saldo
+      const newBalance = await fpService.getBalance(session.user.id!)
+
+      return NextResponse.json({
+        success: true,
+        comparison_id: analysis.comparison_id,
+        analysis: analysis.analysis,
+        fps_deducted: COMPARISON_COST_FP,
+        new_balance: newBalance,
+        message: `✅ Comparison complete! -${COMPARISON_COST_FP} FP`,
       })
-      return NextResponse.json(
-        { error: 'Failed to save comparison' },
-        { status: 500 }
-      )
-    }
+    } catch (error) {
+      if (error instanceof InsufficientFPError) {
+        return NextResponse.json(
+          {
+            error: 'Insufficient FitPoints',
+            required_fps: COMPARISON_COST_FP,
+            current_balance: error.available,
+            shortfall: error.required - error.available,
+          },
+          { status: 402 }
+        )
+      }
 
-    return NextResponse.json({
-      success: true,
-      comparison_id: comparison.id,
-      analysis: analysis.analysis,
-      fps_deducted: COMPARISON_COST_FP,
-      new_balance: deduction.balance_after,
-      message: `✅ Comparison complete! -${COMPARISON_COST_FP} FP`,
-    })
+      throw error
+    }
   } catch (error: any) {
     console.error('[Comparison API Error]:', error)
     return NextResponse.json(

@@ -6,12 +6,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth-config'
-import { createClient } from '@supabase/supabase-js'
+import { PrismaClient } from '@/lib/generated/prisma'
 import { JuizBiometricoService } from '@/lib/biomechanics/juiz-biometrico.service'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-const supabase = createClient(supabaseUrl, supabaseKey)
+const prisma = new PrismaClient()
 
 export async function POST(request: NextRequest) {
   try {
@@ -36,12 +34,13 @@ export async function POST(request: NextRequest) {
     }
 
     // 3. Verificar se já usou baseline grátis
-    const { data: existingBaseline } = await supabase
-      .from('BiometricBaseline')
-      .select('id')
-      .eq('user_id', session.user.email)
-      .eq('was_free', true)
-      .single()
+    const existingBaseline = await prisma.biometricBaseline.findFirst({
+      where: {
+        user_id: session.user.id,
+        was_free: true,
+      },
+      select: { id: true },
+    })
 
     if (existingBaseline) {
       return NextResponse.json(
@@ -54,7 +53,7 @@ export async function POST(request: NextRequest) {
     const juizService = new JuizBiometricoService()
     const analysis = await juizService.analyzeBaseline({
       images,
-      user_id: session.user.email,
+      user_id: session.user.id!,
       current_protocol: description,
     })
 
@@ -66,32 +65,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(analysis, { status: 402 })
     }
 
-    // 5. Salvar no banco
-    const { data: baseline, error: saveError } = await supabase
-      .from('BiometricBaseline')
-      .insert({
-        user_id: session.user.email,
-        analysis_text: analysis.analysis,
-        images_metadata: JSON.stringify(images),
-        protocol_context: description,
-        was_free: true,
-        cost_fps: 0,
-      })
-      .select()
-      .single()
-
-    if (saveError) {
-      console.error('Save error:', saveError)
-      return NextResponse.json(
-        { error: 'Failed to save baseline' },
-        { status: 500 }
-      )
-    }
-
+    // JuizBiometricoService já salvou no banco, retornar resultado
     return NextResponse.json({
       success: true,
-      baseline_id: baseline.id,
+      baseline_id: analysis.baseline_id,
       analysis: analysis.analysis,
+      fps_deducted: analysis.payment_info?.cost_fps || 0,
       message: '✅ Baseline analysis complete!',
     })
   } catch (error: any) {
