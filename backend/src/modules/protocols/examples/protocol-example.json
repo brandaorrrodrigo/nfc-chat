@@ -1,0 +1,359 @@
+{
+  "protocolId": "knee_valgus_moderate_v1",
+  "version": "1.0",
+  "deviationType": "knee_valgus",
+  "severity": "moderate",
+  "description": "Protocolo corretivo para valgo de joelho moderado. Foca em fortalecer abdutores de quadril, melhorar mobilidade e controle motor.",
+
+  "phases": [
+    {
+      "phaseNumber": 1,
+      "name": "Mobilidade e Ativação",
+      "durationWeeks": 2,
+      "goals": [
+        "Melhorar mobilidade de quadril em rotação externa",
+        "Ativar glúteo médio e mínimo",
+        "Estabelecer padrão motor básico de controle de joelho"
+      ],
+      "exercises": [
+        {
+          "exerciseId": "hip_mobilization_90_90",
+          "name": "Hip 90/90 Stretch",
+          "category": "mobility",
+          "sets": 3,
+          "reps": "30s",
+          "rest": 30,
+          "equipment": ["bodyweight"],
+          "cues": [
+            "Manter costas retas e alinhadas",
+            "Sentir alongamento no quadril posterior",
+            "Respiração calma e profunda"
+          ],
+          "alternatives": [
+            {
+              "exerciseId": "pigeon_stretch",
+              "name": "Pigeon Stretch",
+              "reason": "easier",
+              "equipmentRequired": ["bodyweight"]
+            }
+          ]
+        },
+        {
+          "exerciseId": "glute_bridge",
+          "name": "Glute Bridge",
+          "category": "activation",
+          "sets": 3,
+          "reps": 15,
+          "rest": 60,
+          "tempo": "2-1-2",
+          "load": "bodyweight",
+          "equipment": ["bodyweight"],
+          "cues": [
+            "Apertar glúteos no topo do movimento",
+            "Não arquear lombar excessivamente",
+            "Empurrar pelos calcanhares"
+          ]
+        },
+        {
+          "exerciseId": "clamshell",
+          "name": "Clamshell",
+          "category": "activation",
+          "sets": 3,
+          "reps": 15,
+          "rest": 45,
+          "tempo": "2-1-2",
+          "equipment": ["resistance_band"],
+          "cues": [
+            "Manter pés juntos durante todo movimento",
+            "Não rolar quadril para trás",
+            "Controle na descida"
+          ],
+          "alternatives": [
+            {
+              "exerciseId": "side_lying_hip_abduction",
+              "name": "Side-Lying Hip Abduction",
+              "reason": "different_equipment",
+              "equipmentRequired": ["bodyweight"]
+            }
+          ]
+        },
+        {
+          "exerciseId": "banded_walks",
+          "name": "Banded Lateral Walks",
+          "category": "activation",
+          "sets": 3,
+          "reps": "10 each direction",
+          "rest": 60,
+          "equipment": ["resistance_band"],
+          "cues": [
+            "Manter tensão na banda o tempo todo",
+            "Passos controlados, não arrastar pés",
+            "Tronco estável, sem balanço"
+          ]
+        }
+      ],
+      "advancementCriteria": {
+        "requiredWeeks": 2,
+        "qualitativeCriteria": [
+          "Execução perfeita de todos os exercícios de ativação",
+          "Capacidade de contrair glúteo médio isoladamente",
+          "Mobilidade de quadril melhorada (teste 90/90 sem compensações)"
+        ],
+        "quantitativeCriteria": {
+          "glute_bridge_reps": 15,
+          "clamshell_reps": 15,
+          "pain_level": 0
+        }
+      },
+      "progressionNotes": "Quando critérios atingidos, avançar para Fase 2. Se dificuldade persiste, estender esta fase por mais 1 semana."
+    },
+    {
+      "phaseNumber": 2,
+      "name": "Fortalecimento Unilateral",
+      "durationWeeks": 3,
+      "goals": [
+        "Desenvolver força unilateral de quadril",
+        "Melhorar controle de joelho sob carga",
+        "Integrar padrão motor em movimentos funcionais"
+      ],
+      "exercises": [
+        {
+          "exerciseId": "single_leg_glute_bridge",
+          "name": "Single Leg Glute Bridge",
+          "category": "strength",
+          "sets": 3,
+          "reps": 10,
+          "rest": 90,
+          "tempo": "2-1-2",
+          "load": "bodyweight",
+          "equipment": ["bodyweight"],
+          "cues": [
+            "Manter quadril nivelado",
+            "Não deixar quadril cair para o lado",
+            "Força vem do glúteo, não lombar"
+          ]
+        },
+        {
+          "exerciseId": "bulgarian_split_squat",
+          "name": "Bulgarian Split Squat",
+          "category": "strength",
+          "sets": 3,
+          "reps": 10,
+          "rest": 90,
+          "tempo": "3-1-2",
+          "load": "light",
+          "equipment": ["dumbbell", "bench"],
+          "cues": [
+            "Joelho sempre alinhado com dedão do pé",
+            "Descida controlada e profunda",
+            "Força vem do glúteo, não do quadríceps"
+          ],
+          "alternatives": [
+            {
+              "exerciseId": "rear_foot_elevated_split_squat_bodyweight",
+              "name": "Rear Foot Elevated Split Squat (Bodyweight)",
+              "reason": "different_equipment",
+              "equipmentRequired": ["bench"]
+            },
+            {
+              "exerciseId": "reverse_lunge",
+              "name": "Reverse Lunge",
+              "reason": "easier",
+              "equipmentRequired": ["bodyweight"]
+            }
+          ]
+        },
+        {
+          "exerciseId": "lateral_lunge",
+          "name": "Lateral Lunge",
+          "category": "strength",
+          "sets": 3,
+          "reps": 10,
+          "rest": 90,
+          "tempo": "2-1-2",
+          "load": "bodyweight",
+          "equipment": ["bodyweight"],
+          "cues": [
+            "Empurrar quadril para trás",
+            "Joelho não ultrapassar dedos",
+            "Sentir alongamento no adutor"
+          ]
+        },
+        {
+          "exerciseId": "single_leg_rdl",
+          "name": "Single Leg Romanian Deadlift",
+          "category": "integration",
+          "sets": 3,
+          "reps": 8,
+          "rest": 90,
+          "tempo": "3-1-2",
+          "load": "light",
+          "equipment": ["dumbbell"],
+          "cues": [
+            "Joelho de apoio ligeiramente flexionado e ESTÁVEL",
+            "Quadril permanece nivelado",
+            "Sentir trabalho na cadeia posterior"
+          ],
+          "alternatives": [
+            {
+              "exerciseId": "single_leg_rdl_bodyweight",
+              "name": "Single Leg RDL (Bodyweight)",
+              "reason": "different_equipment",
+              "equipmentRequired": ["bodyweight"]
+            }
+          ]
+        }
+      ],
+      "advancementCriteria": {
+        "requiredWeeks": 3,
+        "qualitativeCriteria": [
+          "Controle perfeito de joelho em Bulgarian split squat",
+          "Zero compensações em single leg RDL",
+          "Capacidade de manter quadril nivelado em todos os unilaterais"
+        ],
+        "quantitativeCriteria": {
+          "bulgarian_split_squat_reps": 10,
+          "single_leg_rdl_reps": 8,
+          "pain_level": 0
+        }
+      },
+      "progressionNotes": "Se critérios não atingidos após 3 semanas, estender por mais 1 semana. Considerar reduzir carga se houver compensações."
+    },
+    {
+      "phaseNumber": 3,
+      "name": "Integração e Performance",
+      "durationWeeks": 2,
+      "goals": [
+        "Integrar correção em padrões de movimento complexos",
+        "Desenvolver potência com técnica perfeita",
+        "Preparar retorno a atividades específicas do esporte"
+      ],
+      "exercises": [
+        {
+          "exerciseId": "goblet_squat",
+          "name": "Goblet Squat",
+          "category": "integration",
+          "sets": 4,
+          "reps": 12,
+          "rest": 90,
+          "tempo": "3-1-2",
+          "load": "moderate",
+          "equipment": ["kettlebell"],
+          "cues": [
+            "Joelhos SEMPRE alinhados com dedos dos pés",
+            "Profundidade máxima mantendo técnica",
+            "Usar cotovelos para empurrar joelhos para fora"
+          ],
+          "alternatives": [
+            {
+              "exerciseId": "goblet_squat_dumbbell",
+              "name": "Goblet Squat (Dumbbell)",
+              "reason": "different_equipment",
+              "equipmentRequired": ["dumbbell"]
+            },
+            {
+              "exerciseId": "front_squat",
+              "name": "Front Squat",
+              "reason": "harder",
+              "equipmentRequired": ["barbell"]
+            }
+          ]
+        },
+        {
+          "exerciseId": "single_leg_box_squat",
+          "name": "Single Leg Box Squat",
+          "category": "integration",
+          "sets": 3,
+          "reps": 8,
+          "rest": 120,
+          "tempo": "3-1-3",
+          "load": "bodyweight",
+          "equipment": ["box"],
+          "cues": [
+            "Descida ultra-controlada",
+            "Toque leve na caixa, não sentar",
+            "Controle total do joelho"
+          ]
+        },
+        {
+          "exerciseId": "lateral_bound",
+          "name": "Lateral Bound (Jump)",
+          "category": "integration",
+          "sets": 3,
+          "reps": 6,
+          "rest": 120,
+          "equipment": ["bodyweight"],
+          "cues": [
+            "Aterrissagem suave com joelho estável",
+            "Absorver impacto com quadril, não joelho",
+            "Pausa de 2s em cada aterrissagem"
+          ]
+        },
+        {
+          "exerciseId": "step_down_eccentric",
+          "name": "Eccentric Step Down",
+          "category": "integration",
+          "sets": 3,
+          "reps": 10,
+          "rest": 90,
+          "tempo": "5-1-1",
+          "equipment": ["step"],
+          "cues": [
+            "Descida de 5 segundos",
+            "Joelho rastreando sobre dedos",
+            "Controle excêntrico máximo"
+          ]
+        }
+      ],
+      "advancementCriteria": {
+        "requiredWeeks": 2,
+        "qualitativeCriteria": [
+          "Zero valgo de joelho visível em goblet squat com carga moderada",
+          "Aterrissagem perfeita em lateral bounds",
+          "Controle total em todos os exercícios integrativos"
+        ],
+        "quantitativeCriteria": {
+          "goblet_squat_reps": 12,
+          "lateral_bound_perfect_landings": 6,
+          "pain_level": 0
+        }
+      },
+      "progressionNotes": "Conclusão deste protocolo. Após atingir critérios, retornar gradualmente a atividades esportivas, mantendo exercícios de manutenção 2x/semana."
+    }
+  ],
+
+  "totalDurationWeeks": 7,
+  "frequencyPerWeek": 4,
+
+  "prerequisites": [
+    "Ausência de dor aguda no joelho (< 2/10)",
+    "Capacidade de realizar agachamento com peso corporal",
+    "Ausência de lesões estruturais não tratadas"
+  ],
+
+  "contraindications": [
+    "Dor aguda no joelho (> 4/10)",
+    "Lesão aguda de LCA, LCM ou menisco",
+    "Instabilidade significativa de joelho",
+    "Inflamação ativa (edema, calor, vermelhidão)"
+  ],
+
+  "expectedOutcomes": [
+    "Redução ou eliminação completa do valgo de joelho",
+    "Aumento de força em abdutores de quadril (>30%)",
+    "Melhora em mobilidade de quadril",
+    "Capacidade de realizar agachamento profundo com técnica perfeita",
+    "Retorno seguro a atividades esportivas"
+  ],
+
+  "evidenceLevel": "A",
+
+  "references": [
+    "Hewett TE, et al. (2015). Biomechanical measures of neuromuscular control and valgus loading of the knee predict anterior cruciate ligament injury risk in female athletes. Am J Sports Med.",
+    "Ireland ML, et al. (2003). Hip strength in females with and without patellofemoral pain. J Orthop Sports Phys Ther.",
+    "Powers CM. (2010). The influence of abnormal hip mechanics on knee injury: a biomechanical perspective. J Orthop Sports Phys Ther.",
+    "Fukuda TY, et al. (2012). Hip posterolateral musculature strengthening in sedentary women with patellofemoral pain syndrome. J Orthop Sports Phys Ther."
+  ],
+
+  "notes": "Este protocolo deve ser supervisionado por profissional qualificado, especialmente nas fases iniciais. Progressão deve ser baseada em qualidade de movimento, não apenas em tempo."
+}
