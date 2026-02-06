@@ -1313,6 +1313,34 @@ const COMUNIDADES_DATA: Record<string, ComunidadeData & { mensagens: Mensagem[] 
     totalMensagens: 38,
     mensagens: MENSAGENS_ASPIRACIONAL_ESTETICA,
   },
+  'postura-estetica': {
+    titulo: '🧍 Postura & Estética Real',
+    descricao: 'Discussões sobre estética corporal sob a ótica da postura e biomecânica',
+    membrosOnline: 34,
+    totalMensagens: 156,
+    mensagens: [],
+  },
+  'avaliacao-assimetrias': {
+    titulo: '📐 Avaliação Biométrica & Assimetrias',
+    descricao: 'Espaço para discussões sobre leitura corporal, assimetrias e análise biométrica por IA',
+    membrosOnline: 28,
+    totalMensagens: 142,
+    mensagens: [],
+  },
+  'dor-funcao-saude': {
+    titulo: '🩺 Dor, Função & Saúde Postural',
+    descricao: 'Explore a relação entre postura, dor e função corporal',
+    membrosOnline: 41,
+    totalMensagens: 189,
+    mensagens: [],
+  },
+  'avaliacao-fisica-foto': {
+    titulo: '📸 Avaliação Física por Foto',
+    descricao: 'Envie suas fotos para análise biométrica completa com IA',
+    membrosOnline: 19,
+    totalMensagens: 67,
+    mensagens: [],
+  },
 };
 
 // ========================================
