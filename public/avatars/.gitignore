@@ -1,0 +1,6 @@
+# Ignorar avatares gerados dinamicamente
+generated/*.svg
+generated/*.png
+
+# Manter diretórios
+!.gitkeep
