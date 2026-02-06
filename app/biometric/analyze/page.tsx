@@ -84,7 +84,7 @@ export default function BiometricAnalyzePage() {
 
   // Funções principais
   const handleAnalyzeBaseline = useCallback(async () => {
-    if (!session?.user?.email) return
+    if (!session?.user?.id) return
 
     const requiredImages = images.frontal && images.lateral && images.posterior
     if (!requiredImages) {
@@ -146,7 +146,7 @@ export default function BiometricAnalyzePage() {
         errorMessage: error instanceof Error ? error.message : 'Erro desconhecido',
       })
     }
-  }, [images, description, session?.user?.email])
+  }, [images, description, session?.user?.id])
 
   const handleAnalyzeComparison = useCallback(async () => {
     if (!baselineId) {
@@ -154,7 +154,7 @@ export default function BiometricAnalyzePage() {
       return
     }
 
-    if (!session?.user?.email) return
+    if (!session?.user?.id) return
 
     const requiredImages = images.frontal && images.lateral && images.posterior
     if (!requiredImages) {

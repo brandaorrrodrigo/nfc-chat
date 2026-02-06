@@ -24,7 +24,7 @@ export function FPBalance() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!session?.user?.email) return
+    if (!session?.user?.id) return
 
     const fetchStats = async () => {
       try {
@@ -35,7 +35,7 @@ export function FPBalance() {
         if (!response.ok) throw new Error('Failed to fetch FP balance')
 
         const data = await response.json()
-        setStats(data)
+        setStats(data.data)
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Erro ao carregar saldo')
       } finally {
@@ -44,17 +44,17 @@ export function FPBalance() {
     }
 
     fetchStats()
-  }, [session?.user?.email])
+  }, [session?.user?.id])
 
   const handleRefresh = async () => {
-    if (!session?.user?.email) return
+    if (!session?.user?.id) return
 
     try {
       setLoading(true)
       const response = await fetch('/api/fp/balance')
       if (!response.ok) throw new Error('Failed to fetch FP balance')
       const data = await response.json()
-      setStats(data)
+      setStats(data.data)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao recarregar saldo')
     } finally {

@@ -45,7 +45,7 @@ export interface ValidationResult {
 }
 
 export interface PaymentInfo {
-  method: 'fitpoints' | 'subscription' | 'free_quota';
+  method: 'fp' | 'fitpoints' | 'subscription' | 'free_quota';
   cost_fps: number;
   transaction_id?: string;
 }
