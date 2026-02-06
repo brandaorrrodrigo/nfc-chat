@@ -2041,10 +2041,10 @@ export default function PainelVivoPage() {
     if (data) {
       setComunidade(data);
 
-      // Carregar mensagens da API (banco de dados)
+      // Carregar posts e comentários da API (banco de dados)
       const loadMessages = async () => {
         try {
-          const response = await fetch(`/api/comunidades/messages?slug=${slug}`);
+          const response = await fetch(`/api/comunidades/posts-comments?slug=${slug}`);
           const result = await response.json();
 
           if (result.mensagens && result.mensagens.length > 0) {
