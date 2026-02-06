@@ -109,7 +109,13 @@ export async function POST(req: NextRequest) {
     })
 
     // Invalidate cache
-    await safeRedis.del('arenas:list:all', 'arenas:grouped:all')
+    await safeRedis.del('arenas:list:all', 'arenas:grouped:all', 'arenas:list:all', 'arenas:grouped:all')
+
+    // Limpar todos os caches de arenas
+    const keys = await safeRedis.keys('arenas:*')
+    if (keys && keys.length > 0) {
+      await safeRedis.del(...keys)
+    }
 
     return NextResponse.json(arena, { status: 201 })
   } catch (error) {
