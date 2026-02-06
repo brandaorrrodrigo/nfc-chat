@@ -7,7 +7,7 @@
     "node": ">=18.17.0"
   },
   "scripts": {
-    "dev": "next dev -p 3001",
+    "dev": "next dev -p 3000",
     "build": "prisma generate && next build",
     "start": "next start -p 3001",
     "lint": "next lint",
@@ -20,7 +20,10 @@
     "avatar:stats": "ts-node --project tsconfig.scripts.json scripts/avatar-stats.ts",
     "seed:test": "ts-node --project tsconfig.scripts.json scripts/seed-test-data.ts",
     "seed:arenas-biometria": "npx tsx scripts/seed-arenas-biometria.ts",
-    "seed:pricing": "npx tsx scripts/seed-biometric-pricing.ts"
+    "seed:pricing": "npx tsx scripts/seed-biometric-pricing.ts",
+    "stats:fix": "ts-node --project tsconfig.scripts.json scripts/fix-fake-counters.ts",
+    "diagnose:community": "ts-node --project tsconfig.scripts.json scripts/diagnose-community-data.ts",
+    "diagnose": "ts-node --project tsconfig.scripts.json scripts/diagnose-visual.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.73.0",
