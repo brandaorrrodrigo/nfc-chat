@@ -27,7 +27,29 @@
       "Bash(echo:*)",
       "Bash(done)",
       "Bash(test:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx:*)",
+      "Bash(for file in *.ts)",
+      "Bash(do sed -i 's/\\\\\\\\`/`/g' \"$file\")",
+      "Bash(do sed -i 's/^`//g' \"$file\")",
+      "Bash(git -C \"D:\\\\NUTRIFITCOACH_MASTER\\\\nfc-comunidades\" checkout -- backend/src/modules/cache/*.ts)",
+      "Bash(npx ts-node:*)",
+      "Bash(npm run avatar:analyze:*)",
+      "Bash(npm run seed:arenas-biometria:*)",
+      "Bash(ping:*)",
+      "Bash(start https://supabase.com/dashboard/project/qducbqhuwqdyqioqevle/settings/database)",
+      "Bash(Test-NetConnection -ComputerName db.qducbqhuwqdyqioqevle.supabase.co -Port 5432)",
+      "Bash(nslookup:*)",
+      "Bash(timeout 5 bash -c \"echo > /dev/tcp/db.qducbqhuwqdyqioqevle.supabase.co/5432\")",
+      "Bash(docker:*)",
+      "Bash(npm run seed:pricing:*)",
+      "Bash(npm run seed:test:*)",
+      "Bash(AUTO_CONFIRM=true npm run avatar:fix:*)",
+      "Bash(npm run:*)",
+      "Bash(start https://supabase.com/dashboard/project/qducbqhuwqdyqioqevle/editor/sql)",
+      "Bash(dir:*)",
+      "Bash(start https://vercel.com/rodrigos-projects-2fb5b2ab/nfc-comunidades/deployments)"
     ]
   }
 }

@@ -1,284 +1,412 @@
 /**
  * Protocol Matcher Service
  *
- * Busca e retorna protocolos corretivos apropriados baseado em desvios detectados
+ * Orquestrador principal para geração de protocolos corretivos (LAYER 3)
+ *
+ * Processo:
+ * 1. Filtra desvios corrigíveis
+ * 2. Prioriza por severidade + risco de lesão
+ * 3. Carrega protocolos base via ProtocolLoaderService (com cache L4)
+ * 4. Valida protocolos base via ProtocolValidatorService
+ * 5. Personaliza protocolos via ProtocolPersonalizerService (5 regras determinísticas)
+ * 6. Integra múltiplos protocolos se necessário
+ * 7. Extrai rationale científico do deep context (se disponível)
+ * 8. Validação final
+ *
+ * IMPORTANTE: Sistema 100% determinístico - mesmas entradas = mesmas saídas
  */
 
 import { Injectable, Logger } from '@nestjs/common';
-import { promises as fs } from 'fs';
-import { join } from 'path';
-import { IAggregatedDeviation } from '../analysis/interfaces/deviation.interface';
-
-interface UserProfile {
-  training_level?: string;
-  training_age_years?: number;
-  injury_history?: any[];
-  age?: number;
-  height_cm?: number;
-  weight_kg?: number;
-}
-
-interface ProtocolGenerationInput {
-  deviations: IAggregatedDeviation[];
-  userProfile: UserProfile;
-  deepContext?: any;
-}
-
-interface GeneratedProtocol {
-  deviation_type: string;
-  deviation_severity: string;
-  protocol_id: string;
-  protocol_version: string;
-  protocol_data: any;
-  user_modifications?: any;
-}
+import { ProtocolLoaderService } from './protocol-loader.service';
+import { ProtocolValidatorService } from './protocol-validator.service';
+import { ProtocolPersonalizerService } from './protocol-personalizer.service';
+import {
+  GenerateProtocolsInput,
+  GeneratedProtocol,
+  DeviationInput,
+  UserProfile,
+  ProtocolPriority,
+  BaseProtocol,
+} from './interfaces/protocol.interface';
 
 @Injectable()
 export class ProtocolMatcherService {
   private readonly logger = new Logger(ProtocolMatcherService.name);
-  private readonly protocolsBasePath = join(
-    process.cwd(),
-    'reference-data',
-    'corrective-protocols',
-  );
 
   /**
-   * Gera protocolos corretivos baseado nos desvios detectados
+   * Pesos para priorização de desvios por severidade
    */
-  async generateProtocols(input: ProtocolGenerationInput): Promise<GeneratedProtocol[]> {
-    const { deviations, userProfile, deepContext } = input;
+  private readonly severityWeights = {
+    severe: 3,
+    moderate: 2,
+    mild: 1,
+  };
+
+  /**
+   * Pesos para priorização por risco de lesão
+   */
+  private readonly injuryRiskWeights = {
+    knee_valgus: 3, // Alto risco de lesão de LCA
+    butt_wink: 2, // Risco moderado de lesão lombar
+    forward_lean: 2,
+    heel_rise: 1,
+    asymmetric_loading: 2,
+  };
+
+  constructor(
+    private loader: ProtocolLoaderService,
+    private validator: ProtocolValidatorService,
+    private personalizer: ProtocolPersonalizerService,
+  ) {}
+
+  /**
+   * Gera protocolos corretivos personalizados
+   *
+   * @param input - Desvios detectados + perfil do usuário + contexto profundo
+   * @returns Lista de protocolos gerados e personalizados
+   */
+  async generateProtocols(
+    input: GenerateProtocolsInput,
+  ): Promise<GeneratedProtocol[]> {
+    const startTime = Date.now();
 
     this.logger.log(
-      `Generating protocols for ${deviations.length} deviations`,
+      `Generating protocols for user ${input.userProfile.userId}: ${input.deviations.length} deviations detected`,
     );
 
-    const protocols: GeneratedProtocol[] = [];
+    const generatedProtocols: GeneratedProtocol[] = [];
 
-    for (const deviation of deviations) {
-      try {
-        // Buscar protocolo correspondente
-        const protocol = await this.loadProtocol(deviation.type, deviation.severity);
-
-        if (!protocol) {
-          this.logger.warn(
-            `Protocol not found for ${deviation.type} / ${deviation.severity}`,
-          );
-          continue;
-        }
-
-        // Personalizar baseado no perfil do usuário
-        const personalized = this.personalizeProtocol(protocol, userProfile, deepContext);
-
-        protocols.push({
-          deviation_type: deviation.type,
-          deviation_severity: deviation.severity,
-          protocol_id: protocol.protocol_id,
-          protocol_version: protocol.version,
-          protocol_data: protocol,
-          user_modifications: personalized,
-        });
-
-        this.logger.debug(
-          `Generated protocol ${protocol.protocol_id} for ${deviation.type}`,
-        );
-      } catch (error) {
-        this.logger.error(
-          `Error generating protocol for ${deviation.type}: ${error.message}`,
-        );
-      }
-    }
-
-    return protocols;
-  }
-
-  /**
-   * Carrega protocolo do filesystem
-   */
-  private async loadProtocol(
-    deviationType: string,
-    severity: string,
-  ): Promise<any | null> {
     try {
-      const protocolPath = join(
-        this.protocolsBasePath,
-        deviationType,
-        `${severity}.json`,
+      // ETAPA 1: Filtrar desvios corrigíveis (confidence >= 0.6)
+      const correctableDeviations = this.filterCorrectableDeviations(
+        input.deviations,
       );
 
-      this.logger.debug(`Loading protocol from ${protocolPath}`);
-
-      const content = await fs.readFile(protocolPath, 'utf-8');
-      return JSON.parse(content);
-    } catch (error) {
-      if (error.code === 'ENOENT') {
-        this.logger.warn(
-          `Protocol file not found: ${deviationType}/${severity}.json`,
-        );
-      } else {
-        this.logger.error(
-          `Error loading protocol: ${error.message}`,
-        );
+      if (correctableDeviations.length === 0) {
+        this.logger.warn('No correctable deviations found (all confidence < 0.6)');
+        return [];
       }
-      return null;
+
+      this.logger.debug(
+        `${correctableDeviations.length} correctable deviations (filtered from ${input.deviations.length})`,
+      );
+
+      // ETAPA 2: Priorizar desvios por severidade + risco de lesão
+      const prioritizedDeviations = this.prioritizeDeviations(
+        correctableDeviations,
+      );
+
+      this.logger.debug(
+        `Prioritized deviations: ${prioritizedDeviations.map((p) => `${p.deviationType}(${p.priorityScore})`).join(', ')}`,
+      );
+
+      // ETAPA 3-7: Processar cada desvio
+      for (const prioritized of prioritizedDeviations) {
+        try {
+          const protocol = await this.generateSingleProtocol(
+            prioritized,
+            input.userProfile,
+            input.deepContext,
+          );
+
+          if (protocol) {
+            generatedProtocols.push(protocol);
+          }
+        } catch (error) {
+          const err = error as Error;
+          this.logger.error(
+            `Failed to generate protocol for ${prioritized.deviationType}: ${err.message}`,
+            err.stack,
+          );
+        }
+      }
+
+      // ETAPA 8: Integração de protocolos (se múltiplos)
+      if (generatedProtocols.length > 1) {
+        this.integrateMultipleProtocols(generatedProtocols);
+      }
+
+      const duration = Date.now() - startTime;
+      this.logger.log(
+        `Generated ${generatedProtocols.length} protocols in ${duration}ms`,
+      );
+
+      return generatedProtocols;
+    } catch (error) {
+      const err = error as Error;
+      this.logger.error(
+        `Protocol generation failed: ${err.message}`,
+        err.stack,
+      );
+      throw error;
     }
   }
 
   /**
-   * Personaliza protocolo baseado no perfil do usuário
+   * Gera um protocolo individual
    */
-  private personalizeProtocol(
-    protocol: any,
+  private async generateSingleProtocol(
+    prioritized: ProtocolPriority,
     userProfile: UserProfile,
     deepContext?: any,
-  ): any {
-    const modifications: any = {
-      training_age_adjusted: false,
-      injury_history_adjusted: false,
-      age_adjusted: false,
-      recommendations: [],
-    };
+  ): Promise<GeneratedProtocol | null> {
+    const { deviationType, severity } = prioritized;
 
-    // PERSONALIZAÇÃO 1: Training Age
-    if (userProfile.training_age_years !== undefined) {
-      const trainingAge = userProfile.training_age_years;
+    // ETAPA 3: Carregar protocolo base (com cache L4)
+    const baseProtocol = await this.loader.loadProtocol(deviationType, severity);
 
-      if (trainingAge < 1) {
-        // Beginner: progressão mais lenta
-        modifications.training_age_adjusted = true;
-        modifications.recommendations.push(
-          'Como iniciante, progrida com cautela. Não tenha pressa para aumentar carga.',
-        );
-        modifications.phase_duration_multiplier = 1.5; // 50% mais tempo por fase
-      } else if (trainingAge > 5) {
-        // Advanced: progressão mais agressiva
-        modifications.training_age_adjusted = true;
-        modifications.recommendations.push(
-          'Seu nível avançado permite progressão mais rápida, mas não negligencie a correção.',
-        );
-        modifications.phase_duration_multiplier = 0.8; // 20% menos tempo
-      }
+    if (!baseProtocol) {
+      this.logger.warn(
+        `Protocol not found for ${deviationType}/${severity}`,
+      );
+      return null;
     }
 
-    // PERSONALIZAÇÃO 2: Injury History
-    if (userProfile.injury_history && userProfile.injury_history.length > 0) {
-      const relevantInjuries = userProfile.injury_history.filter(
-        (injury: any) => this.isRelevantInjury(injury, protocol.deviation),
+    // ETAPA 4: Validar protocolo base
+    const baseValidation = this.validator.validateBaseProtocol(baseProtocol);
+
+    if (!baseValidation.valid) {
+      this.logger.error(
+        `Base protocol validation failed for ${baseProtocol.protocolId}: ${baseValidation.errors.join('; ')}`,
+      );
+      return null;
+    }
+
+    // ETAPA 5: Personalizar protocolo (5 regras determinísticas)
+    const { protocol: personalizedProtocol, log: personalizationLog } =
+      this.personalizer.personalizeProtocol(baseProtocol, userProfile);
+
+    // ETAPA 6: Validar protocolo personalizado
+    const personalizedValidation =
+      this.validator.validatePersonalizedProtocol(personalizedProtocol);
+
+    if (!personalizedValidation.valid) {
+      this.logger.error(
+        `Personalized protocol validation failed: ${personalizedValidation.errors.join('; ')}`,
+      );
+      // Não bloquear, apenas logar warnings
+    }
+
+    // ETAPA 7: Extrair rationale científico do deep context
+    const scientificRationale = this.extractScientificRationale(
+      deviationType,
+      severity,
+      deepContext,
+    );
+
+    // Construir protocolo gerado
+    const generatedProtocol: GeneratedProtocol = {
+      protocolId: `${baseProtocol.protocolId}_${userProfile.userId}_${Date.now()}`,
+      deviationType,
+      deviationSeverity: severity,
+      baseProtocol,
+      personalizedProtocol,
+      personalizationLog,
+      scientificRationale,
+      createdAt: new Date(),
+    };
+
+    this.logger.debug(
+      `Generated protocol ${generatedProtocol.protocolId} (${personalizationLog.filter((l) => l.applied).length}/5 rules applied)`,
+    );
+
+    return generatedProtocol;
+  }
+
+  /**
+   * ETAPA 1: Filtra desvios corrigíveis (confidence >= 0.6)
+   */
+  private filterCorrectableDeviations(
+    deviations: DeviationInput[],
+  ): DeviationInput[] {
+    return deviations.filter((deviation) => {
+      if (deviation.confidence < 0.6) {
+        this.logger.debug(
+          `Filtered out ${deviation.type}: low confidence (${deviation.confidence})`,
+        );
+        return false;
+      }
+
+      return true;
+    });
+  }
+
+  /**
+   * ETAPA 2: Prioriza desvios por severidade + risco de lesão
+   *
+   * Score = (severity_weight * 10) + (injury_risk_weight * 5)
+   *
+   * Exemplos:
+   * - knee_valgus severe: (3*10) + (3*5) = 45
+   * - butt_wink moderate: (2*10) + (2*5) = 30
+   * - heel_rise mild: (1*10) + (1*5) = 15
+   */
+  private prioritizeDeviations(
+    deviations: DeviationInput[],
+  ): ProtocolPriority[] {
+    const priorities: ProtocolPriority[] = deviations.map((deviation) => {
+      const severityWeight = this.severityWeights[deviation.severity] || 1;
+      const riskWeight = (this.injuryRiskWeights as Record<string, number>)[deviation.type] || 1;
+
+      const priorityScore = severityWeight * 10 + riskWeight * 5;
+
+      const injuryRisk: 'low' | 'moderate' | 'high' =
+        riskWeight === 3 ? 'high' : riskWeight === 2 ? 'moderate' : 'low';
+
+      return {
+        deviationType: deviation.type,
+        severity: deviation.severity,
+        priorityScore,
+        injuryRisk,
+      };
+    });
+
+    // Ordenar por priority score (maior = mais prioritário)
+    priorities.sort((a, b) => b.priorityScore - a.priorityScore);
+
+    return priorities;
+  }
+
+  /**
+   * ETAPA 7: Extrai rationale científico do deep context
+   *
+   * Se deep context disponível, busca insights relevantes ao desvio
+   */
+  private extractScientificRationale(
+    deviationType: string,
+    severity: string,
+    deepContext?: any,
+  ): string | undefined {
+    if (!deepContext) {
+      return undefined;
+    }
+
+    // Se deep context tem narrative científico, extrair
+    if (deepContext.scientific_narrative) {
+      return deepContext.scientific_narrative;
+    }
+
+    // Se deep context tem insights por desvio
+    if (deepContext.deviation_insights && deepContext.deviation_insights[deviationType]) {
+      const insight = deepContext.deviation_insights[deviationType];
+      return insight.rationale || insight.explanation;
+    }
+
+    return undefined;
+  }
+
+  /**
+   * ETAPA 8: Integra múltiplos protocolos
+   *
+   * Estratégia:
+   * - Se protocolos compartilham exercícios: aumentar volume em vez de duplicar
+   * - Se protocolos conflitam (mesma região muscular): priorizar o de maior score
+   * - Adicionar notas sobre integração
+   */
+  private integrateMultipleProtocols(protocols: GeneratedProtocol[]): void {
+    this.logger.log(
+      `Integrating ${protocols.length} protocols for combined execution`,
+    );
+
+    // Detectar exercícios duplicados entre protocolos
+    const exerciseOccurrences = new Map<string, number>();
+
+    protocols.forEach((protocol) => {
+      protocol.personalizedProtocol.modifiedPhases.forEach((phase) => {
+        phase.exercises.forEach((exercise) => {
+          const count = exerciseOccurrences.get(exercise.exerciseId) || 0;
+          exerciseOccurrences.set(exercise.exerciseId, count + 1);
+        });
+      });
+    });
+
+    // Identificar exercícios compartilhados (presentes em >1 protocolo)
+    const sharedExercises = Array.from(exerciseOccurrences.entries())
+      .filter(([_, count]) => count > 1)
+      .map(([exerciseId, _]) => exerciseId);
+
+    if (sharedExercises.length > 0) {
+      this.logger.debug(
+        `Found ${sharedExercises.length} shared exercises across protocols`,
       );
 
-      if (relevantInjuries.length > 0) {
-        modifications.injury_history_adjusted = true;
-        modifications.recommendations.push(
-          `Histórico de lesão em ${relevantInjuries[0].location}: progressão extra cautelosa recomendada.`,
+      // Adicionar nota em cada protocolo
+      protocols.forEach((protocol) => {
+        protocol.personalizedProtocol.additionalNotes.push(
+          `MÚLTIPLOS PROTOCOLOS: Este protocolo faz parte de um programa integrado com ${protocols.length} protocolos. Alguns exercícios aparecem em múltiplos protocolos - execute apenas 1x.`,
         );
-        modifications.contraindications_added = relevantInjuries.map(
-          (i: any) => `Atenção especial com ${i.type}`,
-        );
-      }
-    }
 
-    // PERSONALIZAÇÃO 3: Idade
-    if (userProfile.age !== undefined) {
-      if (userProfile.age > 50) {
-        modifications.age_adjusted = true;
-        modifications.recommendations.push(
-          'Idade 50+: Priorize mobilidade e controle motor sobre carga.',
-        );
-        modifications.mobility_emphasis = true;
-      } else if (userProfile.age < 25) {
-        modifications.recommendations.push(
-          'Aproveite sua capacidade de adaptação: foque em correção de padrão agora.',
-        );
-      }
-    }
+        // Marcar exercícios compartilhados
+        protocol.personalizedProtocol.modifiedPhases.forEach((phase) => {
+          phase.exercises.forEach((exercise) => {
+            if (sharedExercises.includes(exercise.exerciseId)) {
+              if (!exercise.cues) {
+                exercise.cues = [];
+              }
 
-    // PERSONALIZAÇÃO 4: Deep Context (se disponível)
-    if (deepContext) {
-      modifications.deep_context_integrated = true;
-      modifications.llm_insights = deepContext.personalized_cues || [];
-    }
-
-    return modifications;
-  }
-
-  /**
-   * Verifica se lesão é relevante para o desvio
-   */
-  private isRelevantInjury(injury: any, deviationType: string): boolean {
-    const injuryLocation = injury.location?.toLowerCase() || '';
-    const injuryType = injury.type?.toLowerCase() || '';
-
-    const relevanceMap: Record<string, string[]> = {
-      knee_valgus: ['knee', 'joelho', 'ligament', 'meniscus', 'lca', 'lcl', 'acl'],
-      butt_wink: ['hip', 'quadril', 'lower back', 'lombar', 'disc', 'disco'],
-      forward_lean: ['hip', 'quadril', 'ankle', 'tornozelo', 'lower back', 'lombar'],
-      heel_rise: ['ankle', 'tornozelo', 'achilles', 'aquiles', 'calf', 'panturrilha'],
-      asymmetric_loading: ['knee', 'joelho', 'hip', 'quadril', 'leg', 'perna'],
-    };
-
-    const keywords = relevanceMap[deviationType] || [];
-
-    return keywords.some(
-      (keyword) =>
-        injuryLocation.includes(keyword) || injuryType.includes(keyword),
-    );
-  }
-
-  /**
-   * Busca todos os protocolos disponíveis
-   */
-  async listAvailableProtocols(): Promise<string[]> {
-    try {
-      const deviations = await fs.readdir(this.protocolsBasePath);
-      const protocols: string[] = [];
-
-      for (const deviation of deviations) {
-        const deviationPath = join(this.protocolsBasePath, deviation);
-        const stat = await fs.stat(deviationPath);
-
-        if (stat.isDirectory()) {
-          const files = await fs.readdir(deviationPath);
-          for (const file of files) {
-            if (file.endsWith('.json')) {
-              protocols.push(`${deviation}/${file}`);
+              exercise.cues.push(
+                '[EXERCÍCIO COMPARTILHADO] - Aparece em múltiplos protocolos, execute apenas 1x',
+              );
             }
-          }
-        }
-      }
-
-      return protocols;
-    } catch (error) {
-      this.logger.error(`Error listing protocols: ${error.message}`);
-      return [];
+          });
+        });
+      });
     }
+
+    // Adicionar nota de agendamento
+    protocols.forEach((protocol) => {
+      protocol.personalizedProtocol.additionalNotes.push(
+        `AGENDAMENTO: Com ${protocols.length} protocolos ativos, considere distribuir ao longo da semana para evitar fadiga excessiva.`,
+      );
+    });
+
+    this.logger.log(`Protocol integration complete`);
   }
 
   /**
-   * Valida integridade de um protocolo
+   * Lista todos os protocolos disponíveis
    */
-  validateProtocol(protocol: any): { valid: boolean; errors: string[] } {
-    const errors: string[] = [];
+  async listAvailableProtocols(): Promise<
+    Array<{ deviationType: string; severity: string; protocolId: string }>
+  > {
+    return this.loader.listAvailableProtocols();
+  }
 
-    // Required fields
-    if (!protocol.protocol_id) errors.push('Missing protocol_id');
-    if (!protocol.deviation) errors.push('Missing deviation');
-    if (!protocol.severity) errors.push('Missing severity');
-    if (!protocol.version) errors.push('Missing version');
-    if (!protocol.phases || !Array.isArray(protocol.phases))
-      errors.push('Missing or invalid phases');
+  /**
+   * Carrega protocolo específico (sem personalização)
+   */
+  async loadProtocol(
+    deviationType: string,
+    severity: 'mild' | 'moderate' | 'severe',
+  ): Promise<BaseProtocol | null> {
+    return this.loader.loadProtocol(deviationType, severity);
+  }
 
-    // Validate phases
-    if (protocol.phases) {
-      for (const phase of protocol.phases) {
-        if (!phase.phase_number) errors.push(`Phase missing phase_number`);
-        if (!phase.name) errors.push(`Phase ${phase.phase_number} missing name`);
-        if (!phase.exercises || !Array.isArray(phase.exercises))
-          errors.push(`Phase ${phase.phase_number} missing exercises`);
-      }
+  /**
+   * Valida protocolo
+   */
+  validateProtocol(protocol: any): { valid: boolean; errors: string[]; warnings: string[] } {
+    return this.validator.validateBaseProtocol(protocol);
+  }
+
+  /**
+   * Recarrega protocolo do filesystem (invalida cache)
+   */
+  async reloadProtocol(
+    deviationType: string,
+    severity: 'mild' | 'moderate' | 'severe',
+  ): Promise<BaseProtocol | null> {
+    return this.loader.reloadProtocol(deviationType, severity);
+  }
+
+  /**
+   * Invalida cache de protocolos
+   */
+  async invalidateCache(deviationType?: string): Promise<number> {
+    if (deviationType) {
+      return this.loader.invalidateDeviationType(deviationType);
+    } else {
+      return this.loader.invalidateAllProtocols();
     }
-
-    return {
-      valid: errors.length === 0,
-      errors,
-    };
   }
 }
