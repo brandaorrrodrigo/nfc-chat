@@ -1,540 +1,506 @@
--- ============================================
--- SEED: Arenas de Biometria para Supabase
--- ============================================
--- Execute este script no Supabase SQL Editor:
--- https://supabase.com/dashboard/project/qducbqhuwqdyqioqevle/editor
--- ============================================
+/**
+ * SEED DE ARENAS BIOMÉTRICAS - SUPABASE
+ *
+ * Execute este script manualmente no Supabase SQL Editor:
+ * https://supabase.com/dashboard/project/qducbqhuwqdyqioqevle/editor
+ *
+ * Cria:
+ * - 2 usuários sistema (system-biometria, ai-biomechanics)
+ * - 3 arenas de avaliação biométrica
+ * - 9 posts iniciais (3 por arena)
+ * - 9 comments da IA
+ *
+ * Idempotente: Pode ser executado múltiplas vezes sem duplicar dados.
+ */
 
+-- ============================================
 -- 1. CRIAR USUÁRIOS SISTEMA
 -- ============================================
 
-INSERT INTO "User" (id, email, name, password, role, "createdAt", "updatedAt")
+INSERT INTO "User" (
+  id,
+  email,
+  name,
+  password,
+  role,
+  "createdAt",
+  "updatedAt"
+)
 VALUES
-  ('system-biometria', 'sistema@nutrifitcoach.com.br', 'Sistema NFV', 'not-used', 'ADMIN', NOW(), NOW()),
-  ('ai-biomechanics', 'ia-biomecanica@nutrifitcoach.com.br', 'IA Biomecânica NFV', 'not-used', 'ADMIN', NOW(), NOW())
+  (
+    'system-biometria',
+    'sistema@nutrifitcoach.com.br',
+    'Sistema NFV',
+    'not-used',
+    'ADMIN',
+    NOW(),
+    NOW()
+  ),
+  (
+    'ai-biomechanics',
+    'ia-biomecanica@nutrifitcoach.com.br',
+    'IA Biomecânica NFV',
+    'not-used',
+    'ADMIN',
+    NOW(),
+    NOW()
+  )
 ON CONFLICT (id) DO NOTHING;
 
+-- ============================================
 -- 2. CRIAR ARENAS
 -- ============================================
 
 -- Arena 1: Postura & Estética Real
 INSERT INTO "Arena" (
-  id, slug, name, description, icon, color, category,
-  "arenaType", "isActive", "isPaused", "memberCount", "postCount",
-  "aiEnabled", "aiPersona", "createdAt", "updatedAt"
+  id,
+  slug,
+  name,
+  description,
+  icon,
+  color,
+  category,
+  "arenaType",
+  "isActive",
+  "isPaused",
+  "allowImages",
+  "allowLinks",
+  "allowVideos",
+  "aiPersona",
+  "aiInterventionRate",
+  "aiFrustrationThreshold",
+  "aiCooldown",
+  categoria,
+  "totalPosts",
+  "totalComments",
+  "createdAt",
+  "updatedAt"
 )
 VALUES (
   'arena-postura-estetica',
   'postura-estetica',
-  'Postura & Estética Real',
-  'Discussões sobre estética corporal sob a ótica da postura, alinhamento e biomecânica. Entenda como a análise biométrica por IA pode revelar que certas questões estéticas não são sobre dieta ou treino, mas sobre estrutura e posicionamento corporal.',
-  '🏃‍♀️',
-  '#8B5CF6',
-  'biomecanica',
+  '🧍 Postura & Estética Real',
+  'Discussões sobre estética corporal sob a ótica da postura e biomecânica. Como a postura afeta sua aparência? Aquele "pneuzinho" pode ser desalinhamento? Venha entender o que a IA de análise corporal revela.',
+  '🧍',
+  '#10B981',
+  'BIOMECANICA_NFV',
   'NFV_HUB',
   true,
   false,
-  0,
-  3,
   true,
+  true,
+  false,
   'BIOMECHANICS_EXPERT',
+  60,
+  120,
+  5,
+  'BIOMECANICA_NFV',
+  3,
+  3,
   NOW(),
   NOW()
 )
 ON CONFLICT (slug) DO UPDATE SET
   name = EXCLUDED.name,
   description = EXCLUDED.description,
-  "postCount" = 3,
+  "totalPosts" = 3,
+  "totalComments" = 3,
   "updatedAt" = NOW();
 
 -- Arena 2: Avaliação Biométrica & Assimetrias
 INSERT INTO "Arena" (
-  id, slug, name, description, icon, color, category,
-  "arenaType", "isActive", "isPaused", "memberCount", "postCount",
-  "aiEnabled", "aiPersona", "createdAt", "updatedAt"
+  id,
+  slug,
+  name,
+  description,
+  icon,
+  color,
+  category,
+  "arenaType",
+  "isActive",
+  "isPaused",
+  "allowImages",
+  "allowLinks",
+  "allowVideos",
+  "aiPersona",
+  "aiInterventionRate",
+  "aiFrustrationThreshold",
+  "aiCooldown",
+  categoria,
+  "totalPosts",
+  "totalComments",
+  "createdAt",
+  "updatedAt"
 )
 VALUES (
   'arena-avaliacao-assimetrias',
   'avaliacao-assimetrias',
-  'Avaliação Biométrica & Assimetrias',
-  'Espaço para discutir leitura corporal, assimetrias e padrões detectados por avaliação biométrica com IA. Aqui o foco não é treino nem estética isolada — é entender o que o corpo revela quando analisado com critérios técnicos e visão computacional.',
+  '📐 Avaliação Biométrica & Assimetrias',
+  'Espaço para discussões sobre leitura corporal, assimetrias e análise biométrica por IA. Como a visão computacional identifica desalinhamentos? O que é normal e o que precisa atenção? A IA analisa, você decide.',
   '📐',
-  '#06B6D4',
-  'biomecanica',
+  '#3B82F6',
+  'BIOMECANICA_NFV',
   'NFV_HUB',
   true,
   false,
-  0,
-  3,
   true,
+  true,
+  false,
   'BIOMECHANICS_EXPERT',
+  60,
+  120,
+  5,
+  'BIOMECANICA_NFV',
+  3,
+  3,
   NOW(),
   NOW()
 )
 ON CONFLICT (slug) DO UPDATE SET
   name = EXCLUDED.name,
   description = EXCLUDED.description,
-  "postCount" = 3,
+  "totalPosts" = 3,
+  "totalComments" = 3,
   "updatedAt" = NOW();
 
 -- Arena 3: Dor, Função & Saúde Postural
 INSERT INTO "Arena" (
-  id, slug, name, description, icon, color, category,
-  "arenaType", "isActive", "isPaused", "memberCount", "postCount",
-  "aiEnabled", "aiPersona", "createdAt", "updatedAt"
+  id,
+  slug,
+  name,
+  description,
+  icon,
+  color,
+  category,
+  "arenaType",
+  "isActive",
+  "isPaused",
+  "allowImages",
+  "allowLinks",
+  "allowVideos",
+  "aiPersona",
+  "aiInterventionRate",
+  "aiFrustrationThreshold",
+  "aiCooldown",
+  categoria,
+  "totalPosts",
+  "totalComments",
+  "createdAt",
+  "updatedAt"
 )
 VALUES (
-  'arena-dor-funcao',
+  'arena-dor-funcao-saude',
   'dor-funcao-saude',
-  'Dor, Função & Saúde Postural',
-  'Discussões sobre dor, desconforto e limitações funcionais relacionados à postura e alinhamento. Aqui falamos de saúde real — não só aparência. A análise biométrica por IA ajuda a identificar padrões biomecânicos que podem estar associados ao desconforto.',
-  '⚕️',
+  '🩺 Dor, Função & Saúde Postural',
+  'Explore a relação entre postura, dor e função. Dor lombar sem lesão? Peso nas pernas ao fim do dia? A IA de biomecânica ajuda a identificar padrões posturais que podem estar por trás do desconforto.',
+  '🩺',
   '#F59E0B',
-  'biomecanica',
+  'BIOMECANICA_NFV',
   'NFV_HUB',
   true,
   false,
-  0,
-  3,
   true,
+  true,
+  false,
   'BIOMECHANICS_EXPERT',
+  60,
+  120,
+  5,
+  'BIOMECANICA_NFV',
+  3,
+  3,
   NOW(),
   NOW()
 )
 ON CONFLICT (slug) DO UPDATE SET
   name = EXCLUDED.name,
   description = EXCLUDED.description,
-  "postCount" = 3,
+  "totalPosts" = 3,
+  "totalComments" = 3,
   "updatedAt" = NOW();
 
 -- ============================================
--- 3. CRIAR POSTS E COMMENTS - ARENA 1
+-- 3. CRIAR POSTS (THREADS INICIAIS)
 -- ============================================
 
--- Post 1.1: Barriga pochete
+-- Arena 1: Postura & Estética Real - Posts
+
 INSERT INTO "Post" (
-  id, "arenaId", "userId", content,
-  "isPublished", "isPinned", "isOfficial", "isAIResponse",
-  "viewCount", "likeCount", "commentCount", "createdAt", "updatedAt"
+  id,
+  "arenaId",
+  "userId",
+  content,
+  "isPublished",
+  "isPinned",
+  "isOfficial",
+  "isAIResponse",
+  "viewCount",
+  "likeCount",
+  "commentCount",
+  "createdAt",
+  "updatedAt"
 )
-VALUES (
-  'post-barriga-pochete',
-  'arena-postura-estetica',
-  'system-biometria',
-  'Emagreço, mas essa barriga continua projetada pra frente. Pode ser postura ou é só gordura teimosa?',
-  true, true, true, false,
-  0, 0, 1,
-  NOW(), NOW()
-)
-ON CONFLICT (id) DO NOTHING;
+VALUES
+  (
+    'post-postura-barriga-pochete',
+    'arena-postura-estetica',
+    'system-biometria',
+    E'# Barriga "pochete" que não sai: postura ou gordura? 🤔\n\nTreino religiosamente, faço dieta, mas aquela barriguinha abaixo do umbigo (tipo "pochete") simplesmente não sai. Será que pode ser algo relacionado à postura? Já vi gente falando que bacia desalinhada pode causar isso. A análise biométrica por IA consegue identificar se é questão postural ou apenas gordura localizada?',
+    true,
+    true,
+    true,
+    false,
+    0,
+    0,
+    1,
+    NOW(),
+    NOW()
+  ),
+  (
+    'post-postura-gluteo-caido',
+    'arena-postura-estetica',
+    'system-biometria',
+    E'# Glúteo caído mesmo treinando: treino ou bacia desalinhada? 🍑\n\nFaço treino de glúteo há meses (agachamento, stiff, hip thrust), mas continua com aspecto "caído". Uma amiga fisioterapeuta disse que pode ser a bacia rodada ou inclinada. Isso faz sentido? A avaliação por IA consegue detectar se meu quadril está desalinhado e isso está afetando a estética do glúteo?',
+    true,
+    true,
+    true,
+    false,
+    0,
+    0,
+    1,
+    NOW(),
+    NOW()
+  ),
+  (
+    'post-postura-corpo-desproporcional',
+    'arena-postura-estetica',
+    'system-biometria',
+    E'# Corpo desproporcional: perna grande, tronco fino 📏\n\nMe vejo no espelho e sinto que meu corpo é desproporcional: pernas grossas, mas tronco fino. Será que isso pode ser postura? Ouvi falar que cifose (costas arredondadas) pode fazer o tronco parecer menor. A análise biométrica da IA consegue medir proporções e identificar se é estrutura óssea ou compensação postural?',
+    true,
+    true,
+    true,
+    false,
+    0,
+    0,
+    1,
+    NOW(),
+    NOW()
+  ),
 
-INSERT INTO "Comment" (
-  id, "postId", "userId", content,
-  "isAIResponse", "aiPersona", "createdAt", "updatedAt"
-)
-VALUES (
-  'comment-barriga-pochete',
-  'post-barriga-pochete',
-  'ai-biomechanics',
-  'Essa é uma das queixas mais comuns que vejo em avaliações biométricas — e também uma das mais incompreendidas.
+-- Arena 2: Avaliação & Assimetrias - Posts
 
-Quando a barriga permanece projetada mesmo após emagrecimento, três fatores principais podem estar em jogo:
+  (
+    'post-assimetria-ombro-alto',
+    'arena-avaliacao-assimetrias',
+    'system-biometria',
+    E'# Um ombro mais alto que o outro: estético ou funcional? 🤷\n\nPercebo que meu ombro direito fica mais alto que o esquerdo. Às vezes me incomoda esteticamente (camiseta fica torta), mas não sinto dor. Isso é comum? A IA de visão computacional consegue quantificar essa diferença e me dizer se é algo que preciso corrigir ou se é só característica individual?',
+    true,
+    true,
+    true,
+    false,
+    0,
+    0,
+    1,
+    NOW(),
+    NOW()
+  ),
+  (
+    'post-assimetria-quadril-rodado',
+    'arena-avaliacao-assimetrias',
+    'system-biometria',
+    E'# Quadril rodado: impactos estéticos e funcionais 🔄\n\nUm personal me disse que meu quadril está "rodado" (um lado mais à frente que o outro). Fiquei preocupada: isso pode causar dor no futuro? E esteticamente, afeta a silhueta? A análise biométrica por IA consegue medir essa rotação e mostrar se está dentro do normal ou se preciso trabalhar correção?',
+    true,
+    true,
+    true,
+    false,
+    0,
+    0,
+    1,
+    NOW(),
+    NOW()
+  ),
+  (
+    'post-assimetria-direita-esquerda',
+    'arena-avaliacao-assimetrias',
+    'system-biometria',
+    E'# Assimetria direita vs esquerda: quando importa? ⚖️\n\nNoto que minha perna direita parece levemente mais desenvolvida que a esquerda. Isso é normal? Todo mundo tem alguma assimetria? Ou isso pode indicar sobrecarga e risco de lesão? Como a IA biomecânica diferencia assimetrias "normais" de assimetrias que precisam atenção?',
+    true,
+    true,
+    true,
+    false,
+    0,
+    0,
+    1,
+    NOW(),
+    NOW()
+  ),
 
-**1. Anteversão pélvica (lordose lombar acentuada)**
-Se sua pelve está basculada para frente, o abdômen automaticamente se projeta, independente da quantidade de gordura. Não é ''fraqueza abdominal'' — é posicionamento ósseo. A análise biométrica por IA consegue medir esses ângulos pélvicos com precisão.
+-- Arena 3: Dor & Função - Posts
 
-**2. Diástase abdominal não identificada**
-Comum pós-gestação, mas pode existir mesmo sem gravidez. A musculatura se afasta na linha média, criando uma protuberância que não é gordura. Visão computacional detecta esse afastamento pela análise de contorno.
-
-**3. Distribuição de gordura visceral**
-Mesmo com % de gordura baixo, se houver concentração visceral (interna), o abdômen pode parecer distendido.
-
-**Como diferenciar?**
-- Se ao contrair conscientemente o core a barriga ''some'', é postural.
-- Se permanece rígida mesmo contraída, pode ser visceral ou diástase.
-- Se muda drasticamente entre manhã (vazio) e noite (cheio), pode ser digestivo + postural.
-
-**Você percebe se essa projeção muda quando você corrige conscientemente a postura, ''encaixando'' a pelve?**',
-  true,
-  'BIOMECHANICS_EXPERT',
-  NOW(), NOW()
-)
-ON CONFLICT (id) DO NOTHING;
-
--- Post 1.2: Glúteo caído
-INSERT INTO "Post" (
-  id, "arenaId", "userId", content,
-  "isPublished", "isPinned", "isOfficial", "isAIResponse",
-  "viewCount", "likeCount", "commentCount", "createdAt", "updatedAt"
-)
-VALUES (
-  'post-gluteo-caido',
-  'arena-postura-estetica',
-  'system-biometria',
-  'Treino glúteo há meses, mas o formato não muda. Pode ter algo a ver com postura?',
-  true, true, true, false,
-  0, 0, 1,
-  NOW(), NOW()
-)
-ON CONFLICT (id) DO NOTHING;
-
-INSERT INTO "Comment" (
-  id, "postId", "userId", content,
-  "isAIResponse", "aiPersona", "createdAt", "updatedAt"
-)
-VALUES (
-  'comment-gluteo-caido',
-  'post-gluteo-caido',
-  'ai-biomechanics',
-  'Sim, pode — e provavelmente tem. A análise biométrica por IA frequentemente revela isso.
-
-O formato do glúteo não depende só de hipertrofia muscular. Ele depende também de **onde a pelve está posicionada no espaço**.
-
-Se você tem:
-- **Retroversão pélvica** (pelve ''encaixada'' demais, rabinho pra dentro): o glúteo fica ''escondido'' sob a pelve, mesmo que esteja forte. A visão computacional mede esse ângulo e mostra o quanto isso afeta a projeção visual.
-- **Anteversão excessiva**: pode criar a ilusão de glúteo proeminente, mas com sobrecarga lombar.
-- **Rotação pélvica** (um lado mais alto): um glúteo pode parecer mais caído que o outro, mesmo com força simétrica.
-
-**O treino pode estar correto, mas se a pelve não está alinhada, o formato visual não muda.**
-
-**Teste simples:**
-Em pé, de lado no espelho:
-1. Deixe a pelve ''solta'' (sua postura natural)
-2. Agora, basculei a pelve para trás (encaixe)
-3. Depois, basculei para frente (empine)
-
-O formato do glúteo muda drasticamente entre essas posições?
-
-Se sim, o problema não é treino — é posicionamento pélvico habitual.
-
-**Você percebe essa diferença ao testar conscientemente? Ou o formato permanece igual independente da posição?**',
-  true,
-  'BIOMECHANICS_EXPERT',
-  NOW(), NOW()
-)
-ON CONFLICT (id) DO NOTHING;
-
--- Post 1.3: Corpo desproporcional
-INSERT INTO "Post" (
-  id, "arenaId", "userId", content,
-  "isPublished", "isPinned", "isOfficial", "isAIResponse",
-  "viewCount", "likeCount", "commentCount", "createdAt", "updatedAt"
-)
-VALUES (
-  'post-desproporcional',
-  'arena-postura-estetica',
-  'system-biometria',
-  'Sempre tive perna muito maior que o tronco. Genética ou tem algo que eu possa fazer?',
-  true, true, true, false,
-  0, 0, 1,
-  NOW(), NOW()
-)
-ON CONFLICT (id) DO NOTHING;
-
-INSERT INTO "Comment" (
-  id, "postId", "userId", content,
-  "isAIResponse", "aiPersona", "createdAt", "updatedAt"
-)
-VALUES (
-  'comment-desproporcional',
-  'post-desproporcional',
-  'ai-biomechanics',
-  'Genética define parte, sim — mas não toda a história. A avaliação biométrica por IA pode revelar padrões compensatórios que você não percebia.
-
-Se há uma desproporção muito marcada (pernas visivelmente maiores que tronco), vale investigar:
-
-**1. Padrão de recrutamento motor dominante**
-Se você usa mais as pernas para estabilizar o corpo (por fraqueza de core, por exemplo), elas hipertrofiam mais facilmente — mesmo fora do treino. A análise de movimento por visão computacional identifica esse padrão.
-
-**2. Cifose torácica acentuada**
-Se o tronco está ''fechado'' (ombros pra frente, peito afundado), a musculatura superior fica sub-recrutada no dia a dia. Resultado: menos estímulo passivo, menos tônus, menos volume.
-
-**3. Lordose lombar + anteversão pélvica**
-Cria sobrecarga contínua em glúteos e posteriores de coxa, estimulando-os cronicamente. A IA mede esses ângulos e mostra o quanto você sobrecarrega as pernas.
-
-**Não é que você ''não deva'' ter pernas grandes. Mas se isso te incomoda, o caminho não é só treino — é entender *por que* seu corpo recruta tanto a musculatura inferior.**
-
-**Você sente que ''segura'' o corpo com as pernas ao ficar em pé? Ou percebe tensão constante em posterior de coxa/glúteos mesmo parada?**',
-  true,
-  'BIOMECHANICS_EXPERT',
-  NOW(), NOW()
-)
-ON CONFLICT (id) DO NOTHING;
-
--- ============================================
--- 4. CRIAR POSTS E COMMENTS - ARENA 2
--- ============================================
-
--- Post 2.1: Ombro assimétrico
-INSERT INTO "Post" (
-  id, "arenaId", "userId", content,
-  "isPublished", "isPinned", "isOfficial", "isAIResponse",
-  "viewCount", "likeCount", "commentCount", "createdAt", "updatedAt"
-)
-VALUES (
-  'post-ombro-assimetrico',
-  'arena-avaliacao-assimetrias',
-  'system-biometria',
-  'Percebi que meu ombro direito é mais alto em fotos. Isso pode gerar problema ou é normal?',
-  true, true, true, false,
-  0, 0, 1,
-  NOW(), NOW()
-)
-ON CONFLICT (id) DO NOTHING;
-
-INSERT INTO "Comment" (
-  id, "postId", "userId", content,
-  "isAIResponse", "aiPersona", "createdAt", "updatedAt"
-)
-VALUES (
-  'comment-ombro-assimetrico',
-  'post-ombro-assimetrico',
-  'ai-biomechanics',
-  'Ombros assimétricos são extremamente comuns — quase todo mundo tem algum grau de diferença. A análise biométrica por IA quantifica essas diferenças com precisão milimétrica.
-
-A questão não é *se existe assimetria*, mas **se ela está associada a um padrão funcional relevante**.
-
-**Quando é só variação anatômica:**
-- Diferença sutil (1-2cm)
-- Não muda com movimento
-- Sem desconforto
-- Não progressiva
-- A IA confirma estabilidade ao longo do tempo
-
-**Quando pode ser funcional:**
-- Um lado claramente mais elevado (>3cm)
-- Piora ao longo do dia
-- Associada a tensão cervical ou de trapézio
-- Muda entre repouso e atividade
-- Visão computacional detecta rotação escapular ou escoliose
-
-**Essa diferença piora ao fim do dia ou depois de trabalhar muito tempo no computador?**',
-  true,
-  'BIOMECHANICS_EXPERT',
-  NOW(), NOW()
-)
-ON CONFLICT (id) DO NOTHING;
-
--- Post 2.2: Quadril rodado
-INSERT INTO "Post" (
-  id, "arenaId", "userId", content,
-  "isPublished", "isPinned", "isOfficial", "isAIResponse",
-  "viewCount", "likeCount", "commentCount", "createdAt", "updatedAt"
-)
-VALUES (
-  'post-quadril-rodado',
-  'arena-avaliacao-assimetrias',
-  'system-biometria',
-  'Meu fisio falou que meu quadril está ''rodado''. O que isso significa na prática?',
-  true, true, true, false,
-  0, 0, 1,
-  NOW(), NOW()
-)
-ON CONFLICT (id) DO NOTHING;
-
-INSERT INTO "Comment" (
-  id, "postId", "userId", content,
-  "isAIResponse", "aiPersona", "createdAt", "updatedAt"
-)
-VALUES (
-  'comment-quadril-rodado',
-  'post-quadril-rodado',
-  'ai-biomechanics',
-  'Quadril rodado significa que **a pelve não está alinhada no plano transverso** — um lado está mais à frente que o outro. A análise biométrica por IA mede esses ângulos de rotação com precisão.
-
-Imagina olhar a pelve de cima: em vez de formar uma linha reta, ela forma um ângulo.
-
-**Impactos estéticos:**
-- Um glúteo pode parecer mais ''caído'' que o outro
-- Assimetria na linha da cintura
-- Uma perna pode parecer mais curta em fotos
-
-**Impactos funcionais:**
-- Sobrecarga assimétrica em joelhos e tornozelos
-- Possível dor lombar unilateral
-- Desequilíbrio de força entre MMII
-
-**Você percebe diferença ao andar? Tipo, um lado do corpo ''puxa'' mais à frente?**',
-  true,
-  'BIOMECHANICS_EXPERT',
-  NOW(), NOW()
-)
-ON CONFLICT (id) DO NOTHING;
-
--- Post 2.3: Assimetrias
-INSERT INTO "Post" (
-  id, "arenaId", "userId", content,
-  "isPublished", "isPinned", "isOfficial", "isAIResponse",
-  "viewCount", "likeCount", "commentCount", "createdAt", "updatedAt"
-)
-VALUES (
-  'post-assimetrias',
-  'arena-avaliacao-assimetrias',
-  'system-biometria',
-  'Todo mundo tem assimetria, né? Mas quando isso vira problema de verdade?',
-  true, true, true, false,
-  0, 0, 1,
-  NOW(), NOW()
-)
-ON CONFLICT (id) DO NOTHING;
-
-INSERT INTO "Comment" (
-  id, "postId", "userId", content,
-  "isAIResponse", "aiPersona", "createdAt", "updatedAt"
-)
-VALUES (
-  'comment-assimetrias',
-  'post-assimetrias',
-  'ai-biomechanics',
-  'Ótima pergunta — e a resposta é: **depende se a assimetria é estática ou dinâmica, e se está associada a sintomas ou limitação funcional**. A avaliação biométrica por IA ajuda a diferenciar isso.
-
-**Quando NÃO importa:**
-- Assimetrias sutis sem sintomas
-- Variações anatômicas estáveis
-- Diferenças que não mudam com função
-
-**Quando começa a importar:**
-1. **Quando gera sintomas recorrentes** (dor, desconforto, fadiga assimétrica)
-2. **Quando limita desempenho** (assimetria de força >15-20% entre lados)
-3. **Quando é progressiva** (piora ao longo dos meses/anos)
-4. **Quando interfere na estética percebida** (se isso é importante pra você)
-
-**Você sente diferença funcional entre os lados (tipo, um lado mais forte, mais flexível, ou mais cansado)?**',
-  true,
-  'BIOMECHANICS_EXPERT',
-  NOW(), NOW()
-)
+  (
+    'post-dor-lombar-sem-lesao',
+    'arena-dor-funcao-saude',
+    'system-biometria',
+    E'# Dor lombar sem lesão: pode ser postura? 🤕\n\nTenho dor lombar recorrente, mas já fiz exames e não tem nada (sem hérnia, sem lesão). O médico disse que é "postural". Mas o que isso significa na prática? A avaliação biométrica por IA consegue identificar padrões de postura que podem estar causando essa dor?',
+    true,
+    true,
+    true,
+    false,
+    0,
+    0,
+    1,
+    NOW(),
+    NOW()
+  ),
+  (
+    'post-dor-peso-pernas',
+    'arena-dor-funcao-saude',
+    'system-biometria',
+    E'# Peso nas pernas ao fim do dia: circulação ou postura? 🦵\n\nNo fim do dia sinto minhas pernas pesadas e inchadas. Será problema circulatório ou pode ser postura? Ouvi falar que pessoas com bacia desalinhada sobrecarregam uma perna. A IA de biomecânica consegue ver se minha distribuição de peso está equilibrada?',
+    true,
+    true,
+    true,
+    false,
+    0,
+    0,
+    1,
+    NOW(),
+    NOW()
+  ),
+  (
+    'post-dor-periodo-menstrual',
+    'arena-dor-funcao-saude',
+    'system-biometria',
+    E'# Dor que piora no período menstrual: postura influencia? 🌙\n\nMinha dor lombar piora MUITO durante a menstruação. Sempre achei que era normal, mas será que postura pode estar agravando? A análise biométrica consegue mostrar se meu alinhamento pélvico está contribuindo para essa dor cíclica?',
+    true,
+    true,
+    true,
+    false,
+    0,
+    0,
+    1,
+    NOW(),
+    NOW()
+  )
 ON CONFLICT (id) DO NOTHING;
 
 -- ============================================
--- 5. CRIAR POSTS E COMMENTS - ARENA 3
+-- 4. CRIAR COMMENTS (RESPOSTAS DA IA)
 -- ============================================
 
--- Post 3.1: Dor lombar
-INSERT INTO "Post" (
-  id, "arenaId", "userId", content,
-  "isPublished", "isPinned", "isOfficial", "isAIResponse",
-  "viewCount", "likeCount", "commentCount", "createdAt", "updatedAt"
-)
-VALUES (
-  'post-dor-lombar',
-  'arena-dor-funcao',
-  'system-biometria',
-  'Sinto dor lombar, mas exames não mostram nada. Isso pode ser postura?',
-  true, true, true, false,
-  0, 0, 1,
-  NOW(), NOW()
-)
-ON CONFLICT (id) DO NOTHING;
-
 INSERT INTO "Comment" (
-  id, "postId", "userId", content,
-  "isAIResponse", "aiPersona", "createdAt", "updatedAt"
+  id,
+  "postId",
+  "userId",
+  content,
+  "isAIResponse",
+  "aiPersona",
+  "createdAt",
+  "updatedAt"
 )
-VALUES (
-  'comment-dor-lombar',
-  'post-dor-lombar',
-  'ai-biomechanics',
-  'Sim, pode — e é inclusive muito comum. A análise biométrica por IA frequentemente revela padrões posturais que explicam dores "sem causa aparente" nos exames.
-
-Quando exames de imagem não identificam lesão estrutural, a dor lombar geralmente está ligada a **sobrecarga mecânica crônica**.
-
-**Causas posturais comuns:**
-
-1. **Hiperlordose lombar** - Compressão das facetas articulares
-2. **Retificação lombar** - Sobrecarga em discos
-3. **Escoliose funcional** - Sobrecarga assimétrica
-4. **Fraqueza de core** - Coluna sem sustentação adequada
-
-**Essa dor melhora quando você deita ou muda de posição? Ou é constante independente do que você faça?**',
-  true,
-  'BIOMECHANICS_EXPERT',
-  NOW(), NOW()
-)
+VALUES
+  (
+    'comment-barriga-pochete-ia',
+    'post-postura-barriga-pochete',
+    'ai-biomechanics',
+    E'Excelente pergunta! A "barriga pochete" (abaixo do umbigo) pode ter múltiplas causas, e **sim, a postura é um fator importante** 🎯\n\n**O que a Análise Biométrica por IA revela:**\n\n1. **Anteversão pélvica** (bacia inclinada para frente):\n   - Cria uma "projeção" abdominal baixa\n   - Mesmo com baixo percentual de gordura, a região parece saliente\n   - Comum em pessoas que ficam muito tempo sentadas\n\n2. **Hiperlordose lombar** (curvatura exagerada na lombar):\n   - Empurra a região abdominal baixa para frente\n   - Pode coexistir com músculos abdominais fracos\n\n3. **Distribuição de gordura vs. postura**:\n   - A IA mede ângulos pélvicos e curvatura lombar\n   - Compara com padrões biomecânicos ideais\n   - Diferencia "volume" (gordura) de "projeção" (postura)\n\n**Como saber qual é o seu caso?**\n\nA análise por visão computacional:\n- Mede o ângulo de inclinação pélvica (ideal: 8-12°)\n- Avalia se há compensação postural\n- Identifica se é questão estrutural ou muscular\n\n💡 **Pergunta para você refletir:**\nVocê nota se essa "pochete" fica mais evidente ao ficar em pé parada, ou permanece igual mesmo quando contrai o abdômen conscientemente?',
+    true,
+    'BIOMECHANICS_EXPERT',
+    NOW(),
+    NOW()
+  ),
+  (
+    'comment-gluteo-caido-ia',
+    'post-postura-gluteo-caido',
+    'ai-biomechanics',
+    E'Sua amiga fisioterapeuta está certa! 🎯 A **posição da bacia influencia DIRETAMENTE a aparência do glúteo**, independente do treino.\n\n**O que acontece biomecanicamente:**\n\n1. **Retroversão pélvica** (bacia "encaixada" para trás):\n   - Glúteo parece "achatado" mesmo desenvolvido\n   - Perde o formato arredondado característico\n   - Treino fortalece, mas não muda aparência\n\n2. **Rotação pélvica** (um lado da bacia mais à frente):\n   - Um glúteo parece "caído" em relação ao outro\n   - Assimetria estética evidente\n\n3. **Relação com core e lombar**:\n   - Fraqueza de core pode alterar posicionamento pélvico\n   - Hipercifose (costas arredondadas) puxa bacia para retroversão\n\n**Como a IA de Visão Computacional ajuda:**\n\n- Mede o ângulo sacral (inclinação do osso sacro)\n- Compara simetria direita vs. esquerda\n- Identifica se há rotação ou inclinação pélvica\n- Diferencia "glúteo fraco" de "glúteo mal posicionado"\n\n**Teste rápido:**\nFique de lado no espelho e "encaixe" a bacia (retroversão intencional). Depois solte e deixe a lombar fazer uma curva natural (anteversão leve). Você nota diferença na aparência do glúteo?\n\n💡 **Se mudar, é postura. Se não mudar, é desenvolvimento muscular.**\n\n🤔 Você já tentou esse teste? Qual o resultado?',
+    true,
+    'BIOMECHANICS_EXPERT',
+    NOW(),
+    NOW()
+  ),
+  (
+    'comment-corpo-desproporcional-ia',
+    'post-postura-corpo-desproporcional',
+    'ai-biomechanics',
+    E'Percepção interessante! E você está certa: **postura pode alterar completamente a percepção de proporções corporais** 📐\n\n**Como a postura afeta proporções visuais:**\n\n1. **Cifose torácica** (ombros arredondados para frente):\n   - Tórax parece "afundado"\n   - Tronco visualmente mais curto\n   - Pernas parecem desproporcionalmente grandes\n\n2. **Anteriorização da cabeça** (pescoço para frente):\n   - Encurta visualmente a linha do tronco\n   - Comum em quem usa muito celular/computador\n\n3. **Rotação escapular** (omoplatas aladas):\n   - Costas parecem estreitas\n   - Contrasta com coxas desenvolvidas\n\n**O que a Análise Biométrica por IA mede:**\n\n- **Proporção real** (estrutura óssea):\n  - Razão comprimento fêmur / comprimento tronco\n  - Baseada em landmarks anatômicos fixos\n\n- **Proporção visual** (influência postural):\n  - Como cifose/lordose alteram linhas corporais\n  - Diferença entre "proporção real" vs "proporção percebida"\n\n**Exemplo prático:**\nUma pessoa com cifose de 50° pode ter tronco 8cm mais curto VISUALMENTE, mas estruturalmente igual.\n\n**A IA consegue:**\n✅ Medir sua estrutura óssea real\n✅ Identificar compensações posturais\n✅ Mostrar "antes/depois" simulado de correção postural\n\n💭 **Pergunta:**\nQuando você "puxa os ombros para trás" conscientemente, a percepção de desproporção diminui?',
+    true,
+    'BIOMECHANICS_EXPERT',
+    NOW(),
+    NOW()
+  ),
+  (
+    'comment-ombro-alto-ia',
+    'post-assimetria-ombro-alto',
+    'ai-biomechanics',
+    E'Ótima observação! Assimetrias de ombro são **extremamente comuns** e nem sempre precisam correção. Vamos entender quando importa 🔍\n\n**Tipos de assimetria de ombro:**\n\n1. **Assimetria estrutural** (óssea):\n   - Diferença no comprimento das clavículas\n   - Geralmente < 5mm, imperceptível\n   - Não causa dor, não precisa correção\n\n2. **Assimetria funcional** (muscular/postural):\n   - Trapézio dominante de um lado\n   - Escoliose funcional (corrigível)\n   - Pode causar sobrecarga no futuro\n\n3. **Assimetria compensatória** (secundária):\n   - Bacia desnivelada → compensa nos ombros\n   - Rotação de tronco → ombro parece mais alto\n\n**O que a IA de Visão Computacional identifica:**\n\n- **Quantifica a diferença**: 3mm? 10mm? 20mm?\n- **Mede alinhamento da bacia**: Está desnivelada?\n- **Avalia rotação de tronco**: Há torção?\n- **Identifica causa raiz**: Problema nos ombros ou compensação de baixo para cima?\n\n**Referências biomecânicas:**\n- ✅ Assimetria < 1cm: Geralmente normal, apenas característica individual\n- ⚠️ Assimetria 1-2cm: Monitorar, avaliar se há sobrecarga\n- 🚨 Assimetria > 2cm: Investigar causa, risco de dor/lesão\n\n💡 **Teste em casa:**\nPeça alguém para marcar a altura de cada ombro na parede (você de costas, relaxada). Meça a diferença. Quantos cm você encontrou?\n\n🤔 E a bacia, também percebe desnivelamento ou só nos ombros?',
+    true,
+    'BIOMECHANICS_EXPERT',
+    NOW(),
+    NOW()
+  ),
+  (
+    'comment-quadril-rodado-ia',
+    'post-assimetria-quadril-rodado',
+    'ai-biomechanics',
+    E'Sua preocupação é válida! **Rotação pélvica pode sim ter impactos funcionais e estéticos**, mas nem sempre é problemática 🔄\n\n**O que é rotação pélvica:**\n\nImagine a bacia como um volante de carro. Rotação = um lado (EIAS - espinha ilíaca) está mais à frente que o outro.\n\n**Impactos funcionais:**\n\n1. **Sobrecarga articular:**\n   - Quadril do lado rodado para frente: mais compressão\n   - Pode causar dor no futuro se não tratado\n   - Comum: dor unilateral (só um lado)\n\n2. **Compensações em cadeia:**\n   - Quadril → joelho → tornozelo\n   - Risco de lesões em joelho do lado sobrecarregado\n\n3. **Padrões de movimento alterados:**\n   - Agachamento assimétrico\n   - Marcha (caminhada) compensada\n\n**Impactos estéticos:**\n\n- Cintura parece "desigual" (um lado mais marcado)\n- Glúteo de um lado pode parecer mais caído\n- Silhueta lateral alterada\n\n**Como a IA biomecânica mede:**\n\n- Ângulo de rotação pélvica (em graus)\n- Comparação com padrão ideal (< 5° de rotação = normal)\n- Avaliação de compensações secundárias (joelho, tornozelo)\n\n**Valores de referência:**\n- ✅ Rotação < 5°: Normal, característica individual\n- ⚠️ Rotação 5-10°: Monitorar, pode precisar correção\n- 🚨 Rotação > 10°: Recomendado trabalho corretivo\n\n💭 **Teste funcional:**\nFaça um agachamento de frente para o espelho. Seus joelhos descem simétricos ou um vai mais para frente/lado?\n\n🤔 Você sente diferença de força/mobilidade entre as pernas?',
+    true,
+    'BIOMECHANICS_EXPERT',
+    NOW(),
+    NOW()
+  ),
+  (
+    'comment-assimetria-direita-esquerda-ia',
+    'post-assimetria-direita-esquerda',
+    'ai-biomechanics',
+    E'Pergunta FUNDAMENTAL! 🎯 **Todos temos assimetrias** - a questão é quando elas se tornam um problema.\n\n**Assimetrias normais vs. problemáticas:**\n\n**✅ Assimetrias NORMAIS (fisiológicas):**\n\n1. **Dominância lateral:**\n   - Lado dominante (direito em destros) pode ser 3-5% maior\n   - Comum em membros superiores (braços)\n   - Não causa dor, não limita função\n\n2. **Variações anatômicas:**\n   - Diferenças ósseas < 1cm\n   - Inserções musculares ligeiramente diferentes\n   - Sem impacto funcional\n\n**🚨 Assimetrias PROBLEMÁTICAS (patológicas):**\n\n1. **Diferença de força > 10-15%:**\n   - Indica sobrecarga/compensação\n   - Risco aumentado de lesão\n   - Precisa balanceamento\n\n2. **Diferença de volume muscular evidente:**\n   - Visível a olho nu (não só em medidas)\n   - Sugere desuso ou padrão motor alterado\n\n3. **Assimetria com dor/limitação:**\n   - Qualquer assimetria + dor = sinal de alerta\n   - Precisa investigação\n\n**Como a IA diferencia:**\n\n- **Mede percentual de diferença**: 3%? 8%? 15%?\n- **Compara com população saudável**: Você está dentro do esperado?\n- **Avalia padrões de movimento**: Há compensação funcional?\n- **Identifica causa**: Sobrecarga, desuso, padrão neuromotor?\n\n**Exemplo prático:**\n- Perna direita 5% maior + sem dor + força equilibrada = ✅ Normal\n- Perna direita 5% maior + dor joelho + fraqueza esquerda = 🚨 Problema\n\n💡 **Teste de força:**\nStiff unilateral (uma perna): você consegue fazer mesmo número de reps/mesma carga nas duas pernas?\n\n🤔 Qual a diferença? E há dor em algum lado?',
+    true,
+    'BIOMECHANICS_EXPERT',
+    NOW(),
+    NOW()
+  ),
+  (
+    'comment-dor-lombar-sem-lesao-ia',
+    'post-dor-lombar-sem-lesao',
+    'ai-biomechanics',
+    E'Seu médico está certo, mas vamos **traduzir** o que "dor lombar postural" significa biomecanicamente 💡\n\n**Dor lombar postural = Sobrecarga mecânica sem lesão estrutural**\n\n**Principais causas posturais identificáveis por IA:**\n\n1. **Hiperlordose lombar** (curvatura exagerada):\n   - Comprime facetas articulares posteriores\n   - Dor que piora em pé parada, melhora curvada\n   - Ângulo lombar > 45° (normal: 30-40°)\n\n2. **Retificação lombar** (perda da curvatura):\n   - Sobrecarga em discos (mais pressão anterior)\n   - Dor que piora sentada, melhora em pé\n   - Ângulo lombar < 20°\n\n3. **Desalinhamento pélvico:**\n   - Anteversão/retroversão excessiva\n   - Rotação/inclinação lateral\n   - Cria tensões assimétricas nos músculos lombares\n\n4. **Fraqueza de core:**\n   - Lombar "trabalha sozinha" para estabilizar tronco\n   - Sobrecarga muscular crônica\n   - Fadiga = dor\n\n**Como a IA biomecânica identifica:**\n\n- Mede ângulo de lordose lombar (graus)\n- Avalia inclinação/rotação pélvica\n- Identifica compensações (cifose torácica, anteriorização de cabeça)\n- Compara com padrão biomecânico ideal\n\n**Exemplo:**\nPaciente com lordose de 52° + anteversão pélvica de 18° → Sobrecarga de facetas articulares → Dor lombar baixa, pior ao ficar em pé.\n\n**Padrões de dor ajudam no diagnóstico:**\n- Dor piora em pé parada → Hiperlordose\n- Dor piora sentada → Retificação\n- Dor mais de um lado → Rotação/inclinação pélvica\n\n🤔 **Sua dor:**\nPiora mais em que posição? Em pé, sentada, ou ao acordar?\nÉ mais central ou mais de um lado?',
+    true,
+    'BIOMECHANICS_EXPERT',
+    NOW(),
+    NOW()
+  ),
+  (
+    'comment-peso-pernas-ia',
+    'post-dor-peso-pernas',
+    'ai-biomechanics',
+    E'Ótima pergunta! Pode ser **ambos** - circulação E postura frequentemente andam juntos 🔄\n\n**Como postura afeta "peso nas pernas":**\n\n1. **Desalinhamento pélvico → Sobrecarga assimétrica:**\n   - Um lado da bacia mais baixo/rodado\n   - Uma perna recebe mais peso corporal\n   - Sobrecarga → fadiga muscular → sensação de peso\n\n2. **Hiperlordose → Anteriorização do centro de gravidade:**\n   - Peso corporal desloca para frente\n   - Panturrilhas trabalham mais para manter equilíbrio\n   - Fadiga de panturrilha → dificulta retorno venoso → inchaço\n\n3. **Retificação lombar → Posteriorização:**\n   - Peso vai para calcanhares\n   - Isquiotibiais (posteriores de coxa) sobrecarregados\n   - Fadiga muscular + compressão venosa\n\n**Como postura e circulação se relacionam:**\n\n- **Postura ruim → Músculos fadigados → Bomba muscular ineficiente**\n- Músculos são responsáveis por "bombear" sangue venoso de volta ao coração\n- Se estão fadigados/tensos, bomba não funciona bem → inchaço\n\n**O que a IA biomecânica mostra:**\n\n- **Distribuição de peso:** Está simétrica?\n- **Centro de gravidade:** Anteriorizado? Posteriorizado?\n- **Alinhamento de membros inferiores:** Joelhos valgos/varos?\n\n**Teste prático:**\nFique descalça, olhando para frente. Sem pensar, onde você sente mais peso: dedos dos pés ou calcanhares? Perna direita ou esquerda?\n\n💡 **Sintomas que sugerem componente postural:**\n- ✅ Peso/inchaço ASSIMÉTRICO (uma perna pior)\n- ✅ Melhora ao deitar com pernas elevadas\n- ✅ Piora proporcional ao tempo em pé\n\n🤔 O peso/inchaço é igual nas duas pernas ou uma é pior?',
+    true,
+    'BIOMECHANICS_EXPERT',
+    NOW(),
+    NOW()
+  ),
+  (
+    'comment-dor-periodo-menstrual-ia',
+    'post-dor-periodo-menstrual',
+    'ai-biomechanics',
+    E'**SIM, postura pode MUITO agravar dor lombar menstrual!** E você não está sozinha - estudos mostram forte correlação 🌙\n\n**Por que a dor lombar piora na menstruação:**\n\n1. **Fatores hormonais (base):**\n   - Prostaglandinas causam contrações uterinas\n   - Útero está na pelve, próximo à lombar\n   - Dor referida para região lombar\n\n2. **Como postura AGRAVA:**\n\n**Anteversão pélvica excessiva:**\n- Útero fica mais "solto" na cavidade pélvica\n- Mais mobilidade = mais sensibilidade a contrações\n- Hiperlordose lombar comprime facetas → DOR SOMADA\n\n**Desalinhamento pélvico:**\n- Tensões assimétricas em ligamentos uterinos\n- Músculos do assoalho pélvico desequilibrados\n- Durante menstruação (útero mais sensível) → essas tensões viram DOR\n\n3. **Inflamação sistêmica:**\n   - Menstruação aumenta inflamação geral\n   - Músculos lombares já sobrecarregados (por má postura) ficam ainda mais sensíveis\n   - Tensão muscular + inflamação = DOR INTENSA\n\n**O que a análise biométrica identifica:**\n\n- **Inclinação pélvica:** Anteversão excessiva?\n- **Tensão em psoas:** Músculo liga lombar ao quadril, quando tenso puxa vértebras\n- **Assimetrias pélvicas:** Criam tensões nos ligamentos uterinos\n\n**Padrão comum:**\nPaciente com anteversão de 16° + hiperlordose de 48° → Dor lombar CRÔNICA leve + DOR AGUDA intensa durante menstruação.\n\n**Sinais de componente postural:**\n- ✅ Dor lombar existe (leve) fora da menstruação\n- ✅ Piora MUITO durante menstruação\n- ✅ Posições específicas aliviam (fetal, 4 apoios)\n\n🤔 **Você sente dor lombar leve/desconforto FORA do período menstrual também?**\nE qual posição mais alivia durante a cólica?',
+    true,
+    'BIOMECHANICS_EXPERT',
+    NOW(),
+    NOW()
+  )
 ON CONFLICT (id) DO NOTHING;
 
--- Post 3.2: Peso nas pernas
-INSERT INTO "Post" (
-  id, "arenaId", "userId", content,
-  "isPublished", "isPinned", "isOfficial", "isAIResponse",
-  "viewCount", "likeCount", "commentCount", "createdAt", "updatedAt"
-)
-VALUES (
-  'post-peso-pernas',
-  'arena-dor-funcao',
-  'system-biometria',
-  'No fim do dia minhas pernas ficam super pesadas. É má circulação ou tem a ver com postura?',
-  true, true, true, false,
-  0, 0, 1,
-  NOW(), NOW()
-)
-ON CONFLICT (id) DO NOTHING;
+-- ============================================
+-- 5. ATUALIZAR MÉTRICAS DAS ARENAS
+-- ============================================
 
-INSERT INTO "Comment" (
-  id, "postId", "userId", content,
-  "isAIResponse", "aiPersona", "createdAt", "updatedAt"
-)
-VALUES (
-  'comment-peso-pernas',
-  'post-peso-pernas',
-  'ai-biomechanics',
-  'Provavelmente **os dois** — e muitas vezes um alimenta o outro. A análise biométrica pode revelar padrões posturais que agravam o retorno venoso.
-
-**Como postura afeta circulação:**
-- Joelhos travados comprimem veias
-- Anteversão pélvica sobrecarrega panturrilhas
-- Falta de movimento reduz bomba muscular
-
-**Teste:** Faça 20 agachamentos leves ao fim do dia. Se houver alívio → componente postural dominante.
-
-**Você sente alívio quando caminha um pouco, ou piora da mesma forma? E você percebe se trava os joelhos ao ficar em pé?**',
-  true,
-  'BIOMECHANICS_EXPERT',
-  NOW(), NOW()
-)
-ON CONFLICT (id) DO NOTHING;
-
--- Post 3.3: Dor menstrual
-INSERT INTO "Post" (
-  id, "arenaId", "userId", content,
-  "isPublished", "isPinned", "isOfficial", "isAIResponse",
-  "viewCount", "likeCount", "commentCount", "createdAt", "updatedAt"
-)
-VALUES (
-  'post-dor-menstrual',
-  'arena-dor-funcao',
-  'system-biometria',
-  'Minha dor lombar piora muito no período menstrual. Isso tem a ver com postura ou é só hormonal?',
-  true, true, true, false,
-  0, 0, 1,
-  NOW(), NOW()
-)
-ON CONFLICT (id) DO NOTHING;
-
-INSERT INTO "Comment" (
-  id, "postId", "userId", content,
-  "isAIResponse", "aiPersona", "createdAt", "updatedAt"
-)
-VALUES (
-  'comment-dor-menstrual',
-  'post-dor-menstrual',
-  'ai-biomechanics',
-  'Tem a ver com **os dois** — e eles se retroalimentam. A análise biométrica pode revelar como padrões posturais amplificam sintomas hormonais.
-
-**Mecanismo:**
-Durante o período menstrual, ligamentos pélvicos ficam mais relaxados. Se sua postura já sobrecarrega a lombar, isso fica ainda mais evidente.
-
-**Por que piora:**
-- Instabilidade ligamentar temporária
-- Dor uterina gera contração reflexa lombar
-- Compensação antálgica altera postura
-
-**Essa dor melhora se você deita em posição fetal ou com travesseiro entre as pernas? Ou é indiferente à posição?**',
-  true,
-  'BIOMECHANICS_EXPERT',
-  NOW(), NOW()
-)
-ON CONFLICT (id) DO NOTHING;
+UPDATE "Arena"
+SET
+  "totalPosts" = 3,
+  "totalComments" = 3,
+  "updatedAt" = NOW()
+WHERE slug IN ('postura-estetica', 'avaliacao-assimetrias', 'dor-funcao-saude');
 
 -- ============================================
 -- 6. VERIFICAÇÃO
@@ -542,10 +508,17 @@ ON CONFLICT (id) DO NOTHING;
 
 SELECT
   '✅ Script executado com sucesso!' as status,
+  (SELECT COUNT(*) FROM "User" WHERE id IN ('system-biometria', 'ai-biomechanics')) as usuarios_criados,
   (SELECT COUNT(*) FROM "Arena" WHERE slug IN ('postura-estetica', 'avaliacao-assimetrias', 'dor-funcao-saude')) as arenas_criadas,
-  (SELECT COUNT(*) FROM "Post" WHERE "arenaId" IN ('arena-postura-estetica', 'arena-avaliacao-assimetrias', 'arena-dor-funcao')) as posts_criados,
-  (SELECT COUNT(*) FROM "Comment" WHERE "postId" IN (
-    'post-barriga-pochete', 'post-gluteo-caido', 'post-desproporcional',
-    'post-ombro-assimetrico', 'post-quadril-rodado', 'post-assimetrias',
-    'post-dor-lombar', 'post-peso-pernas', 'post-dor-menstrual'
-  )) as comments_criados;
+  (SELECT COUNT(*) FROM "Post" WHERE "arenaId" IN (SELECT id FROM "Arena" WHERE slug IN ('postura-estetica', 'avaliacao-assimetrias', 'dor-funcao-saude'))) as posts_criados,
+  (SELECT COUNT(*) FROM "Comment" WHERE "postId" IN (SELECT id FROM "Post" WHERE "arenaId" IN (SELECT id FROM "Arena" WHERE slug IN ('postura-estetica', 'avaliacao-assimetrias', 'dor-funcao-saude')))) as comments_criados;
+
+-- Lista as arenas criadas
+SELECT
+  slug,
+  name,
+  "totalPosts",
+  "totalComments"
+FROM "Arena"
+WHERE slug IN ('postura-estetica', 'avaliacao-assimetrias', 'dor-funcao-saude')
+ORDER BY slug;
