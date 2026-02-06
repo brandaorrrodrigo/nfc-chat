@@ -14,6 +14,7 @@
     "avatar:analyze": "ts-node --project tsconfig.scripts.json scripts/analyze-avatar-distribution.ts",
     "avatar:fix": "ts-node --project tsconfig.scripts.json scripts/fix-duplicate-avatars.ts",
     "avatar:fix-comments": "ts-node --project tsconfig.scripts.json scripts/fix-comment-avatars.ts",
+    "avatar:fix-arenas": "ts-node --project tsconfig.scripts.json scripts/fix-arena-avatars.ts",
     "avatar:report": "ts-node --project tsconfig.scripts.json scripts/avatar-full-report.ts",
     "avatar:migrate": "ts-node --project tsconfig.scripts.json scripts/migrate-avatars.ts",
     "avatar:stats": "ts-node --project tsconfig.scripts.json scripts/avatar-stats.ts",
