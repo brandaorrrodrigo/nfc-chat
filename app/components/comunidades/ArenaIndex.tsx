@@ -12,6 +12,7 @@ import {
   Users,
   Utensils,
   BookOpen,
+  Zap,
   LucideIcon,
 } from 'lucide-react';
 import type { ArenaWithTags, ArenaCategoria } from '@/types/arena';
@@ -27,6 +28,8 @@ const CATEGORIA_ICON_MAP: Record<ArenaCategoria, LucideIcon> = {
   NUTRICAO_DIETAS: Utensils,
   TREINO_EXERCICIOS: Dumbbell,
   BIOMECANICA_NFV: Activity,
+  AVALIACAO_BIOMECANICA_NFV: Zap,
+  AVALIACAO_BIOMETRICA_NFV: Activity,
   SAUDE_CONDICOES_CLINICAS: Heart,
   RECEITAS_ALIMENTACAO: Utensils,
   COMUNIDADES_LIVRES: Users,
