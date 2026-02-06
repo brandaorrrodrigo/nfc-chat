@@ -176,6 +176,8 @@ enum ArenaCategoria {
   NUTRICAO_DIETAS           // Nutrição & Dietas
   TREINO_EXERCICIOS         // Treino & Exercícios
   BIOMECANICA_NFV           // Biomecânica & NFV
+  AVALIACAO_BIOMECANICA_NFV // Avaliação Biomecânica (NFV) - Análise de Exercício
+  AVALIACAO_BIOMETRICA_NFV  // Avaliação Biométrica (NFV) - Análise Corporal
   SAUDE_CONDICOES_CLINICAS  // Saúde & Condições Clínicas
   RECEITAS_ALIMENTACAO      // Receitas & Alimentação
   COMUNIDADES_LIVRES        // Comunidades Livres (debate)
