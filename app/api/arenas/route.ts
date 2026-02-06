@@ -11,6 +11,13 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const category = searchParams.get('category')
     const grouped = searchParams.get('grouped') === 'true'
+    const flushCache = searchParams.get('flush') === 'true'
+
+    // Limpar cache se solicitado
+    if (flushCache) {
+      await safeRedis.flushDb()
+      return NextResponse.json({ message: 'Cache limpo' })
+    }
 
     // Check cache
     const cacheKey = `arenas:${grouped ? 'grouped' : 'list'}:${category || 'all'}`
