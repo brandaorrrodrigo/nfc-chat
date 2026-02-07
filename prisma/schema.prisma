@@ -682,6 +682,7 @@ model BiometricPricing {
 
 // ============================================
 // TRACKING DE ATIVIDADE DE USUÁRIOS EM ARENAS
+// Updated: 2026-02-06 - Force rebuild
 // ============================================
 
 model UserArenaActivity {
