@@ -12,6 +12,27 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get('category')
     const grouped = searchParams.get('grouped') === 'true'
     const flushCache = searchParams.get('flush') === 'true'
+    const debugEnv = searchParams.get('debug') === 'env'
+
+    // Debug de variáveis de ambiente
+    if (debugEnv) {
+      const maskUrl = (url: string) => {
+        if (!url) return 'NOT SET'
+        const match = url.match(/postgresql:\/\/([^:]+):([^@]+)@([^/]+)\/(.+)/)
+        if (match) {
+          const [, user, password, hostPort, db] = match
+          return `postgresql://${user}:***@${hostPort}/${db}`
+        }
+        return 'INVALID FORMAT'
+      }
+      return NextResponse.json({
+        env: process.env.NODE_ENV,
+        database_url: maskUrl(process.env.DATABASE_URL || ''),
+        direct_url: maskUrl(process.env.DIRECT_URL || ''),
+        has_database_url: !!process.env.DATABASE_URL,
+        has_direct_url: !!process.env.DIRECT_URL,
+      })
+    }
 
     // Limpar cache se solicitado
     if (flushCache) {
