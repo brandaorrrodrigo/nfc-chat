@@ -1,7 +1,6 @@
-import { PrismaClient } from '@/lib/prisma'
+import { prisma } from '@/lib/prisma'
 import { hash } from 'bcryptjs'
 
-const prisma = new PrismaClient()
 
 export async function POST(request: Request) {
   try {

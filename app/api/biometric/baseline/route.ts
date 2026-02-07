@@ -6,10 +6,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth-config'
-import { PrismaClient } from '@/lib/prisma'
+import { prisma } from '@/lib/prisma'
 import { JuizBiometricoService } from '@/lib/biomechanics/juiz-biometrico.service'
 
-const prisma = new PrismaClient()
 
 export async function POST(request: NextRequest) {
   try {

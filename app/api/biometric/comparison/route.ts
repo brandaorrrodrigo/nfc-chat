@@ -6,11 +6,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth-config'
-import { PrismaClient } from '@/lib/prisma'
+import { prisma } from '@/lib/prisma'
 import { JuizBiometricoService } from '@/lib/biomechanics/juiz-biometrico.service'
 import { FPService, InsufficientFPError } from '@/lib/fp/fp.service'
 
-const prisma = new PrismaClient()
 
 const COMPARISON_COST_FP = 25
 
