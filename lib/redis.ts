@@ -202,6 +202,36 @@ export const safeRedis = {
     }
   },
 
+  async flushDb(): Promise<void> {
+    if (isOfflineMode || !redis.isOpen) {
+      console.log('[Redis] Offline mode - skipping FLUSHDB')
+      return
+    }
+
+    try {
+      await redis.flushDb()
+      console.log('[Redis] ✅ Cache limpo (FLUSHDB)')
+    } catch (err) {
+      console.error('[Redis] FLUSHDB failed:', err)
+      isOfflineMode = true
+    }
+  },
+
+  async keys(pattern: string): Promise<string[]> {
+    if (isOfflineMode || !redis.isOpen) {
+      console.log(`[Redis] Offline mode - skipping KEYS ${pattern}`)
+      return []
+    }
+
+    try {
+      return await redis.keys(pattern)
+    } catch (err) {
+      console.error(`[Redis] KEYS ${pattern} failed:`, err)
+      isOfflineMode = true
+      return []
+    }
+  },
+
   // Helper para verificar status
   isAvailable(): boolean {
     return !isOfflineMode && redis.isOpen
