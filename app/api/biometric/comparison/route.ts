@@ -6,7 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth-config'
-import { PrismaClient } from '@/lib/generated/prisma'
+import { PrismaClient } from '@/lib/prisma'
 import { JuizBiometricoService } from '@/lib/biomechanics/juiz-biometrico.service'
 import { FPService, InsufficientFPError } from '@/lib/fp/fp.service'
 

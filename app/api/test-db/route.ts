@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/generated/prisma'
+import { prisma } from '@/lib/prisma'
 
 /**
  * Endpoint de teste para verificar conexão com banco
