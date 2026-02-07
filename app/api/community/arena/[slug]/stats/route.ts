@@ -56,6 +56,31 @@ export async function GET(
     // Total de mensagens = posts + comentários visíveis no feed
     const totalMessages = postCount + commentCount
 
+    // Atividade recente (últimas 24h)
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+    const { count: recentPosts } = await supabase
+      .from('Post')
+      .select('*', { count: 'exact', head: true })
+      .eq('arenaId', arena.id)
+      .eq('isPublished', true)
+      .gte('createdAt', oneDayAgo)
+
+    const { count: recentComments } = await supabase
+      .from('Comment')
+      .select('*', { count: 'exact', head: true })
+      .in('postId', posts?.map(p => p.id) || [])
+      .gte('createdAt', oneDayAgo)
+
+    // Usuários online agora (últimos 15 minutos)
+    const fifteenMinAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString()
+    const { data: onlineData } = await supabase
+      .from('UserArenaActivity')
+      .select('userId')
+      .eq('arenaId', arena.id)
+      .gte('lastSeenAt', fifteenMinAgo)
+
+    const onlineNow = new Set(onlineData?.map(u => u.userId) || []).size
+
     const stats = {
       arenaId: arena.id,
       name: arena.name,
@@ -64,7 +89,9 @@ export async function GET(
       totalComments: commentCount,
       totalMessages,
       totalMembers: arena.dailyActiveUsers || 0,
-      onlineNow: 0,
+      onlineNow,
+      recentPosts24h: recentPosts || 0,
+      recentComments24h: recentComments || 0,
       updatedAt: new Date().toISOString(),
     }
 

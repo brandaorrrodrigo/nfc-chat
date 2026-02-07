@@ -1,79 +1,72 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 /**
- * GET /api/community/stats
+ * GET /api/community-stats
  * Retorna estatísticas GLOBAIS da comunidade (todos os dados REAIS do banco)
  */
 export async function GET() {
   try {
-    console.log('[Community Stats] Fetching from database...')
+    console.log('[Community Stats] Fetching from Supabase...')
 
-    // Buscar estatísticas reais do banco de dados
-    // Execute queries sequentially to avoid pgBouncer connection issues
-    const totalArenas = await prisma.arena.count({
-      where: { isActive: true }
-    })
-    console.log('[Community Stats] Total arenas:', totalArenas)
+    // Total de arenas ativas
+    const { count: totalArenas } = await supabase
+      .from('Arena')
+      .select('*', { count: 'exact', head: true })
+      .eq('isActive', true)
 
-    const totalPosts = await prisma.post.count({
-      where: { isDeleted: false }
-    })
-    console.log('[Community Stats] Total posts:', totalPosts)
+    // Total de posts não deletados
+    const { count: totalPosts } = await supabase
+      .from('Post')
+      .select('*', { count: 'exact', head: true })
+      .eq('isDeleted', false)
 
-    const totalComments = await prisma.comment.count({
-      where: { isDeleted: false }
-    })
-    console.log('[Community Stats] Total comments:', totalComments)
+    // Total de comentários não deletados
+    const { count: totalComments } = await supabase
+      .from('Comment')
+      .select('*', { count: 'exact', head: true })
+      .eq('isDeleted', false)
 
-    const uniqueUsers = await prisma.post.findMany({
-      where: { isDeleted: false },
-      select: { userId: true },
-      distinct: ['userId']
-    })
-    console.log('[Community Stats] Unique users:', uniqueUsers.length)
+    // Usuários únicos que postaram
+    const { data: postsData } = await supabase
+      .from('Post')
+      .select('userId')
+      .eq('isDeleted', false)
 
-    const recentActivity = await prisma.post.count({
-      where: {
-        isDeleted: false,
-        createdAt: {
-          gte: new Date(Date.now() - 24 * 60 * 60 * 1000)
-        }
-      }
-    })
-    console.log('[Community Stats] Recent activity:', recentActivity)
+    const uniqueUsers = new Set(postsData?.map(p => p.userId) || []).size
 
-    /* OLD parallel execution - commented out
-    const [
-      totalArenas,
-      totalPosts,
-      totalComments,
-      uniqueUsers,
-      recentActivity,
-    ] = await Promise.all([
-    */
+    // Atividade recente (últimas 24h)
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+    const { count: recentActivity } = await supabase
+      .from('Post')
+      .select('*', { count: 'exact', head: true })
+      .eq('isDeleted', false)
+      .gte('createdAt', oneDayAgo)
 
-    // Usuários online (últimos 15 minutos) - distinct users
-    const onlineUsersData = await prisma.userArenaActivity.findMany({
-      where: {
-        lastSeenAt: {
-          gte: new Date(Date.now() - 15 * 60 * 1000)
-        }
-      },
-      select: { userId: true },
-      distinct: ['userId']
-    })
-    const onlineUsers = onlineUsersData.length
+    // Usuários online (últimos 15 minutos)
+    const fifteenMinAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString()
+    const { data: onlineData } = await supabase
+      .from('UserArenaActivity')
+      .select('userId')
+      .gte('lastSeenAt', fifteenMinAgo)
+
+    const onlineUsers = new Set(onlineData?.map(u => u.userId) || []).size
 
     const stats = {
-      totalArenas,
-      totalPosts,
-      totalComments,
-      totalUsers: uniqueUsers.length,
+      totalArenas: totalArenas || 0,
+      totalPosts: totalPosts || 0,
+      totalComments: totalComments || 0,
+      totalUsers: uniqueUsers,
       onlineNow: onlineUsers,
-      recentActivity24h: recentActivity,
+      recentActivity24h: recentActivity || 0,
       updatedAt: new Date().toISOString(),
     }
+
+    console.log('[Community Stats] Success:', stats)
 
     return NextResponse.json(stats, {
       headers: {
@@ -86,9 +79,6 @@ export async function GET() {
       {
         error: 'Failed to fetch community stats',
         details: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack?.split('\n').slice(0, 5) : undefined,
-        prismaAvailable: typeof prisma !== 'undefined',
-        models: typeof prisma !== 'undefined' ? Object.keys(prisma).filter(k => !k.startsWith('$') && !k.startsWith('_')) : []
       },
       { status: 500 }
     )
