@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Search, X, Loader2, MessageSquare, ArrowRight, Crown, Zap } from 'lucide-react';
+import { Search, X, Loader2, ArrowRight, Crown, Zap } from 'lucide-react';
 import Link from 'next/link';
 import type { ArenaWithTags } from '@/types/arena';
 import { CATEGORIA_LABELS, STATUS_CONFIG } from '@/lib/arena-utils';
@@ -214,9 +214,6 @@ export default function ArenaSearchBar({
                         </div>
                         <div className="flex items-center gap-2 mt-0.5 text-xs text-zinc-500">
                           <span className="text-[#00f5ff]">{categoriaLabel}</span>
-                          <span>·</span>
-                          <MessageSquare className="w-3 h-3" />
-                          <span>{arena.totalPosts.toLocaleString()} posts</span>
                           {arena.tags && arena.tags.length > 0 && (
                             <>
                               <span>·</span>

@@ -5,7 +5,6 @@ import Link from 'next/link';
 import {
   ChevronDown,
   ChevronRight,
-  MessageSquare,
   Activity,
   Dumbbell,
   Heart,
@@ -123,10 +122,6 @@ export default function ArenaIndex({ arenas }: ArenaIndexProps) {
                       >
                         <span className="flex-1 text-sm text-zinc-300 group-hover:text-white transition-colors truncate">
                           {arena.name}
-                        </span>
-                        <span className="flex items-center gap-1.5 text-xs text-zinc-500">
-                          <MessageSquare className="w-3 h-3" />
-                          {arena.totalPosts.toLocaleString()}
                         </span>
                         <span className={`flex items-center gap-1 text-xs ${statusCfg.color}`}>
                           <div className={`w-1.5 h-1.5 rounded-full ${statusCfg.dotColor}`} />
