@@ -7,3 +7,4 @@
 # Redeploy com ambas variáveis (DATABASE_URL pooler + DIRECT_URL) sáb,  7 de fev de 2026 16:10:00
 # Deploy FINAL - DATABASE_URL corrigida para pooler sáb,  7 de fev de 2026 16:15:00
 # Deploy com senha URL encoded (! = %21) sáb,  7 de fev de 2026 16:20:00
+# Deploy CORRETO - strings do Supabase + pgbouncer=true sáb,  7 de fev de 2026 16:30:00
