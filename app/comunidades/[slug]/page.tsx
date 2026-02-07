@@ -1346,6 +1346,13 @@ const COMUNIDADES_DATA: Record<string, ComunidadeData & { mensagens: Mensagem[] 
     totalMensagens: 0,
     mensagens: [],
   },
+  'hub-avaliacao-fisica': {
+    titulo: '🏋️ Hub Avaliação Física',
+    descricao: 'Central de avaliação física com ferramentas de análise corporal',
+    membrosOnline: 0,
+    totalMensagens: 0,
+    mensagens: [],
+  },
 };
 
 // ========================================
