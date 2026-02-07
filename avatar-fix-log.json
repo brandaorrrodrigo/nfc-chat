@@ -1,0 +1,326 @@
+{
+  "timestamp": "2026-02-05T23:35:58.027Z",
+  "stats": {
+    "total_posts": 40,
+    "posts_fixed": 40,
+    "errors": 0,
+    "success_rate": "100.00%"
+  },
+  "distribution_before": {
+    "null": 40
+  },
+  "distribution_after": {
+    "avatar_f_02": 2,
+    "avatar_f_05": 2,
+    "avatar_f_03": 2,
+    "avatar_f_01": 2,
+    "avatar_f_06": 2,
+    "avatar_f_10": 1,
+    "avatar_f_08": 2,
+    "avatar_m_01": 2,
+    "avatar_f_07": 2,
+    "avatar_f_09": 2,
+    "avatar_f_04": 2,
+    "avatar_m_05": 1,
+    "avatar_m_06": 1,
+    "avatar_m_02": 1,
+    "avatar_m_07": 1,
+    "avatar_m_08": 1,
+    "avatar_m_03": 1,
+    "avatar_m_10": 1,
+    "avatar_f_14": 1,
+    "avatar_f_13": 1,
+    "avatar_m_12": 1,
+    "avatar_f_12": 1,
+    "avatar_m_13": 1,
+    "avatar_m_04": 1,
+    "avatar_m_15": 1,
+    "avatar_m_14": 1,
+    "avatar_f_11": 1,
+    "avatar_m_09": 1,
+    "avatar_f_15": 1,
+    "avatar_m_11": 1
+  },
+  "changes": [
+    {
+      "post_id": "cmla3cz1a002pvhjkhpu5o83m",
+      "user_name": "Fernanda Lima F",
+      "old_avatar": "null",
+      "new_avatar": "avatar_f_02",
+      "timestamp": "2026-02-05T23:35:57.969Z"
+    },
+    {
+      "post_id": "cmla3cz19002nvhjkowwu9xll",
+      "user_name": "Marcos Vinicius M",
+      "old_avatar": "null",
+      "new_avatar": "avatar_f_05",
+      "timestamp": "2026-02-05T23:35:57.971Z"
+    },
+    {
+      "post_id": "cmla3cz17002lvhjk135x9s1b",
+      "user_name": "Gabriela Rocha F",
+      "old_avatar": "null",
+      "new_avatar": "avatar_f_03",
+      "timestamp": "2026-02-05T23:35:57.972Z"
+    },
+    {
+      "post_id": "cmla3cz15002jvhjkqvt4dfm9",
+      "user_name": "Marcos Vinicius M",
+      "old_avatar": "null",
+      "new_avatar": "avatar_f_01",
+      "timestamp": "2026-02-05T23:35:57.974Z"
+    },
+    {
+      "post_id": "cmla3cz13002hvhjk26jz1cko",
+      "user_name": "Sergio Barbosa M",
+      "old_avatar": "null",
+      "new_avatar": "avatar_f_06",
+      "timestamp": "2026-02-05T23:35:57.976Z"
+    },
+    {
+      "post_id": "cmla3cz11002fvhjk07v8ppox",
+      "user_name": "Natan Alves M",
+      "old_avatar": "null",
+      "new_avatar": "avatar_f_10",
+      "timestamp": "2026-02-05T23:35:57.978Z"
+    },
+    {
+      "post_id": "cmla3cz0y002dvhjknxv9q31w",
+      "user_name": "João Pedro M",
+      "old_avatar": "null",
+      "new_avatar": "avatar_f_08",
+      "timestamp": "2026-02-05T23:35:57.979Z"
+    },
+    {
+      "post_id": "cmla3cz0x002bvhjkmigq3zld",
+      "user_name": "Eliana Ferreira F",
+      "old_avatar": "null",
+      "new_avatar": "avatar_m_01",
+      "timestamp": "2026-02-05T23:35:57.981Z"
+    },
+    {
+      "post_id": "cmla3cz0v0029vhjkkxgq66xr",
+      "user_name": "Helena Martins F",
+      "old_avatar": "null",
+      "new_avatar": "avatar_f_07",
+      "timestamp": "2026-02-05T23:35:57.982Z"
+    },
+    {
+      "post_id": "cmla3cz0u0027vhjkehpn1owe",
+      "user_name": "Otávio Ribeiro M",
+      "old_avatar": "null",
+      "new_avatar": "avatar_f_09",
+      "timestamp": "2026-02-05T23:35:57.984Z"
+    },
+    {
+      "post_id": "cmla3cz0t0025vhjk0va9e7pz",
+      "user_name": "Igor Souza M",
+      "old_avatar": "null",
+      "new_avatar": "avatar_f_04",
+      "timestamp": "2026-02-05T23:35:57.985Z"
+    },
+    {
+      "post_id": "cmla3cz0r0023vhjkt5kzlqtl",
+      "user_name": "Carla Oliveira F",
+      "old_avatar": "null",
+      "new_avatar": "avatar_m_05",
+      "timestamp": "2026-02-05T23:35:57.987Z"
+    },
+    {
+      "post_id": "cmla3cz0q0021vhjkem39togk",
+      "user_name": "Natan Alves M",
+      "old_avatar": "null",
+      "new_avatar": "avatar_m_06",
+      "timestamp": "2026-02-05T23:35:57.989Z"
+    },
+    {
+      "post_id": "cmla3cz0o001zvhjkk7cb5t46",
+      "user_name": "Beatriz Santos F",
+      "old_avatar": "null",
+      "new_avatar": "avatar_m_02",
+      "timestamp": "2026-02-05T23:35:57.990Z"
+    },
+    {
+      "post_id": "cmla3cz0n001xvhjkltpr5xgy",
+      "user_name": "Helena Martins F",
+      "old_avatar": "null",
+      "new_avatar": "avatar_m_07",
+      "timestamp": "2026-02-05T23:35:57.991Z"
+    },
+    {
+      "post_id": "cmla3cz0l001vvhjkzyyru9f4",
+      "user_name": "Paulo Henrique M",
+      "old_avatar": "null",
+      "new_avatar": "avatar_m_08",
+      "timestamp": "2026-02-05T23:35:57.993Z"
+    },
+    {
+      "post_id": "cmla3cz0j001tvhjkb71fzcti",
+      "user_name": "Rafael Gomes M",
+      "old_avatar": "null",
+      "new_avatar": "avatar_f_11",
+      "timestamp": "2026-02-05T23:35:57.995Z"
+    },
+    {
+      "post_id": "cmla3cz0h001rvhjkmj5yokfi",
+      "user_name": "Rafael Gomes M",
+      "old_avatar": "null",
+      "new_avatar": "avatar_m_03",
+      "timestamp": "2026-02-05T23:35:57.996Z"
+    },
+    {
+      "post_id": "cmla3cz0g001pvhjko1qsi291",
+      "user_name": "Lucas Mendes M",
+      "old_avatar": "null",
+      "new_avatar": "avatar_m_10",
+      "timestamp": "2026-02-05T23:35:57.998Z"
+    },
+    {
+      "post_id": "cmla3cz0e001nvhjk90pgnhun",
+      "user_name": "Carlos Eduardo M",
+      "old_avatar": "null",
+      "new_avatar": "avatar_m_09",
+      "timestamp": "2026-02-05T23:35:57.999Z"
+    },
+    {
+      "post_id": "cmla3cz0d001lvhjkatkoe5ga",
+      "user_name": "Carlos Eduardo M",
+      "old_avatar": "null",
+      "new_avatar": "avatar_f_14",
+      "timestamp": "2026-02-05T23:35:58.000Z"
+    },
+    {
+      "post_id": "cmla3cz0b001jvhjk6sdvcg55",
+      "user_name": "Sergio Barbosa M",
+      "old_avatar": "null",
+      "new_avatar": "avatar_f_13",
+      "timestamp": "2026-02-05T23:35:58.002Z"
+    },
+    {
+      "post_id": "cmla3cz0a001hvhjk9ejfdm9s",
+      "user_name": "João Pedro M",
+      "old_avatar": "null",
+      "new_avatar": "avatar_m_12",
+      "timestamp": "2026-02-05T23:35:58.003Z"
+    },
+    {
+      "post_id": "cmla3cz08001fvhjkacu5mr15",
+      "user_name": "Helena Martins F",
+      "old_avatar": "null",
+      "new_avatar": "avatar_f_15",
+      "timestamp": "2026-02-05T23:35:58.005Z"
+    },
+    {
+      "post_id": "cmla3cz07001dvhjkf6gu5o4z",
+      "user_name": "Igor Souza M",
+      "old_avatar": "null",
+      "new_avatar": "avatar_f_12",
+      "timestamp": "2026-02-05T23:35:58.006Z"
+    },
+    {
+      "post_id": "cmla3cz03001bvhjkbukd1uyo",
+      "user_name": "Daniela Costa F",
+      "old_avatar": "null",
+      "new_avatar": "avatar_m_13",
+      "timestamp": "2026-02-05T23:35:58.007Z"
+    },
+    {
+      "post_id": "cmla3cz010019vhjkfqgmceoy",
+      "user_name": "Eliana Ferreira F",
+      "old_avatar": "null",
+      "new_avatar": "avatar_m_04",
+      "timestamp": "2026-02-05T23:35:58.009Z"
+    },
+    {
+      "post_id": "cmla3cz000017vhjkplgr1hfn",
+      "user_name": "Rafael Gomes M",
+      "old_avatar": "null",
+      "new_avatar": "avatar_f_01",
+      "timestamp": "2026-02-05T23:35:58.010Z"
+    },
+    {
+      "post_id": "cmla3cyzy0015vhjk6y7tno7n",
+      "user_name": "Rafael Gomes M",
+      "old_avatar": "null",
+      "new_avatar": "avatar_m_15",
+      "timestamp": "2026-02-05T23:35:58.011Z"
+    },
+    {
+      "post_id": "cmla3cyzx0013vhjk73iocdgp",
+      "user_name": "Fernanda Lima F",
+      "old_avatar": "null",
+      "new_avatar": "avatar_m_14",
+      "timestamp": "2026-02-05T23:35:58.013Z"
+    },
+    {
+      "post_id": "cmla3cyzv0011vhjknj2hbhv2",
+      "user_name": "Helena Martins F",
+      "old_avatar": "null",
+      "new_avatar": "avatar_f_03",
+      "timestamp": "2026-02-05T23:35:58.014Z"
+    },
+    {
+      "post_id": "cmla3cyzt000zvhjkn27ipk73",
+      "user_name": "Paulo Henrique M",
+      "old_avatar": "null",
+      "new_avatar": "avatar_m_11",
+      "timestamp": "2026-02-05T23:35:58.015Z"
+    },
+    {
+      "post_id": "cmla3cyzr000xvhjkyx8ojnsi",
+      "user_name": "João Pedro M",
+      "old_avatar": "null",
+      "new_avatar": "avatar_f_05",
+      "timestamp": "2026-02-05T23:35:58.016Z"
+    },
+    {
+      "post_id": "cmla3cyzp000vvhjk674akukl",
+      "user_name": "Eliana Ferreira F",
+      "old_avatar": "null",
+      "new_avatar": "avatar_f_04",
+      "timestamp": "2026-02-05T23:35:58.018Z"
+    },
+    {
+      "post_id": "cmla3cyzn000tvhjktanlj27r",
+      "user_name": "Carla Oliveira F",
+      "old_avatar": "null",
+      "new_avatar": "avatar_f_02",
+      "timestamp": "2026-02-05T23:35:58.019Z"
+    },
+    {
+      "post_id": "cmla3cyzm000rvhjkfoinq6hx",
+      "user_name": "Paulo Henrique M",
+      "old_avatar": "null",
+      "new_avatar": "avatar_f_06",
+      "timestamp": "2026-02-05T23:35:58.020Z"
+    },
+    {
+      "post_id": "cmla3cyzk000pvhjktyzk46e6",
+      "user_name": "Carla Oliveira F",
+      "old_avatar": "null",
+      "new_avatar": "avatar_f_07",
+      "timestamp": "2026-02-05T23:35:58.021Z"
+    },
+    {
+      "post_id": "cmla3cyzj000nvhjkz2cw23t9",
+      "user_name": "Igor Souza M",
+      "old_avatar": "null",
+      "new_avatar": "avatar_f_09",
+      "timestamp": "2026-02-05T23:35:58.023Z"
+    },
+    {
+      "post_id": "cmla3cyzi000lvhjk5p1r3t02",
+      "user_name": "Otávio Ribeiro M",
+      "old_avatar": "null",
+      "new_avatar": "avatar_m_01",
+      "timestamp": "2026-02-05T23:35:58.024Z"
+    },
+    {
+      "post_id": "cmla3cyzf000jvhjkvaxh6dsw",
+      "user_name": "Igor Souza M",
+      "old_avatar": "null",
+      "new_avatar": "avatar_f_08",
+      "timestamp": "2026-02-05T23:35:58.025Z"
+    }
+  ]
+}
