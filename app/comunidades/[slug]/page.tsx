@@ -98,6 +98,7 @@ const EditableMessage = dynamic(() => import('@/app/components/comunidades/Edita
 import { getPerguntaDoDia, getFaseAtual } from '@/lib/ia';
 import { useIAFacilitadora } from '@/hooks/useIAFacilitadora';
 import { useFP } from '@/hooks/useFP';
+import { useArenaStats } from '@/app/hooks/useArenaStats';
 import { FP_CONFIG } from '@/lib/fp/config';
 import { FPToastManager } from '@/components/chat/FPEarnedToast';
 import { FPDisplayCompact } from '@/components/chat/FPDisplayCompact';
@@ -1980,6 +1981,9 @@ export default function PainelVivoPage() {
   const [hasWelcomed, setHasWelcomed] = useState(false);
   const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
 
+  // Stats REAIS da arena (auto-refresh 15s)
+  const { stats: arenaStats } = useArenaStats(slug || null);
+
   // Handlers para edição e exclusão de mensagens
   const handleEditMessage = async (messageId: string, newContent: string) => {
     try {
@@ -2537,7 +2541,15 @@ export default function PainelVivoPage() {
                 <span className="font-mono">VOLTAR</span>
               </Link>
 
-              {/* Contadores removidos - dados eram hardcoded */}
+              {/* Contador REAL de mensagens no feed */}
+              {mensagens.length > 0 && (
+                <div className="flex items-center gap-3 text-xs font-mono">
+                  <div className="flex items-center gap-1.5 text-zinc-400">
+                    <MessageSquare className="w-3 h-3" />
+                    <span>{mensagens.length} mensagens</span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

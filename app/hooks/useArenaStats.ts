@@ -6,6 +6,7 @@ export interface ArenaStats {
   slug: string
   totalPosts: number
   totalComments: number
+  totalMessages: number
   totalMembers: number
   onlineNow: number
   recentPosts24h: number
