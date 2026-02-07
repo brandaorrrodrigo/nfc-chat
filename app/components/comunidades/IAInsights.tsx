@@ -26,6 +26,9 @@ import {
   Smartphone,
   TrendingUp,
   Quote,
+  Camera,
+  CheckCircle,
+  ArrowRight,
 } from 'lucide-react';
 import type { TipoIntervencao, IntervencaoIA, UsuarioDestaque } from '@/lib/ia';
 
@@ -383,6 +386,132 @@ export function IAPerguntaDoDia({ pergunta, fase, className = '' }: PerguntaDoDi
         <p className="text-xs text-zinc-500 mt-3">
           Compartilhe sua experiencia com a comunidade
         </p>
+      </div>
+    </div>
+  );
+}
+
+// ========================================
+// COMPONENTE: DICAS DE FOTO BIOMETRICA
+// ========================================
+
+interface DicasFotoProps {
+  className?: string;
+}
+
+const DICAS_FOTO = [
+  {
+    posicao: 'Frontal',
+    icone: '📸',
+    dicas: [
+      'Fique de frente para a camera',
+      'Bracos relaxados ao lado do corpo',
+      'Pes afastados na largura do quadril',
+      'Olhe direto para a camera',
+    ],
+  },
+  {
+    posicao: 'Lateral (Perfil)',
+    icone: '➡️',
+    dicas: [
+      'Vire 90 graus para o lado',
+      'Bracos naturalmente ao lado',
+      'Mantenha a postura natural',
+      'Nao empine o peito nem encolha',
+    ],
+  },
+  {
+    posicao: 'Posterior (Costas)',
+    icone: '🔙',
+    dicas: [
+      'Fique de costas para a camera',
+      'Bracos relaxados',
+      'Pes paralelos, mesma largura',
+      'Cabelo preso (se longo)',
+    ],
+  },
+];
+
+export function DicasFotoBiometrica({ className = '' }: DicasFotoProps) {
+  return (
+    <div
+      className={`
+        relative overflow-hidden p-5 rounded-2xl
+        bg-gradient-to-br from-[#00f5ff]/10 via-[#8b5cf6]/5 to-transparent
+        border border-[#00f5ff]/30
+        ${className}
+      `}
+      style={{
+        boxShadow: '0 0 30px rgba(0, 245, 255, 0.1)',
+      }}
+    >
+      <div className="absolute top-0 right-0 w-32 h-32 bg-[#00f5ff]/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#8b5cf6]/5 rounded-full blur-3xl" />
+
+      <div className="relative">
+        {/* Header */}
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00f5ff]/30 to-[#8b5cf6]/20 border border-[#00f5ff]/40 flex items-center justify-center">
+            <Camera className="w-4 h-4 text-[#00f5ff]" />
+          </div>
+          <div>
+            <span className="text-sm text-[#00f5ff] font-semibold">Como tirar suas fotos</span>
+            <p className="text-[10px] text-zinc-500">3 fotos para analise biometrica completa</p>
+          </div>
+        </div>
+
+        {/* Dicas gerais */}
+        <div className="mb-4 p-3 rounded-xl bg-white/5 border border-white/10">
+          <p className="text-xs font-semibold text-zinc-300 mb-2">Antes de comecar:</p>
+          <div className="grid grid-cols-2 gap-1.5">
+            {[
+              'Roupa justa (top/short)',
+              'Fundo neutro e claro',
+              'Boa iluminacao',
+              'Corpo inteiro (cabeca aos pes)',
+              'Postura natural, relaxada',
+              'Sem poses forcadas',
+            ].map((dica, i) => (
+              <div key={i} className="flex items-start gap-1.5">
+                <CheckCircle className="w-3 h-3 text-emerald-400 mt-0.5 flex-shrink-0" />
+                <span className="text-[11px] text-zinc-400">{dica}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 3 Posicoes */}
+        <div className="grid grid-cols-3 gap-2 mb-4">
+          {DICAS_FOTO.map((item) => (
+            <div
+              key={item.posicao}
+              className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-center"
+            >
+              <span className="text-2xl block mb-1">{item.icone}</span>
+              <p className="text-[11px] font-semibold text-white mb-1.5">{item.posicao}</p>
+              <div className="space-y-1">
+                {item.dicas.map((dica, i) => (
+                  <p key={i} className="text-[10px] text-zinc-500 leading-tight">{dica}</p>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* CTA */}
+        <Link
+          href="/biometric/analyze"
+          className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl
+            bg-gradient-to-r from-[#00f5ff]/20 to-[#8b5cf6]/20
+            border border-[#00f5ff]/40
+            text-[#00f5ff] text-sm font-semibold
+            hover:from-[#00f5ff]/30 hover:to-[#8b5cf6]/30
+            transition-all duration-300"
+        >
+          <Camera className="w-4 h-4" />
+          Iniciar Avaliacao Biometrica
+          <ArrowRight className="w-3.5 h-3.5" />
+        </Link>
       </div>
     </div>
   );

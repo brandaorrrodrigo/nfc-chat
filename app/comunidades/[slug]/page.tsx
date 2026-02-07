@@ -79,6 +79,11 @@ const IAPerguntaDoDia = dynamic(
   { ssr: false }
 );
 
+const DicasFotoBiometrica = dynamic(
+  () => import('@/app/components/comunidades/IAInsights').then(mod => ({ default: mod.DicasFotoBiometrica })),
+  { ssr: false }
+);
+
 const MessageActions = dynamic(() => import('@/app/components/comunidades/MessageActions'), {
   ssr: false,
 });
@@ -1316,29 +1321,29 @@ const COMUNIDADES_DATA: Record<string, ComunidadeData & { mensagens: Mensagem[] 
   'postura-estetica': {
     titulo: '🧍 Postura & Estética Real',
     descricao: 'Discussões sobre estética corporal sob a ótica da postura e biomecânica',
-    membrosOnline: 3,
-    totalMensagens: 12,
+    membrosOnline: 0,
+    totalMensagens: 0,
     mensagens: [],
   },
   'avaliacao-assimetrias': {
     titulo: '📐 Avaliação Biométrica & Assimetrias',
     descricao: 'Espaço para discussões sobre leitura corporal, assimetrias e análise biométrica por IA',
-    membrosOnline: 3,
-    totalMensagens: 12,
+    membrosOnline: 0,
+    totalMensagens: 0,
     mensagens: [],
   },
   'dor-funcao-saude': {
     titulo: '🩺 Dor, Função & Saúde Postural',
     descricao: 'Explore a relação entre postura, dor e função corporal',
-    membrosOnline: 3,
-    totalMensagens: 12,
+    membrosOnline: 0,
+    totalMensagens: 0,
     mensagens: [],
   },
   'avaliacao-fisica-foto': {
     titulo: '📸 Avaliação Física por Foto',
     descricao: 'Envie suas fotos para análise biométrica completa com IA',
-    membrosOnline: 3,
-    totalMensagens: 12,
+    membrosOnline: 0,
+    totalMensagens: 0,
     mensagens: [],
   },
 };
@@ -2525,23 +2530,7 @@ export default function PainelVivoPage() {
                 <span className="font-mono">VOLTAR</span>
               </Link>
 
-              <div className="flex items-center gap-4 text-xs">
-                <div className="flex items-center gap-1.5 text-zinc-500">
-                  <div className="relative">
-                    <Users className="w-3.5 h-3.5" />
-                    <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-emerald-400 rounded-full" />
-                  </div>
-                  <span className="font-mono text-emerald-400">{comunidade.membrosOnline}</span>
-                  <span className="text-zinc-600">online</span>
-                </div>
-
-                <div className="w-[1px] h-3 bg-white/10" />
-
-                <div className="flex items-center gap-1.5 text-zinc-500">
-                  <MessageSquare className="w-3.5 h-3.5" />
-                  <span className="font-mono">{comunidade.totalMensagens.toLocaleString('pt-BR')}</span>
-                </div>
-              </div>
+              {/* Contadores removidos - dados eram hardcoded */}
             </div>
           </div>
 
@@ -2600,13 +2589,12 @@ export default function PainelVivoPage() {
         className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent"
       >
         <div className="max-w-4xl mx-auto py-4">
-          {/* Pergunta do Dia - IA Facilitadora */}
-          <div className="px-4 mb-4">
-            <IAPerguntaDoDia
-              pergunta={getPerguntaDoDia()}
-              fase={getFaseAtual()}
-            />
-          </div>
+          {/* Dicas de Foto (arenas biometricas) */}
+          {['postura-estetica', 'avaliacao-assimetrias', 'dor-funcao-saude', 'avaliacao-fisica-foto'].includes(slug) && (
+            <div className="px-4 mb-4">
+              <DicasFotoBiometrica />
+            </div>
+          )}
 
           <div className="space-y-0 divide-y divide-white/5">
             {mensagens.map((mensagem, index) => (
