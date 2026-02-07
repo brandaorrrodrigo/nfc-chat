@@ -78,7 +78,13 @@ export async function GET() {
   } catch (error) {
     console.error('[Community Stats] Error:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch community stats' },
+      {
+        error: 'Failed to fetch community stats',
+        details: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack?.split('\n').slice(0, 5) : undefined,
+        prismaAvailable: typeof prisma !== 'undefined',
+        models: typeof prisma !== 'undefined' ? Object.keys(prisma).filter(k => !k.startsWith('$') && !k.startsWith('_')) : []
+      },
       { status: 500 }
     )
   }
