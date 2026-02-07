@@ -48,15 +48,17 @@ export async function GET() {
       }),
     ])
 
-    // Usuários online (últimos 15 minutos)
-    const onlineUsers = await prisma.userArenaActivity.count({
+    // Usuários online (últimos 15 minutos) - distinct users
+    const onlineUsersData = await prisma.userArenaActivity.findMany({
       where: {
         lastSeenAt: {
           gte: new Date(Date.now() - 15 * 60 * 1000)
         }
       },
+      select: { userId: true },
       distinct: ['userId']
     })
+    const onlineUsers = onlineUsersData.length
 
     const stats = {
       totalArenas,

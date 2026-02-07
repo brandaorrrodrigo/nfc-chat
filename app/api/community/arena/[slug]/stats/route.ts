@@ -32,16 +32,18 @@ export async function GET(
       )
     }
 
-    // Contar usuários online AGORA (últimos 15 minutos nesta arena)
-    const onlineNow = await prisma.userArenaActivity.count({
+    // Contar usuários online AGORA (últimos 15 minutos nesta arena) - distinct users
+    const onlineNowData = await prisma.userArenaActivity.findMany({
       where: {
         arenaId: arena.id,
         lastSeenAt: {
           gte: new Date(Date.now() - 15 * 60 * 1000)
         }
       },
+      select: { userId: true },
       distinct: ['userId']
     })
+    const onlineNow = onlineNowData.length
 
     // Posts recentes (últimas 24h)
     const recentPosts = await prisma.post.count({
