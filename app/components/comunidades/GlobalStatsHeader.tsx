@@ -1,57 +1,25 @@
 'use client';
 
 /**
- * COMPONENTE: GlobalStatsHeader - Header Fixo de Estatísticas Globais
+ * COMPONENTE: GlobalStatsHeader - Header Fixo de Estatísticas Globais REAIS
  *
  * Visual: HUD / Painel Técnico
  * Estética: Dark + Verde Neon (#00ff88) + Fonte Monoespaçada
  *
  * Indicadores:
  * - Total de usuários cadastrados
- * - Usuários ativos (24h)
- * - Mensagens publicadas hoje
- * - Intervenções da IA hoje
+ * - Usuários online agora
+ * - Total de posts
+ * - Total de comentários
  *
- * Atualização automática a cada 30-60s
+ * ✅ INTEGRADO COM API REAL - useCommunityStats hook
+ * Atualização automática a cada 30s
  * Uso: /comunidades e /comunidades/[slug]
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { Users, Activity, MessageSquare, Bot, Wifi, WifiOff } from 'lucide-react';
-
-// ========================================
-// TIPOS
-// ========================================
-
-interface GlobalStats {
-  totalUsuarios: number;
-  ativos24h: number;
-  mensagensHoje: number;
-  intervencoesIA: number;
-  ultimaAtualizacao: Date;
-}
-
-// ========================================
-// DADOS MOCK
-// ========================================
-
-const STATS_MOCK: GlobalStats = {
-  totalUsuarios: 12847,
-  ativos24h: 1423,
-  mensagensHoje: 847,
-  intervencoesIA: 156,
-  ultimaAtualizacao: new Date(0), // Placeholder - atualizado no useEffect
-};
-
-// Simulação de variação nos dados (seed baseado no timestamp para consistência)
-function gerarVariacao(base: number, percentual: number = 5): number {
-  const variacao = Math.floor(base * (percentual / 100));
-  // Usar seed determinístico baseado no segundo atual para evitar hydration mismatch
-  const seed = Math.floor(Date.now() / 10000);
-  const pseudoRandom = ((seed * 9301 + 49297) % 233280) / 233280;
-  const delta = Math.floor(pseudoRandom * variacao * 2) - variacao;
-  return Math.max(0, base + delta);
-}
+import React, { useState, useEffect } from 'react';
+import { Users, Activity, MessageSquare, Bot } from 'lucide-react';
+import { useCommunityStats } from '@/app/hooks/useCommunityStats';
 
 // ========================================
 // COMPONENTE: Stat Item Individual
@@ -94,41 +62,19 @@ function StatItem({
 // COMPONENTE PRINCIPAL
 // ========================================
 
-interface GlobalStatsHeaderProps {
-  refreshInterval?: number; // Em milissegundos (padrão: 45000 = 45s)
-}
-
-export default function GlobalStatsHeader({ refreshInterval = 45000 }: GlobalStatsHeaderProps) {
-  const [stats, setStats] = useState<GlobalStats>(STATS_MOCK);
-  const [isConnected, setIsConnected] = useState(true);
+export default function GlobalStatsHeader() {
+  // ✅ Hook de stats REAIS (atualiza a cada 30s automaticamente)
+  const { stats: communityStats, loading } = useCommunityStats();
   const [lastUpdate, setLastUpdate] = useState<string>('agora');
 
-  // Simular atualização de dados
-  const fetchStats = useCallback(() => {
-    // MVP: Simular pequenas variações nos dados
-    setStats({
-      totalUsuarios: gerarVariacao(STATS_MOCK.totalUsuarios, 1),
-      ativos24h: gerarVariacao(STATS_MOCK.ativos24h, 10),
-      mensagensHoje: gerarVariacao(STATS_MOCK.mensagensHoje, 15),
-      intervencoesIA: gerarVariacao(STATS_MOCK.intervencoesIA, 20),
-      ultimaAtualizacao: new Date(),
-    });
-    setLastUpdate('agora');
-    setIsConnected(true);
-  }, []);
-
-  // Atualização automática
+  // Atualizar texto de "última atualização"
   useEffect(() => {
-    fetchStats();
+    if (!communityStats) return;
 
-    const interval = setInterval(() => {
-      fetchStats();
-    }, refreshInterval);
-
-    // Atualizar texto de "última atualização"
     const updateTimer = setInterval(() => {
       const now = new Date();
-      const diff = Math.floor((now.getTime() - stats.ultimaAtualizacao.getTime()) / 1000);
+      const lastUpdateDate = new Date(communityStats.updatedAt);
+      const diff = Math.floor((now.getTime() - lastUpdateDate.getTime()) / 1000);
 
       if (diff < 10) {
         setLastUpdate('agora');
@@ -139,11 +85,8 @@ export default function GlobalStatsHeader({ refreshInterval = 45000 }: GlobalSta
       }
     }, 5000);
 
-    return () => {
-      clearInterval(interval);
-      clearInterval(updateTimer);
-    };
-  }, [fetchStats, refreshInterval, stats.ultimaAtualizacao]);
+    return () => clearInterval(updateTimer);
+  }, [communityStats]);
 
   // @deprecated - Header global agora é EcossistemaHeader via providers.tsx
   return (
@@ -154,8 +97,8 @@ export default function GlobalStatsHeader({ refreshInterval = 45000 }: GlobalSta
           <div className="flex items-center gap-4 sm:gap-6 lg:gap-8 overflow-x-auto scrollbar-none">
             <StatItem
               icon={Users}
-              value={stats.totalUsuarios}
-              label="Cadastrados"
+              value={communityStats?.totalUsers || 0}
+              label="Usuários"
               pulse
             />
 
@@ -163,8 +106,8 @@ export default function GlobalStatsHeader({ refreshInterval = 45000 }: GlobalSta
 
             <StatItem
               icon={Activity}
-              value={stats.ativos24h}
-              label="Ativos 24h"
+              value={communityStats?.onlineNow || 0}
+              label="Online"
               color="text-emerald-400"
               pulse
             />
@@ -173,8 +116,8 @@ export default function GlobalStatsHeader({ refreshInterval = 45000 }: GlobalSta
 
             <StatItem
               icon={MessageSquare}
-              value={stats.mensagensHoje}
-              label="Msgs Hoje"
+              value={communityStats?.totalPosts || 0}
+              label="Posts"
               color="text-cyan-400"
             />
 
@@ -182,8 +125,8 @@ export default function GlobalStatsHeader({ refreshInterval = 45000 }: GlobalSta
 
             <StatItem
               icon={Bot}
-              value={stats.intervencoesIA}
-              label="IA Hoje"
+              value={communityStats?.totalComments || 0}
+              label="Comentários"
               color="text-purple-400"
             />
           </div>
@@ -191,7 +134,7 @@ export default function GlobalStatsHeader({ refreshInterval = 45000 }: GlobalSta
           {/* Connection Status */}
           <div className="flex-shrink-0 flex items-center gap-2">
             <div className="hidden sm:flex items-center gap-2">
-              {isConnected ? (
+              {!loading && communityStats ? (
                 <>
                   <div className="relative">
                     <div className="w-1.5 h-1.5 rounded-full bg-[#00ff88]" />
@@ -203,9 +146,9 @@ export default function GlobalStatsHeader({ refreshInterval = 45000 }: GlobalSta
                 </>
               ) : (
                 <>
-                  <WifiOff className="w-3.5 h-3.5 text-red-400" />
-                  <span className="text-[10px] font-mono text-red-400 uppercase">
-                    Reconectando...
+                  <div className="w-3.5 h-3.5 border-2 border-zinc-700 border-t-[#00ff88] rounded-full animate-spin" />
+                  <span className="text-[10px] font-mono text-zinc-600 uppercase">
+                    Carregando...
                   </span>
                 </>
               )}

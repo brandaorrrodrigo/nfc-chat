@@ -64,6 +64,7 @@ model User {
   biometricFPTransactions BiometricFPTransaction[]
   biometricBaselines BiometricBaseline[]
   biometricComparisons BiometricComparison[]
+  arenaActivity     UserArenaActivity[]
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
@@ -132,6 +133,7 @@ model Arena {
   tags              ArenaTag[]
   founders          ArenaFounder[]
   videoAnalyses     VideoAnalysis[]
+  userActivity      UserArenaActivity[]
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
@@ -676,4 +678,24 @@ model BiometricPricing {
   updated_at        DateTime @updatedAt
 
   @@map("biometric_pricing")
+}
+
+// ============================================
+// TRACKING DE ATIVIDADE DE USUÁRIOS EM ARENAS
+// ============================================
+
+model UserArenaActivity {
+  id          String   @id @default(cuid())
+  userId      String
+  arenaId     String
+  lastSeenAt  DateTime @default(now())
+  visitCount  Int      @default(1)
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  arena       Arena    @relation(fields: [arenaId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, arenaId])
+  @@index([arenaId, lastSeenAt])
+  @@index([userId])
+  @@map("user_arena_activity")
 }

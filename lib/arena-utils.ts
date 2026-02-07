@@ -82,8 +82,8 @@ export function arenaToDisplayFormat(arena: ArenaWithTags): CommunityCardData {
     id: arena.id,
     title: arena.name,
     description: arena.description,
-    members: Math.min(Math.max(arena.dailyActiveUsers * 5, arena.totalPosts, 12), 35),
-    activeNow: Math.min(Math.max(arena.dailyActiveUsers, 2), 6),
+    members: arena.dailyActiveUsers, // ✅ REAL: usuários únicos que postaram
+    activeNow: 0, // ✅ Será buscado via useArenaStats hook (online últimos 15min)
     slug: arena.slug,
     icon: arena.icon,
     gradient: CATEGORIA_GRADIENTS[arena.categoria] || 'from-zinc-500 to-zinc-600',

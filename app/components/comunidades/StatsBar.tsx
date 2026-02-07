@@ -1,16 +1,17 @@
 'use client';
 
 /**
- * COMPONENTE: StatsBar - Painel de Estatísticas Globais
+ * COMPONENTE: StatsBar - Painel de Estatísticas Globais REAIS
  *
  * Visual: HUD / Command Center - Cyberpunk
  * Estética: Dark + Verde Neon (#00ff88)
  *
- * Pronto para integração com API futura
+ * ✅ INTEGRADO COM API REAL - useCommunityStats hook
  */
 
 import React from 'react';
 import { Users, Activity, MessageSquare, Bot } from 'lucide-react';
+import { useCommunityStats } from '@/app/hooks/useCommunityStats';
 
 // ========================================
 // TIPOS
@@ -29,17 +30,6 @@ interface StatCardProps {
   label: string;
   accentColor?: string;
 }
-
-// ========================================
-// DADOS MOCK (Pronto para substituir por API)
-// ========================================
-
-const STATS_MOCK: StatsData = {
-  totalUsers: 12480,
-  activeUsers7d: 3214,
-  activeTopics: 842,
-  iaInteractions: 1926,
-};
 
 // ========================================
 // UTILITÁRIOS
@@ -175,31 +165,31 @@ function StatCard({ icon: Icon, value, label, accentColor = '#00ff88' }: StatCar
 // COMPONENTE PRINCIPAL: StatsBar
 // ========================================
 
-interface StatsBarProps {
-  stats?: StatsData;
-}
+export default function StatsBar() {
+  // ✅ Hook de stats REAIS
+  const { stats: communityStats, loading } = useCommunityStats();
 
-export default function StatsBar({ stats = STATS_MOCK }: StatsBarProps) {
+  // Se loading, mostra placeholders
   const statItems = [
     {
       icon: Users,
-      value: stats.totalUsers,
-      label: 'Agentes Registrados',
+      value: communityStats?.totalUsers || 0,
+      label: 'Usuários Total',
     },
     {
       icon: Activity,
-      value: stats.activeUsers7d,
-      label: 'Ativos (7 dias)',
+      value: communityStats?.onlineNow || 0,
+      label: 'Online Agora',
     },
     {
       icon: MessageSquare,
-      value: stats.activeTopics,
-      label: 'Tópicos Ativos',
+      value: communityStats?.totalPosts || 0,
+      label: 'Posts Totais',
     },
     {
       icon: Bot,
-      value: stats.iaInteractions,
-      label: 'Intervenções IA',
+      value: communityStats?.totalComments || 0,
+      label: 'Comentários',
     },
   ];
 

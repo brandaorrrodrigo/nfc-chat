@@ -37,6 +37,7 @@ import ArenaIndex from '@/app/components/comunidades/ArenaIndex';
 import QuickFilters from '@/app/components/comunidades/QuickFilters';
 import type { ArenaWithTags, ArenaCategoria, CommunityCardData } from '@/types/arena';
 import { arenaToDisplayFormat, CATEGORIA_GRADIENTS } from '@/lib/arena-utils';
+import { useCommunityStats } from '@/app/hooks/useCommunityStats';
 
 // Formatação de número sem toLocaleString (evita hydration mismatch)
 function formatNumber(n: number): string {
@@ -44,289 +45,9 @@ function formatNumber(n: number): string {
 }
 
 // ========================================
-// DADOS: FALLBACK (usado se API falhar)
+// ✅ DADOS REAIS - Sempre busca da API
+// FALLBACK REMOVIDO - Sem números hardcoded
 // ========================================
-
-const FALLBACK_COMMUNITIES: CommunityCardData[] = [
-  {
-    id: 14,
-    title: "Receitas Saudáveis",
-    description: "Compartilhe receitas fit e receba análise nutricional automática da IA: calorias, proteínas, carboidratos e gorduras por porção.",
-    members: 28,
-    activeNow: 4,
-    slug: "receitas-saudaveis",
-    icon: "Utensils",
-    gradient: "from-green-500 to-emerald-600",
-    lastActivity: "há 2 min",
-    featured: true,
-    categoria: 'RECEITAS_ALIMENTACAO',
-  },
-  {
-    id: 15,
-    title: "Exercícios que Ama",
-    description: "Compartilhe exercícios que você AMA fazer e receba análise biomecânica da IA: músculos ativados, padrão de movimento e variações.",
-    members: 24,
-    activeNow: 3,
-    slug: "exercicios-que-ama",
-    icon: "Dumbbell",
-    gradient: "from-blue-500 to-indigo-600",
-    lastActivity: "há 5 min",
-    featured: true,
-    categoria: 'TREINO_EXERCICIOS',
-  },
-  {
-    id: 16,
-    title: "Sinal Vermelho",
-    description: "Investigação inteligente de dores e desconfortos em exercícios. A IA faz perguntas progressivas e sugere ajustes ou encaminha ao médico.",
-    members: 19,
-    activeNow: 2,
-    slug: "sinal-vermelho",
-    icon: "Activity",
-    gradient: "from-red-500 to-rose-600",
-    lastActivity: "há 8 min",
-    featured: true,
-    categoria: 'SAUDE_CONDICOES_CLINICAS',
-  },
-  {
-    id: 17,
-    title: "Aspiracional & Estética",
-    description: "Sonhos estéticos com base científica e responsabilidade. IA educadora sobre procedimentos com preparo físico, nutricional e psicológico.",
-    members: 22,
-    activeNow: 3,
-    slug: "aspiracional-estetica",
-    icon: "Sparkles",
-    gradient: "from-pink-500 to-purple-600",
-    lastActivity: "há 1 min",
-    featured: true,
-    categoria: 'COMUNIDADES_LIVRES',
-  },
-  {
-    id: 1,
-    title: "Protocolo Lipedema",
-    description: "Espaço para mulheres que convivem com lipedema compartilharem sintomas, estratégias, frustrações e avanços reais no dia a dia.",
-    members: 31,
-    activeNow: 5,
-    slug: "lipedema",
-    icon: "Activity",
-    gradient: "from-cyan-500 to-blue-600",
-    lastActivity: "há 2 min",
-    categoria: 'SAUDE_CONDICOES_CLINICAS',
-  },
-  {
-    id: 13,
-    title: "Lipedema — Paradoxo do Cardio",
-    description: "Por que HIIT pode piorar o lipedema? Discussão técnica sobre HIF-1α, NF-κB, macrófagos M1 e o protocolo AEJ + compressão.",
-    members: 26,
-    activeNow: 4,
-    slug: "lipedema-paradoxo",
-    icon: "Activity",
-    gradient: "from-cyan-500 to-teal-600",
-    lastActivity: "há 3 min",
-    featured: true,
-    categoria: 'SAUDE_CONDICOES_CLINICAS',
-  },
-  {
-    id: 2,
-    title: "Déficit Calórico na Vida Real",
-    description: "Nem sempre o déficit funciona como nos cálculos. Aqui falamos do que acontece na prática, no corpo e na rotina.",
-    members: 34,
-    activeNow: 6,
-    slug: "deficit-calorico",
-    icon: "TrendingDown",
-    gradient: "from-orange-500 to-red-500",
-    lastActivity: "há 30s",
-    categoria: 'NUTRICAO_DIETAS',
-  },
-  {
-    id: 3,
-    title: "Treino de Glúteo",
-    description: "Treino de glúteo com foco em resultado: genética, dor, carga, repetição, constância e evolução real.",
-    members: 33,
-    activeNow: 5,
-    slug: "treino-gluteo",
-    icon: "Dumbbell",
-    gradient: "from-pink-500 to-rose-600",
-    lastActivity: "há 15s",
-    featured: true,
-    categoria: 'TREINO_EXERCICIOS',
-  },
-  {
-    id: 4,
-    title: "Canetas Emagrecedoras",
-    description: "Relatos reais sobre uso de Ozempic, Wegovy, Mounjaro: efeitos colaterais, expectativas e adaptações no estilo de vida.",
-    members: 27,
-    activeNow: 4,
-    slug: "canetas",
-    icon: "Syringe",
-    gradient: "from-emerald-500 to-teal-600",
-    lastActivity: "há 1 min",
-    categoria: 'SAUDE_CONDICOES_CLINICAS',
-  },
-  {
-    id: 5,
-    title: "Exercício para Quem Odeia Treinar",
-    description: "Para quem quer resultado, mas não se identifica com academia tradicional.",
-    members: 25,
-    activeNow: 3,
-    slug: "odeia-treinar",
-    icon: "Heart",
-    gradient: "from-red-500 to-pink-600",
-    lastActivity: "há 3 min",
-    categoria: 'TREINO_EXERCICIOS',
-  },
-  {
-    id: 6,
-    title: "Ansiedade, Compulsão e Alimentação",
-    description: "Discussões abertas sobre relação emocional com a comida, sem julgamento.",
-    members: 29,
-    activeNow: 5,
-    slug: "ansiedade-alimentacao",
-    icon: "Brain",
-    gradient: "from-purple-500 to-violet-600",
-    lastActivity: "há 45s",
-    categoria: 'SAUDE_CONDICOES_CLINICAS',
-  },
-  {
-    id: 7,
-    title: "Emagrecimento Feminino 35+",
-    description: "Mudanças hormonais, metabolismo e a realidade do corpo após os 30–40 anos.",
-    members: 26,
-    activeNow: 3,
-    slug: "emagrecimento-35-mais",
-    icon: "Sparkles",
-    gradient: "from-amber-500 to-orange-600",
-    lastActivity: "há 2 min",
-    categoria: 'SAUDE_CONDICOES_CLINICAS',
-  },
-  {
-    id: 8,
-    title: "Antes e Depois — Processo Real",
-    description: "Mais do que fotos, histórias. O foco é o processo, não só o resultado.",
-    members: 30,
-    activeNow: 4,
-    slug: "antes-depois",
-    icon: "Camera",
-    gradient: "from-teal-500 to-cyan-600",
-    lastActivity: "há 20s",
-    categoria: 'COMUNIDADES_LIVRES',
-  },
-  {
-    id: 9,
-    title: "Dieta na Vida Real",
-    description: "Espaço para falar da dificuldade real de seguir dietas, mesmo quando elas são bem elaboradas.",
-    members: 32,
-    activeNow: 5,
-    slug: "dieta-vida-real",
-    icon: "Utensils",
-    gradient: "from-lime-500 to-green-600",
-    lastActivity: "há 10s",
-    isCore: true,
-    categoria: 'NUTRICAO_DIETAS',
-  },
-  {
-    id: 10,
-    title: "Treino em Casa",
-    description: "Exercícios livres e com poucos acessórios. Baseado na metodologia Bret: ~100% dos exercícios podem ser feitos em casa.",
-    members: 23,
-    activeNow: 3,
-    slug: "treino-casa",
-    icon: "Home",
-    gradient: "from-indigo-500 to-purple-600",
-    lastActivity: "há 1 min",
-    categoria: 'TREINO_EXERCICIOS',
-  },
-  {
-    id: 11,
-    title: "Performance & Biohacking",
-    description: "Protocolos de elite, farmacologia avançada e estratégias de redução de danos. Ciência aplicada sem filtro.",
-    members: 21,
-    activeNow: 2,
-    slug: "performance-biohacking",
-    icon: "Zap",
-    gradient: "from-violet-500 to-purple-600",
-    lastActivity: "há 5 min",
-    featured: true,
-    categoria: 'TREINO_EXERCICIOS',
-  },
-  {
-    id: 20,
-    title: "Hub Biomecânico",
-    description: "Discussão aberta sobre biomecânica, padrões de movimento, cadeia cinética e correção postural. IA especialista em análise de movimento.",
-    members: 20,
-    activeNow: 2,
-    slug: "hub-biomecanico",
-    icon: "Activity",
-    gradient: "from-cyan-500 to-blue-600",
-    lastActivity: "há 1 min",
-    featured: true,
-    categoria: 'BIOMECANICA_NFV',
-  },
-  {
-    id: 21,
-    title: "Análise: Agachamento",
-    description: "Envie seu vídeo de agachamento e receba análise biomecânica com IA + revisão profissional. Identifique compensações e melhore sua técnica.",
-    members: 18,
-    activeNow: 2,
-    slug: "analise-agachamento",
-    icon: "Video",
-    gradient: "from-purple-500 to-violet-600",
-    lastActivity: "há 3 min",
-    isCore: true,
-    categoria: 'BIOMECANICA_NFV',
-  },
-  {
-    id: 22,
-    title: "Análise: Levantamento Terra",
-    description: "Análise biomecânica do seu terra. IA identifica posição da coluna, ativação de posteriores e padrão de hip hinge.",
-    members: 15,
-    activeNow: 2,
-    slug: "analise-terra",
-    icon: "Video",
-    gradient: "from-amber-500 to-orange-600",
-    lastActivity: "há 5 min",
-    isCore: true,
-    categoria: 'BIOMECANICA_NFV',
-  },
-  {
-    id: 23,
-    title: "Análise: Supino",
-    description: "Envie seu vídeo de supino para análise de retração escapular, trajetória da barra e ativação peitoral.",
-    members: 14,
-    activeNow: 2,
-    slug: "analise-supino",
-    icon: "Video",
-    gradient: "from-red-500 to-rose-600",
-    lastActivity: "há 8 min",
-    isCore: true,
-    categoria: 'BIOMECANICA_NFV',
-  },
-  {
-    id: 24,
-    title: "Análise: Puxadas",
-    description: "Análise biomecânica de puxadas e remadas. IA avalia ativação de dorsais, compensação de bíceps e posição escapular.",
-    members: 12,
-    activeNow: 2,
-    slug: "analise-puxadas",
-    icon: "Video",
-    gradient: "from-cyan-500 to-teal-600",
-    lastActivity: "há 10 min",
-    isCore: true,
-    categoria: 'BIOMECANICA_NFV',
-  },
-  {
-    id: 25,
-    title: "Análise: Elevação Pélvica",
-    description: "Análise do hip thrust e elevação pélvica. IA verifica extensão de quadril, ativação glútea e compensações lombares.",
-    members: 17,
-    activeNow: 2,
-    slug: "analise-elevacao-pelvica",
-    icon: "Video",
-    gradient: "from-pink-500 to-rose-600",
-    lastActivity: "há 4 min",
-    isCore: true,
-    categoria: 'BIOMECANICA_NFV',
-  },
-];
 
 // ========================================
 // MAPEAMENTOS
@@ -345,6 +66,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Home,
   Zap,
   Video,
+  MessageCircle,
 };
 
 // ========================================
@@ -547,6 +269,9 @@ function SkeletonCard() {
 export default function ComunidadesPageClient() {
   const { isAuthenticated } = useComunidadesAuth();
 
+  // ✅ Hook de stats globais REAIS
+  const { stats: communityStats, loading: statsLoading } = useCommunityStats();
+
   // State for API data
   const [apiArenas, setApiArenas] = useState<ArenaWithTags[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -572,51 +297,17 @@ export default function ComunidadesPageClient() {
     fetchArenas();
   }, []);
 
-  // Arenas NFV do fallback (sempre incluidas)
-  const NFV_SLUGS = ['hub-biomecanico','analise-agachamento','analise-terra','analise-supino','analise-puxadas','analise-elevacao-pelvica'];
-  const nfvFallback = FALLBACK_COMMUNITIES.filter(c => NFV_SLUGS.includes(c.slug));
-
-  // Resolve display data: API arenas or fallback + NFV sempre presente
+  // ✅ SEMPRE usa dados REAIS da API - Sem fallback hardcoded
   const communities = useMemo<CommunityCardData[]>(() => {
     if (apiArenas && apiArenas.length > 0) {
-      const apiDisplay = apiArenas.map(arenaToDisplayFormat);
-      const existingSlugs = new Set(apiDisplay.map(a => a.slug));
-      const missingNFV = nfvFallback.filter(n => !existingSlugs.has(n.slug));
-      return [...apiDisplay, ...missingNFV];
+      return apiArenas.map(arenaToDisplayFormat);
     }
-    return FALLBACK_COMMUNITIES;
+    return []; // Sem dados: retorna vazio (não mostra números falsos)
   }, [apiArenas]);
 
-  // ArenaIndex data: API arenas or fallback converted to ArenaWithTags format
+  // ArenaIndex data: sempre dados reais da API
   const indexArenas = useMemo<ArenaWithTags[]>(() => {
-    if (apiArenas && apiArenas.length > 0) {
-      return apiArenas;
-    }
-    // Convert fallback to ArenaWithTags for ArenaIndex
-    return FALLBACK_COMMUNITIES.map((c): ArenaWithTags => ({
-      id: String(c.id),
-      name: c.title,
-      slug: c.slug,
-      description: c.description,
-      icon: c.icon,
-      color: '',
-      category: c.categoria || 'COMUNIDADES_LIVRES',
-      categoria: (c.categoria || 'COMUNIDADES_LIVRES') as ArenaCategoria,
-      arenaType: c.isCore ? 'NFV_PREMIUM' : 'GENERAL',
-      criadaPor: 'ADMIN',
-      status: (c.featured ? 'HOT' : 'WARM') as ArenaWithTags['status'],
-      totalPosts: c.members || 0,
-      totalComments: 0,
-      dailyActiveUsers: c.activeNow || 0,
-      isActive: true,
-      isPaused: false,
-      allowImages: true,
-      allowLinks: true,
-      allowVideos: false,
-      createdAt: '2025-01-01T00:00:00.000Z',
-      updatedAt: '2025-01-01T00:00:00.000Z',
-      tags: [],
-    }));
+    return apiArenas || [];
   }, [apiArenas]);
 
   // Apply category filter
@@ -625,9 +316,9 @@ export default function ComunidadesPageClient() {
     return communities.filter((c) => c.categoria === activeFilter);
   }, [communities, activeFilter]);
 
-  // Stats
-  const totalMembers = communities.reduce((acc, c) => acc + c.members, 0);
-  const totalOnline = communities.reduce((acc, c) => acc + c.activeNow, 0);
+  // ✅ Stats REAIS do hook (não calculados localmente)
+  const totalMembers = communityStats?.totalUsers || 0;
+  const totalOnline = communityStats?.onlineNow || 0;
 
   return (
     <>
