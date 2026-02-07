@@ -2597,7 +2597,7 @@ export default function PainelVivoPage() {
       >
         <div className="max-w-4xl mx-auto py-4">
           {/* Dicas de Foto (arenas biometricas) */}
-          {['avaliacao-assimetrias', 'avaliacao-fisica-foto'].includes(slug) && (
+          {slug === 'avaliacao-fisica-foto' && (
             <div className="px-4 mb-4">
               <DicasFotoBiometrica />
             </div>
