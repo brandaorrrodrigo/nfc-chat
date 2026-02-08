@@ -33,6 +33,7 @@
     "nfv:reanalyze-squat-direct": "ts-node --project tsconfig.scripts.json scripts/reanalyze-squat-direct.ts",
     "nfv:reanalyze-squat-detailed": "ts-node --project tsconfig.scripts.json scripts/reanalyze-squat-detailed.ts",
     "test:biomechanics": "ts-node --project tsconfig.scripts.json scripts/test-biomechanics-analyzer.ts",
+    "analyze:squat-real": "ts-node --project tsconfig.scripts.json scripts/analyze-real-squat-biomechanics.ts",
     "seed:arenas-biometria": "npx tsx scripts/seed-arenas-biometria.ts",
     "seed:pricing": "npx tsx scripts/seed-biometric-pricing.ts",
     "stats:fix": "ts-node --project tsconfig.scripts.json scripts/fix-fake-counters.ts",
