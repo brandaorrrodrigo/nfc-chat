@@ -64,7 +64,22 @@
       "Bash(gh api:*)",
       "Bash(git reset:*)",
       "Bash(git diff:*)",
-      "Bash(python -m json.tool:*)"
+      "Bash(python -m json.tool:*)",
+      "Bash(node -e:*)",
+      "Bash(\"D:\\\\NUTRIFITCOACH_MASTER\\\\nfc-comunidades\\\\_tmp_query.js\" << 'ENDOFSCRIPT'\nconst { PrismaClient } = require\\('./lib/generated/prisma'\\);\nconst p = new PrismaClient\\(\\);\np.arena.findMany\\({\n  where: { isActive: true },\n  select: { slug: true, name: true, categoria: true },\n  orderBy: { slug: 'asc' }\n}\\).then\\(a => {\n  a.forEach\\(x => console.log\\(x.slug + ' | ' + x.categoria + ' | ' + x.name\\)\\);\n  p.$disconnect\\(\\);\n}\\).catch\\(e => {\n  console.error\\(e\\);\n  p.$disconnect\\(\\);\n}\\);\nENDOFSCRIPT)",
+      "Bash(node:*)",
+      "Bash(set DATABASE_URL=postgresql://postgres:Anilha15%%21@db.qducbqhuwqdyqioqevle.supabase.co:5432/postgres)",
+      "WebFetch(domain:chat.nutrifitcoach.com.br)",
+      "Bash(powershell -Command \"Test-NetConnection -ComputerName db.qducbqhuwqdyqioqevle.supabase.co -Port 5432\")",
+      "Bash(powershell:*)",
+      "Bash(python -c:*)",
+      "Bash(git status:*)",
+      "Bash(PGPASSWORD=postgres_local_2026 psql:*)",
+      "Bash(taskkill:*)",
+      "Bash(export DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/nutrifitcoach\")",
+      "Bash(export DIRECT_URL=\"postgresql://postgres:postgres@localhost:5432/nutrifitcoach\")",
+      "Bash(docker-compose up:*)",
+      "Bash(docker-compose stop:*)"
     ]
   }
 }
