@@ -2048,7 +2048,7 @@ export default function PainelVivoPage() {
     }
   };
 
-  // Carregar dados da comunidade + mensagens do banco
+  // Carregar dados REAIS da API (não usar COMUNIDADES_DATA mock)
   useEffect(() => {
     if (!slug) {
       setIsLoading(false);
@@ -2056,38 +2056,48 @@ export default function PainelVivoPage() {
       return;
     }
 
-    const data = COMUNIDADES_DATA[slug];
-    if (data) {
-      setComunidade(data);
+    const loadCommunityData = async () => {
+      try {
+        // Buscar dados da arena da API
+        const arenaResponse = await fetch(`/api/arenas`);
+        const arenas = await arenaResponse.json();
+        const arena = arenas.find((a: any) => a.slug === slug);
 
-      // Carregar posts e comentários da API (banco de dados)
-      const loadMessages = async () => {
-        try {
-          const response = await fetch(`/api/comunidades/posts-comments?slug=${slug}`);
-          const result = await response.json();
-
-          if (result.mensagens && result.mensagens.length > 0) {
-            // Mesclar mensagens do banco com mock (banco tem prioridade)
-            const dbIds = new Set(result.mensagens.map((m: Mensagem) => m.id));
-            const mockMessages = data.mensagens.filter(m => !dbIds.has(m.id));
-            setMensagens([...mockMessages, ...result.mensagens]);
-          } else {
-            // Se não tem mensagens no banco, usa só mock
-            setMensagens(data.mensagens);
-          }
-        } catch (error) {
-          console.error('Erro ao carregar mensagens:', error);
-          // Fallback para mensagens mock
-          setMensagens(data.mensagens);
+        if (!arena) {
+          setNotFound(true);
+          setIsLoading(false);
+          return;
         }
-      };
 
-      loadMessages();
-      setNotFound(false);
-    } else {
-      setNotFound(true);
-    }
-    setIsLoading(false);
+        // Converter arena para formato ComunidadeData
+        setComunidade({
+          titulo: arena.name,
+          descricao: arena.description,
+          membrosOnline: arena.dailyActiveUsers || 0,
+          totalMensagens: arena.totalPosts || 0,
+          mensagens: [],
+        });
+
+        // Carregar posts da API
+        const postsResponse = await fetch(`/api/comunidades/posts-comments?slug=${slug}`);
+        const result = await postsResponse.json();
+
+        if (result.mensagens && result.mensagens.length > 0) {
+          setMensagens(result.mensagens);
+        } else {
+          setMensagens([]);
+        }
+
+        setNotFound(false);
+      } catch (error) {
+        console.error('Erro ao carregar comunidade:', error);
+        setNotFound(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadCommunityData();
   }, [slug]);
 
   // Claim daily FP bonus ao acessar comunidade
