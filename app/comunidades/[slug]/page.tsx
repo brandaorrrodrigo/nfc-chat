@@ -47,6 +47,11 @@ import { useAIModerator, useCelebrations } from '@/hooks/useAIModerator';
 
 // SmartFAB removido - input fixo no rodapé é suficiente
 
+const CommunityBiomechanicsWidget = dynamic(
+  () => import('@/components/biomechanics/CommunityBiomechanicsWidget'),
+  { ssr: false }
+);
+
 const LoginRequiredModal = dynamic(
   () => import('@/app/components/comunidades/LoginRequiredModal').then(mod => ({ default: mod.default })),
   { ssr: false }
@@ -1875,14 +1880,24 @@ function PremiumArenaPage({
         </div>
       </div>
 
-      {/* Galeria de Vídeos */}
+      {/* Conteúdo Principal - Análises + Galeria */}
       <div className="flex-1 overflow-y-auto p-4">
-        <VideoGallery
-          arenaSlug={slug}
-          onSelectAnalysis={(id) => {
-            window.location.href = `/comunidades/${slug}/videos/${id}`;
-          }}
-        />
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Análises Biomecânicas (Sidebar) */}
+          <div className="lg:col-span-1">
+            <CommunityBiomechanicsWidget communitySlug={slug} limit={8} />
+          </div>
+
+          {/* Galeria de Vídeos (Main) */}
+          <div className="lg:col-span-2">
+            <VideoGallery
+              arenaSlug={slug}
+              onSelectAnalysis={(id) => {
+                window.location.href = `/comunidades/${slug}/videos/${id}`;
+              }}
+            />
+          </div>
+        </div>
       </div>
 
       {/* Modal de Upload */}

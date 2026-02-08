@@ -3,22 +3,29 @@
  * GET /api/biomechanics/list-videos
  */
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
 
 // Mark this route as dynamic to prevent build-time compilation
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const supabase = getSupabase();
+    const searchParams = request.nextUrl.searchParams;
+    const community = searchParams.get('community');
 
-    // Fetch all analyzed videos
-    const { data, error } = await supabase
+    let query = supabase
       .from('nfc_chat_video_analyses')
-      .select('id, user_name, movement_pattern, created_at, status, ai_analysis')
-      .order('created_at', { ascending: false })
-      .limit(100);
+      .select('id, user_name, movement_pattern, created_at, status, ai_analysis, arena_slug')
+      .order('created_at', { ascending: false });
+
+    // Filter by community/arena if provided
+    if (community) {
+      query = query.eq('arena_slug', community);
+    }
+
+    const { data, error } = await query.limit(100);
 
     if (error) {
       throw new Error(error.message);
