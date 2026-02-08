@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth-config'
-import { prisma } from '@/lib/prisma'
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 /**
  * POST /api/community/arena/[slug]/visit
@@ -24,39 +29,48 @@ export async function POST(
     const { slug } = params
 
     // Buscar arena
-    const arena = await prisma.arena.findUnique({
-      where: { slug, isActive: true },
-      select: { id: true }
-    })
+    const { data: arena, error: arenaError } = await supabase
+      .from('Arena')
+      .select('id')
+      .eq('slug', slug)
+      .eq('isActive', true)
+      .single()
 
-    if (!arena) {
+    if (arenaError || !arena) {
       return NextResponse.json(
         { error: 'Arena not found' },
         { status: 404 }
       )
     }
 
-    // Registrar/Atualizar atividade do usuário
-    await prisma.userArenaActivity.upsert({
-      where: {
-        userId_arenaId: {
+    // Verificar se já existe atividade do usuário
+    const { data: existingActivity } = await supabase
+      .from('UserArenaActivity')
+      .select('id, visitCount')
+      .eq('userId', session.user.id)
+      .eq('arenaId', arena.id)
+      .single()
+
+    if (existingActivity) {
+      // Atualizar atividade existente
+      await supabase
+        .from('UserArenaActivity')
+        .update({
+          lastSeenAt: new Date().toISOString(),
+          visitCount: (existingActivity.visitCount || 0) + 1
+        })
+        .eq('id', existingActivity.id)
+    } else {
+      // Criar nova atividade
+      await supabase
+        .from('UserArenaActivity')
+        .insert({
           userId: session.user.id,
-          arenaId: arena.id
-        }
-      },
-      create: {
-        userId: session.user.id,
-        arenaId: arena.id,
-        lastSeenAt: new Date(),
-        visitCount: 1
-      },
-      update: {
-        lastSeenAt: new Date(),
-        visitCount: {
-          increment: 1
-        }
-      }
-    })
+          arenaId: arena.id,
+          lastSeenAt: new Date().toISOString(),
+          visitCount: 1
+        })
+    }
 
     return NextResponse.json({
       success: true,
