@@ -1,0 +1,1340 @@
+{
+  "usuarios": [
+    {
+      "id": "user_sim_001",
+      "name": "Ana Paula",
+      "email": "ana.paula@fitcoach.local"
+    },
+    {
+      "id": "user_sim_002",
+      "name": "Juliana Santos",
+      "email": "juliana.santos@fitcoach.local"
+    },
+    {
+      "id": "user_sim_003",
+      "name": "Mariana Costa",
+      "email": "mariana.costa@fitcoach.local"
+    },
+    {
+      "id": "user_sim_004",
+      "name": "Carlos Eduardo",
+      "email": "carlos.eduardo@fitcoach.local"
+    },
+    {
+      "id": "user_sim_005",
+      "name": "Rafael Lima",
+      "email": "rafael.lima@fitcoach.local"
+    },
+    {
+      "id": "user_sim_006",
+      "name": "Patricia Oliveira",
+      "email": "patricia.oliveira@fitcoach.local"
+    },
+    {
+      "id": "user_sim_007",
+      "name": "Fernanda Alves",
+      "email": "fernanda.alves@fitcoach.local"
+    },
+    {
+      "id": "user_sim_008",
+      "name": "Camila Ribeiro",
+      "email": "camila.ribeiro@fitcoach.local"
+    },
+    {
+      "id": "user_sim_009",
+      "name": "Bruno Ferreira",
+      "email": "bruno.ferreira@fitcoach.local"
+    },
+    {
+      "id": "user_sim_010",
+      "name": "Thiago Martins",
+      "email": "thiago.martins@fitcoach.local"
+    },
+    {
+      "id": "user_sim_011",
+      "name": "Lucas Souza",
+      "email": "lucas.souza@fitcoach.local"
+    },
+    {
+      "id": "user_sim_012",
+      "name": "Roberta Mendes",
+      "email": "roberta.mendes@fitcoach.local"
+    },
+    {
+      "id": "user_sim_013",
+      "name": "Amanda Silva",
+      "email": "amanda.silva@fitcoach.local"
+    },
+    {
+      "id": "user_sim_014",
+      "name": "Rodrigo Andrade",
+      "email": "rodrigo.andrade@fitcoach.local"
+    },
+    {
+      "id": "user_sim_015",
+      "name": "Gustavo Rocha",
+      "email": "gustavo.rocha@fitcoach.local"
+    },
+    {
+      "id": "user_sim_016",
+      "name": "Daniela Correia",
+      "email": "daniela.correia@fitcoach.local"
+    },
+    {
+      "id": "user_sim_017",
+      "name": "Renata Moraes",
+      "email": "renata.moraes@fitcoach.local"
+    },
+    {
+      "id": "user_sim_018",
+      "name": "Marcelo Pereira",
+      "email": "marcelo.pereira@fitcoach.local"
+    },
+    {
+      "id": "user_sim_019",
+      "name": "Joao Carlos",
+      "email": "joao.carlos@fitcoach.local"
+    },
+    {
+      "id": "user_sim_020",
+      "name": "Beatriz Gomes",
+      "email": "beatriz.gomes@fitcoach.local"
+    },
+    {
+      "id": "user_sim_021",
+      "name": "Isabella Sousa",
+      "email": "isabella.sousa@fitcoach.local"
+    },
+    {
+      "id": "user_sim_022",
+      "name": "Victor Almeida",
+      "email": "victor.almeida@fitcoach.local"
+    }
+  ],
+  "conversas": [
+    {
+      "arena_id": "arena_1",
+      "arena_slug": "postura-estetica",
+      "arena_name": "Postura & Estetica",
+      "threads": [
+        {
+          "topico": "Ombros desnivelados - afeta aparencia?",
+          "usuario_original": "Rafael Lima",
+          "usuario_original_id": "user_sim_005",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Rafael Lima",
+              "usuario_id": "user_sim_005",
+              "conteudo": "Ombros desnivelados - afeta aparencia?\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Daniela Correia",
+              "usuario_id": "user_sim_016",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_followup",
+              "usuario": "Rafael Lima",
+              "usuario_id": "user_sim_005",
+              "conteudo": "Obrigado! Isso ajuda muito!"
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Ana Paula",
+              "usuario_id": "user_sim_001",
+              "conteudo": "Alguem ja fez isso? Queria saber resultados."
+            }
+          ]
+        },
+        {
+          "topico": "Pelve anteriorizada e barriga",
+          "usuario_original": "Rafael Lima",
+          "usuario_original_id": "user_sim_005",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Rafael Lima",
+              "usuario_id": "user_sim_005",
+              "conteudo": "Pelve anteriorizada e barriga\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Gustavo Rocha",
+              "usuario_id": "user_sim_015",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Joao Carlos",
+              "usuario_id": "user_sim_019",
+              "conteudo": "Otima explicacao! Muito util."
+            }
+          ]
+        },
+        {
+          "topico": "Gluteo caido: e postura ou treino?",
+          "usuario_original": "Camila Ribeiro",
+          "usuario_original_id": "user_sim_008",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Camila Ribeiro",
+              "usuario_id": "user_sim_008",
+              "conteudo": "Gluteo caido: e postura ou treino?\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Roberta Mendes",
+              "usuario_id": "user_sim_012",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_followup",
+              "usuario": "Camila Ribeiro",
+              "usuario_id": "user_sim_008",
+              "conteudo": "Obrigado! Isso ajuda muito!"
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Victor Almeida",
+              "usuario_id": "user_sim_022",
+              "conteudo": "Tambem tenho isso! Vou testar a dica."
+            }
+          ]
+        },
+        {
+          "topico": "Gluteo caido: e postura ou treino?",
+          "usuario_original": "Amanda Silva",
+          "usuario_original_id": "user_sim_013",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Amanda Silva",
+              "usuario_id": "user_sim_013",
+              "conteudo": "Gluteo caido: e postura ou treino?\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Amanda Silva",
+              "usuario_id": "user_sim_013",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Gustavo Rocha",
+              "usuario_id": "user_sim_015",
+              "conteudo": "Estou na mesma situacao. Vou tentar."
+            }
+          ]
+        },
+        {
+          "topico": "Gluteo caido: e postura ou treino?",
+          "usuario_original": "Lucas Souza",
+          "usuario_original_id": "user_sim_011",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Lucas Souza",
+              "usuario_id": "user_sim_011",
+              "conteudo": "Gluteo caido: e postura ou treino?\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Marcelo Pereira",
+              "usuario_id": "user_sim_018",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_followup",
+              "usuario": "Lucas Souza",
+              "usuario_id": "user_sim_011",
+              "conteudo": "Obrigado! Isso ajuda muito!"
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Mariana Costa",
+              "usuario_id": "user_sim_003",
+              "conteudo": "Passei por situacao similar. No meu caso foi diferente."
+            }
+          ]
+        },
+        {
+          "topico": "Gluteo caido: e postura ou treino?",
+          "usuario_original": "Daniela Correia",
+          "usuario_original_id": "user_sim_016",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Daniela Correia",
+              "usuario_id": "user_sim_016",
+              "conteudo": "Gluteo caido: e postura ou treino?\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Juliana Santos",
+              "usuario_id": "user_sim_002",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_followup",
+              "usuario": "Daniela Correia",
+              "usuario_id": "user_sim_016",
+              "conteudo": "Obrigado! Isso ajuda muito!"
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Thiago Martins",
+              "usuario_id": "user_sim_010",
+              "conteudo": "Passei por situacao similar. No meu caso foi diferente."
+            }
+          ]
+        },
+        {
+          "topico": "Gluteo caido: e postura ou treino?",
+          "usuario_original": "Fernanda Alves",
+          "usuario_original_id": "user_sim_007",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Fernanda Alves",
+              "usuario_id": "user_sim_007",
+              "conteudo": "Gluteo caido: e postura ou treino?\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Juliana Santos",
+              "usuario_id": "user_sim_002",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Camila Ribeiro",
+              "usuario_id": "user_sim_008",
+              "conteudo": "Tambem tenho isso! Vou testar a dica."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arena_id": "arena_2",
+      "arena_slug": "dor-funcao",
+      "arena_name": "Dor & Funcao",
+      "threads": [
+        {
+          "topico": "Dor no ombro ao levantar braco",
+          "usuario_original": "Beatriz Gomes",
+          "usuario_original_id": "user_sim_020",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Beatriz Gomes",
+              "usuario_id": "user_sim_020",
+              "conteudo": "Dor no ombro ao levantar braco\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Gustavo Rocha",
+              "usuario_id": "user_sim_015",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_followup",
+              "usuario": "Beatriz Gomes",
+              "usuario_id": "user_sim_020",
+              "conteudo": "Obrigado! Isso ajuda muito!"
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Amanda Silva",
+              "usuario_id": "user_sim_013",
+              "conteudo": "Otima explicacao! Muito util."
+            }
+          ]
+        },
+        {
+          "topico": "Dor lombar ao acordar - causas?",
+          "usuario_original": "Rafael Lima",
+          "usuario_original_id": "user_sim_005",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Rafael Lima",
+              "usuario_id": "user_sim_005",
+              "conteudo": "Dor lombar ao acordar - causas?\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Thiago Martins",
+              "usuario_id": "user_sim_010",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Joao Carlos",
+              "usuario_id": "user_sim_019",
+              "conteudo": "Estou na mesma situacao. Vou tentar."
+            }
+          ]
+        },
+        {
+          "topico": "Dor lombar ao acordar - causas?",
+          "usuario_original": "Ana Paula",
+          "usuario_original_id": "user_sim_001",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Ana Paula",
+              "usuario_id": "user_sim_001",
+              "conteudo": "Dor lombar ao acordar - causas?\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Daniela Correia",
+              "usuario_id": "user_sim_016",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_followup",
+              "usuario": "Ana Paula",
+              "usuario_id": "user_sim_001",
+              "conteudo": "Obrigado! Isso ajuda muito!"
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Rodrigo Andrade",
+              "usuario_id": "user_sim_014",
+              "conteudo": "Passei por situacao similar. No meu caso foi diferente."
+            }
+          ]
+        },
+        {
+          "topico": "Joelho estrala ao agachar",
+          "usuario_original": "Juliana Santos",
+          "usuario_original_id": "user_sim_002",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Juliana Santos",
+              "usuario_id": "user_sim_002",
+              "conteudo": "Joelho estrala ao agachar\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Victor Almeida",
+              "usuario_id": "user_sim_022",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Gustavo Rocha",
+              "usuario_id": "user_sim_015",
+              "conteudo": "Passei por situacao similar. No meu caso foi diferente."
+            }
+          ]
+        },
+        {
+          "topico": "Dor lombar ao acordar - causas?",
+          "usuario_original": "Isabella Sousa",
+          "usuario_original_id": "user_sim_021",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Isabella Sousa",
+              "usuario_id": "user_sim_021",
+              "conteudo": "Dor lombar ao acordar - causas?\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Mariana Costa",
+              "usuario_id": "user_sim_003",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Rafael Lima",
+              "usuario_id": "user_sim_005",
+              "conteudo": "Alguem ja fez isso? Queria saber resultados."
+            }
+          ]
+        },
+        {
+          "topico": "Dor lombar ao acordar - causas?",
+          "usuario_original": "Bruno Ferreira",
+          "usuario_original_id": "user_sim_009",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Bruno Ferreira",
+              "usuario_id": "user_sim_009",
+              "conteudo": "Dor lombar ao acordar - causas?\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Camila Ribeiro",
+              "usuario_id": "user_sim_008",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Isabella Sousa",
+              "usuario_id": "user_sim_021",
+              "conteudo": "Alguem ja fez isso? Queria saber resultados."
+            }
+          ]
+        },
+        {
+          "topico": "Formigamento nas maos durante treino",
+          "usuario_original": "Patricia Oliveira",
+          "usuario_original_id": "user_sim_006",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Patricia Oliveira",
+              "usuario_id": "user_sim_006",
+              "conteudo": "Formigamento nas maos durante treino\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Rafael Lima",
+              "usuario_id": "user_sim_005",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Rodrigo Andrade",
+              "usuario_id": "user_sim_014",
+              "conteudo": "Tambem tenho isso! Vou testar a dica."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arena_id": "arena_3",
+      "arena_slug": "avaliacao-biometrica",
+      "arena_name": "Avaliacao Biometrica",
+      "threads": [
+        {
+          "topico": "Assimetria de ombros: impacto funcional?",
+          "usuario_original": "Carlos Eduardo",
+          "usuario_original_id": "user_sim_004",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Carlos Eduardo",
+              "usuario_id": "user_sim_004",
+              "conteudo": "Assimetria de ombros: impacto funcional?\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Mariana Costa",
+              "usuario_id": "user_sim_003",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_followup",
+              "usuario": "Carlos Eduardo",
+              "usuario_id": "user_sim_004",
+              "conteudo": "Obrigado! Isso ajuda muito!"
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Daniela Correia",
+              "usuario_id": "user_sim_016",
+              "conteudo": "Passei por situacao similar. No meu caso foi diferente."
+            }
+          ]
+        },
+        {
+          "topico": "Assimetria de ombros: impacto funcional?",
+          "usuario_original": "Amanda Silva",
+          "usuario_original_id": "user_sim_013",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Amanda Silva",
+              "usuario_id": "user_sim_013",
+              "conteudo": "Assimetria de ombros: impacto funcional?\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Beatriz Gomes",
+              "usuario_id": "user_sim_020",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_followup",
+              "usuario": "Amanda Silva",
+              "usuario_id": "user_sim_013",
+              "conteudo": "Obrigado! Isso ajuda muito!"
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Fernanda Alves",
+              "usuario_id": "user_sim_007",
+              "conteudo": "Passei por situacao similar. No meu caso foi diferente."
+            }
+          ]
+        },
+        {
+          "topico": "Um lado mais forte que outro - e problema?",
+          "usuario_original": "Amanda Silva",
+          "usuario_original_id": "user_sim_013",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Amanda Silva",
+              "usuario_id": "user_sim_013",
+              "conteudo": "Um lado mais forte que outro - e problema?\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Mariana Costa",
+              "usuario_id": "user_sim_003",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_followup",
+              "usuario": "Amanda Silva",
+              "usuario_id": "user_sim_013",
+              "conteudo": "Obrigado! Isso ajuda muito!"
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Beatriz Gomes",
+              "usuario_id": "user_sim_020",
+              "conteudo": "Fez diferença grande comigo."
+            }
+          ]
+        },
+        {
+          "topico": "Rotação pelvica identificada na avaliacao",
+          "usuario_original": "Isabella Sousa",
+          "usuario_original_id": "user_sim_021",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Isabella Sousa",
+              "usuario_id": "user_sim_021",
+              "conteudo": "Rotação pelvica identificada na avaliacao\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Camila Ribeiro",
+              "usuario_id": "user_sim_008",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Gustavo Rocha",
+              "usuario_id": "user_sim_015",
+              "conteudo": "Tambem tenho isso! Vou testar a dica."
+            }
+          ]
+        },
+        {
+          "topico": "Rotação pelvica identificada na avaliacao",
+          "usuario_original": "Thiago Martins",
+          "usuario_original_id": "user_sim_010",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Thiago Martins",
+              "usuario_id": "user_sim_010",
+              "conteudo": "Rotação pelvica identificada na avaliacao\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Mariana Costa",
+              "usuario_id": "user_sim_003",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_followup",
+              "usuario": "Thiago Martins",
+              "usuario_id": "user_sim_010",
+              "conteudo": "Obrigado! Isso ajuda muito!"
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Camila Ribeiro",
+              "usuario_id": "user_sim_008",
+              "conteudo": "Estou na mesma situacao. Vou tentar."
+            }
+          ]
+        },
+        {
+          "topico": "Assimetria de ombros: impacto funcional?",
+          "usuario_original": "Roberta Mendes",
+          "usuario_original_id": "user_sim_012",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Roberta Mendes",
+              "usuario_id": "user_sim_012",
+              "conteudo": "Assimetria de ombros: impacto funcional?\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Carlos Eduardo",
+              "usuario_id": "user_sim_004",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_followup",
+              "usuario": "Roberta Mendes",
+              "usuario_id": "user_sim_012",
+              "conteudo": "Obrigado! Isso ajuda muito!"
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Patricia Oliveira",
+              "usuario_id": "user_sim_006",
+              "conteudo": "Alguem ja fez isso? Queria saber resultados."
+            }
+          ]
+        },
+        {
+          "topico": "Um lado mais forte que outro - e problema?",
+          "usuario_original": "Carlos Eduardo",
+          "usuario_original_id": "user_sim_004",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Carlos Eduardo",
+              "usuario_id": "user_sim_004",
+              "conteudo": "Um lado mais forte que outro - e problema?\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Daniela Correia",
+              "usuario_id": "user_sim_016",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_followup",
+              "usuario": "Carlos Eduardo",
+              "usuario_id": "user_sim_004",
+              "conteudo": "Obrigado! Isso ajuda muito!"
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Mariana Costa",
+              "usuario_id": "user_sim_003",
+              "conteudo": "Tambem tenho isso! Vou testar a dica."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arena_id": "arena_4",
+      "arena_slug": "treino-performance",
+      "arena_name": "Treino & Performance",
+      "threads": [
+        {
+          "topico": "Treino A/B ou ABC? Qual escolher?",
+          "usuario_original": "Patricia Oliveira",
+          "usuario_original_id": "user_sim_006",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Patricia Oliveira",
+              "usuario_id": "user_sim_006",
+              "conteudo": "Treino A/B ou ABC? Qual escolher?\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Bruno Ferreira",
+              "usuario_id": "user_sim_009",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Camila Ribeiro",
+              "usuario_id": "user_sim_008",
+              "conteudo": "Tambem tenho isso! Vou testar a dica."
+            }
+          ]
+        },
+        {
+          "topico": "Treino A/B ou ABC? Qual escolher?",
+          "usuario_original": "Beatriz Gomes",
+          "usuario_original_id": "user_sim_020",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Beatriz Gomes",
+              "usuario_id": "user_sim_020",
+              "conteudo": "Treino A/B ou ABC? Qual escolher?\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Bruno Ferreira",
+              "usuario_id": "user_sim_009",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Patricia Oliveira",
+              "usuario_id": "user_sim_006",
+              "conteudo": "Alguem ja fez isso? Queria saber resultados."
+            }
+          ]
+        },
+        {
+          "topico": "Como aumentar carga no supino",
+          "usuario_original": "Marcelo Pereira",
+          "usuario_original_id": "user_sim_018",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Marcelo Pereira",
+              "usuario_id": "user_sim_018",
+              "conteudo": "Como aumentar carga no supino\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Gustavo Rocha",
+              "usuario_id": "user_sim_015",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_followup",
+              "usuario": "Marcelo Pereira",
+              "usuario_id": "user_sim_018",
+              "conteudo": "Obrigado! Isso ajuda muito!"
+            }
+          ]
+        },
+        {
+          "topico": "Periodizacao para ganho de hipertrofia",
+          "usuario_original": "Bruno Ferreira",
+          "usuario_original_id": "user_sim_009",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Bruno Ferreira",
+              "usuario_id": "user_sim_009",
+              "conteudo": "Periodizacao para ganho de hipertrofia\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Camila Ribeiro",
+              "usuario_id": "user_sim_008",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_followup",
+              "usuario": "Bruno Ferreira",
+              "usuario_id": "user_sim_009",
+              "conteudo": "Obrigado! Isso ajuda muito!"
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Juliana Santos",
+              "usuario_id": "user_sim_002",
+              "conteudo": "Tambem tenho isso! Vou testar a dica."
+            }
+          ]
+        },
+        {
+          "topico": "Periodizacao para ganho de hipertrofia",
+          "usuario_original": "Bruno Ferreira",
+          "usuario_original_id": "user_sim_009",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Bruno Ferreira",
+              "usuario_id": "user_sim_009",
+              "conteudo": "Periodizacao para ganho de hipertrofia\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Amanda Silva",
+              "usuario_id": "user_sim_013",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_followup",
+              "usuario": "Bruno Ferreira",
+              "usuario_id": "user_sim_009",
+              "conteudo": "Obrigado! Isso ajuda muito!"
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Lucas Souza",
+              "usuario_id": "user_sim_011",
+              "conteudo": "Fez diferença grande comigo."
+            }
+          ]
+        },
+        {
+          "topico": "Volume ideal por grupo muscular",
+          "usuario_original": "Carlos Eduardo",
+          "usuario_original_id": "user_sim_004",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Carlos Eduardo",
+              "usuario_id": "user_sim_004",
+              "conteudo": "Volume ideal por grupo muscular\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Lucas Souza",
+              "usuario_id": "user_sim_011",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_followup",
+              "usuario": "Carlos Eduardo",
+              "usuario_id": "user_sim_004",
+              "conteudo": "Obrigado! Isso ajuda muito!"
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Victor Almeida",
+              "usuario_id": "user_sim_022",
+              "conteudo": "Otima explicacao! Muito util."
+            }
+          ]
+        },
+        {
+          "topico": "Treino A/B ou ABC? Qual escolher?",
+          "usuario_original": "Daniela Correia",
+          "usuario_original_id": "user_sim_016",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Daniela Correia",
+              "usuario_id": "user_sim_016",
+              "conteudo": "Treino A/B ou ABC? Qual escolher?\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Marcelo Pereira",
+              "usuario_id": "user_sim_018",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Rafael Lima",
+              "usuario_id": "user_sim_005",
+              "conteudo": "Fez diferença grande comigo."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arena_id": "arena_5",
+      "arena_slug": "nutricao",
+      "arena_name": "Nutricao",
+      "threads": [
+        {
+          "topico": "Suplementos essenciais na musculacao",
+          "usuario_original": "Juliana Santos",
+          "usuario_original_id": "user_sim_002",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Juliana Santos",
+              "usuario_id": "user_sim_002",
+              "conteudo": "Suplementos essenciais na musculacao\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Mariana Costa",
+              "usuario_id": "user_sim_003",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Carlos Eduardo",
+              "usuario_id": "user_sim_004",
+              "conteudo": "Tambem tenho isso! Vou testar a dica."
+            }
+          ]
+        },
+        {
+          "topico": "Refeeds: como fazer corretamente?",
+          "usuario_original": "Thiago Martins",
+          "usuario_original_id": "user_sim_010",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Thiago Martins",
+              "usuario_id": "user_sim_010",
+              "conteudo": "Refeeds: como fazer corretamente?\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Ana Paula",
+              "usuario_id": "user_sim_001",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_followup",
+              "usuario": "Thiago Martins",
+              "usuario_id": "user_sim_010",
+              "conteudo": "Obrigado! Isso ajuda muito!"
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Isabella Sousa",
+              "usuario_id": "user_sim_021",
+              "conteudo": "Otima explicacao! Muito util."
+            }
+          ]
+        },
+        {
+          "topico": "Refeeds: como fazer corretamente?",
+          "usuario_original": "Carlos Eduardo",
+          "usuario_original_id": "user_sim_004",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Carlos Eduardo",
+              "usuario_id": "user_sim_004",
+              "conteudo": "Refeeds: como fazer corretamente?\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Daniela Correia",
+              "usuario_id": "user_sim_016",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_followup",
+              "usuario": "Carlos Eduardo",
+              "usuario_id": "user_sim_004",
+              "conteudo": "Obrigado! Isso ajuda muito!"
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Thiago Martins",
+              "usuario_id": "user_sim_010",
+              "conteudo": "Otima explicacao! Muito util."
+            }
+          ]
+        },
+        {
+          "topico": "Refeeds: como fazer corretamente?",
+          "usuario_original": "Amanda Silva",
+          "usuario_original_id": "user_sim_013",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Amanda Silva",
+              "usuario_id": "user_sim_013",
+              "conteudo": "Refeeds: como fazer corretamente?\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Mariana Costa",
+              "usuario_id": "user_sim_003",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_followup",
+              "usuario": "Amanda Silva",
+              "usuario_id": "user_sim_013",
+              "conteudo": "Obrigado! Isso ajuda muito!"
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Patricia Oliveira",
+              "usuario_id": "user_sim_006",
+              "conteudo": "Fez diferença grande comigo."
+            }
+          ]
+        },
+        {
+          "topico": "Dieta flexivel vs rigida: qual escolher?",
+          "usuario_original": "Lucas Souza",
+          "usuario_original_id": "user_sim_011",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Lucas Souza",
+              "usuario_id": "user_sim_011",
+              "conteudo": "Dieta flexivel vs rigida: qual escolher?\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Thiago Martins",
+              "usuario_id": "user_sim_010",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_followup",
+              "usuario": "Lucas Souza",
+              "usuario_id": "user_sim_011",
+              "conteudo": "Obrigado! Isso ajuda muito!"
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Carlos Eduardo",
+              "usuario_id": "user_sim_004",
+              "conteudo": "Alguem ja fez isso? Queria saber resultados."
+            }
+          ]
+        },
+        {
+          "topico": "Jejum intermitente: funciona mesmo?",
+          "usuario_original": "Isabella Sousa",
+          "usuario_original_id": "user_sim_021",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Isabella Sousa",
+              "usuario_id": "user_sim_021",
+              "conteudo": "Jejum intermitente: funciona mesmo?\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Victor Almeida",
+              "usuario_id": "user_sim_022",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Ana Paula",
+              "usuario_id": "user_sim_001",
+              "conteudo": "Alguem ja fez isso? Queria saber resultados."
+            }
+          ]
+        },
+        {
+          "topico": "Jejum intermitente: funciona mesmo?",
+          "usuario_original": "Patricia Oliveira",
+          "usuario_original_id": "user_sim_006",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Patricia Oliveira",
+              "usuario_id": "user_sim_006",
+              "conteudo": "Jejum intermitente: funciona mesmo?\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Mariana Costa",
+              "usuario_id": "user_sim_003",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Rodrigo Andrade",
+              "usuario_id": "user_sim_014",
+              "conteudo": "Alguem ja fez isso? Queria saber resultados."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arena_id": "arena_6",
+      "arena_slug": "mobilidade",
+      "arena_name": "Mobilidade",
+      "threads": [
+        {
+          "topico": "Amplitude de movimento reduzida",
+          "usuario_original": "Bruno Ferreira",
+          "usuario_original_id": "user_sim_009",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Bruno Ferreira",
+              "usuario_id": "user_sim_009",
+              "conteudo": "Amplitude de movimento reduzida\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Daniela Correia",
+              "usuario_id": "user_sim_016",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_followup",
+              "usuario": "Bruno Ferreira",
+              "usuario_id": "user_sim_009",
+              "conteudo": "Obrigado! Isso ajuda muito!"
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Isabella Sousa",
+              "usuario_id": "user_sim_021",
+              "conteudo": "Alguem ja fez isso? Queria saber resultados."
+            }
+          ]
+        },
+        {
+          "topico": "Alongamento estatico vs dinamico",
+          "usuario_original": "Patricia Oliveira",
+          "usuario_original_id": "user_sim_006",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Patricia Oliveira",
+              "usuario_id": "user_sim_006",
+              "conteudo": "Alongamento estatico vs dinamico\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Gustavo Rocha",
+              "usuario_id": "user_sim_015",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Joao Carlos",
+              "usuario_id": "user_sim_019",
+              "conteudo": "Alguem ja fez isso? Queria saber resultados."
+            }
+          ]
+        },
+        {
+          "topico": "Flexibilidade de isquiotibial",
+          "usuario_original": "Marcelo Pereira",
+          "usuario_original_id": "user_sim_018",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Marcelo Pereira",
+              "usuario_id": "user_sim_018",
+              "conteudo": "Flexibilidade de isquiotibial\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Rodrigo Andrade",
+              "usuario_id": "user_sim_014",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            }
+          ]
+        },
+        {
+          "topico": "Amplitude de movimento reduzida",
+          "usuario_original": "Bruno Ferreira",
+          "usuario_original_id": "user_sim_009",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Bruno Ferreira",
+              "usuario_id": "user_sim_009",
+              "conteudo": "Amplitude de movimento reduzida\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Patricia Oliveira",
+              "usuario_id": "user_sim_006",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_followup",
+              "usuario": "Bruno Ferreira",
+              "usuario_id": "user_sim_009",
+              "conteudo": "Obrigado! Isso ajuda muito!"
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Patricia Oliveira",
+              "usuario_id": "user_sim_006",
+              "conteudo": "Passei por situacao similar. No meu caso foi diferente."
+            }
+          ]
+        },
+        {
+          "topico": "Alongamento estatico vs dinamico",
+          "usuario_original": "Fernanda Alves",
+          "usuario_original_id": "user_sim_007",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Fernanda Alves",
+              "usuario_id": "user_sim_007",
+              "conteudo": "Alongamento estatico vs dinamico\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Joao Carlos",
+              "usuario_id": "user_sim_019",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Carlos Eduardo",
+              "usuario_id": "user_sim_004",
+              "conteudo": "Alguem ja fez isso? Queria saber resultados."
+            }
+          ]
+        },
+        {
+          "topico": "Amplitude de movimento reduzida",
+          "usuario_original": "Gustavo Rocha",
+          "usuario_original_id": "user_sim_015",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Gustavo Rocha",
+              "usuario_id": "user_sim_015",
+              "conteudo": "Amplitude de movimento reduzida\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Victor Almeida",
+              "usuario_id": "user_sim_022",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Patricia Oliveira",
+              "usuario_id": "user_sim_006",
+              "conteudo": "Passei por situacao similar. No meu caso foi diferente."
+            }
+          ]
+        },
+        {
+          "topico": "Amplitude de movimento reduzida",
+          "usuario_original": "Beatriz Gomes",
+          "usuario_original_id": "user_sim_020",
+          "posts": [
+            {
+              "tipo": "post_principal",
+              "usuario": "Beatriz Gomes",
+              "usuario_id": "user_sim_020",
+              "conteudo": "Amplitude de movimento reduzida\n\nTenho essa duvida ha algum tempo."
+            },
+            {
+              "tipo": "comentario_resposta",
+              "usuario": "Renata Moraes",
+              "usuario_id": "user_sim_017",
+              "conteudo": "Otima pergunta! Vou compartilhar minha experiencia."
+            },
+            {
+              "tipo": "comentario_followup",
+              "usuario": "Beatriz Gomes",
+              "usuario_id": "user_sim_020",
+              "conteudo": "Obrigado! Isso ajuda muito!"
+            },
+            {
+              "tipo": "comentario_outro",
+              "usuario": "Joao Carlos",
+              "usuario_id": "user_sim_019",
+              "conteudo": "Otima explicacao! Muito util."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "estatisticas": {
+    "total_usuarios": 22,
+    "total_arenas": 6,
+    "total_posts": 147,
+    "total_comentarios": 105
+  }
+}

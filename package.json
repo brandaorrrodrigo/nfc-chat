@@ -19,6 +19,8 @@
     "avatar:migrate": "ts-node --project tsconfig.scripts.json scripts/migrate-avatars.ts",
     "avatar:stats": "ts-node --project tsconfig.scripts.json scripts/avatar-stats.ts",
     "seed:test": "ts-node --project tsconfig.scripts.json scripts/seed-test-data.ts",
+    "seed:conversations": "ts-node --project tsconfig.scripts.json scripts/seed-conversations.ts",
+    "seed:conversations:generate": "ts-node --project tsconfig.scripts.json scripts/generate-conversation-data.ts",
     "seed:arenas-biometria": "npx tsx scripts/seed-arenas-biometria.ts",
     "seed:pricing": "npx tsx scripts/seed-biometric-pricing.ts",
     "stats:fix": "ts-node --project tsconfig.scripts.json scripts/fix-fake-counters.ts",
