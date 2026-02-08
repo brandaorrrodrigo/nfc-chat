@@ -1205,13 +1205,7 @@ const MENSAGENS_ASPIRACIONAL_ESTETICA: Mensagem[] = [
 // ========================================
 
 const COMUNIDADES_DATA: Record<string, ComunidadeData & { mensagens: Mensagem[] }> = {
-  lipedema: {
-    titulo: 'Protocolo Lipedema',
-    descricao: 'Espaço para mulheres que convivem com lipedema',
-    membrosOnline: 47,
-    totalMensagens: 1842,
-    mensagens: MENSAGENS_LIPEDEMA,
-  },
+  // lipedema removido - buscar dados reais da API
   'lipedema-paradoxo': {
     titulo: 'Lipedema — Paradoxo do Cardio',
     descricao: 'Por que HIIT pode piorar o lipedema? Discussão técnica sobre o protocolo AEJ + compressão',
@@ -1310,13 +1304,7 @@ const COMUNIDADES_DATA: Record<string, ComunidadeData & { mensagens: Mensagem[] 
     totalMensagens: 67,
     mensagens: MENSAGENS_EXERCICIOS_QUE_AMA,
   },
-  'sinal-vermelho': {
-    titulo: 'Sinal Vermelho 🚨',
-    descricao: 'Investigação inteligente de dores e desconfortos em exercícios',
-    membrosOnline: 8,
-    totalMensagens: 23,
-    mensagens: MENSAGENS_SINAL_VERMELHO,
-  },
+  // sinal-vermelho removido - buscar dados reais da API
   'aspiracional-estetica': {
     titulo: '💎 Aspiracional & Estética',
     descricao: 'Sonhos estéticos com base científica e responsabilidade',
