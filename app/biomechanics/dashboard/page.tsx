@@ -51,11 +51,17 @@ interface AnalysisResult {
 export default function BiomechanicsDashboard() {
   const [videoId, setVideoId] = useState('va_1770241761873_ckobfl93u');
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const analyzeVideo = async () => {
-    if (!videoId.trim()) {
+  useEffect(() => {
+    // Load default video on mount
+    analyzeVideo('va_1770241761873_ckobfl93u');
+  }, []);
+
+  const analyzeVideo = async (id?: string) => {
+    const idToAnalyze = id || videoId;
+    if (!idToAnalyze.trim()) {
       setError('Por favor, insira um ID de vídeo');
       return;
     }
@@ -67,7 +73,7 @@ export default function BiomechanicsDashboard() {
       const response = await fetch('/api/biomechanics/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ videoId }),
+        body: JSON.stringify({ videoId: idToAnalyze }),
       });
 
       if (!response.ok) {
@@ -82,6 +88,8 @@ export default function BiomechanicsDashboard() {
       setLoading(false);
     }
   };
+
+  const handleAnalyzeClick = () => analyzeVideo(videoId);
 
   const getScoreColor = (score: number) => {
     if (score >= 8) return 'text-green-600';
@@ -135,7 +143,7 @@ export default function BiomechanicsDashboard() {
               className="flex-1 px-4 py-2 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500"
             />
             <button
-              onClick={analyzeVideo}
+              onClick={handleAnalyzeClick}
               disabled={loading}
               className="px-6 py-2 bg-cyan-600 hover:bg-cyan-700 text-white font-semibold rounded disabled:opacity-50 transition"
             >
