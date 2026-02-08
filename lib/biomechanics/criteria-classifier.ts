@@ -104,30 +104,35 @@ function classifyMetricValue(
   };
 
   // Verificar em ordem de preferência
-  if (criterionRange.excellent && isInRange(metricValue, parseRange(criterionRange.excellent))) {
+  const excellentStr = getStringValue((criterionRange as any).excellent);
+  if (excellentStr && isInRange(metricValue, parseRange(excellentStr))) {
     return { level: 'excellent', order: 5 };
   }
 
-  if (criterionRange.good && isInRange(metricValue, parseRange(criterionRange.good))) {
+  const goodStr = getStringValue((criterionRange as any).good);
+  if (goodStr && isInRange(metricValue, parseRange(goodStr))) {
     return { level: 'good', order: 4 };
   }
 
-  if (criterionRange.acceptable && isInRange(metricValue, parseRange(criterionRange.acceptable))) {
+  const acceptableStr = getStringValue((criterionRange as any).acceptable);
+  if (acceptableStr && isInRange(metricValue, parseRange(acceptableStr))) {
     return { level: 'acceptable', order: 3 };
   }
 
-  if (criterionRange.warning && isInRange(metricValue, parseRange(criterionRange.warning))) {
+  const warningStr = getStringValue((criterionRange as any).warning);
+  if (warningStr && isInRange(metricValue, parseRange(warningStr))) {
     return { level: 'warning', order: 2 };
   }
 
-  if (criterionRange.danger && isInRange(metricValue, parseRange(criterionRange.danger))) {
+  const dangerStr = getStringValue((criterionRange as any).danger);
+  if (dangerStr && isInRange(metricValue, parseRange(dangerStr))) {
     return { level: 'danger', order: 1 };
   }
 
   // Fallback: se nenhum range corresponder, usar heurística baseada em "danger"
   // Se há um range de danger, assumir que fora dele é pior
-  if (criterionRange.danger) {
-    const dangerRange = parseRange(criterionRange.danger);
+  if (dangerStr) {
+    const dangerRange = parseRange(dangerStr);
     if (!isInRange(metricValue, dangerRange)) {
       // Se está fora do range danger, mas não corresponde a nenhum, é likely danger
       return { level: 'danger', order: 0 };
@@ -137,6 +142,12 @@ function classifyMetricValue(
   // Default: acceptable (se não há critérios definidos)
   return { level: 'acceptable', order: 3 };
 }
+
+// Helper para extrair string de valor que pode ser string ou array
+const getStringValue = (val: any): string | undefined => {
+  if (typeof val === 'string') return val;
+  return undefined;
+};
 
 /**
  * Classifica todas as métricas contra um template de categoria
@@ -178,11 +189,11 @@ export function classifyMetrics(
       classification: level,
       isSafetyCritical,
       range: {
-        excellent: criterionRange.excellent,
-        good: criterionRange.good,
-        acceptable: criterionRange.acceptable,
-        warning: criterionRange.warning,
-        danger: criterionRange.danger,
+        excellent: getStringValue((criterionRange as any).excellent),
+        good: getStringValue((criterionRange as any).good),
+        acceptable: getStringValue((criterionRange as any).acceptable),
+        warning: getStringValue((criterionRange as any).warning),
+        danger: getStringValue((criterionRange as any).danger),
       },
       ragTopics: criterionRange.rag_topics || [],
       note: criterionRange.note,

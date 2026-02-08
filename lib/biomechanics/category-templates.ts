@@ -5,13 +5,10 @@
 
 export interface CriterionRange {
   metric: string;
-  excellent?: string;
-  good?: string;
-  acceptable?: string;
-  warning?: string;
-  danger?: string;
   note?: string;
   rag_topics: string[];
+  // Flexible classification ranges (can be excellent, good, acceptable, warning, danger, or custom like complete, optimal, neutral, etc)
+  [key: string]: string | string[] | undefined;
 }
 
 export interface CategoryTemplate {

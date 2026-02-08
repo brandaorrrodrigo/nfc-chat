@@ -4,9 +4,8 @@
  */
 
 // Templates e Categorias
+export type { CriterionRange, CategoryTemplate } from './category-templates';
 export {
-  CriterionRange,
-  CategoryTemplate,
   SQUAT_TEMPLATE,
   HINGE_TEMPLATE,
   HORIZONTAL_PRESS_TEMPLATE,
@@ -20,11 +19,13 @@ export {
 } from './category-templates';
 
 // Classificação de Critérios
-export {
+export type {
   ClassificationLevel,
   MetricValue,
   CriteriaClassification,
   ClassificationResult,
+} from './criteria-classifier';
+export {
   classifyMetrics,
   calculateOverallScore,
   extractRAGTopicsFromClassification,
@@ -35,31 +36,33 @@ export {
 } from './criteria-classifier';
 
 // Processamento de MediaPipe
-export {
+export type {
   Landmark,
   Frame,
   ProcessedFrameMetrics,
   ProcessedVideoMetrics,
+} from './mediapipe-processor';
+export {
   LANDMARKS,
   processFrame,
   processFrameSequence,
 } from './mediapipe-processor';
 
 // Construção de Prompts
+export type { PromptBuilderInput, RAGContext, BuiltPrompt } from './prompt-builder';
 export {
-  PromptBuilderInput,
-  RAGContext,
-  BuiltPrompt,
   buildPrompt,
   buildMinimalPrompt,
   debugPrompt,
 } from './prompt-builder';
 
 // Análise Integrada
-export {
+export type {
   BiomechanicsAnalysisInput,
   BiomechanicsAnalysisOutput,
   AnalysisConfig,
+} from './biomechanics-analyzer';
+export {
   analyzeBiomechanics,
   classifyOnly,
   generateMockFrames,

@@ -4,9 +4,9 @@
  */
 
 import { getCategoryTemplate, getExerciseCategory } from './category-templates';
-import { classifyMetrics, ClassificationResult, extractAllRAGTopics } from './criteria-classifier';
+import { classifyMetrics, ClassificationResult, extractAllRAGTopics, MetricValue } from './criteria-classifier';
 import { buildPrompt, buildMinimalPrompt, BuiltPrompt } from './prompt-builder';
-import { ProcessedVideoMetrics, Frame, processFrameSequence, MetricValue } from './mediapipe-processor';
+import { ProcessedVideoMetrics, Frame, processFrameSequence } from './mediapipe-processor';
 import type { RAGContext } from './prompt-builder';
 
 export interface BiomechanicsAnalysisInput {
@@ -283,9 +283,9 @@ function generateDiagnosticSummary(
       lines.push(
         `   Concêntrica: ${mediaMetrics.summary.phases.concentric.durationMs}ms (frames ${mediaMetrics.summary.phases.concentric.startFrame}-${mediaMetrics.summary.phases.concentric.endFrame})`
       );
-      if (mediaMetrics.summary.phases.tempo) {
-        lines.push(`   Ratio: ${mediaMetrics.summary.phases.tempo.ratio}`);
-      }
+    }
+    if (mediaMetrics.summary.tempo) {
+      lines.push(`   Ratio: ${mediaMetrics.summary.tempo.ratio}`);
     }
     lines.push('');
   }
