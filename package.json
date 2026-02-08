@@ -29,6 +29,8 @@
     "seed:with-sql": "ts-node --project tsconfig.scripts.json scripts/seed-with-sql.ts",
     "seed:all-36-arenas": "ts-node --project tsconfig.scripts.json scripts/seed-all-36-arenas.ts",
     "seed:all-36-arenas-sql": "ts-node --project tsconfig.scripts.json scripts/seed-all-36-arenas-sql.ts",
+    "nfv:reanalyze-squat": "ts-node --project tsconfig.scripts.json scripts/reanalyze-squat-video.ts",
+    "nfv:reanalyze-squat-direct": "ts-node --project tsconfig.scripts.json scripts/reanalyze-squat-direct.ts",
     "seed:arenas-biometria": "npx tsx scripts/seed-arenas-biometria.ts",
     "seed:pricing": "npx tsx scripts/seed-biometric-pricing.ts",
     "stats:fix": "ts-node --project tsconfig.scripts.json scripts/fix-fake-counters.ts",
