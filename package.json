@@ -27,6 +27,8 @@
     "seed:arenas:safe": "ts-node --project tsconfig.scripts.json scripts/seed-arenas-safe.ts",
     "seed:arenas:base": "ts-node --project tsconfig.scripts.json scripts/seed-arenas-base.ts",
     "seed:with-sql": "ts-node --project tsconfig.scripts.json scripts/seed-with-sql.ts",
+    "seed:all-36-arenas": "ts-node --project tsconfig.scripts.json scripts/seed-all-36-arenas.ts",
+    "seed:all-36-arenas-sql": "ts-node --project tsconfig.scripts.json scripts/seed-all-36-arenas-sql.ts",
     "seed:arenas-biometria": "npx tsx scripts/seed-arenas-biometria.ts",
     "seed:pricing": "npx tsx scripts/seed-biometric-pricing.ts",
     "stats:fix": "ts-node --project tsconfig.scripts.json scripts/fix-fake-counters.ts",
