@@ -30,6 +30,7 @@
     "seed:all-36-arenas": "ts-node --project tsconfig.scripts.json scripts/seed-all-36-arenas.ts",
     "seed:all-36-arenas-sql": "ts-node --project tsconfig.scripts.json scripts/seed-all-36-arenas-sql.ts",
     "seed:lipedema": "ts-node --project tsconfig.scripts.json scripts/seed-lipedema-arena.ts",
+    "seed:lipedema:protocolo": "ts-node --project tsconfig.scripts.json scripts/seed-arena-01-lipedema.ts",
     "nfv:reanalyze-squat": "ts-node --project tsconfig.scripts.json scripts/reanalyze-squat-video.ts",
     "nfv:reanalyze-squat-direct": "ts-node --project tsconfig.scripts.json scripts/reanalyze-squat-direct.ts",
     "nfv:reanalyze-squat-detailed": "ts-node --project tsconfig.scripts.json scripts/reanalyze-squat-detailed.ts",
