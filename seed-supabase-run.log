@@ -1,0 +1,213 @@
+
+> nfc-comunidades@1.0.0 seed:conversations:supabase
+> ts-node --project tsconfig.scripts.json scripts/seed-conversations-supabase.ts
+
+[dotenv@17.2.3] injecting env (6) from .env.local -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+
+======================================
+✨ Seed de Conversas Realistas
+📡 Usando Supabase Client (SEM PRISMA)
+======================================
+
+🔌 Testando conexão com Supabase...
+✅ Conexão OK!
+
+👥 Preparando usuarios simulados...
+   ❌ Erro ao criar usuário ana.paula@fitcoach.local: duplicate key value violates unique constraint "User_pkey"
+   ❌ Erro ao criar usuário juliana.santos@fitcoach.local: duplicate key value violates unique constraint "User_pkey"
+   ❌ Erro ao criar usuário mariana.costa@fitcoach.local: duplicate key value violates unique constraint "User_pkey"
+   ❌ Erro ao criar usuário carlos.eduardo@fitcoach.local: duplicate key value violates unique constraint "User_pkey"
+   ❌ Erro ao criar usuário rafael.lima@fitcoach.local: duplicate key value violates unique constraint "User_pkey"
+   ❌ Erro ao criar usuário patricia.oliveira@fitcoach.local: duplicate key value violates unique constraint "User_pkey"
+   ❌ Erro ao criar usuário fernanda.alves@fitcoach.local: duplicate key value violates unique constraint "User_pkey"
+   ❌ Erro ao criar usuário camila.ribeiro@fitcoach.local: duplicate key value violates unique constraint "User_pkey"
+   ❌ Erro ao criar usuário bruno.ferreira@fitcoach.local: duplicate key value violates unique constraint "User_pkey"
+   ❌ Erro ao criar usuário thiago.martins@fitcoach.local: duplicate key value violates unique constraint "User_pkey"
+   ❌ Erro ao criar usuário lucas.souza@fitcoach.local: duplicate key value violates unique constraint "User_pkey"
+   ❌ Erro ao criar usuário roberta.mendes@fitcoach.local: duplicate key value violates unique constraint "User_pkey"
+   ❌ Erro ao criar usuário amanda.silva@fitcoach.local: duplicate key value violates unique constraint "User_pkey"
+   ❌ Erro ao criar usuário rodrigo.andrade@fitcoach.local: duplicate key value violates unique constraint "User_pkey"
+   ❌ Erro ao criar usuário gustavo.rocha@fitcoach.local: duplicate key value violates unique constraint "User_pkey"
+   ❌ Erro ao criar usuário daniela.correia@fitcoach.local: duplicate key value violates unique constraint "User_pkey"
+   ❌ Erro ao criar usuário renata.moraes@fitcoach.local: duplicate key value violates unique constraint "User_pkey"
+   ❌ Erro ao criar usuário marcelo.pereira@fitcoach.local: duplicate key value violates unique constraint "User_pkey"
+   ❌ Erro ao criar usuário joao.carlos@fitcoach.local: duplicate key value violates unique constraint "User_pkey"
+   ❌ Erro ao criar usuário beatriz.gomes@fitcoach.local: duplicate key value violates unique constraint "User_pkey"
+✅ 2 usuarios prontos
+
+🏟️  Arenas encontradas: 36
+🎯 Meta por arena: 35 posts
+📊 Total esperado: ~1260 posts
+
+⏳ Iniciando populacao em 3 segundos...
+
+
+[1/36]
+  📝 Criando 35 posts para: ⚡ Hub Biomecânica - Análise de Exercício
+    ✅ 9 posts, 18 comentarios
+
+[2/36]
+  📝 Criando 35 posts para: 👤 Hub Avaliação Física
+    ✅ 9 posts, 23 comentarios
+
+[3/36]
+  📝 Criando 35 posts para: 📐 Avaliação Biométrica & Assimetrias
+    ✅ 9 posts, 24 comentarios
+
+[4/36]
+  📝 Criando 35 posts para: 📸 Avaliação Física por Foto
+    ✅ 9 posts, 18 comentarios
+
+[5/36]
+  📝 Criando 35 posts para: 🧍 Postura & Estética Real
+    ✅ 9 posts, 19 comentarios
+
+[6/36]
+  📝 Criando 35 posts para: 🧬 Hub Comunidade de Avaliação Biométrica NFV
+    ✅ 9 posts, 17 comentarios
+
+[7/36]
+  📝 Criando 35 posts para: 🩺 Dor, Função & Saúde Postural
+    ✅ 9 posts, 23 comentarios
+
+[8/36]
+  📝 Criando 35 posts para: Análise: Agachamento
+    ✅ 9 posts, 21 comentarios
+
+[9/36]
+  📝 Criando 35 posts para: Análise: Elevação Pélvica
+    ✅ 9 posts, 25 comentarios
+
+[10/36]
+  📝 Criando 35 posts para: Análise: Levantamento Terra
+    ✅ 9 posts, 25 comentarios
+
+[11/36]
+  📝 Criando 35 posts para: Análise: Puxadas
+    ✅ 9 posts, 23 comentarios
+
+[12/36]
+  📝 Criando 35 posts para: Análise: Supino
+    ✅ 9 posts, 20 comentarios
+
+[13/36]
+  📝 Criando 31 posts para: Ansiedade, Compulsão e Alimentação
+    ✅ 12 posts, 33 comentarios
+
+[14/36]
+  📝 Criando 32 posts para: Antes e Depois — Processo Real
+    ✅ 11 posts, 29 comentarios
+
+[15/36]
+  📝 Criando 33 posts para: Aspiracional & Estética
+    ✅ 11 posts, 28 comentarios
+
+[16/36]
+  📝 Criando 35 posts para: Barriga Pochete
+    ✅ 9 posts, 18 comentarios
+
+[17/36]
+  📝 Criando 31 posts para: Canetas Emagrecedoras
+    ✅ 12 posts, 32 comentarios
+
+[18/36]
+  📝 Criando 29 posts para: Déficit Calórico na Vida Real
+    ✅ 14 posts, 40 comentarios
+
+[19/36]
+  📝 Criando 35 posts para: Desvio de Bacia
+    ✅ 9 posts, 17 comentarios
+
+[20/36]
+  📝 Criando 32 posts para: Dieta na Vida Real
+    ✅ 11 posts, 26 comentarios
+
+[21/36]
+  📝 Criando 35 posts para: Dor Menstrual
+    ✅ 9 posts, 21 comentarios
+
+[22/36]
+  📝 Criando 31 posts para: Emagrecimento Feminino 35+
+    ✅ 12 posts, 33 comentarios
+
+[23/36]
+  📝 Criando 31 posts para: Exercício para Quem Odeia Treinar
+    ✅ 12 posts, 32 comentarios
+
+[24/36]
+  📝 Criando 33 posts para: Exercícios que Ama
+    ✅ 11 posts, 25 comentarios
+
+[25/36]
+  📝 Criando 35 posts para: Glúteo Médio/Valgo
+    ✅ 9 posts, 20 comentarios
+
+[26/36]
+  📝 Criando 35 posts para: Hipercifose Drenagem
+    ✅ 9 posts, 17 comentarios
+
+[27/36]
+  📝 Criando 35 posts para: Liberação Miofascial
+    ✅ 9 posts, 21 comentarios
+
+[28/36]
+  📝 Criando 31 posts para: Lipedema — Paradoxo do Cardio
+    ✅ 12 posts, 33 comentarios
+
+[29/36]
+  📝 Criando 35 posts para: Meia Compressão
+    ✅ 9 posts, 21 comentarios
+
+[30/36]
+  📝 Criando 35 posts para: Musculação Lipedema
+    ✅ 9 posts, 20 comentarios
+
+[31/36]
+  📝 Criando 33 posts para: Performance & Biohacking
+    ✅ 11 posts, 29 comentarios
+
+[32/36]
+  📝 Criando 29 posts para: Protocolo Lipedema
+    ✅ 14 posts, 43 comentarios
+
+[33/36]
+  📝 Criando 32 posts para: Receitas Saudáveis
+    ✅ 11 posts, 33 comentarios
+
+[34/36]
+  📝 Criando 32 posts para: Sinal Vermelho
+    ✅ 11 posts, 33 comentarios
+
+[35/36]
+  📝 Criando 30 posts para: Treino de Glúteo
+    ✅ 13 posts, 36 comentarios
+
+[36/36]
+  📝 Criando 32 posts para: Treino em Casa
+    ✅ 11 posts, 32 comentarios
+
+======================================
+🎉 SEED COMPLETO!
+======================================
+
+📈 Estatisticas Finais:
+  📝 Total de posts: 369
+  💬 Total de comentarios: 928
+  🔥 Total de interacoes: 1297
+  📊 Media de posts/arena: 10.3
+
+🏆 Top 10 Arenas com mais posts:
+
+  1. Protocolo Lipedema: 14 posts
+  2. Déficit Calórico na Vida Real: 14 posts
+  3. Treino de Glúteo: 13 posts
+  4. Exercício para Quem Odeia Treinar: 12 posts
+  5. Ansiedade, Compulsão e Alimentação: 12 posts
+  6. Lipedema — Paradoxo do Cardio: 12 posts
+  7. Emagrecimento Feminino 35+: 12 posts
+  8. Canetas Emagrecedoras: 12 posts
+  9. Receitas Saudáveis: 11 posts
+  10. Sinal Vermelho: 11 posts
+
+✅ Sistema pronto para uso!
+

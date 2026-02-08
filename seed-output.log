@@ -1,0 +1,21 @@
+
+> nfc-comunidades@1.0.0 seed:conversations
+> ts-node --project tsconfig.scripts.json scripts/seed-conversations.ts
+
+
+======================================
+Seed de Conversas Realistas
+======================================
+
+Preparando usuarios simulados...
+Erro: 
+Invalid `prisma.user.findUnique()` invocation in
+D:\NUTRIFITCOACH_MASTER\nfc-comunidades\scripts\seed-conversations.ts:145:38
+
+  142 
+  143 // Criar ou buscar usuario
+  144 async function createOrGetUser(user: any) {
+→ 145   const existing = await prisma.user.findUnique(
+Can't reach database server at `db.qducbqhuwqdyqioqevle.supabase.co:5432`
+
+Please make sure your database server is running at `db.qducbqhuwqdyqioqevle.supabase.co:5432`.
