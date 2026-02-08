@@ -1,6 +1,8 @@
 import { prisma } from '@/lib/prisma'
 import { hash } from 'bcryptjs'
 
+// Mark this route as dynamic to prevent build-time compilation
+export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
   try {

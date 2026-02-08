@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
+// Mark this route as dynamic to prevent build-time compilation
+export const dynamic = 'force-dynamic';
+
 /**
  * Endpoint de teste para verificar conexão com banco
  */

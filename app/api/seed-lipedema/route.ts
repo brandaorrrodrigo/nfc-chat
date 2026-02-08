@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient, AIPersona, ArenaType } from '@prisma/client';
 
+// Mark this route as dynamic to prevent build-time compilation
+export const dynamic = 'force-dynamic';
+
 const prisma = new PrismaClient();
 
 export async function POST(request: NextRequest) {
