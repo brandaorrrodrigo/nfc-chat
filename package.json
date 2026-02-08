@@ -39,6 +39,7 @@
     "analyze:arena-agachamento": "ts-node --project tsconfig.scripts.json scripts/analyze-arena-agachamento.ts",
     "test:api": "ts-node --project tsconfig.scripts.json scripts/test-api-endpoint.ts",
     "test:dashboard": "ts-node --project tsconfig.scripts.json scripts/test-dashboard-integration.ts",
+    "test:community": "ts-node --project tsconfig.scripts.json scripts/test-community-integration.ts",
     "seed:arenas-biometria": "npx tsx scripts/seed-arenas-biometria.ts",
     "seed:pricing": "npx tsx scripts/seed-biometric-pricing.ts",
     "stats:fix": "ts-node --project tsconfig.scripts.json scripts/fix-fake-counters.ts",
