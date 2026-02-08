@@ -1,0 +1,364 @@
+/**
+ * Orquestrador principal da análise biomecânica
+ * Integra: categoria → template → classificação → prompt → LLM
+ */
+
+import { getCategoryTemplate, getExerciseCategory } from './category-templates';
+import { classifyMetrics, ClassificationResult, extractAllRAGTopics } from './criteria-classifier';
+import { buildPrompt, buildMinimalPrompt, BuiltPrompt } from './prompt-builder';
+import { ProcessedVideoMetrics, Frame, processFrameSequence, MetricValue } from './mediapipe-processor';
+import type { RAGContext } from './prompt-builder';
+
+export interface BiomechanicsAnalysisInput {
+  exerciseName: string;
+  category?: string; // Se não fornecido, usa getExerciseCategory
+  frames: Frame[];
+  fps?: number;
+  ragContexts?: RAGContext[]; // Contextos RAG pré-processados (opcional)
+  includeRAG?: boolean; // Se true, usa contextos RAG fornecidos
+}
+
+export interface BiomechanicsAnalysisOutput {
+  exerciseName: string;
+  category: string;
+  timestamp: string;
+  classification: ClassificationResult;
+  mediaMetrics: ProcessedVideoMetrics;
+  prompt: BuiltPrompt;
+  ragTopicsUsed: string[];
+  readyForLLM: boolean;
+  diagnosticSummary: string;
+}
+
+export interface AnalysisConfig {
+  includeRAG: boolean;
+  useMinimalPrompt: boolean;
+  debugMode: boolean;
+}
+
+/**
+ * Realiza análise biomecânica completa
+ */
+export async function analyzeBiomechanics(
+  input: BiomechanicsAnalysisInput,
+  config: AnalysisConfig = {
+    includeRAG: true,
+    useMinimalPrompt: false,
+    debugMode: false,
+  }
+): Promise<BiomechanicsAnalysisOutput> {
+  try {
+    // 1. Validar entrada
+    if (!input.frames || input.frames.length === 0) {
+      throw new Error('Nenhum frame fornecido para análise');
+    }
+
+    if (!input.exerciseName) {
+      throw new Error('Nome do exercício é obrigatório');
+    }
+
+    // 2. Determinar categoria
+    const category = input.category || getExerciseCategory(input.exerciseName);
+    const template = getCategoryTemplate(category);
+
+    if (config.debugMode) {
+      console.log(`[Biomechanics] Exercício: ${input.exerciseName}`);
+      console.log(`[Biomechanics] Categoria: ${category}`);
+      console.log(`[Biomechanics] Frames: ${input.frames.length}`);
+    }
+
+    // 3. Processar frames com MediaPipe
+    const mediaMetrics = processFrameSequence(input.frames, category, input.fps || 30);
+
+    if (config.debugMode) {
+      console.log(`[Biomechanics] Métricas extraídas: ${mediaMetrics.frames.length} frames`);
+    }
+
+    // 4. Agregar métricas de todos os frames para classificação
+    // (usar média ou pico, dependendo do critério)
+    const aggregatedMetrics = aggregateMetricsAcrossFrames(mediaMetrics);
+
+    if (config.debugMode) {
+      console.log(`[Biomechanics] Métricas agregadas: ${aggregatedMetrics.length}`);
+    }
+
+    // 5. Classificar contra template
+    const classification = classifyMetrics(aggregatedMetrics, template, input.exerciseName);
+
+    if (config.debugMode) {
+      console.log(`[Biomechanics] Classificação: ${classification.overallScore}/10`);
+      console.log(`[Biomechanics] Danger: ${classification.summary.danger} | Warning: ${classification.summary.warning}`);
+    }
+
+    // 6. Extrair tópicos RAG necessários
+    const ragTopics = extractAllRAGTopics(classification);
+    const finalRAGContexts = config.includeRAG
+      ? input.ragContexts?.filter((ctx) => ragTopics.includes(ctx.topic)) || []
+      : [];
+
+    if (config.debugMode) {
+      console.log(`[Biomechanics] Tópicos RAG: ${ragTopics.length}`);
+    }
+
+    // 7. Construir prompt
+    const prompt = config.useMinimalPrompt
+      ? buildMinimalPrompt(classification, template, input.exerciseName)
+      : buildPrompt({
+          result: classification,
+          template,
+          exerciseName: input.exerciseName,
+          ragContext: finalRAGContexts,
+          videoMetadata: {
+            duration: mediaMetrics.duration,
+            frameCount: mediaMetrics.totalFrames,
+            fps: mediaMetrics.fps,
+          },
+        });
+
+    // 8. Gerar resumo diagnóstico
+    const diagnosticSummary = generateDiagnosticSummary(
+      input.exerciseName,
+      classification,
+      mediaMetrics,
+      ragTopics.length
+    );
+
+    return {
+      exerciseName: input.exerciseName,
+      category,
+      timestamp: new Date().toISOString(),
+      classification,
+      mediaMetrics,
+      prompt,
+      ragTopicsUsed: ragTopics,
+      readyForLLM: true,
+      diagnosticSummary,
+    };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Erro desconhecido';
+    throw new Error(`Análise biomecânica falhou: ${message}`);
+  }
+}
+
+/**
+ * Agrega métricas de múltiplos frames para uma análise de resumo
+ * Usa diferentes estratégias para diferentes tipos de métrica:
+ * - Ângulos: média
+ * - Deslocamentos: máximo
+ * - ROM: min/max dos frames
+ */
+function aggregateMetricsAcrossFrames(mediaMetrics: ProcessedVideoMetrics): MetricValue[] {
+  const aggregated: MetricValue[] = [];
+  const metricMap = new Map<string, number[]>();
+
+  // Coletar todos os valores por métrica
+  for (const frame of mediaMetrics.frames) {
+    for (const metric of frame.metrics) {
+      if (!metricMap.has(metric.metric)) {
+        metricMap.set(metric.metric, []);
+      }
+      metricMap.get(metric.metric)!.push(metric.value);
+    }
+  }
+
+  // Agregar baseado no tipo de métrica
+  for (const [metricName, values] of metricMap.entries()) {
+    if (values.length === 0) continue;
+
+    let aggregatedValue: number;
+
+    // Deslocamentos (cm): usar máximo
+    if (metricName.includes('_cm') || metricName.includes('displacement')) {
+      aggregatedValue = Math.max(...values);
+    }
+    // ROM: já está em summary
+    else if (metricName.includes('rom')) {
+      continue;
+    }
+    // Ângulos: usar média
+    else {
+      aggregatedValue = values.reduce((a, b) => a + b, 0) / values.length;
+    }
+
+    // Encontrar unidade a partir do primeiro valor
+    const sampleFrame = mediaMetrics.frames.find((f) =>
+      f.metrics.some((m) => m.metric === metricName)
+    );
+    const unit = sampleFrame?.metrics.find((m) => m.metric === metricName)?.unit;
+
+    aggregated.push({
+      metric: metricName,
+      value: Math.round(aggregatedValue * 10) / 10,
+      unit,
+    });
+  }
+
+  // Adicionar dados de ROM como métricas derivadas
+  for (const [metricName, range] of Object.entries(mediaMetrics.summary.rom)) {
+    // ROM é útil para alguns critérios (ex: depth check)
+    // Usar o valor mínimo do ângulo como proxy para profundidade
+    if (metricName.includes('hip_angle')) {
+      aggregated.push({
+        metric: 'hip_angle_at_bottom',
+        value: range.min,
+        unit: '°',
+      });
+    }
+  }
+
+  // Adicionar assimetrias
+  for (const [metricName, diff] of Object.entries(mediaMetrics.summary.asymmetries)) {
+    aggregated.push({
+      metric: `${metricName}_difference`,
+      value: Math.round(diff * 10) / 10,
+      unit: '°',
+    });
+  }
+
+  return aggregated;
+}
+
+/**
+ * Gera um resumo diagnóstico legível para visualização rápida
+ */
+function generateDiagnosticSummary(
+  exerciseName: string,
+  classification: ClassificationResult,
+  mediaMetrics: ProcessedVideoMetrics,
+  ragTopicsCount: number
+): string {
+  const lines: string[] = [];
+
+  lines.push('╔════════════════════════════════════════════════════════════╗');
+  lines.push('║            RESUMO DIAGNÓSTICO BIOMECÂNICO                  ║');
+  lines.push('╚════════════════════════════════════════════════════════════╝');
+  lines.push('');
+
+  // Básico
+  lines.push(`📋 Exercício: ${exerciseName}`);
+  lines.push(`📊 Score Geral: ${classification.overallScore}/10`);
+  lines.push(`⏱️  Duração: ${mediaMetrics.duration?.toFixed(1) || '?'}s (${mediaMetrics.totalFrames} frames)`);
+  lines.push('');
+
+  // Resumo de classificações
+  lines.push('📈 Distribuição de Critérios:');
+  lines.push(`   🔴 Crítico (Danger): ${classification.summary.danger}`);
+  lines.push(`   🟡 Alerta (Warning):  ${classification.summary.warning}`);
+  lines.push(`   🟢 OK (Accept/Good):  ${classification.summary.acceptable + classification.summary.excellent + classification.summary.good}`);
+  lines.push('');
+
+  // Problemas críticos
+  const dangerItems = classification.classifications.filter((c) => c.classification === 'danger');
+  if (dangerItems.length > 0) {
+    lines.push('🔴 PROBLEMAS CRÍTICOS:');
+    dangerItems.forEach((item) => {
+      lines.push(`   • ${item.criterion}: ${item.value}${item.unit || ''}`);
+      if (item.isSafetyCritical) {
+        lines.push(`     ⚠️ RISCO DE LESÃO`);
+      }
+    });
+    lines.push('');
+  }
+
+  // Alertas
+  const warningItems = classification.classifications.filter((c) => c.classification === 'warning');
+  if (warningItems.length > 0) {
+    lines.push('🟡 ÁREAS DE ALERTA:');
+    warningItems.slice(0, 3).forEach((item) => {
+      lines.push(`   • ${item.criterion}: ${item.value}${item.unit || ''}`);
+    });
+    if (warningItems.length > 3) {
+      lines.push(`   ... e ${warningItems.length - 3} mais`);
+    }
+    lines.push('');
+  }
+
+  // Fases
+  if (mediaMetrics.summary.phases.eccentric) {
+    lines.push('⚡ Fases Detectadas:');
+    lines.push(
+      `   Excêntrica: ${mediaMetrics.summary.phases.eccentric.durationMs}ms (frames ${mediaMetrics.summary.phases.eccentric.startFrame}-${mediaMetrics.summary.phases.eccentric.endFrame})`
+    );
+    if (mediaMetrics.summary.phases.concentric) {
+      lines.push(
+        `   Concêntrica: ${mediaMetrics.summary.phases.concentric.durationMs}ms (frames ${mediaMetrics.summary.phases.concentric.startFrame}-${mediaMetrics.summary.phases.concentric.endFrame})`
+      );
+      if (mediaMetrics.summary.phases.tempo) {
+        lines.push(`   Ratio: ${mediaMetrics.summary.phases.tempo.ratio}`);
+      }
+    }
+    lines.push('');
+  }
+
+  // RAG
+  lines.push(`📚 Contextos RAG: ${ragTopicsCount} tópicos`);
+  lines.push('');
+
+  // Status
+  lines.push('✅ Pronto para análise do LLM');
+
+  return lines.join('\n');
+}
+
+/**
+ * Versão simplificada: apenas retorna a classificação sem LLM
+ * Útil para testes rápidos
+ */
+export async function classifyOnly(
+  input: BiomechanicsAnalysisInput
+): Promise<ClassificationResult> {
+  const category = input.category || getExerciseCategory(input.exerciseName);
+  const template = getCategoryTemplate(category);
+  const mediaMetrics = processFrameSequence(input.frames, category, input.fps || 30);
+  const aggregatedMetrics = aggregateMetricsAcrossFrames(mediaMetrics);
+  const classification = classifyMetrics(aggregatedMetrics, template, input.exerciseName);
+
+  return classification;
+}
+
+/**
+ * Gera dados fictícios para teste (mock de frames MediaPipe)
+ */
+export function generateMockFrames(
+  count: number,
+  exerciseType: 'squat' | 'hinge' | 'press' = 'squat'
+): Frame[] {
+  const frames: Frame[] = [];
+
+  for (let i = 0; i < count; i++) {
+    const progress = i / count; // 0 a 1
+
+    let landmarks: Record<string, any> = {
+      left_shoulder: { x: 0.3, y: 0.2, z: 0, visibility: 0.9 },
+      right_shoulder: { x: 0.7, y: 0.2, z: 0, visibility: 0.9 },
+      left_hip: { x: 0.3, y: 0.5, z: 0, visibility: 0.9 },
+      right_hip: { x: 0.7, y: 0.5, z: 0, visibility: 0.9 },
+      left_knee: { x: 0.3, y: 0.7, z: 0, visibility: 0.9 },
+      right_knee: { x: 0.7, y: 0.7, z: 0, visibility: 0.9 },
+      left_ankle: { x: 0.3, y: 0.9, z: 0, visibility: 0.9 },
+      right_ankle: { x: 0.7, y: 0.9, z: 0, visibility: 0.9 },
+      left_elbow: { x: 0.25, y: 0.4, z: 0, visibility: 0.9 },
+      right_elbow: { x: 0.75, y: 0.4, z: 0, visibility: 0.9 },
+      left_wrist: { x: 0.2, y: 0.3, z: 0, visibility: 0.9 },
+      right_wrist: { x: 0.8, y: 0.3, z: 0, visibility: 0.9 },
+    };
+
+    // Variar baseado no tipo de exercício
+    if (exerciseType === 'squat') {
+      // Simular agachamento: quadril desce e volta
+      const hiphip = 0.5 + progress * 0.3 - Math.sin(progress * Math.PI) * 0.15;
+      landmarks.left_hip.y = hiphip;
+      landmarks.right_hip.y = hiphip;
+      landmarks.left_knee.y = hiphip + 0.2;
+      landmarks.right_knee.y = hiphip + 0.2;
+    }
+
+    frames.push({
+      frameNumber: i + 1,
+      timestamp: (i / 30) * 1000, // 30fps
+      landmarks,
+    });
+  }
+
+  return frames;
+}
