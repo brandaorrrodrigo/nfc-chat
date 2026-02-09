@@ -175,7 +175,11 @@ function aggregateMetricsAcrossFrames(mediaMetrics: ProcessedVideoMetrics): Metr
     else if (metricName.includes('rom')) {
       continue;
     }
-    // Ângulos: usar média
+    // Ângulos de profundidade (hip): usar MÍNIMO (fundo do agachamento)
+    else if (metricName.includes('hip_angle')) {
+      aggregatedValue = Math.min(...values);
+    }
+    // Outros ângulos: usar média
     else {
       aggregatedValue = values.reduce((a, b) => a + b, 0) / values.length;
     }
@@ -318,6 +322,12 @@ export async function classifyOnly(
 
 /**
  * Gera dados fictícios para teste (mock de frames MediaPipe)
+ * Simula cinemática realista do agachamento:
+ * - Quadril desce e vai para trás
+ * - Joelho avança para frente
+ * - Tronco inclina
+ * - Tornozelo dorsiflete
+ * - Inclui heel landmarks
  */
 export function generateMockFrames(
   count: number,
@@ -327,6 +337,8 @@ export function generateMockFrames(
 
   for (let i = 0; i < count; i++) {
     const progress = i / count; // 0 a 1
+    // Curva sinusoidal: 0 no início → 1 no fundo → 0 no fim
+    const depth = Math.sin(progress * Math.PI);
 
     let landmarks: Record<string, any> = {
       left_shoulder: { x: 0.3, y: 0.2, z: 0, visibility: 0.9 },
@@ -337,20 +349,37 @@ export function generateMockFrames(
       right_knee: { x: 0.7, y: 0.7, z: 0, visibility: 0.9 },
       left_ankle: { x: 0.3, y: 0.9, z: 0, visibility: 0.9 },
       right_ankle: { x: 0.7, y: 0.9, z: 0, visibility: 0.9 },
+      left_heel: { x: 0.28, y: 0.92, z: 0, visibility: 0.9 },
+      right_heel: { x: 0.68, y: 0.92, z: 0, visibility: 0.9 },
+      left_foot_index: { x: 0.35, y: 0.92, z: 0, visibility: 0.9 },
+      right_foot_index: { x: 0.75, y: 0.92, z: 0, visibility: 0.9 },
       left_elbow: { x: 0.25, y: 0.4, z: 0, visibility: 0.9 },
       right_elbow: { x: 0.75, y: 0.4, z: 0, visibility: 0.9 },
       left_wrist: { x: 0.2, y: 0.3, z: 0, visibility: 0.9 },
       right_wrist: { x: 0.8, y: 0.3, z: 0, visibility: 0.9 },
     };
 
-    // Variar baseado no tipo de exercício
     if (exerciseType === 'squat') {
-      // Simular agachamento: quadril desce e volta
-      const hiphip = 0.5 + progress * 0.3 - Math.sin(progress * Math.PI) * 0.15;
-      landmarks.left_hip.y = hiphip;
-      landmarks.right_hip.y = hiphip;
-      landmarks.left_knee.y = hiphip + 0.2;
-      landmarks.right_knee.y = hiphip + 0.2;
+      // Quadril desce (y aumenta) e recua levemente (x diminui)
+      const hipY = 0.5 + depth * 0.25;
+      const hipX_L = 0.3 - depth * 0.03;
+      const hipX_R = 0.7 - depth * 0.03;
+      landmarks.left_hip = { x: hipX_L, y: hipY, z: 0, visibility: 0.9 };
+      landmarks.right_hip = { x: hipX_R, y: hipY, z: 0, visibility: 0.9 };
+
+      // Joelho avança para frente (x aumenta) e desce proporcionalmente
+      const kneeY = 0.7 + depth * 0.1;
+      const kneeX_L = 0.3 + depth * 0.08;
+      const kneeX_R = 0.7 + depth * 0.08;
+      landmarks.left_knee = { x: kneeX_L, y: kneeY, z: 0, visibility: 0.9 };
+      landmarks.right_knee = { x: kneeX_R, y: kneeY, z: 0, visibility: 0.9 };
+
+      // Ombro inclina para frente (tronco inclina)
+      const shoulderX_L = 0.3 + depth * 0.05;
+      const shoulderX_R = 0.7 + depth * 0.05;
+      const shoulderY = 0.2 + depth * 0.12;
+      landmarks.left_shoulder = { x: shoulderX_L, y: shoulderY, z: 0, visibility: 0.9 };
+      landmarks.right_shoulder = { x: shoulderX_R, y: shoulderY, z: 0, visibility: 0.9 };
     }
 
     frames.push({

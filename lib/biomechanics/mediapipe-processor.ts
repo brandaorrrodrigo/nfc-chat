@@ -79,6 +79,12 @@ export const LANDMARKS = {
   // Ankles
   LEFT_ANKLE: 'left_ankle',
   RIGHT_ANKLE: 'right_ankle',
+
+  // Feet
+  LEFT_HEEL: 'left_heel',
+  RIGHT_HEEL: 'right_heel',
+  LEFT_FOOT_INDEX: 'left_foot_index',
+  RIGHT_FOOT_INDEX: 'right_foot_index',
 };
 
 /**
@@ -272,20 +278,23 @@ export function processFrame(
     }
 
     // Dorsiflexão do tornozelo
+    // Mede inclinação da tíbia em relação à vertical (0° em pé, ~25-35° agachado)
     if (
       hasRequiredLandmarks([
         LANDMARKS.LEFT_KNEE,
         LANDMARKS.LEFT_ANKLE,
       ])
     ) {
-      const ankleAngle = angleBetweenPoints(
+      // Ângulo entre tíbia (ankle→knee) e referência vertical (ankle→ponto acima)
+      const shinTilt = angleBetweenPoints(
         lm[LANDMARKS.LEFT_KNEE],
         lm[LANDMARKS.LEFT_ANKLE],
-        { x: lm[LANDMARKS.LEFT_ANKLE].x, y: lm[LANDMARKS.LEFT_ANKLE].y - 0.2, z: 0 } // Reference for dorsiflexion
+        { x: lm[LANDMARKS.LEFT_ANKLE].x, y: lm[LANDMARKS.LEFT_ANKLE].y - 0.2, z: 0 }
       );
+
       metrics.push({
         metric: 'ankle_dorsiflexion_degrees',
-        value: Math.round(Math.max(0, 90 - ankleAngle)),
+        value: Math.round(Math.max(0, shinTilt)),
         unit: '°',
       });
     }

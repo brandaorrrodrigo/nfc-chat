@@ -264,15 +264,18 @@ class BiomechanicsEngine:
         foot = self._get_landmark(landmarks, f'{side}_foot_index')
 
         if not all([knee, ankle, foot]):
-            return 90.0  # Default para ângulo neutro
+            return 0.0  # Sem dados suficientes
 
-        angle = self._calculate_angle_3d(
+        # Ângulo absoluto knee → ankle → foot_index (~90° em pé, ~65° agachado)
+        raw_angle = self._calculate_angle_3d(
             [knee['x'], knee['y'], knee['z']],
             [ankle['x'], ankle['y'], ankle['z']],
             [foot['x'], foot['y'], foot['z']]
         )
 
-        return round(angle, 1)
+        # Converter para dorsiflexão: 0° em pé, ~25° agachado
+        dorsiflexion = max(0, 90 - raw_angle)
+        return round(dorsiflexion, 1)
 
     def calculate_valgus_angle(self, landmarks: List[Dict], side: str) -> float:
         """
@@ -558,8 +561,8 @@ class BiomechanicsEngine:
             'knee_right': 0.0,
             'hip': 0.0,
             'trunk': 0.0,
-            'ankle_left': 90.0,
-            'ankle_right': 90.0,
+            'ankle_left': 0.0,
+            'ankle_right': 0.0,
             'knee_valgus_left': 0.0,
             'knee_valgus_right': 0.0,
             'pelvic_tilt': 0.0

@@ -15,21 +15,38 @@ const TABLE = 'nfc_chat_video_analyses';
 
 /**
  * Mock MediaPipe extractor - simula extração de landmarks
+ * Cinemática realista: quadril desce, joelho avança, tronco inclina
  * Em produção, usar ffmpeg + mediapipe real
  */
 function createMockLandmarksFromFrameNumber(frameNum: number, totalFrames: number) {
   const progress = frameNum / totalFrames;
-  const hiphip = 0.5 + progress * 0.25 - Math.sin(progress * Math.PI) * 0.2;
+  const depth = Math.sin(progress * Math.PI); // 0 → 1 → 0
+
+  // Quadril desce e recua levemente
+  const hipY = 0.5 + depth * 0.25;
+  const hipXOffset = -depth * 0.03;
+
+  // Joelho avança para frente e desce
+  const kneeY = 0.7 + depth * 0.1;
+  const kneeXOffset = depth * 0.08;
+
+  // Ombro inclina para frente (tronco inclina)
+  const shoulderXOffset = depth * 0.05;
+  const shoulderY = 0.2 + depth * 0.12;
 
   return {
-    left_shoulder: { x: 0.3, y: 0.2, z: 0, visibility: 0.95 },
-    right_shoulder: { x: 0.7, y: 0.2, z: 0, visibility: 0.95 },
-    left_hip: { x: 0.3, y: hiphip, z: 0, visibility: 0.95 },
-    right_hip: { x: 0.7, y: hiphip, z: 0, visibility: 0.95 },
-    left_knee: { x: 0.3, y: hiphip + 0.22, z: 0, visibility: 0.95 },
-    right_knee: { x: 0.7, y: hiphip + 0.22, z: 0, visibility: 0.95 },
-    left_ankle: { x: 0.3, y: 0.92, z: 0, visibility: 0.95 },
-    right_ankle: { x: 0.7, y: 0.92, z: 0, visibility: 0.95 },
+    left_shoulder: { x: 0.3 + shoulderXOffset, y: shoulderY, z: 0, visibility: 0.95 },
+    right_shoulder: { x: 0.7 + shoulderXOffset, y: shoulderY, z: 0, visibility: 0.95 },
+    left_hip: { x: 0.3 + hipXOffset, y: hipY, z: 0, visibility: 0.95 },
+    right_hip: { x: 0.7 + hipXOffset, y: hipY, z: 0, visibility: 0.95 },
+    left_knee: { x: 0.3 + kneeXOffset, y: kneeY, z: 0, visibility: 0.95 },
+    right_knee: { x: 0.7 + kneeXOffset, y: kneeY, z: 0, visibility: 0.95 },
+    left_ankle: { x: 0.3, y: 0.9, z: 0, visibility: 0.95 },
+    right_ankle: { x: 0.7, y: 0.9, z: 0, visibility: 0.95 },
+    left_heel: { x: 0.28, y: 0.92, z: 0, visibility: 0.9 },
+    right_heel: { x: 0.68, y: 0.92, z: 0, visibility: 0.9 },
+    left_foot_index: { x: 0.35, y: 0.92, z: 0, visibility: 0.9 },
+    right_foot_index: { x: 0.75, y: 0.92, z: 0, visibility: 0.9 },
     left_elbow: { x: 0.25, y: 0.4, z: 0, visibility: 0.9 },
     right_elbow: { x: 0.75, y: 0.4, z: 0, visibility: 0.9 },
     left_wrist: { x: 0.2, y: 0.3, z: 0, visibility: 0.9 },
@@ -127,9 +144,15 @@ export async function POST(request: NextRequest) {
       classification_summary: analysis.classification.summary,
       classifications_detail: analysis.classification.classifications.map((c) => ({
         criterion: c.criterion,
+        label: c.label || c.criterion,
+        metric: c.metric,
         value: `${c.value}${c.unit || ''}`,
+        raw_value: c.value,
+        unit: c.unit || '',
         classification: c.classification,
+        classification_label: c.classificationLabel || c.classification,
         is_safety_critical: c.isSafetyCritical,
+        note: c.note,
         rag_topics: c.ragTopics,
       })),
       rag_topics_used: analysis.ragTopicsUsed,
@@ -160,12 +183,36 @@ export async function POST(request: NextRequest) {
       diagnostic: {
         score: analysis.classification.overallScore,
         summary: analysis.classification.summary,
-        problems: analysis.classification.classifications.filter((c) =>
-          ['warning', 'danger'].includes(c.classification)
-        ),
-        positive: analysis.classification.classifications.filter((c) =>
-          ['excellent', 'good'].includes(c.classification)
-        ),
+        problems: analysis.classification.classifications
+          .filter((c) => ['warning', 'danger'].includes(c.classification))
+          .map((c) => ({
+            criterion: c.criterion,
+            label: c.label || c.criterion,
+            metric: c.metric,
+            value: `${c.value}${c.unit || ''}`,
+            raw_value: c.value,
+            unit: c.unit || '',
+            classification: c.classification,
+            classification_label: c.classificationLabel || c.classification,
+            is_safety_critical: c.isSafetyCritical,
+            note: c.note,
+            rag_topics: c.ragTopics,
+          })),
+        positive: analysis.classification.classifications
+          .filter((c) => ['excellent', 'good'].includes(c.classification))
+          .map((c) => ({
+            criterion: c.criterion,
+            label: c.label || c.criterion,
+            metric: c.metric,
+            value: `${c.value}${c.unit || ''}`,
+            raw_value: c.value,
+            unit: c.unit || '',
+            classification: c.classification,
+            classification_label: c.classificationLabel || c.classification,
+            is_safety_critical: c.isSafetyCritical,
+            note: c.note,
+            rag_topics: c.ragTopics,
+          })),
       },
     });
   } catch (error) {

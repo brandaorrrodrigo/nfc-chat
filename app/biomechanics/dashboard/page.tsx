@@ -10,9 +10,15 @@ import { AlertCircle, CheckCircle, AlertTriangle, Zap, Target, TrendingUp } from
 
 interface Classification {
   criterion: string;
+  label: string;
+  metric: string;
   value: string;
+  raw_value: number;
+  unit: string;
   classification: string;
+  classification_label: string;
   is_safety_critical: boolean;
+  note?: string;
   rag_topics: string[];
 }
 
@@ -43,8 +49,8 @@ interface AnalysisResult {
       warning: number;
       danger: number;
     };
-    problems: Classification[];
-    positive: Classification[];
+    problems: (Classification & Record<string, any>)[];
+    positive: (Classification & Record<string, any>)[];
   };
 }
 
@@ -238,13 +244,16 @@ export default function BiomechanicsDashboard() {
                       <div className="flex items-start gap-3">
                         {getClassificationIcon(problem.classification)}
                         <div className="flex-1">
-                          <p className="font-bold text-white capitalize">{problem.criterion}</p>
+                          <p className="font-bold text-white">{problem.label || problem.criterion}</p>
                           <p className="text-red-300 text-sm">
-                            Valor: <span className="font-semibold">{problem.value}</span>
+                            Valor: <span className="font-mono font-semibold">{problem.value}</span>
                           </p>
                           <p className="text-red-300 text-sm mt-1">
-                            Classificação: <span className="font-semibold uppercase">{problem.classification}</span>
+                            Classificação: <span className="font-semibold">{problem.classification_label || problem.classification}</span>
                           </p>
+                          {problem.note && (
+                            <p className="text-red-300/70 text-xs mt-1 italic">{problem.note}</p>
+                          )}
                           {problem.rag_topics && problem.rag_topics.length > 0 && (
                             <div className="mt-2 flex flex-wrap gap-1">
                               {problem.rag_topics.map((topic, i) => (
@@ -281,13 +290,16 @@ export default function BiomechanicsDashboard() {
                       <div className="flex items-start gap-3">
                         {getClassificationIcon(positive.classification)}
                         <div className="flex-1">
-                          <p className="font-bold text-white capitalize">{positive.criterion}</p>
+                          <p className="font-bold text-white">{positive.label || positive.criterion}</p>
                           <p className="text-green-300 text-sm">
-                            Valor: <span className="font-semibold">{positive.value}</span>
+                            Valor: <span className="font-mono font-semibold">{positive.value}</span>
                           </p>
                           <p className="text-green-300 text-sm mt-1">
-                            Classificação: <span className="font-semibold uppercase">{positive.classification}</span>
+                            Classificação: <span className="font-semibold">{positive.classification_label || positive.classification}</span>
                           </p>
+                          {positive.note && (
+                            <p className="text-green-300/70 text-xs mt-1 italic">{positive.note}</p>
+                          )}
                           {positive.rag_topics && positive.rag_topics.length > 0 && (
                             <div className="mt-2 flex flex-wrap gap-1">
                               {positive.rag_topics.map((topic, i) => (
@@ -320,41 +332,47 @@ export default function BiomechanicsDashboard() {
                     <tr className="border-b border-slate-700">
                       <th className="text-left px-4 py-2 text-slate-400 font-semibold">Critério</th>
                       <th className="text-left px-4 py-2 text-slate-400 font-semibold">Valor</th>
-                      <th className="text-left px-4 py-2 text-slate-400 font-semibold">Classificação</th>
+                      <th className="text-left px-4 py-2 text-slate-400 font-semibold">Nível</th>
                       <th className="text-left px-4 py-2 text-slate-400 font-semibold">Status</th>
+                      <th className="text-left px-4 py-2 text-slate-400 font-semibold">Observação</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {analysis.analysis.classifications_detail.map((classification, idx) => (
+                    {analysis.analysis.classifications_detail.map((c, idx) => (
                       <tr
                         key={idx}
                         className="border-b border-slate-700 hover:bg-slate-700/30 transition"
                       >
-                        <td className="px-4 py-3 text-white font-semibold capitalize">
-                          {classification.criterion}
+                        <td className="px-4 py-3 text-white font-semibold">
+                          {c.label || c.criterion}
                         </td>
-                        <td className="px-4 py-3 text-cyan-400 font-mono">{classification.value}</td>
+                        <td className="px-4 py-3 text-cyan-400 font-mono">{c.value}</td>
                         <td className="px-4 py-3">
                           <span
                             className={`px-3 py-1 rounded text-xs font-semibold ${
-                              classification.classification === 'danger'
+                              c.classification === 'danger'
                                 ? 'bg-red-900/50 text-red-300'
-                                : classification.classification === 'warning'
+                                : c.classification === 'warning'
                                   ? 'bg-yellow-900/50 text-yellow-300'
-                                  : classification.classification === 'excellent'
+                                  : c.classification === 'excellent'
                                     ? 'bg-green-900/50 text-green-300'
-                                    : 'bg-blue-900/50 text-blue-300'
+                                    : c.classification === 'good'
+                                      ? 'bg-emerald-900/50 text-emerald-300'
+                                      : 'bg-blue-900/50 text-blue-300'
                             }`}
                           >
-                            {classification.classification.toUpperCase()}
+                            {(c.classification_label || c.classification).toUpperCase()}
                           </span>
                         </td>
                         <td className="px-4 py-3">
-                          {classification.is_safety_critical ? (
-                            <span className="text-red-400 font-semibold">⚠️ Crítico</span>
+                          {c.is_safety_critical ? (
+                            <span className="text-red-400 font-semibold">Risco de Lesão</span>
                           ) : (
-                            <span className="text-slate-400">OK</span>
+                            <span className="text-slate-500">-</span>
                           )}
+                        </td>
+                        <td className="px-4 py-3 text-slate-400 text-xs max-w-[200px] truncate">
+                          {c.note || '-'}
                         </td>
                       </tr>
                     ))}
