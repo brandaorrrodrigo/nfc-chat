@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSupabase } from '@/lib/supabase';
 import { downloadVideoFromSupabase, downloadVideoFromUrl, extractFrames } from '@/lib/vision/video-analysis';
 import { analyzeBiomechanics, queryRAG } from '@/lib/biomechanics';
+import { sendPromptToOllama } from '@/lib/biomechanics/llm-bridge';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
@@ -136,6 +137,18 @@ export async function POST(request: NextRequest) {
       }
     );
 
+    // 5.5. Gerar relatório via Ollama + RAG
+    let llmReport = null;
+    try {
+      llmReport = await sendPromptToOllama(analysis.prompt, analysis.classification, {
+        timeoutMs: 180000,
+      });
+      console.log('[analyze] Relatório Ollama gerado com sucesso');
+    } catch (llmError: any) {
+      console.warn('[analyze] Ollama indisponível ou erro:', llmError.message);
+      // Continua sem o relatório
+    }
+
     // 6. Preparar resultado
     const biomechanicsResult = {
       timestamp: new Date().toISOString(),
@@ -162,6 +175,7 @@ export async function POST(request: NextRequest) {
       rag_topics_used: analysis.ragTopicsUsed,
       frames_analyzed: analysis.mediaMetrics.totalFrames,
       duration_seconds: analysis.mediaMetrics.duration,
+      llm_report: llmReport || null,
     };
 
     // 7. Salvar no banco de dados
@@ -220,6 +234,7 @@ export async function POST(request: NextRequest) {
             rag_topics: c.ragTopics,
           })),
       },
+      report: llmReport,
     });
   } catch (error) {
     console.error('Biomechanics analysis error:', error);
@@ -258,8 +273,10 @@ export async function GET(request: NextRequest) {
         classification_summary: { excellent: 'number', warning: 'number', danger: 'number' },
         classifications_detail: 'array of criteria with scores',
         rag_topics_used: 'array of knowledge topics',
+        llm_report: 'LLMAnalysisReport or null',
       },
       diagnostic: 'summary of problems and positive aspects',
+      report: 'LLMAnalysisReport from Ollama or null',
     },
   });
 }

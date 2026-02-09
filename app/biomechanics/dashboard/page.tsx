@@ -23,6 +23,31 @@ interface Classification {
   rag_topics: string[];
 }
 
+interface LLMProblem {
+  nome: string;
+  severidade: 'CRITICA' | 'MODERADA' | 'LEVE';
+  descricao: string;
+  causa_provavel?: string;
+  fundamentacao?: string;
+}
+
+interface LLMRecommendation {
+  prioridade: number;
+  categoria: string;
+  descricao: string;
+  exercicio_corretivo?: string;
+}
+
+interface LLMAnalysisReport {
+  resumo_executivo: string;
+  problemas_identificados: LLMProblem[];
+  pontos_positivos: string[];
+  recomendacoes: LLMRecommendation[];
+  score_geral: number;
+  classificacao: 'EXCELENTE' | 'BOM' | 'REGULAR' | 'NECESSITA_CORRECAO';
+  proximos_passos: string[];
+}
+
 interface AnalysisResult {
   success: boolean;
   videoId: string;
@@ -55,6 +80,7 @@ interface AnalysisResult {
     problems: (Classification & Record<string, any>)[];
     positive: (Classification & Record<string, any>)[];
   };
+  report?: LLMAnalysisReport | null;
 }
 
 export default function BiomechanicsDashboard() {
@@ -434,6 +460,149 @@ export default function BiomechanicsDashboard() {
                 </table>
               </div>
             </div>
+
+            {/* LLM Report Section */}
+            {analysis.report && (
+              <div className="bg-slate-800 rounded-lg border border-cyan-700/50 p-6 mb-8">
+                <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                  <Zap className="w-6 h-6 text-cyan-400" />
+                  Análise de IA (Ollama)
+                </h2>
+
+                {/* Executive Summary */}
+                <div className="bg-slate-700/50 rounded-lg p-4 mb-6 border border-cyan-600/30">
+                  <h3 className="text-lg font-semibold text-cyan-300 mb-2">Resumo Executivo</h3>
+                  <p className="text-slate-300 leading-relaxed">{analysis.report.resumo_executivo}</p>
+                </div>
+
+                {/* Score and Classification */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                  <div className="bg-slate-700/50 rounded-lg p-4 border border-cyan-600/30">
+                    <p className="text-slate-400 text-sm font-semibold mb-1">SCORE GERAL (IA)</p>
+                    <p className={`text-3xl font-bold ${getScoreColor(analysis.report.score_geral)}`}>
+                      {analysis.report.score_geral.toFixed(1)}/10
+                    </p>
+                  </div>
+                  <div className="bg-slate-700/50 rounded-lg p-4 border border-cyan-600/30">
+                    <p className="text-slate-400 text-sm font-semibold mb-1">CLASSIFICAÇÃO</p>
+                    <p className="text-2xl font-bold text-cyan-300">
+                      {analysis.report.classificacao.replace(/_/g, ' ')}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Identified Problems */}
+                {analysis.report.problemas_identificados.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-red-300 mb-3 flex items-center gap-2">
+                      <AlertCircle className="w-5 h-5" />
+                      Problemas Identificados
+                    </h3>
+                    <div className="space-y-3">
+                      {analysis.report.problemas_identificados.map((problema, idx) => (
+                        <div
+                          key={idx}
+                          className="bg-red-900/20 border border-red-700/30 rounded p-3"
+                        >
+                          <div className="flex items-start gap-2 mb-1">
+                            <span className={`px-2 py-0.5 rounded text-xs font-semibold ${
+                              problema.severidade === 'CRITICA'
+                                ? 'bg-red-900/60 text-red-200'
+                                : problema.severidade === 'MODERADA'
+                                  ? 'bg-yellow-900/60 text-yellow-200'
+                                  : 'bg-blue-900/60 text-blue-200'
+                            }`}>
+                              {problema.severidade}
+                            </span>
+                            <p className="font-semibold text-white">{problema.nome}</p>
+                          </div>
+                          <p className="text-red-300 text-sm mb-1">{problema.descricao}</p>
+                          {problema.causa_provavel && (
+                            <p className="text-red-300/70 text-xs italic">
+                              Causa provável: {problema.causa_provavel}
+                            </p>
+                          )}
+                          {problema.fundamentacao && (
+                            <p className="text-red-300/70 text-xs mt-1 italic">
+                              {problema.fundamentacao}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Positive Points */}
+                {analysis.report.pontos_positivos.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-green-300 mb-3 flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5" />
+                      Pontos Positivos
+                    </h3>
+                    <ul className="space-y-2">
+                      {analysis.report.pontos_positivos.map((ponto, idx) => (
+                        <li key={idx} className="text-green-300 text-sm flex items-start gap-2">
+                          <span className="text-green-400 mt-1">✓</span>
+                          <span>{ponto}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Recommendations */}
+                {analysis.report.recomendacoes.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-yellow-300 mb-3 flex items-center gap-2">
+                      <Target className="w-5 h-5" />
+                      Recomendações
+                    </h3>
+                    <div className="space-y-3">
+                      {analysis.report.recomendacoes.map((rec, idx) => (
+                        <div
+                          key={idx}
+                          className="bg-yellow-900/20 border border-yellow-700/30 rounded p-3"
+                        >
+                          <div className="flex items-start gap-2 mb-1">
+                            <span className="px-2 py-0.5 rounded text-xs font-semibold bg-yellow-900/60 text-yellow-200">
+                              P{rec.prioridade}
+                            </span>
+                            <div className="flex-1">
+                              <p className="font-semibold text-white text-sm">{rec.categoria}</p>
+                              <p className="text-yellow-300 text-sm">{rec.descricao}</p>
+                              {rec.exercicio_corretivo && (
+                                <p className="text-yellow-300/80 text-xs mt-1">
+                                  Ex. corretivo: {rec.exercicio_corretivo}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Next Steps */}
+                {analysis.report.proximos_passos.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-blue-300 mb-3 flex items-center gap-2">
+                      <TrendingUp className="w-5 h-5" />
+                      Próximos Passos
+                    </h3>
+                    <ol className="space-y-2">
+                      {analysis.report.proximos_passos.map((passo, idx) => (
+                        <li key={idx} className="text-blue-300 text-sm flex items-start gap-2">
+                          <span className="font-semibold text-blue-400 flex-shrink-0">{idx + 1}.</span>
+                          <span>{passo}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* RAG Topics Section */}
             {analysis.analysis.rag_topics_used.length > 0 && (
