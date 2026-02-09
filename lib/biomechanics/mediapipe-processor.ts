@@ -123,6 +123,23 @@ function angleBetweenPoints(
 }
 
 /**
+ * Calcula ângulo entre um vetor (p1→p2) e a vertical (para cima)
+ * 0° = vertical, 90° = horizontal
+ * Em coords de tela: vertical = (0, -1) pois y cresce pra baixo
+ */
+function angleFromVertical(p1: Landmark, p2: Landmark): number {
+  const vx = p2.x - p1.x;
+  const vy = p2.y - p1.y;
+  // Vertical para cima em coords de tela: (0, -1)
+  const dot = vy * -1; // vx*0 + vy*(-1)
+  const mag = Math.sqrt(vx * vx + vy * vy);
+  if (mag === 0) return 0;
+  const cosAngle = dot / mag;
+  const radians = Math.acos(Math.max(-1, Math.min(1, cosAngle)));
+  return (radians * 180) / Math.PI;
+}
+
+/**
  * Calcula o ângulo de inclinação no plano frontal
  * Retorna desvio medial em cm (baseado em proporção do vídeo)
  */
@@ -256,23 +273,50 @@ export function processFrame(
       });
     }
 
-    // Inclinação do tronco
+    // Inclinação do tronco (ângulo do vetor hip→shoulder vs vertical)
+    // 0° = tronco vertical (em pé), ~30° = inclinação típica de agachamento
     if (
       hasRequiredLandmarks([
         LANDMARKS.LEFT_SHOULDER,
         LANDMARKS.LEFT_HIP,
       ])
     ) {
-      const trunkAngle = Math.abs(
-        angleBetweenPoints(
-          { x: 0.5, y: 0, z: 0 }, // Vertical reference
-          lm[LANDMARKS.LEFT_HIP],
-          lm[LANDMARKS.LEFT_SHOULDER]
-        ) - 90
+      const trunkAngle = angleFromVertical(
+        lm[LANDMARKS.LEFT_HIP],
+        lm[LANDMARKS.LEFT_SHOULDER]
       );
       metrics.push({
         metric: 'trunk_inclination_degrees',
         value: Math.round(trunkAngle),
+        unit: '°',
+      });
+    }
+
+    // Mudança de flexão lombar (proxy para butt wink)
+    // Mede variação do ângulo pélvico: diferença entre tronco e quadril
+    // Se o tronco inclina mais que o quadril flexiona, sugere flexão lombar
+    if (
+      hasRequiredLandmarks([
+        LANDMARKS.LEFT_SHOULDER,
+        LANDMARKS.LEFT_HIP,
+        LANDMARKS.LEFT_KNEE,
+      ])
+    ) {
+      const trunkTilt = angleFromVertical(
+        lm[LANDMARKS.LEFT_HIP],
+        lm[LANDMARKS.LEFT_SHOULDER]
+      );
+      const hipAngle = angleBetweenPoints(
+        lm[LANDMARKS.LEFT_SHOULDER],
+        lm[LANDMARKS.LEFT_HIP],
+        lm[LANDMARKS.LEFT_KNEE]
+      );
+      // Em agachamento ideal: tronco inclina ~30° e hip angle ~80°
+      // Butt wink: tronco inclina desproporcionalmente ao hip angle
+      // Proxy: registrar o trunk tilt por frame, o aggregator calcula o DELTA
+      metrics.push({
+        metric: 'lumbar_flexion_proxy',
+        value: Math.round(trunkTilt * 10) / 10,
         unit: '°',
       });
     }

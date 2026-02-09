@@ -6,7 +6,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { AlertCircle, CheckCircle, AlertTriangle, Zap, Target, TrendingUp } from 'lucide-react';
+import { AlertCircle, CheckCircle, AlertTriangle, Zap, Target, TrendingUp, Info } from 'lucide-react';
 
 interface Classification {
   criterion: string;
@@ -18,6 +18,7 @@ interface Classification {
   classification: string;
   classification_label: string;
   is_safety_critical: boolean;
+  is_informative?: boolean;
   note?: string;
   rag_topics: string[];
 }
@@ -29,6 +30,8 @@ interface AnalysisResult {
     overall_score: number;
     exercise_type: string;
     timestamp: string;
+    equipment_constraint?: string | null;
+    equipment_constraint_label?: string | null;
     classification_summary: {
       excellent: number;
       good: number;
@@ -56,9 +59,19 @@ interface AnalysisResult {
 
 export default function BiomechanicsDashboard() {
   const [videoId, setVideoId] = useState('va_1770241761873_ckobfl93u');
+  const [equipmentConstraint, setEquipmentConstraint] = useState('none');
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const CONSTRAINT_OPTIONS = [
+    { value: 'none', label: 'Sem limitação' },
+    { value: 'safety_bars', label: 'Barras de segurança' },
+    { value: 'machine_guided', label: 'Máquina guiada (Smith)' },
+    { value: 'space_limited', label: 'Espaço limitado' },
+    { value: 'pain_limited', label: 'Dor limitando amplitude' },
+    { value: 'rehab', label: 'Em reabilitação' },
+  ];
 
   useEffect(() => {
     // Load default video on mount
@@ -79,7 +92,10 @@ export default function BiomechanicsDashboard() {
       const response = await fetch('/api/biomechanics/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ videoId: idToAnalyze }),
+        body: JSON.stringify({
+          videoId: idToAnalyze,
+          equipmentConstraint: equipmentConstraint !== 'none' ? equipmentConstraint : undefined,
+        }),
       });
 
       if (!response.ok) {
@@ -140,7 +156,7 @@ export default function BiomechanicsDashboard() {
         {/* Input Section */}
         <div className="bg-slate-800 rounded-lg border border-slate-700 p-6 mb-8">
           <label className="block text-white font-semibold mb-3">ID do Vídeo</label>
-          <div className="flex gap-3">
+          <div className="flex gap-3 mb-4">
             <input
               type="text"
               value={videoId}
@@ -155,6 +171,25 @@ export default function BiomechanicsDashboard() {
             >
               {loading ? 'Analisando...' : 'Analisar'}
             </button>
+          </div>
+          <div>
+            <label className="block text-slate-400 text-sm font-semibold mb-2">Contexto / Limitação Externa</label>
+            <select
+              value={equipmentConstraint}
+              onChange={(e) => setEquipmentConstraint(e.target.value)}
+              className="px-4 py-2 bg-slate-700 border border-slate-600 rounded text-white focus:outline-none focus:border-cyan-500"
+            >
+              {CONSTRAINT_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+            {equipmentConstraint !== 'none' && (
+              <span className="ml-3 text-sm text-amber-400">
+                Critérios de amplitude serão informativos (não penalizam score)
+              </span>
+            )}
           </div>
         </div>
 
@@ -177,6 +212,9 @@ export default function BiomechanicsDashboard() {
                   {analysis.analysis.overall_score.toFixed(1)}
                   <span className="text-xl">/10</span>
                 </p>
+                {analysis.analysis.equipment_constraint && analysis.analysis.equipment_constraint !== 'none' && (
+                  <p className="text-slate-500 text-xs mt-2">Score reflete apenas qualidade técnica</p>
+                )}
               </div>
 
               {/* Exercise Type */}
@@ -185,6 +223,11 @@ export default function BiomechanicsDashboard() {
                 <p className="text-xl font-bold text-white capitalize">
                   {analysis.analysis.exercise_type || 'Indefinido'}
                 </p>
+                {analysis.analysis.equipment_constraint_label && (
+                  <span className="inline-block mt-2 px-2 py-1 bg-amber-900/40 text-amber-300 text-xs rounded font-semibold">
+                    {analysis.analysis.equipment_constraint_label}
+                  </span>
+                )}
               </div>
 
               {/* Frames Analyzed */}
@@ -348,24 +391,35 @@ export default function BiomechanicsDashboard() {
                         </td>
                         <td className="px-4 py-3 text-cyan-400 font-mono">{c.value}</td>
                         <td className="px-4 py-3">
-                          <span
-                            className={`px-3 py-1 rounded text-xs font-semibold ${
-                              c.classification === 'danger'
-                                ? 'bg-red-900/50 text-red-300'
-                                : c.classification === 'warning'
-                                  ? 'bg-yellow-900/50 text-yellow-300'
-                                  : c.classification === 'excellent'
-                                    ? 'bg-green-900/50 text-green-300'
-                                    : c.classification === 'good'
-                                      ? 'bg-emerald-900/50 text-emerald-300'
-                                      : 'bg-blue-900/50 text-blue-300'
-                            }`}
-                          >
-                            {(c.classification_label || c.classification).toUpperCase()}
-                          </span>
+                          {c.is_informative ? (
+                            <span className="px-3 py-1 rounded text-xs font-semibold bg-slate-600/50 text-slate-300">
+                              INFORMATIVO
+                            </span>
+                          ) : (
+                            <span
+                              className={`px-3 py-1 rounded text-xs font-semibold ${
+                                c.classification === 'danger'
+                                  ? 'bg-red-900/50 text-red-300'
+                                  : c.classification === 'warning'
+                                    ? 'bg-yellow-900/50 text-yellow-300'
+                                    : c.classification === 'excellent'
+                                      ? 'bg-green-900/50 text-green-300'
+                                      : c.classification === 'good'
+                                        ? 'bg-emerald-900/50 text-emerald-300'
+                                        : 'bg-blue-900/50 text-blue-300'
+                              }`}
+                            >
+                              {(c.classification_label || c.classification).toUpperCase()}
+                            </span>
+                          )}
                         </td>
                         <td className="px-4 py-3">
-                          {c.is_safety_critical ? (
+                          {c.is_informative ? (
+                            <span className="text-slate-400 text-xs flex items-center gap-1">
+                              <Info className="w-3 h-3" />
+                              Amplitude limitada
+                            </span>
+                          ) : c.is_safety_critical ? (
                             <span className="text-red-400 font-semibold">Risco de Lesão</span>
                           ) : (
                             <span className="text-slate-500">-</span>

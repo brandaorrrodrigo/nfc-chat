@@ -22,7 +22,29 @@ export interface CategoryTemplate {
   phases: string[];
   criteria: Record<string, CriterionRange>;
   safety_critical_criteria: string[];
+  rom_dependent_criteria: string[]; // Critérios que dependem de amplitude (informativos quando constraint ativo)
 }
+
+// ============================
+// Equipment Constraints
+// ============================
+
+export type EquipmentConstraint =
+  | 'none'
+  | 'safety_bars'
+  | 'machine_guided'
+  | 'space_limited'
+  | 'pain_limited'
+  | 'rehab';
+
+export const CONSTRAINT_LABELS: Record<EquipmentConstraint, string> = {
+  none: 'Nenhuma',
+  safety_bars: 'Barras de segurança',
+  machine_guided: 'Máquina guiada (Smith)',
+  space_limited: 'Espaço limitado',
+  pain_limited: 'Dor limitando amplitude',
+  rehab: 'Em reabilitação',
+};
 
 // ============================
 // Tradução multilíngue centralizada
@@ -86,6 +108,7 @@ export const SQUAT_TEMPLATE: CategoryTemplate = {
   key_positions: ['heel_contact', 'hip_below_knee', 'weight_distribution'],
   phases: ['eccentric_descent', 'bottom_position', 'concentric_ascent'],
   safety_critical_criteria: ['knee_valgus', 'lumbar_control'],
+  rom_dependent_criteria: ['depth', 'ankle_mobility', 'tempo'],
   criteria: {
     depth: {
       metric: 'hip_angle_at_bottom',
@@ -169,6 +192,7 @@ export const HINGE_TEMPLATE: CategoryTemplate = {
   key_positions: ['bar_contact_shins', 'lockout_complete', 'neutral_spine'],
   phases: ['setup', 'pull_floor_to_knee', 'pull_knee_to_lockout', 'eccentric_return'],
   safety_critical_criteria: ['lumbar_neutrality', 'bar_path'],
+  rom_dependent_criteria: ['hip_hinge_depth', 'tempo_hinge'],
   criteria: {
     lumbar_neutrality: {
       metric: 'lumbar_flexion_degrees',
@@ -232,6 +256,7 @@ export const HORIZONTAL_PRESS_TEMPLATE: CategoryTemplate = {
   key_positions: ['scapula_retracted', 'arch_maintained', 'feet_flat'],
   phases: ['setup', 'eccentric_descent', 'bottom_position', 'concentric_press'],
   safety_critical_criteria: ['wrist_alignment', 'elbow_flare'],
+  rom_dependent_criteria: ['rom_press', 'tempo_press'],
   criteria: {
     elbow_angle_bottom: {
       metric: 'elbow_angle_at_chest',
@@ -286,6 +311,7 @@ export const VERTICAL_PRESS_TEMPLATE: CategoryTemplate = {
   key_positions: ['full_lockout', 'rib_cage_down', 'glutes_engaged'],
   phases: ['setup', 'press_to_forehead', 'press_to_lockout', 'eccentric_return'],
   safety_critical_criteria: ['lumbar_compensation', 'overhead_lockout'],
+  rom_dependent_criteria: ['shoulder_rom', 'tempo_overhead'],
   criteria: {
     overhead_lockout: {
       metric: 'shoulder_flexion_at_top',
@@ -337,6 +363,7 @@ export const PULL_TEMPLATE: CategoryTemplate = {
   key_positions: ['full_stretch', 'full_contraction', 'neutral_spine'],
   phases: ['start_position', 'concentric_pull', 'peak_contraction', 'eccentric_return'],
   safety_critical_criteria: ['torso_stability_row', 'lumbar_position_row'],
+  rom_dependent_criteria: ['contraction_rom', 'tempo_pull'],
   criteria: {
     scapular_retraction: {
       metric: 'scapular_distance_change_cm',
@@ -393,6 +420,7 @@ export const UNILATERAL_TEMPLATE: CategoryTemplate = {
   key_positions: ['front_knee_tracking', 'rear_knee_position', 'weight_distribution'],
   phases: ['setup', 'eccentric_descent', 'bottom_position', 'concentric_ascent'],
   safety_critical_criteria: ['knee_valgus_unilateral', 'pelvic_stability'],
+  rom_dependent_criteria: ['depth_unilateral', 'tempo_unilateral'],
   criteria: {
     knee_valgus_unilateral: {
       metric: 'knee_medial_displacement_cm',
@@ -445,6 +473,7 @@ export const CORE_TEMPLATE: CategoryTemplate = {
   key_positions: ['alignment_head_to_heel', 'hip_sag', 'hip_pike'],
   phases: ['setup', 'hold_or_movement', 'fatigue_compensation'],
   safety_critical_criteria: ['spinal_alignment', 'pelvic_control'],
+  rom_dependent_criteria: ['hold_duration'],
   criteria: {
     spinal_alignment: {
       metric: 'deviation_from_neutral_line',

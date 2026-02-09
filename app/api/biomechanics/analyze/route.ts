@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { videoId } = body;
+    const { videoId, equipmentConstraint } = body;
 
     if (!videoId) {
       return NextResponse.json(
@@ -127,6 +127,7 @@ export async function POST(request: NextRequest) {
         exerciseName: video.movement_pattern || 'squat',
         frames,
         fps,
+        equipmentConstraint: equipmentConstraint || undefined,
       },
       {
         includeRAG: true,
@@ -141,6 +142,8 @@ export async function POST(request: NextRequest) {
       system: 'biomechanics-v2',
       exercise_type: video.movement_pattern,
       overall_score: analysis.classification.overallScore,
+      equipment_constraint: analysis.classification.constraintApplied || null,
+      equipment_constraint_label: analysis.classification.constraintLabel || null,
       classification_summary: analysis.classification.summary,
       classifications_detail: analysis.classification.classifications.map((c) => ({
         criterion: c.criterion,
@@ -152,6 +155,7 @@ export async function POST(request: NextRequest) {
         classification: c.classification,
         classification_label: c.classificationLabel || c.classification,
         is_safety_critical: c.isSafetyCritical,
+        is_informative: c.isInformativeOnly || false,
         note: c.note,
         rag_topics: c.ragTopics,
       })),
@@ -184,7 +188,7 @@ export async function POST(request: NextRequest) {
         score: analysis.classification.overallScore,
         summary: analysis.classification.summary,
         problems: analysis.classification.classifications
-          .filter((c) => ['warning', 'danger'].includes(c.classification))
+          .filter((c) => ['warning', 'danger'].includes(c.classification) && !c.isInformativeOnly)
           .map((c) => ({
             criterion: c.criterion,
             label: c.label || c.criterion,
@@ -195,6 +199,7 @@ export async function POST(request: NextRequest) {
             classification: c.classification,
             classification_label: c.classificationLabel || c.classification,
             is_safety_critical: c.isSafetyCritical,
+            is_informative: c.isInformativeOnly || false,
             note: c.note,
             rag_topics: c.ragTopics,
           })),
@@ -210,6 +215,7 @@ export async function POST(request: NextRequest) {
             classification: c.classification,
             classification_label: c.classificationLabel || c.classification,
             is_safety_critical: c.isSafetyCritical,
+            is_informative: c.isInformativeOnly || false,
             note: c.note,
             rag_topics: c.ragTopics,
           })),
@@ -241,6 +247,7 @@ export async function GET(request: NextRequest) {
       method: 'POST',
       body: {
         videoId: 'string - ID from nfc_chat_video_analyses table',
+        equipmentConstraint: 'optional: none | safety_bars | machine_guided | space_limited | pain_limited | rehab',
       },
     },
     response: {

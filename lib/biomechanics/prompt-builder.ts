@@ -4,13 +4,14 @@
  */
 
 import { CriteriaClassification, ClassificationResult, summarizeClassification } from './criteria-classifier';
-import { CategoryTemplate } from './category-templates';
+import { CategoryTemplate, EquipmentConstraint, CONSTRAINT_LABELS } from './category-templates';
 
 export interface PromptBuilderInput {
   result: ClassificationResult;
   template: CategoryTemplate;
   exerciseName: string;
   ragContext?: RAGContext[];
+  equipmentConstraint?: EquipmentConstraint;
   videoMetadata?: {
     duration?: number;
     frameCount?: number;
@@ -81,7 +82,8 @@ function buildClassificationsSection(classifications: CriteriaClassification[]):
     lines.push('### 🔴 ZONA CRÍTICA (Perigo)\n');
     byLevel.danger.forEach((c) => {
       const name = c.label || c.criterion;
-      lines.push(`- **${name}** (${c.metric})`);
+      const infoTag = c.isInformativeOnly ? ' [INFORMATIVO]' : '';
+      lines.push(`- **${name}**${infoTag} (${c.metric})`);
       lines.push(
         `  - Valor: ${c.value}${c.unit || ''} | Range Perigoso: ${c.range.danger}`
       );
@@ -90,6 +92,9 @@ function buildClassificationsSection(classifications: CriteriaClassification[]):
       }
       if (c.isSafetyCritical) {
         lines.push(`  - ⚠️ CRITÉRIO DE SEGURANÇA`);
+      }
+      if (c.isInformativeOnly) {
+        lines.push(`  - ℹ️ Classificação informativa — amplitude limitada por equipamento/condição`);
       }
       lines.push('');
     });
@@ -184,6 +189,12 @@ function buildInstructionsSection(result: ClassificationResult): string {
     'Ao analisar os dados acima:\n',
   ];
 
+  if (result.constraintApplied && result.constraintApplied !== 'none') {
+    lines.push(
+      `0. **CONTEXTO**: Exercício com ${result.constraintLabel || result.constraintApplied}. Critérios marcados como INFORMATIVOS não devem ser interpretados como problemas reais — amplitude pode estar limitada externamente.\n`
+    );
+  }
+
   if (result.classifications.some((c) => c.classification === 'danger')) {
     lines.push(
       '1. **PRIORIDADE MÁXIMA**: Identifique os critérios em ZONA CRÍTICA e explique POR QUÊ são perigosos'
@@ -232,6 +243,7 @@ export function buildPrompt(input: PromptBuilderInput): BuiltPrompt {
     template,
     exerciseName,
     ragContext,
+    equipmentConstraint,
     videoMetadata,
   } = input;
 
@@ -249,6 +261,17 @@ export function buildPrompt(input: PromptBuilderInput): BuiltPrompt {
     userPromptLines.push(`**Frames Analisados**: ${videoMetadata.frameCount}`);
   }
   userPromptLines.push('');
+
+  // Contexto de equipamento (se aplicável)
+  if (equipmentConstraint && equipmentConstraint !== 'none') {
+    const constraintLabel = CONSTRAINT_LABELS[equipmentConstraint] || equipmentConstraint;
+    userPromptLines.push(`## CONTEXTO DE EQUIPAMENTO\n`);
+    userPromptLines.push(`Exercício realizado com **${constraintLabel}**.`);
+    userPromptLines.push(`Amplitude reduzida pode ser resultado do equipamento/condição, não de limitação técnica do praticante.`);
+    userPromptLines.push(`Critérios de profundidade e mobilidade são INFORMATIVOS neste contexto — não penalizam o score.`);
+    userPromptLines.push(`Avalie apenas critérios de SEGURANÇA (valgo, lombar, tronco, assimetria) como definitivos.\n`);
+    userPromptLines.push('');
+  }
 
   // Score geral (resumido)
   userPromptLines.push(`## Score Geral: ${result.overallScore}/10\n`);

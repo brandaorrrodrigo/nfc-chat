@@ -10,7 +10,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getExerciseCategory, getCategoryTemplate, translateClassification, translateCategory } from '@/lib/biomechanics/category-templates';
+import { getExerciseCategory, getCategoryTemplate, translateClassification, translateCategory, EquipmentConstraint, CONSTRAINT_LABELS } from '@/lib/biomechanics/category-templates';
 import { classifyMetrics, MetricValue, extractAllRAGTopics } from '@/lib/biomechanics/criteria-classifier';
 import { buildPrompt, buildMinimalPrompt } from '@/lib/biomechanics/prompt-builder';
 import { queryRAG } from '@/lib/biomechanics/biomechanics-rag';
@@ -32,6 +32,7 @@ interface AnalyzeAnglesRequest {
   angles: AngleInput[];       // lista de medições
   includeRAG?: boolean;       // default true
   sendToLLM?: boolean;        // default true
+  equipmentConstraint?: EquipmentConstraint; // limitação externa
 }
 
 // ============================
@@ -146,7 +147,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body: AnalyzeAnglesRequest = await request.json();
-    const { exercise, angles, includeRAG = true, sendToLLM = true } = body;
+    const { exercise, angles, includeRAG = true, sendToLLM = true, equipmentConstraint } = body;
 
     if (!exercise || !angles || angles.length === 0) {
       return NextResponse.json(
@@ -189,7 +190,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 3. Classificar contra template
-    const classification = classifyMetrics(metrics, template, exercise);
+    const classification = classifyMetrics(metrics, template, exercise, equipmentConstraint);
 
     // 4. RAG
     const ragTopics = extractAllRAGTopics(classification);
@@ -201,6 +202,7 @@ export async function POST(request: NextRequest) {
       template,
       exerciseName: exercise,
       ragContext: ragContexts,
+      equipmentConstraint,
     });
 
     // 6. Enviar ao LLM (opcional)
@@ -218,6 +220,8 @@ export async function POST(request: NextRequest) {
       exercise,
       category,
       category_label: translateCategory(category),
+      equipment_constraint: classification.constraintApplied || null,
+      equipment_constraint_label: classification.constraintLabel || null,
       processing_time_ms: Date.now() - startTime,
 
       classification: {
@@ -234,6 +238,7 @@ export async function POST(request: NextRequest) {
           level: c.classification,
           level_label: c.classificationLabel,
           is_safety_critical: c.isSafetyCritical,
+          is_informative: c.isInformativeOnly || false,
           range: c.range,
           note: c.note,
         })),

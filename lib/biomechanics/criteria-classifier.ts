@@ -3,7 +3,7 @@
  * Compara métricas numéricas contra ranges definidos nos templates
  */
 
-import { CategoryTemplate, CriterionRange, translateClassification, translateCategory } from './category-templates';
+import { CategoryTemplate, CriterionRange, EquipmentConstraint, CONSTRAINT_LABELS, translateClassification, translateCategory } from './category-templates';
 
 export type ClassificationLevel = 'excellent' | 'good' | 'acceptable' | 'warning' | 'danger';
 
@@ -22,6 +22,7 @@ export interface CriteriaClassification {
   classification: ClassificationLevel;
   classificationLabel: string; // Nível traduzido (ex: "Perigo", "Excelente")
   isSafetyCritical: boolean;
+  isInformativeOnly: boolean; // true quando constraint ativo e critério é ROM-dependent
   range: {
     excellent?: string;
     good?: string;
@@ -42,6 +43,8 @@ export interface ClassificationResult {
   overallScore: number;
   hasDangerCriteria: boolean;
   hasWarningSafetyCriteria: boolean;
+  constraintApplied?: EquipmentConstraint;
+  constraintLabel?: string;
   summary: {
     excellent: number;
     good: number;
@@ -158,7 +161,8 @@ const getStringValue = (val: any): string | undefined => {
 export function classifyMetrics(
   metrics: MetricValue[],
   template: CategoryTemplate,
-  exerciseType?: string
+  exerciseType?: string,
+  constraint?: EquipmentConstraint
 ): ClassificationResult {
   const classifications: CriteriaClassification[] = [];
   const summary = {
@@ -168,6 +172,9 @@ export function classifyMetrics(
     warning: 0,
     danger: 0,
   };
+
+  const hasConstraint = constraint && constraint !== 'none';
+  const romCriteria = template.rom_dependent_criteria || [];
 
   // Iterar sobre cada critério no template
   for (const [criterionName, criterionRange] of Object.entries(template.criteria)) {
@@ -183,6 +190,7 @@ export function classifyMetrics(
     summary[level]++;
 
     const isSafetyCritical = template.safety_critical_criteria.includes(criterionName);
+    const isInformativeOnly = hasConstraint ? romCriteria.includes(criterionName) : false;
 
     classifications.push({
       criterion: criterionName,
@@ -191,8 +199,9 @@ export function classifyMetrics(
       value: metricValue.value,
       unit: metricValue.unit || (criterionRange.metric.includes('degree') ? '°' : 'cm'),
       classification: level,
-      classificationLabel: translateClassification(level),
+      classificationLabel: isInformativeOnly ? 'Informativo' : translateClassification(level),
       isSafetyCritical,
+      isInformativeOnly,
       range: {
         excellent: getStringValue((criterionRange as any).excellent),
         good: getStringValue((criterionRange as any).good),
@@ -201,16 +210,18 @@ export function classifyMetrics(
         danger: getStringValue((criterionRange as any).danger),
       },
       ragTopics: criterionRange.rag_topics || [],
-      note: criterionRange.note,
+      note: isInformativeOnly
+        ? `${criterionRange.note || ''} [Informativo: amplitude limitada por ${CONSTRAINT_LABELS[constraint!] || constraint}]`.trim()
+        : criterionRange.note,
     });
   }
 
-  // Calcular score geral baseado no padrão especificado
+  // Calcular score geral (exclui critérios informativos)
   const overallScore = calculateOverallScore(classifications);
 
-  const hasDangerCriteria = classifications.some((c) => c.classification === 'danger');
+  const hasDangerCriteria = classifications.some((c) => c.classification === 'danger' && !c.isInformativeOnly);
   const hasWarningSafetyCriteria = classifications.some(
-    (c) => c.isSafetyCritical && c.classification === 'warning'
+    (c) => c.isSafetyCritical && c.classification === 'warning' && !c.isInformativeOnly
   );
 
   return {
@@ -222,6 +233,8 @@ export function classifyMetrics(
     overallScore,
     hasDangerCriteria,
     hasWarningSafetyCriteria,
+    constraintApplied: hasConstraint ? constraint : undefined,
+    constraintLabel: hasConstraint ? CONSTRAINT_LABELS[constraint!] : undefined,
     summary,
   };
 }
@@ -247,6 +260,7 @@ export function calculateOverallScore(classifications: CriteriaClassification[])
   let weightedScore = 0;
 
   for (const c of classifications) {
+    if (c.isInformativeOnly) continue; // Pular critérios ROM quando constraint ativo
     const criterionWeight = c.isSafetyCritical ? 2.0 : 1.0;
     totalWeight += criterionWeight;
     weightedScore += weights[c.classification] * criterionWeight;
@@ -255,8 +269,8 @@ export function calculateOverallScore(classifications: CriteriaClassification[])
   // Score raw de 1-10
   const rawScore = (weightedScore / totalWeight) * 10;
 
-  // Se há qualquer critério de segurança em danger, limitar score a máximo 5
-  if (classifications.some((c) => c.isSafetyCritical && c.classification === 'danger')) {
+  // Se há qualquer critério de segurança em danger (não informativo), limitar score a máximo 5
+  if (classifications.some((c) => c.isSafetyCritical && c.classification === 'danger' && !c.isInformativeOnly)) {
     return Math.min(rawScore, 5);
   }
 

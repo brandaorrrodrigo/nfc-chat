@@ -3,7 +3,7 @@
  * Integra: categoria → template → classificação → prompt → LLM
  */
 
-import { getCategoryTemplate, getExerciseCategory } from './category-templates';
+import { getCategoryTemplate, getExerciseCategory, EquipmentConstraint, CONSTRAINT_LABELS } from './category-templates';
 import { classifyMetrics, ClassificationResult, extractAllRAGTopics, MetricValue } from './criteria-classifier';
 import { buildPrompt, buildMinimalPrompt, BuiltPrompt } from './prompt-builder';
 import { ProcessedVideoMetrics, Frame, processFrameSequence } from './mediapipe-processor';
@@ -16,6 +16,7 @@ export interface BiomechanicsAnalysisInput {
   fps?: number;
   ragContexts?: RAGContext[]; // Contextos RAG pré-processados (opcional)
   includeRAG?: boolean; // Se true, usa contextos RAG fornecidos
+  equipmentConstraint?: EquipmentConstraint; // Limitação externa (barras de segurança, Smith, etc)
 }
 
 export interface BiomechanicsAnalysisOutput {
@@ -83,7 +84,7 @@ export async function analyzeBiomechanics(
     }
 
     // 5. Classificar contra template
-    const classification = classifyMetrics(aggregatedMetrics, template, input.exerciseName);
+    const classification = classifyMetrics(aggregatedMetrics, template, input.exerciseName, input.equipmentConstraint);
 
     if (config.debugMode) {
       console.log(`[Biomechanics] Classificação: ${classification.overallScore}/10`);
@@ -108,6 +109,7 @@ export async function analyzeBiomechanics(
           template,
           exerciseName: input.exerciseName,
           ragContext: finalRAGContexts,
+          equipmentConstraint: input.equipmentConstraint,
           videoMetadata: {
             duration: mediaMetrics.duration,
             frameCount: mediaMetrics.totalFrames,
@@ -199,15 +201,34 @@ function aggregateMetricsAcrossFrames(mediaMetrics: ProcessedVideoMetrics): Metr
 
   // Adicionar dados de ROM como métricas derivadas
   for (const [metricName, range] of Object.entries(mediaMetrics.summary.rom)) {
-    // ROM é útil para alguns critérios (ex: depth check)
-    // Usar o valor mínimo do ângulo como proxy para profundidade
-    if (metricName.includes('hip_angle')) {
+    // hip_angle → hip_angle_at_bottom (usar MIN = fundo do agachamento)
+    if (metricName.includes('hip_angle') && !aggregated.some(a => a.metric === 'hip_angle_at_bottom')) {
       aggregated.push({
         metric: 'hip_angle_at_bottom',
         value: range.min,
         unit: '°',
       });
     }
+    // lumbar_flexion_proxy → lumbar_flexion_change_degrees (MAX - MIN = mudança total)
+    if (metricName === 'lumbar_flexion_proxy') {
+      aggregated.push({
+        metric: 'lumbar_flexion_change_degrees',
+        value: Math.round((range.max - range.min) * 10) / 10,
+        unit: '°',
+      });
+    }
+  }
+
+  // Mapear knee_valgus → knee_medial_displacement_cm (template espera este nome)
+  const valgusLeft = aggregated.find(a => a.metric === 'knee_valgus_left_cm');
+  const valgusRight = aggregated.find(a => a.metric === 'knee_valgus_right_cm');
+  if (valgusLeft || valgusRight) {
+    const maxValgus = Math.max(valgusLeft?.value || 0, valgusRight?.value || 0);
+    aggregated.push({
+      metric: 'knee_medial_displacement_cm',
+      value: maxValgus,
+      unit: 'cm',
+    });
   }
 
   // Adicionar assimetrias
@@ -215,6 +236,16 @@ function aggregateMetricsAcrossFrames(mediaMetrics: ProcessedVideoMetrics): Metr
     aggregated.push({
       metric: `${metricName}_difference`,
       value: Math.round(diff * 10) / 10,
+      unit: '°',
+    });
+  }
+
+  // Mapear hip_angle_difference → bilateral_angle_difference (template espera este nome)
+  const hipDiff = aggregated.find(a => a.metric === 'hip_angle_difference');
+  if (hipDiff) {
+    aggregated.push({
+      metric: 'bilateral_angle_difference',
+      value: hipDiff.value,
       unit: '°',
     });
   }
@@ -242,6 +273,9 @@ function generateDiagnosticSummary(
   lines.push(`📋 Exercício: ${exerciseName}`);
   lines.push(`📊 Score Geral: ${classification.overallScore}/10`);
   lines.push(`⏱️  Duração: ${mediaMetrics.duration?.toFixed(1) || '?'}s (${mediaMetrics.totalFrames} frames)`);
+  if (classification.constraintApplied && classification.constraintApplied !== 'none') {
+    lines.push(`🔧 Contexto: ${classification.constraintLabel || classification.constraintApplied}`);
+  }
   lines.push('');
 
   // Resumo de classificações
@@ -315,7 +349,7 @@ export async function classifyOnly(
   const template = getCategoryTemplate(category);
   const mediaMetrics = processFrameSequence(input.frames, category, input.fps || 30);
   const aggregatedMetrics = aggregateMetricsAcrossFrames(mediaMetrics);
-  const classification = classifyMetrics(aggregatedMetrics, template, input.exerciseName);
+  const classification = classifyMetrics(aggregatedMetrics, template, input.exerciseName, input.equipmentConstraint);
 
   return classification;
 }
