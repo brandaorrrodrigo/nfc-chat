@@ -1032,7 +1032,7 @@ const MENSAGENS_PERFORMANCE_BIOHACKING: Mensagem[] = [
     tipo: 'ia',
     timestamp: '09:00',
     autor: { id: 'ia', nome: 'IA Facilitadora' },
-    conteudo: 'BEM-VINDOS à Arena Performance & Biohacking. Aqui potencializamos desempenho físico e mental através de ciência baseada em evidências: nutrição otimizada, treino periodizado, recuperação inteligente e estratégias de saúde longevidade.',
+    conteudo: 'BEM-VINDOS à Arena Performance & Biohacking. Aqui discutimos protocolos de elite, farmacologia avançada e estratégias de redução de danos. Trenbolona, HGH Fragment 176-191, peptídeos de pesquisa e reparticionamento metabólico. Ciência aplicada sem filtro.',
     ia_tipo: 'destaque',
   },
   {
@@ -1278,7 +1278,7 @@ const COMUNIDADES_DATA: Record<string, ComunidadeData & { mensagens: Mensagem[] 
   },
   'performance-biohacking': {
     titulo: 'Performance & Biohacking',
-    descricao: 'Potencialize seu desempenho físico e mental',
+    descricao: 'Protocolos de elite, farmacologia avançada e estratégias de redução de danos',
     membrosOnline: 34,
     totalMensagens: 1256,
     mensagens: MENSAGENS_PERFORMANCE_BIOHACKING,
