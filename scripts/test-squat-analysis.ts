@@ -198,6 +198,82 @@ async function runClassification() {
   }
 
   console.log(`\n📊 Resultado: ${passed}/${checks.length} validações passaram`);
+
+  // 8. Teste com Equipment Constraint
+  console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+  console.log('SEÇÃO 7: Teste com Equipment Constraint (safety_bars)');
+  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+
+  const constrainedResult = await classifyOnly({
+    exerciseName: 'Agachamento com Barra',
+    frames,
+    fps: 30,
+    equipmentConstraint: 'safety_bars',
+  });
+
+  console.log(`Score SEM constraint: ${result.overallScore}/10`);
+  console.log(`Score COM constraint (safety_bars): ${constrainedResult.overallScore}/10`);
+  console.log(`Constraint aplicado: ${constrainedResult.constraintApplied} (${constrainedResult.constraintLabel})`);
+  console.log('');
+
+  console.log('Detalhes com constraint:');
+  console.log('─────────────────────────────────────────────────────────────');
+  for (const c of constrainedResult.classifications) {
+    const icon = c.isInformativeOnly ? '⚪' :
+                 c.classification === 'danger' ? '🔴' :
+                 c.classification === 'warning' ? '🟡' :
+                 c.classification === 'excellent' ? '🟢' :
+                 c.classification === 'good' ? '🟢' : '🔵';
+
+    const infoTag = c.isInformativeOnly ? ' [INFO]' : '';
+    console.log(`${icon} ${(c.label || c.criterion).padEnd(25)} | ${String(c.value).padStart(6)}${c.unit || ''} | ${(c.classificationLabel || c.classification).padEnd(12)} | safety=${c.isSafetyCritical}${infoTag}`);
+    if (c.note) console.log(`   📝 ${c.note}`);
+  }
+
+  // Validações do constraint
+  console.log('\nValidações Equipment Constraint:');
+  const constraintChecks = [
+    {
+      name: 'depth marcado como informativo',
+      pass: constrainedResult.classifications.find(c => c.criterion === 'depth')?.isInformativeOnly === true,
+      detail: `isInformativeOnly=${constrainedResult.classifications.find(c => c.criterion === 'depth')?.isInformativeOnly}`,
+    },
+    {
+      name: 'ankle_mobility marcado como informativo',
+      pass: constrainedResult.classifications.find(c => c.criterion === 'ankle_mobility')?.isInformativeOnly === true,
+      detail: `isInformativeOnly=${constrainedResult.classifications.find(c => c.criterion === 'ankle_mobility')?.isInformativeOnly}`,
+    },
+    {
+      name: 'knee_valgus NÃO é informativo (segurança)',
+      pass: constrainedResult.classifications.find(c => c.criterion === 'knee_valgus')?.isInformativeOnly === false,
+      detail: `isInformativeOnly=${constrainedResult.classifications.find(c => c.criterion === 'knee_valgus')?.isInformativeOnly}`,
+    },
+    {
+      name: 'trunk_control NÃO é informativo',
+      pass: constrainedResult.classifications.find(c => c.criterion === 'trunk_control')?.isInformativeOnly === false,
+      detail: `isInformativeOnly=${constrainedResult.classifications.find(c => c.criterion === 'trunk_control')?.isInformativeOnly}`,
+    },
+    {
+      name: 'constraintApplied = safety_bars',
+      pass: constrainedResult.constraintApplied === 'safety_bars',
+      detail: `constraintApplied=${constrainedResult.constraintApplied}`,
+    },
+    {
+      name: 'Score com constraint >= score sem (menos critérios penalizam)',
+      pass: constrainedResult.overallScore >= result.overallScore,
+      detail: `com=${constrainedResult.overallScore} vs sem=${result.overallScore}`,
+    },
+  ];
+
+  let constraintPassed = 0;
+  for (const check of constraintChecks) {
+    const icon = check.pass ? '✅' : '❌';
+    console.log(`${icon} ${check.name} — ${check.detail}`);
+    if (check.pass) constraintPassed++;
+  }
+
+  console.log(`\n📊 Constraint: ${constraintPassed}/${constraintChecks.length} validações passaram`);
+  console.log(`📊 Total: ${passed + constraintPassed}/${checks.length + constraintChecks.length} validações passaram`);
 }
 
 runClassification().catch(console.error);
