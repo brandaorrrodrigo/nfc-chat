@@ -296,6 +296,37 @@ export function buildPrompt(input: PromptBuilderInput): BuiltPrompt {
 
   // Instruções de análise
   userPromptLines.push(buildInstructionsSection(result));
+  userPromptLines.push('');
+
+  // Instrução final explícita
+  userPromptLines.push('## FORMATO DE RESPOSTA OBRIGATÓRIO');
+  userPromptLines.push('');
+  userPromptLines.push('Finalize sua análise com um JSON estruturado neste formato exato:');
+  userPromptLines.push('');
+  userPromptLines.push('{');
+  userPromptLines.push('  "resumo_executivo": "Texto breve sobre a qualidade geral do movimento",');
+  userPromptLines.push('  "problemas_identificados": [');
+  userPromptLines.push('    {');
+  userPromptLines.push('      "nome": "Nome do problema",');
+  userPromptLines.push('      "severidade": "CRITICA|MODERADA|LEVE",');
+  userPromptLines.push('      "descricao": "Descrição técnica detalhada",');
+  userPromptLines.push('      "causa_provavel": "Qual é a raiz do problema",');
+  userPromptLines.push('      "fundamentacao": "Base científica ou RAG"');
+  userPromptLines.push('    }');
+  userPromptLines.push('  ],');
+  userPromptLines.push('  "pontos_positivos": ["Ponto 1", "Ponto 2", "Ponto 3"],');
+  userPromptLines.push('  "recomendacoes": [');
+  userPromptLines.push('    {');
+  userPromptLines.push('      "prioridade": 1,');
+  userPromptLines.push('      "categoria": "Mobilidade|Força|Técnica|Segurança",');
+  userPromptLines.push('      "descricao": "Descrição da recomendação",');
+  userPromptLines.push('      "exercicio_corretivo": "Nome específico do exercício"');
+  userPromptLines.push('    }');
+  userPromptLines.push('  ],');
+  userPromptLines.push('  "score_geral": ' + result.overallScore + ',');
+  userPromptLines.push('  "classificacao": "EXCELENTE|BOM|REGULAR|NECESSITA_CORRECAO",');
+  userPromptLines.push('  "proximos_passos": ["Passo 1", "Passo 2", "Passo 3"]');
+  userPromptLines.push('}');
 
   const userPrompt = userPromptLines.join('\n');
 

@@ -97,17 +97,35 @@ export async function sendPromptToOllama(
     '\n---\n',
     builtPrompt.userPrompt,
     '\n---\n',
-    'RETORNE UM JSON com esta estrutura EXATA:',
+    '\n⚠️ INSTRUÇÃO FINAL OBRIGATÓRIA:',
+    'Finalize sua análise retornando EXATAMENTE neste formato JSON (sem texto antes ou depois):',
+    '',
     '{',
-    '  "resumo_executivo": "string",',
-    '  "problemas_identificados": [{"nome":"string","severidade":"CRITICA|MODERADA|LEVE","descricao":"string","causa_provavel":"string","fundamentacao":"string"}],',
-    '  "pontos_positivos": ["string"],',
-    '  "recomendacoes": [{"prioridade":1,"categoria":"string","descricao":"string","exercicio_corretivo":"string"}],',
-    '  "score_geral": number,',
-    '  "classificacao": "EXCELENTE|BOM|REGULAR|NECESSITA_CORRECAO",',
-    '  "proximos_passos": ["string"]',
+    '  "resumo_executivo": "Resumo breve em português",',
+    '  "problemas_identificados": [',
+    '    {',
+    '      "nome": "Nome do problema",',
+    '      "severidade": "CRITICA ou MODERADA ou LEVE",',
+    '      "descricao": "Descrição detalhada",',
+    '      "causa_provavel": "Por que acontece",',
+    '      "fundamentacao": "Base técnica (cite RAG se aplicável)"',
+    '    }',
+    '  ],',
+    '  "pontos_positivos": ["Ponto positivo 1", "Ponto positivo 2"],',
+    '  "recomendacoes": [',
+    '    {',
+    '      "prioridade": 1,',
+    '      "categoria": "Mobilidade|Força|Técnica|Segurança",',
+    '      "descricao": "Descrição da recomendação",',
+    '      "exercicio_corretivo": "Nome do exercício"',
+    '    }',
+    '  ],',
+    '  "score_geral": 8.5,',
+    '  "classificacao": "EXCELENTE ou BOM ou REGULAR ou NECESSITA_CORRECAO",',
+    '  "proximos_passos": ["Passo 1", "Passo 2", "Passo 3"]',
     '}',
-    'RETORNE APENAS O JSON, sem texto antes ou depois.',
+    '',
+    'RESPONDA SOMENTE COM O JSON ACIMA, SEM QUALQUER TEXTO ADICIONAL.',
   ].join('\n');
 
   try {
@@ -125,15 +143,27 @@ export async function sendPromptToOllama(
     );
 
     const responseText: string = response.data.response || '';
+
+    // Debug: log primeira parte da resposta
+    console.log('[LLM Bridge] Resposta Ollama (primeiros 500 chars):', responseText.substring(0, 500));
+
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
 
     if (!jsonMatch) {
-      console.warn('[LLM Bridge] Ollama não retornou JSON válido, usando fallback');
+      console.warn('[LLM Bridge] ❌ Ollama não retornou JSON válido');
+      console.warn('[LLM Bridge] Resposta completa:', responseText.substring(0, 1000));
       return createFallbackReport(classification, builtPrompt.metadata.exerciseName);
     }
 
-    const parsed = JSON.parse(jsonMatch[0]);
-    return normalizeReport(parsed, classification);
+    try {
+      const parsed = JSON.parse(jsonMatch[0]);
+      console.log('[LLM Bridge] ✅ JSON parseado com sucesso');
+      return normalizeReport(parsed, classification);
+    } catch (parseError) {
+      console.error('[LLM Bridge] ❌ Erro ao fazer parse do JSON:', parseError);
+      console.error('[LLM Bridge] JSON extraído:', jsonMatch[0].substring(0, 500));
+      return createFallbackReport(classification, builtPrompt.metadata.exerciseName);
+    }
   } catch (error: any) {
     console.error('[LLM Bridge] Erro:', error.message);
     return createFallbackReport(classification, builtPrompt.metadata.exerciseName);
