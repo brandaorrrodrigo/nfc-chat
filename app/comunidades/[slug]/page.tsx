@@ -227,6 +227,62 @@ interface ComunidadeData {
 // ========================================
 
 // Arena original: Protocolo Lipedema (conversas gerais)
+// NOVAS ARENAS - BIOMECÂNICA & POSTURA
+const MENSAGENS_POSTURA_ESTETICA: Mensagem[] = [
+  {
+    id: '1',
+    tipo: 'ia',
+    timestamp: '09:00',
+    autor: { id: 'ia', nome: 'IA Facilitadora' },
+    conteudo: 'BEM-VINDO(A) À ARENA POSTURA & ESTÉTICA REAL! 🧍\n\nPostura não é apenas "senta direito". É a base de TUDO: dor crônica, estética corporal, respiração, digestão, até confiança.\n\n**O que você descobre aqui:**\n✓ Como postura afeta a distribuição de gordura corporal (sim, é real)\n✓ Lordose vs cifose: o que é normal vs problema estrutural\n✓ Postura anterior (cabeça pra frente) — causa dor no pescoço + aspecto envelhecido\n✓ Postura posterior — melhora auto-estima e aspecto imediato\n✓ Exercícios corretivos específicos para CADA desvio postural\n✓ Diferença entre mobilidade limitada vs fraqueza muscular\n✓ Como fotografia corporal muda radicalmente com postura\n\n**Exemplos reais:**\n"Tenho cifose acentuada" → Desenvolvimento de peitoral + alongamento de costas posteriores pode mudar sua silhueta em 8 semanas.\n"Meu rosto envelhece por postura anterior" → Fortalecer cervical + alongar peito pode reduzir duplo queixo sem cirurgia.\n"Não consigo contrair o glúteo" → Frequentemente é inibição por postura posterior (hip hinge errado).\n\n**Pontos-chave:**\n✓ Postura é PRÁTICA, não teoria — leva 4-12 semanas para reprogramar\n✓ Estética + função caminham juntas\n✓ Foto do seu corpo MUDARIA se melhorasse postura?\n✓ Dor crônica resolve quando postural é corrigida\n✓ Espelho + câmera = feedback real\n\n**Evitar:**\n✗ Pedir para "sentar direito" sem entender biomecânica\n✗ Ignorar assimetrias (frequentemente postural)\n✗ Treinar força sem corrigir padrão de movimento\n\nDescreva sua postura e objetivo! Vamos investigar juntos! 💪',
+    ia_tipo: 'destaque',
+  },
+];
+
+const MENSAGENS_AVALIACAO_ASSIMETRIAS: Mensagem[] = [
+  {
+    id: '1',
+    tipo: 'ia',
+    timestamp: '09:30',
+    autor: { id: 'ia', nome: 'IA Facilitadora' },
+    conteudo: 'BEM-VINDO(A) À ARENA AVALIAÇÃO BIOMÉTRICA & ASSIMETRIAS! 📐\n\nAssimetria é NORMAL. O problema é quando é EXCESSIVA e causa dor ou distribuição desigual de gordura.\n\n**O que você descobre aqui:**\n✓ Leitura de assimetrias em foto frontal, lateral e posterior\n✓ Diferença entre assimetria estrutural (óssea) vs muscular\n✓ Como correção de assimetria melhora RADICALMENTE a estética\n✓ Ombro mais alto/baixo — problema cervical ou muscular?\n✓ Bacia desnivelada — encurtamento de perna ou desequilíbrio glúteo?\n✓ Quadris assimétricos — treino unilateral resolve\n✓ Assimetria em espinha (escoliose) — quando treinar vs quando procurar médico\n✓ Análise de simetria com aplicativos + treinador visual\n\n**Exemplos de análise:**\n"Meu ombro esquerdo é 2cm mais alto" → Pode ser: (1) encurtamento de trapézio, (2) protração de ombro, (3) escoliose leve. Investigamos com teste de amplitude.\n"Meu glúteo direito não cresce igual" → Frequentemente: força menor, padrão de ativação errado, ou história de lesão. Treino unilateral pesado resolve.\n"Uma perna parece mais grossa" → Pode ser redistribuição de gordura por assimetria postural — treino bilateral pesado + postura corrige.\n\n**Pontos-chave:**\n✓ Simetria PERFEITA não existe — acima de 5% de diferença é relevante\n✓ Foto estruturada (luz frontal, fundo neutro, posição padrão) é essencial\n✓ Assimetria frequentemente é TREINO-responsiva (músculo unilateral pesado)\n✓ Estrutura óssea não muda, mas distribuição de músculo SIM\n✓ 8-12 semanas de treino focado = mudança visível\n\n**Evitar:**\n✗ Aceitar assimetria sem investigar causa\n✗ Comparar sua assimetria com outra pessoa (é única)\n✗ Ignorar dor associada (procurar profissional)\n\nEnvie sua foto! Vamos analisar suas assimetrias! 🎯',
+    ia_tipo: 'destaque',
+  },
+];
+
+const MENSAGENS_DOR_FUNCAO_SAUDE: Mensagem[] = [
+  {
+    id: '1',
+    tipo: 'ia',
+    timestamp: '10:00',
+    autor: { id: 'ia', nome: 'IA Facilitadora' },
+    conteudo: 'BEM-VINDO(A) À ARENA DOR, FUNÇÃO & SAÚDE POSTURAL! 🩺\n\nDor crônica frequentemente é POSTURAL, não estrutural. A boa notícia: é reversível com treino inteligente.\n\n**A relação dor ↔ postura:**\n✓ Postura anterior (cabeça pra frente) → Dor cervical + ombro\n✓ Cifose exagerada → Dor em costas altas + fadiga respiratória\n✓ Hiperlordose → Dor lombar crônica\n✓ Bacia anterior → Quadril apertado + dor ao sentar\n✓ Fraqueza glúteo → Dor em joelho + tornozelo (tudo está conectado)\n\n**O que você descobre aqui:**\n✓ Diagnóstico diferencial: é postura, mobilidade ou fraqueza?\n✓ Testes funcionais simples (pode fazer em casa)\n✓ Protocolo de correção específico por tipo de dor\n✓ Quando é "dor verde" (treinar) vs "dor vermelha" (médico)\n✓ Respiração e sua relação com dor crônica\n✓ Estresse postural acumulado = dor no final do dia\n✓ Ciclo: má postura → dor → sedentarismo → piora postura\n✓ Quebra do ciclo: postura corrigida → ativação muscular → alívio\n\n**Exemplos de investigação:**\n"Dor crônica em costas" → Testamos: (1) Postura em repouso? (2) Quanto tempo sentado? (3) Você consegue ativar glúteo? → 70% é postural\n"Dor ao levantar da cama" → Investigamos: (1) Rigidez matinal? (2) Encurtamento de hip flexor? (3) Fraqueza glúteo? → Protocolo específico\n"Dor ao final do dia" → Frequentemente: fadiga postural por fraqueza muscular + hábitos de postura. Treino resolve.\n\n**Pontos-chave:**\n✓ Dor estrutural é aguda, limitante, não melhora com movimento correto\n✓ Dor postural melhora RAPIDAMENTE com treino inteligente (dias a semanas)\n✓ Você pode treinar "passando por dor leve" SE for postural\n✓ Respiração ativa (diafragma) = alívio imediato de dor\n✓ Postura corrigida = melhoria de energia + disposição\n\n**Evitar:**\n✗ Aceitar dor crônica como "normal"\n✗ Apenas repouso (frequentemente piora)\n✗ Ignorar padrão: se piora ao final do dia = postural\n✗ Treinar com má postura (perpetua problema)\n\nDescreva sua dor! Vamos investigar a causa postural! 💚',
+    ia_tipo: 'destaque',
+  },
+];
+
+const MENSAGENS_AVALIACAO_FISICA_FOTO: Mensagem[] = [
+  {
+    id: '1',
+    tipo: 'ia',
+    timestamp: '10:30',
+    autor: { id: 'ia', nome: 'IA Facilitadora' },
+    conteudo: 'BEM-VINDO(A) À ARENA AVALIAÇÃO FÍSICA POR FOTO! 📸\n\nUma boa foto de análise corporal fornece TONELADAS de informação: composição, assimetrias, postura, potencial de transformação.\n\n**Como funciona:**\n1. Você tira 3 fotos em posição padrão (frontal, lateral, posterior)\n2. IA analisa: composição corporal, nível de gordura, musculatura, postura, assimetrias\n3. Você recebe diagnóstico estruturado\n\n**O que IA avalia em foto:**\n✓ Composição visual aproximada (% gordura, massa magra)\n✓ Assimetrias evidentes\n✓ Padrão de distribuição de gordura (genético vs postural)\n✓ Postura e alinhamento\n✓ Déficits musculares óbvios\n✓ Potencial estético (dado treino + dieta corretos)\n✓ Áreas prioritárias para treino\n✓ Comparação baseline para transformação\n\n**Dicas para foto de qualidade:**\n✓ Luz frontal (janela) — evita sombras\n✓ Fundo neutro (parede branca/bege)\n✓ Roupa mínima (shorts + sutiã ou camiseta clara)\n✓ Posição padrão: pés paralelos, braços ao lado, olhando para frente\n✓ Câmera na altura do peito, distância 1.5-2m\n✓ TRÊS fotos: frontal, lateral direita, posterior\n✓ Mesmo horário + roupa + luz para comparação future\n\n**O que NÃO pode ser visto em foto:**\n✗ Massa muscular real (só visual aproximado)\n✗ Percentual de gordura exato (usar bioimpedância ou DEXA)\n✗ Composição óssea/estrutura interna\n✗ Nível de força\n\n**Após análise, você recebe:**\n✓ Diagnóstico de composição corporal\n✓ Áreas prioritárias (ganho muscular vs perda de gordura)\n✓ Tipo de treino recomendado (força vs estético)\n✓ Timeline realista de transformação\n✓ Próxima avaliação: em 4-8 semanas (comparação visual)\n\n**Pontos-chave:**\n✓ Foto é linha de base — segunda foto em 8 semanas = mudança evidente\n✓ Escala pode não mover, mas foto SEMPRE muda\n✓ Paciência: 12 semanas = transformação visível\n✓ Mesmas condições = melhor comparação (luz, roupa, posição)\n✓ Fotos são motivação REAL\n\n**Evitar:**\n✗ Foto em ângulo/filtro (invalida análise)\n✗ Comparar sua foto com outra pessoa (corpos diferentes)\n✗ Esperar mágica em 2 semanas (3 meses é padrão)\n\nEnvie suas fotos! Vamos analisar seu baseline! 💪',
+    ia_tipo: 'destaque',
+  },
+];
+
+const MENSAGENS_HUB_AVALIACAO_FISICA: Mensagem[] = [
+  {
+    id: '1',
+    tipo: 'ia',
+    timestamp: '11:00',
+    autor: { id: 'ia', nome: 'IA Facilitadora' },
+    conteudo: 'BEM-VINDO(A) AO HUB AVALIAÇÃO FÍSICA! 👤\n\nEste é o EPICENTRO de análise corporal. Integra: foto, assimetrias, postura, função, estética e potencial de transformação.\n\n**Ferramentas disponíveis:**\n✓ Avaliação por foto (composição + assimetrias)\n✓ Análise postural (alinhamento + padrões)\n✓ Teste funcional (mobilidade + força básica)\n✓ Comparação baseline → atual (8-12 semanas)\n✓ Relatório de transformação (fotos + métricas)\n✓ Recomendações de treino personalizadas\n✓ Timeline de resultados esperados\n✓ Integração com arenas específicas (glúteo, força, mobilidade)\n\n**Fluxo típico:**\n1. Primeira visita: baseline fotográfico + postural\n2. Plano: treino 8-12 semanas com foco em prioridades identificadas\n3. Reavaliação: nova foto + comparação\n4. Ajuste: refinamento de programa baseado em resultados\n\n**Métricas rastreadas:**\n✓ Composição visual (foto)\n✓ Assimetria (medição)\n✓ Postura (imagem + teste de amplitude)\n✓ Força básica (teste de ativação)\n✓ Mobilidade (range of motion)\n✓ Circunferências (braço, cintura, glúteo, coxa) — opcional\n✓ Bem-estar geral (auto-relatado)\n\n**O que diferencia Hub de análise simples:**\n✓ Acompanhamento longitudinal (baseline → follow-up)\n✓ Conexão com treino prescrito (não genérico)\n✓ Educação: por que mudanças específicas acontecem\n✓ Motivação visual: você VÊ o progresso\n✓ Ajuste dinâmico: mudança de programa baseada em resposta\n\n**Timeline de mudanças visíveis:**\n→ 2-4 semanas: postura melhora, energia aumenta\n→ 4-8 semanas: músculos começam aparecer, gordura diminui\n→ 8-12 semanas: transformação evidente em foto\n→ 12-24 semanas: mudança estrutural completa\n\n**Pontos-chave:**\n✓ Avaliação inicial = seu ponto de partida\n✓ Nenhum corpo é "perdido" — apenas sub-otimizado\n✓ A resposta a treino é MUITO variável (genética)\n✓ Consistência > intensidade (programa mediano consistente > excelente esporádico)\n✓ 3 meses = período padrão de resposta adequada\n✓ Educação importa — você aprende POR QUE funciona\n\n**Evitar:**\n✗ Esperar tudo mudar em 4 semanas (precisa 8-12)\n✗ Comparar sua resposta com outra pessoa\n✗ Ignorar fatores não-treino (dieta, sono, estresse)\n✗ Desistir na "plateau" (aparência estável = progresso ainda acontecendo)\n\nVamos começar sua avaliação! Qual é seu objetivo principal? 🎯',
+    ia_tipo: 'destaque',
+  },
+];
+
 const MENSAGENS_LIPEDEMA: Mensagem[] = [
   {
     id: '1',
@@ -1397,35 +1453,35 @@ const COMUNIDADES_DATA: Record<string, ComunidadeData & { mensagens: Mensagem[] 
     descricao: 'Discussões sobre estética corporal sob a ótica da postura e biomecânica',
     membrosOnline: 0,
     totalMensagens: 0,
-    mensagens: [],
+    mensagens: MENSAGENS_POSTURA_ESTETICA,
   },
   'avaliacao-assimetrias': {
     titulo: '📐 Avaliação Biométrica & Assimetrias',
     descricao: 'Espaço para discussões sobre leitura corporal, assimetrias e análise biométrica por IA',
     membrosOnline: 0,
     totalMensagens: 0,
-    mensagens: [],
+    mensagens: MENSAGENS_AVALIACAO_ASSIMETRIAS,
   },
   'dor-funcao-saude': {
     titulo: '🩺 Dor, Função & Saúde Postural',
     descricao: 'Explore a relação entre postura, dor e função corporal',
     membrosOnline: 0,
     totalMensagens: 0,
-    mensagens: [],
+    mensagens: MENSAGENS_DOR_FUNCAO_SAUDE,
   },
   'avaliacao-fisica-foto': {
     titulo: '📸 Avaliação Física por Foto',
     descricao: 'Envie suas fotos para análise biométrica completa com IA',
     membrosOnline: 0,
     totalMensagens: 0,
-    mensagens: [],
+    mensagens: MENSAGENS_AVALIACAO_FISICA_FOTO,
   },
   'hub-avaliacao-fisica': {
-    titulo: '🏋️ Hub Avaliação Física',
+    titulo: '👤 Hub Avaliação Física',
     descricao: 'Central de avaliação física com ferramentas de análise corporal',
     membrosOnline: 0,
     totalMensagens: 0,
-    mensagens: [],
+    mensagens: MENSAGENS_HUB_AVALIACAO_FISICA,
   },
 };
 
