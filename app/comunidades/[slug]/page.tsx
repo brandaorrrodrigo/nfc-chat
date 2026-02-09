@@ -1032,7 +1032,7 @@ const MENSAGENS_PERFORMANCE_BIOHACKING: Mensagem[] = [
     tipo: 'ia',
     timestamp: '09:00',
     autor: { id: 'ia', nome: 'IA Facilitadora' },
-    conteudo: 'BEM-VINDOS à Arena Performance & Biohacking. Aqui discutimos protocolos de elite, farmacologia avançada e estratégias de redução de danos. Ciência aplicada sem filtro.',
+    conteudo: 'BEM-VINDOS à Arena Performance & Biohacking. Aqui potencializamos desempenho físico e mental através de ciência baseada em evidências: nutrição otimizada, treino periodizado, recuperação inteligente e estratégias de saúde longevidade.',
     ia_tipo: 'destaque',
   },
   {
@@ -1278,7 +1278,7 @@ const COMUNIDADES_DATA: Record<string, ComunidadeData & { mensagens: Mensagem[] 
   },
   'performance-biohacking': {
     titulo: 'Performance & Biohacking',
-    descricao: 'Protocolos de elite, farmacologia avançada e estratégias de redução de danos',
+    descricao: 'Potencialize seu desempenho físico e mental',
     membrosOnline: 34,
     totalMensagens: 1256,
     mensagens: MENSAGENS_PERFORMANCE_BIOHACKING,
