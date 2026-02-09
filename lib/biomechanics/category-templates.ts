@@ -433,8 +433,69 @@ export const EXERCISE_CATEGORY_MAP: Record<string, string> = {
   side_plank: 'core',
   dead_bug: 'core',
 
-  // Agachamento (português)
+  // ===== Português - Squat =====
   agachamento: 'squat',
+  agachamento_com_barra: 'squat',
+  agachamento_barra_alta: 'squat',
+  agachamento_barra_baixa: 'squat',
+  agachamento_frontal: 'squat',
+  agachamento_goblet: 'squat',
+  agachamento_overhead: 'squat',
+  agachamento_hack: 'squat',
+  agachamento_smith: 'squat',
+  agachamento_livre: 'squat',
+  agachamento_calice: 'squat',
+
+  // ===== Português - Hinge =====
+  levantamento_terra: 'hinge',
+  levantamento_terra_convencional: 'hinge',
+  levantamento_terra_sumo: 'hinge',
+  terra_convencional: 'hinge',
+  terra_sumo: 'hinge',
+  stiff: 'hinge',
+  romeno: 'hinge',
+  bom_dia: 'hinge',
+  elevacao_de_quadril: 'hinge',
+  elevacao_pelvica: 'hinge',
+
+  // ===== Português - Horizontal Press =====
+  supino: 'horizontal_press',
+  supino_reto: 'horizontal_press',
+  supino_inclinado: 'horizontal_press',
+  supino_declinado: 'horizontal_press',
+  supino_com_halteres: 'horizontal_press',
+  flexao_de_braco: 'horizontal_press',
+  flexao: 'horizontal_press',
+
+  // ===== Português - Vertical Press =====
+  desenvolvimento: 'vertical_press',
+  desenvolvimento_com_barra: 'vertical_press',
+  desenvolvimento_militar: 'vertical_press',
+  press_militar: 'vertical_press',
+  desenvolvimento_com_halteres: 'vertical_press',
+
+  // ===== Português - Pull =====
+  remada: 'pull',
+  remada_curvada: 'pull',
+  remada_com_barra: 'pull',
+  remada_com_halter: 'pull',
+  remada_cavaleiro: 'pull',
+  puxada: 'pull',
+  puxada_frontal: 'pull',
+  puxada_alta: 'pull',
+  barra_fixa: 'pull',
+
+  // ===== Português - Unilateral =====
+  afundo: 'unilateral',
+  afundo_frontal: 'unilateral',
+  passada: 'unilateral',
+  bulgaro: 'unilateral',
+  agachamento_bulgaro: 'unilateral',
+
+  // ===== Português - Core =====
+  prancha: 'core',
+  prancha_lateral: 'core',
+  abdominal: 'core',
 };
 
 /**
@@ -458,6 +519,11 @@ export function getCategoryTemplate(category: string): CategoryTemplate {
  * Obter categoria de um exercício
  */
 export function getExerciseCategory(exerciseName: string): string {
-  const normalized = exerciseName.toLowerCase().replace(/\s+/g, '_');
+  const normalized = exerciseName
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // remove acentos
+    .replace(/[-\s]+/g, '_')
+    .replace(/[^a-z0-9_]/g, '');
   return EXERCISE_CATEGORY_MAP[normalized] || 'squat'; // Default
 }

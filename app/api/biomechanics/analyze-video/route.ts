@@ -23,6 +23,12 @@ import * as os from 'os';
 import { analyzeAllFrames, FrameAnalysis } from '@/lib/biomechanics/vision-analyzer';
 import { generateBiomechanicsReport, generateBiomechanicsReportWithRAG, BiomechanicsReport, EnhancedBiomechanicsReport } from '@/lib/biomechanics/report-generator';
 import { checkRAGAvailability } from '@/lib/biomechanics/rag-service';
+// Pipeline B: MediaPipe numérico
+import { callMediaPipeService, checkMediaPipeService, pythonLandmarksToFrames, aggregatePythonFrameMetrics } from '@/lib/biomechanics/mediapipe-client';
+import { analyzeBiomechanics, BiomechanicsAnalysisOutput } from '@/lib/biomechanics/biomechanics-analyzer';
+import { sendPromptToOllama, LLMAnalysisReport } from '@/lib/biomechanics/llm-bridge';
+import { getExerciseCategory } from '@/lib/biomechanics/category-templates';
+import { queryRAG, getTopicsByCategory } from '@/lib/biomechanics/biomechanics-rag';
 
 const execAsync = promisify(exec);
 
@@ -147,13 +153,102 @@ export async function POST(request: NextRequest) {
       }
       console.log(`   ✅ ${framesCount} frames extraídos`);
 
-      // 8. Analisar frames com Vision
-      console.log('🔍 Analisando frames com Vision...');
+      // 8. Preparar exercício e ambos pipelines
       const exerciseType = analysis.movement_pattern || 'agachamento';
-      const frameAnalyses = await analyzeAllFrames(framesBase64, exerciseType);
-      console.log('   ✅ Análise de frames completa');
 
-      // 9. Gerar relatório técnico com Llama 3.1 (com ou sem RAG)
+      // ========================================
+      // Pipeline A (Vision) + Pipeline B (MediaPipe) em paralelo
+      // ========================================
+
+      // Pipeline A: Llama 3.2-Vision (qualitativo)
+      const pipelineAPromise = (async () => {
+        console.log('🔍 [Pipeline A] Analisando frames com Vision...');
+        const analyses = await analyzeAllFrames(framesBase64, exerciseType);
+        console.log('   ✅ [Pipeline A] Análise visual completa');
+        return analyses;
+      })();
+
+      // Pipeline B: MediaPipe numérico (quantitativo) — non-blocking
+      const pipelineBPromise = (async (): Promise<{
+        result: BiomechanicsAnalysisOutput | null;
+        report: LLMAnalysisReport | null;
+      }> => {
+        const mediapipeOnline = await checkMediaPipeService();
+        if (!mediapipeOnline) {
+          console.log('   ⚠️ [Pipeline B] MediaPipe service offline, pulando');
+          return { result: null, report: null };
+        }
+
+        try {
+          console.log('📐 [Pipeline B] Analisando com MediaPipe numérico...');
+
+          // Construir paths dos frames já extraídos
+          const framePaths = Array.from({ length: framesCount }, (_, i) => ({
+            path: path.join(tempDir, `frame_${i + 1}.jpg`),
+            timestamp_ms: Math.round(interval * (i + 1) * 1000),
+          }));
+
+          const serviceResult = await callMediaPipeService(framePaths, exerciseType);
+
+          if (!serviceResult.success || serviceResult.frames.length === 0) {
+            console.warn('   ⚠️ [Pipeline B] Sem frames processados');
+            return { result: null, report: null };
+          }
+
+          // Converter landmarks Python → Frame[] do mediapipe-processor
+          const mediapipeFrames = pythonLandmarksToFrames(serviceResult);
+
+          // Buscar RAG local por tópicos da categoria
+          const category = getExerciseCategory(exerciseType);
+          const topicNames = getTopicsByCategory(category);
+          const ragContexts = queryRAG(topicNames);
+
+          // Rodar classificação completa
+          const analysisResult = await analyzeBiomechanics(
+            {
+              exerciseName: exerciseType,
+              frames: mediapipeFrames,
+              fps: Math.round(framesCount / duration),
+              ragContexts,
+              includeRAG: true,
+            },
+            { includeRAG: true, useMinimalPrompt: false, debugMode: false }
+          );
+
+          console.log(`   📐 [Pipeline B] Score: ${analysisResult.classification.overallScore}/10`);
+
+          // Enviar BuiltPrompt ao Ollama para relatório numérico
+          let llmReport: LLMAnalysisReport | null = null;
+          if (analysisResult.readyForLLM) {
+            try {
+              llmReport = await sendPromptToOllama(
+                analysisResult.prompt,
+                analysisResult.classification,
+                { timeoutMs: 180000 }
+              );
+              console.log('   ✅ [Pipeline B] Relatório LLM gerado');
+            } catch (llmErr: any) {
+              console.warn('   ⚠️ [Pipeline B] LLM falhou:', llmErr.message);
+            }
+          }
+
+          return { result: analysisResult, report: llmReport };
+        } catch (err: any) {
+          console.warn('   ⚠️ [Pipeline B] Falhou (non-blocking):', err.message);
+          return { result: null, report: null };
+        }
+      })();
+
+      // Aguardar ambos pipelines
+      const [frameAnalyses, pipelineBData] = await Promise.all([
+        pipelineAPromise,
+        pipelineBPromise,
+      ]);
+
+      const mediapipeResult = pipelineBData.result;
+      const mediapipeReport = pipelineBData.report;
+
+      // 9. Gerar relatório técnico do Pipeline A com Llama 3.1 (com ou sem RAG)
       let report: BiomechanicsReport | EnhancedBiomechanicsReport;
       let ragUsed = false;
 
@@ -177,14 +272,21 @@ export async function POST(request: NextRequest) {
         console.log('   ✅ Relatório gerado');
       }
 
-      // 10. Calcular métricas finais
+      // 10. Calcular métricas finais (merge Pipeline A + B)
       const avgScore = frameAnalyses.reduce((s, f) => s + f.score, 0) / frameAnalyses.length;
+
+      // Score combinado: Pipeline A (qualitativo, 40%) + Pipeline B (quantitativo, 60%)
+      const mergedScore = mediapipeResult
+        ? report.score_geral * 0.4 + mediapipeResult.classification.overallScore * 0.6
+        : report.score_geral;
 
       // 11. Preparar resultado final
       const enhancedReport = report as EnhancedBiomechanicsReport;
 
       const finalResult = {
-        analysis_type: ragUsed ? 'biomechanics_complete_rag' : 'biomechanics_complete',
+        analysis_type: mediapipeResult
+          ? 'biomechanics_dual_pipeline'
+          : ragUsed ? 'biomechanics_complete_rag' : 'biomechanics_complete',
         model_vision: visionModel,
         model_text: 'llama3.1',
         rag_enabled: ragUsed,
@@ -194,8 +296,12 @@ export async function POST(request: NextRequest) {
         duration_seconds: duration,
         frames_analyzed: framesCount,
         exercise_type: exerciseType,
+        pipelines_used: {
+          vision: true,
+          mediapipe: mediapipeResult !== null,
+        },
 
-        // Análise frame a frame
+        // Análise frame a frame (Pipeline A - visual)
         frame_analyses: frameAnalyses.map((f, i) => ({
           frame: i + 1,
           timestamp: `${(interval * (i + 1)).toFixed(1)}s`,
@@ -207,7 +313,21 @@ export async function POST(request: NextRequest) {
           justificativa: f.justificativa,
         })),
 
-        // Relatório técnico
+        // Pipeline B - análise numérica MediaPipe
+        mediapipe_analysis: mediapipeResult ? {
+          overall_score: mediapipeResult.classification.overallScore,
+          classification_summary: mediapipeResult.classification.summary,
+          classifications: mediapipeResult.classification.classifications,
+          has_danger: mediapipeResult.classification.hasDangerCriteria,
+          has_warning_safety: mediapipeResult.classification.hasWarningSafetyCriteria,
+          diagnostic_summary: mediapipeResult.diagnosticSummary,
+          rag_topics: mediapipeResult.ragTopicsUsed,
+        } : null,
+
+        // Relatório LLM do Pipeline B
+        mediapipe_report: mediapipeReport || null,
+
+        // Relatório técnico (Pipeline A)
         report: {
           resumo: report.resumo_executivo,
           analise_por_fase: report.analise_por_fase,
@@ -215,13 +335,14 @@ export async function POST(request: NextRequest) {
           recomendacoes: report.recomendacoes_corretivas,
           classificacao: report.classificacao,
           proximos_passos: report.proximos_passos,
-          // Campos adicionais do RAG
           desvios_detalhados: enhancedReport.desvios_identificados,
           referencias_cientificas: enhancedReport.referencias_cientificas,
         },
 
         // Scores
-        overall_score: report.score_geral,
+        overall_score: Math.round(mergedScore * 10) / 10,
+        vision_score: report.score_geral,
+        mediapipe_score: mediapipeResult?.classification.overallScore || null,
         frame_scores: frameAnalyses.map(f => f.score),
 
         // Resumo para UI
@@ -252,16 +373,20 @@ export async function POST(request: NextRequest) {
       }
 
       console.log('✅ Análise biomecânica completa!');
-      console.log(`   Score: ${report.score_geral.toFixed(1)}/10`);
+      console.log(`   Score final: ${mergedScore.toFixed(1)}/10 (Vision: ${report.score_geral.toFixed(1)}, MediaPipe: ${mediapipeResult?.classification.overallScore?.toFixed(1) || 'N/A'})`);
       console.log(`   Classificação: ${report.classificacao}`);
+      console.log(`   Pipelines: Vision + ${mediapipeResult ? 'MediaPipe' : 'sem MediaPipe'}`);
       console.log(`   Tempo: ${(Date.now() - startTime) / 1000}s`);
 
       return NextResponse.json({
         success: true,
         analysisId,
-        score: report.score_geral,
+        score: Math.round(mergedScore * 10) / 10,
+        vision_score: report.score_geral,
+        mediapipe_score: mediapipeResult?.classification.overallScore || null,
         classificacao: report.classificacao,
         frames_analyzed: framesCount,
+        pipelines: { vision: true, mediapipe: mediapipeResult !== null },
         processing_time_ms: Date.now() - startTime,
       });
 
@@ -293,7 +418,7 @@ async function updateAnalysisError(analysisId: string, errorMessage: string) {
   } catch { }
 }
 
-// GET para verificar status do serviço
+// GET para verificar status do serviço (Pipeline A + B)
 export async function GET() {
   try {
     const { data } = await axios.get(`${OLLAMA_URL}/api/tags`, { timeout: 5000 });
@@ -302,8 +427,11 @@ export async function GET() {
     const visionModel = models.find((m: string) => m.includes('vision') || m.includes('llava'));
     const textModel = models.find((m: string) => m.includes('llama3') && !m.includes('vision'));
 
-    // Verificar RAG
-    const ragStatus = await checkRAGAvailability();
+    // Verificar RAG e MediaPipe
+    const [ragStatus, mediapipeOnline] = await Promise.all([
+      checkRAGAvailability(),
+      checkMediaPipeService(),
+    ]);
 
     return NextResponse.json({
       status: 'ready',
@@ -317,6 +445,15 @@ export async function GET() {
         openai_embeddings: ragStatus.openai,
         index: ragStatus.indexName,
         error: ragStatus.error,
+      },
+      mediapipe: {
+        available: mediapipeOnline,
+        url: process.env.MEDIAPIPE_SERVICE_URL || 'http://localhost:5000',
+      },
+      pipelines: {
+        vision: !!visionModel,
+        mediapipe: mediapipeOnline,
+        rag: ragStatus.available,
       },
     });
   } catch (err: any) {
