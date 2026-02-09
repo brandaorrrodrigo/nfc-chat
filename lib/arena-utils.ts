@@ -82,7 +82,8 @@ export function arenaToDisplayFormat(arena: ArenaWithTags): CommunityCardData {
     id: arena.id,
     title: arena.name,
     description: arena.description,
-    members: arena.dailyActiveUsers, // ✅ REAL: usuários únicos que postaram
+    members: arena.dailyActiveUsers, // ✅ REAL: usuários ativos hoje
+    totalMembers: arena.totalUsers, // ✅ NOVO: Total de usuários que já participaram
     activeNow: 0, // ✅ Será buscado via useArenaStats hook (online últimos 15min)
     slug: arena.slug,
     icon: arena.icon,

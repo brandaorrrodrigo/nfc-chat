@@ -201,10 +201,11 @@ function CommunityCard({ community }: CommunityCardProps) {
               <h3 className="text-xl font-bold text-white mb-1 group-hover:text-[#00f5ff] transition-colors duration-300 line-clamp-1">
                 {community.title}
               </h3>
-              <div className="flex items-center gap-3 text-sm">
+              <div className="flex items-center gap-3 text-sm flex-wrap">
                 <span className="flex items-center gap-1.5 text-gray-400">
                   <Users className="w-4 h-4" />
-                  <span className="font-semibold text-white">{formatNumber(community.members)}</span>
+                  <span className="font-semibold text-white">{formatNumber(community.totalMembers || 0)}</span>
+                  <span className="text-gray-500 text-xs">pessoas</span>
                 </span>
                 <span className="flex items-center gap-1.5 text-emerald-400">
                   <div className="relative">

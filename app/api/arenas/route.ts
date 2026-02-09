@@ -70,18 +70,40 @@ export async function GET(request: NextRequest) {
 
     console.log(`[Arenas] Found ${arenas?.length || 0} arenas`)
 
+    // ✅ Calcular total de usuários únicos por arena
+    let arenasWithUserCount = arenas || []
+    try {
+      const arenasWithCounts = await Promise.all(
+        arenasWithUserCount.map(async (arena) => {
+          const uniqueUsers = await prisma.post.findMany({
+            where: { arenaId: arena.id },
+            select: { userId: true },
+            distinct: ['userId'],
+          })
+          return {
+            ...arena,
+            totalUsers: uniqueUsers.length,
+          }
+        })
+      )
+      arenasWithUserCount = arenasWithCounts
+    } catch (err) {
+      console.warn('[Arenas] Failed to calculate totalUsers:', err)
+      // Continue sem contar usuários se houver erro
+    }
+
     let result: unknown
 
     if (grouped) {
-      const groups: Record<string, typeof arenas> = {}
-      for (const arena of arenas || []) {
+      const groups: Record<string, typeof arenasWithUserCount> = {}
+      for (const arena of arenasWithUserCount) {
         const cat = arena.categoria || 'COMUNIDADES_LIVRES'
         if (!groups[cat]) groups[cat] = []
         groups[cat].push(arena)
       }
-      result = { groups, total: arenas?.length || 0 }
+      result = { groups, total: arenasWithUserCount.length }
     } else {
-      result = arenas || []
+      result = arenasWithUserCount
     }
 
     // Cache 5 minutes

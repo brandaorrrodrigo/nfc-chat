@@ -38,6 +38,7 @@ export interface ArenaWithTags {
   totalPosts: number;
   totalComments: number;
   dailyActiveUsers: number;
+  totalUsers?: number;
   status: ArenaStatus;
   tags: ArenaTag[];
   createdAt: string;
@@ -54,6 +55,7 @@ export interface CommunityCardData {
   title: string;
   description: string;
   members: number;
+  totalMembers?: number;
   activeNow: number;
   slug: string;
   icon: string;
