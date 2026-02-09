@@ -2579,6 +2579,11 @@ export default function PainelVivoPage() {
                 >
                   {comunidade.titulo}
                 </h1>
+                {comunidade.descricao && (
+                  <p className="text-sm text-zinc-400 mt-1">
+                    {comunidade.descricao}
+                  </p>
+                )}
               </div>
 
               <div className="flex items-center gap-2">
