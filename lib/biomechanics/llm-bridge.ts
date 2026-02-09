@@ -1,41 +1,45 @@
 /**
  * LLM Bridge: Envia BuiltPrompt do Pipeline B para Ollama
- * Reutiliza padrão de conexão do report-generator.ts
+ * Usa SYSTEM_PROMPT unificado NFV (NutriFitVision)
  */
 
 import axios from 'axios';
 import { BuiltPrompt } from './prompt-builder';
 import { ClassificationResult, summarizeClassificationResult } from './criteria-classifier';
+import { NFV_SYSTEM_PROMPT } from './system-prompt';
 
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
 
 // ============================
-// Tipos de saída
+// Tipos de saída (Conforme NFV System Prompt)
 // ============================
 
 export interface LLMAnalysisReport {
   resumo_executivo: string;
-  problemas_identificados: LLMProblem[];
+  analise_cadeia_movimento: {
+    fase_excentrica: string;
+    fase_concentrica: string;
+    relacoes_proporcionais: string;
+  };
   pontos_positivos: string[];
-  recomendacoes: LLMRecommendation[];
+  pontos_atencao: AnalysisPointOfAttention[];
+  conclusao_cientifica: string;
+  recomendacoes_top3: Recommendation[];
   score_geral: number;
   classificacao: 'EXCELENTE' | 'BOM' | 'REGULAR' | 'NECESSITA_CORRECAO';
-  proximos_passos: string[];
 }
 
-interface LLMProblem {
-  nome: string;
-  severidade: 'CRITICA' | 'MODERADA' | 'LEVE';
-  descricao: string;
-  causa_provavel?: string;
-  fundamentacao?: string;
+interface AnalysisPointOfAttention {
+  criterio: string;
+  valor: string;
+  o_que_indica: string;
+  possivel_causa?: string;
+  corretivo_sugerido?: string;
 }
 
-interface LLMRecommendation {
+interface Recommendation {
   prioridade: number;
-  categoria: string;
   descricao: string;
-  exercicio_corretivo?: string;
 }
 
 export interface LLMBridgeOptions {
@@ -91,41 +95,13 @@ export async function sendPromptToOllama(
     return createFallbackReport(classification, builtPrompt.metadata.exerciseName);
   }
 
-  // Montar prompt completo: system + user + instrução JSON
+  // Montar prompt completo: system + user
   const fullPrompt = [
-    builtPrompt.systemPrompt,
-    '\n---\n',
+    NFV_SYSTEM_PROMPT,
+    '\n---\n[DADOS DE ENTRADA]\n---\n',
     builtPrompt.userPrompt,
     '\n---\n',
-    '\n⚠️ INSTRUÇÃO FINAL OBRIGATÓRIA:',
-    'Finalize sua análise retornando EXATAMENTE neste formato JSON (sem texto antes ou depois):',
-    '',
-    '{',
-    '  "resumo_executivo": "Resumo breve em português",',
-    '  "problemas_identificados": [',
-    '    {',
-    '      "nome": "Nome do problema",',
-    '      "severidade": "CRITICA ou MODERADA ou LEVE",',
-    '      "descricao": "Descrição detalhada",',
-    '      "causa_provavel": "Por que acontece",',
-    '      "fundamentacao": "Base técnica (cite RAG se aplicável)"',
-    '    }',
-    '  ],',
-    '  "pontos_positivos": ["Ponto positivo 1", "Ponto positivo 2"],',
-    '  "recomendacoes": [',
-    '    {',
-    '      "prioridade": 1,',
-    '      "categoria": "Mobilidade|Força|Técnica|Segurança",',
-    '      "descricao": "Descrição da recomendação",',
-    '      "exercicio_corretivo": "Nome do exercício"',
-    '    }',
-    '  ],',
-    '  "score_geral": 8.5,',
-    '  "classificacao": "EXCELENTE ou BOM ou REGULAR ou NECESSITA_CORRECAO",',
-    '  "proximos_passos": ["Passo 1", "Passo 2", "Passo 3"]',
-    '}',
-    '',
-    'RESPONDA SOMENTE COM O JSON ACIMA, SEM QUALQUER TEXTO ADICIONAL.',
+    'RETORNE SOMENTE O JSON CONFORME ESPECIFICADO (sem texto antes ou depois).',
   ].join('\n');
 
   try {
@@ -183,37 +159,39 @@ function normalizeReport(
     : classification.overallScore;
 
   return {
-    resumo_executivo: data.resumo_executivo || `Score: ${score.toFixed(1)}/10`,
+    resumo_executivo: data.resumo_executivo || `Análise biomecânica com score ${score.toFixed(1)}/10`,
 
-    problemas_identificados: Array.isArray(data.problemas_identificados)
-      ? data.problemas_identificados.map((p: any) => ({
-          nome: p.nome || 'Problema não especificado',
-          severidade: validateSeveridade(p.severidade),
-          descricao: p.descricao || '',
-          causa_provavel: p.causa_provavel,
-          fundamentacao: p.fundamentacao,
-        }))
-      : extractProblemsFromClassification(classification),
+    analise_cadeia_movimento: {
+      fase_excentrica: data.analise_cadeia_movimento?.fase_excentrica || 'Não avaliado',
+      fase_concentrica: data.analise_cadeia_movimento?.fase_concentrica || 'Não avaliado',
+      relacoes_proporcionais: data.analise_cadeia_movimento?.relacoes_proporcionais || 'Não avaliado',
+    },
 
     pontos_positivos: Array.isArray(data.pontos_positivos)
       ? data.pontos_positivos
       : extractPositivesFromClassification(classification),
 
-    recomendacoes: Array.isArray(data.recomendacoes)
-      ? data.recomendacoes.map((r: any) => ({
-          prioridade: typeof r.prioridade === 'number' ? r.prioridade : 3,
-          categoria: r.categoria || 'Técnica',
-          descricao: r.descricao || '',
-          exercicio_corretivo: r.exercicio_corretivo,
+    pontos_atencao: Array.isArray(data.pontos_atencao)
+      ? data.pontos_atencao.map((p: any) => ({
+          criterio: p.criterio || 'Critério não especificado',
+          valor: p.valor || '',
+          o_que_indica: p.o_que_indica || '',
+          possivel_causa: p.possivel_causa,
+          corretivo_sugerido: p.corretivo_sugerido,
         }))
-      : [],
+      : extractAttentionPointsFromClassification(classification),
+
+    conclusao_cientifica: data.conclusao_cientifica || 'Análise concluída. Recomenda-se aplicar os exercícios corretivos conforme prioridade.',
+
+    recomendacoes_top3: Array.isArray(data.recomendacoes_top3)
+      ? data.recomendacoes_top3.map((r: any) => ({
+          prioridade: typeof r.prioridade === 'number' ? r.prioridade : 1,
+          descricao: r.descricao || '',
+        }))
+      : extractRecommendationsFromClassification(classification),
 
     score_geral: Math.round(score * 10) / 10,
     classificacao: validateClassificacao(data.classificacao, score),
-
-    proximos_passos: Array.isArray(data.proximos_passos)
-      ? data.proximos_passos
-      : ['Revisar pontos críticos', 'Praticar exercícios corretivos', 'Reavaliar em 2-4 semanas'],
   };
 }
 
@@ -250,9 +228,44 @@ function extractPositivesFromClassification(classification: ClassificationResult
     .map((c) => `${c.label || c.criterion}: ${c.value}${c.unit || ''} (${c.classificationLabel || c.classification})`);
 }
 
+function extractAttentionPointsFromClassification(classification: ClassificationResult): AnalysisPointOfAttention[] {
+  return classification.classifications
+    .filter((c) => ['danger', 'warning'].includes(c.classification) && !c.isInformativeOnly)
+    .map((c) => ({
+      criterio: c.label || c.criterion,
+      valor: `${c.value}${c.unit || ''}`,
+      o_que_indica: `${c.label}: ${c.value}${c.unit || ''} está em zona de ${c.classificationLabel}`,
+      possivel_causa: c.note,
+      corretivo_sugerido: `Trabalhar mobilidade e controle de ${c.label}`,
+    }));
+}
+
+function extractRecommendationsFromClassification(classification: ClassificationResult): Recommendation[] {
+  const recommendations = classification.classifications
+    .filter((c) => c.classification === 'danger')
+    .slice(0, 3)
+    .map((c, i) => ({
+      prioridade: i + 1,
+      descricao: `Corrigir ${c.label}: valor atual ${c.value}${c.unit || ''}`,
+    }));
+
+  // Preencher com recomendações genéricas se houver menos de 3
+  while (recommendations.length < 3) {
+    const idx = recommendations.length + 1;
+    recommendations.push({
+      prioridade: idx,
+      descricao: idx === 2
+        ? 'Trabalhar controle de core e estabilização'
+        : 'Reavaliar técnica em 2-4 semanas',
+    });
+  }
+
+  return recommendations;
+}
+
 /**
  * Relatório determinístico gerado a partir dos dados de classificação
- * quando o Ollama está indisponível.
+ * quando o Ollama está indisponível (fallback NFV).
  */
 function createFallbackReport(
   classification: ClassificationResult,
@@ -261,25 +274,26 @@ function createFallbackReport(
   const score = classification.overallScore;
 
   return {
-    resumo_executivo: `Análise biomecânica de ${exerciseName}. Score: ${score.toFixed(1)}/10. ` +
-      `${classification.summary.danger} critérios críticos, ${classification.summary.warning} alertas.`,
-    problemas_identificados: extractProblemsFromClassification(classification),
+    resumo_executivo: `Análise de ${exerciseName} com score ${score.toFixed(1)}/10. ` +
+      `${classification.summary.danger} critérios críticos identificados.`,
+
+    analise_cadeia_movimento: {
+      fase_excentrica: 'Avaliação baseada em dados de classificação.',
+      fase_concentrica: 'Avaliação baseada em dados de classificação.',
+      relacoes_proporcionais: 'Relacionamento entre articulações foi analisado durante a classificação.',
+    },
+
     pontos_positivos: extractPositivesFromClassification(classification),
-    recomendacoes: classification.classifications
-      .filter((c) => c.classification === 'danger')
-      .slice(0, 3)
-      .map((c, i) => ({
-        prioridade: i + 1,
-        categoria: c.isSafetyCritical ? 'Segurança' : 'Técnica',
-        descricao: `Corrigir ${c.label || c.criterion}: valor atual ${c.value}${c.unit || ''}`,
-      })),
+
+    pontos_atencao: extractAttentionPointsFromClassification(classification),
+
+    conclusao_cientifica: `O movimento apresenta ${classification.summary.danger} problema(s) crítico(s) ` +
+      `e ${classification.summary.warning} alerta(s). Recomenda-se revisão técnica com profissional antes de aumentar carga.`,
+
+    recomendacoes_top3: extractRecommendationsFromClassification(classification),
+
     score_geral: Math.round(score * 10) / 10,
     classificacao: validateClassificacao(null, score),
-    proximos_passos: [
-      'Revisar os problemas identificados com um profissional',
-      'Aplicar exercícios corretivos antes de aumentar carga',
-      'Reavaliar técnica em 2-4 semanas',
-    ],
   };
 }
 

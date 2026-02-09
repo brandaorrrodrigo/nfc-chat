@@ -1,6 +1,6 @@
 /**
- * Construtor de prompts para análise biomecânica
- * Combina dados numéricos, classificações e contexto RAG
+ * Construtor de prompts para análise biomecânica (NFV - NutriFitVision)
+ * Estrutura dados de entrada conforme template unificado
  */
 
 import { CriteriaClassification, ClassificationResult, summarizeClassification } from './criteria-classifier';
@@ -298,34 +298,37 @@ export function buildPrompt(input: PromptBuilderInput): BuiltPrompt {
   userPromptLines.push(buildInstructionsSection(result));
   userPromptLines.push('');
 
-  // Instrução final explícita
-  userPromptLines.push('## FORMATO DE RESPOSTA OBRIGATÓRIO');
-  userPromptLines.push('');
-  userPromptLines.push('Finalize sua análise com um JSON estruturado neste formato exato:');
+  // Instrução final explícita - conforme template NFV
+  userPromptLines.push('## ⚠️ RETORNE EXATAMENTE NESTE JSON (sem texto antes/depois):');
   userPromptLines.push('');
   userPromptLines.push('{');
-  userPromptLines.push('  "resumo_executivo": "Texto breve sobre a qualidade geral do movimento",');
-  userPromptLines.push('  "problemas_identificados": [');
+  userPromptLines.push('  "resumo_executivo": "2-3 frases, mencionar constraint se houver",');
+  userPromptLines.push('  "analise_cadeia_movimento": {');
+  userPromptLines.push('    "fase_excentrica": "Descrição dados numéricos + relações entre articulações",');
+  userPromptLines.push('    "fase_concentrica": "Descrição retorno, controle, alinhamento",');
+  userPromptLines.push('    "relacoes_proporcionais": "Análise de coerência entre ângulos"');
+  userPromptLines.push('  },');
+  userPromptLines.push('  "pontos_positivos": [');
+  userPromptLines.push('    "Critério aceitável/superior com explicação do significado",');
+  userPromptLines.push('    "Critério aceitável/superior com explicação do significado"');
+  userPromptLines.push('  ],');
+  userPromptLines.push('  "pontos_atencao": [');
   userPromptLines.push('    {');
-  userPromptLines.push('      "nome": "Nome do problema",');
-  userPromptLines.push('      "severidade": "CRITICA|MODERADA|LEVE",');
-  userPromptLines.push('      "descricao": "Descrição técnica detalhada",');
-  userPromptLines.push('      "causa_provavel": "Qual é a raiz do problema",');
-  userPromptLines.push('      "fundamentacao": "Base científica ou RAG"');
+  userPromptLines.push('      "criterio": "Nome",');
+  userPromptLines.push('      "valor": "valor com unidade",');
+  userPromptLines.push('      "o_que_indica": "Explicação baseada em dados",');
+  userPromptLines.push('      "possivel_causa": "Baseado em RAG",');
+  userPromptLines.push('      "corretivo_sugerido": "Exercício específico"');
   userPromptLines.push('    }');
   userPromptLines.push('  ],');
-  userPromptLines.push('  "pontos_positivos": ["Ponto 1", "Ponto 2", "Ponto 3"],');
-  userPromptLines.push('  "recomendacoes": [');
-  userPromptLines.push('    {');
-  userPromptLines.push('      "prioridade": 1,');
-  userPromptLines.push('      "categoria": "Mobilidade|Força|Técnica|Segurança",');
-  userPromptLines.push('      "descricao": "Descrição da recomendação",');
-  userPromptLines.push('      "exercicio_corretivo": "Nome específico do exercício"');
-  userPromptLines.push('    }');
+  userPromptLines.push('  "conclusao_cientifica": "2-3 frases fundamentadas com RAG. Se constraint: recomendar reavaliação.",');
+  userPromptLines.push('  "recomendacoes_top3": [');
+  userPromptLines.push('    {"prioridade": 1, "descricao": "Mais impactante"},');
+  userPromptLines.push('    {"prioridade": 2, "descricao": "Segunda prioridade"},');
+  userPromptLines.push('    {"prioridade": 3, "descricao": "Terceira prioridade"}');
   userPromptLines.push('  ],');
   userPromptLines.push('  "score_geral": ' + result.overallScore + ',');
-  userPromptLines.push('  "classificacao": "EXCELENTE|BOM|REGULAR|NECESSITA_CORRECAO",');
-  userPromptLines.push('  "proximos_passos": ["Passo 1", "Passo 2", "Passo 3"]');
+  userPromptLines.push('  "classificacao": "EXCELENTE|BOM|REGULAR|NECESSITA_CORRECAO"');
   userPromptLines.push('}');
 
   const userPrompt = userPromptLines.join('\n');
