@@ -189,7 +189,9 @@ export function classifyMetrics(
     const { level } = classifyMetricValue(metricValue.value, criterionRange);
     summary[level]++;
 
-    const isSafetyCritical = template.safety_critical_criteria.includes(criterionName);
+    // isSafetyCritical = true APENAS se critério está na lista DE SEGURANÇA E está em zona de perigo/alerta
+    const isSafetyRelevant = template.safety_critical_criteria.includes(criterionName);
+    const isSafetyCritical = isSafetyRelevant && (level === 'danger' || level === 'warning');
     const isInformativeOnly = hasConstraint ? romCriteria.includes(criterionName) : false;
 
     classifications.push({
