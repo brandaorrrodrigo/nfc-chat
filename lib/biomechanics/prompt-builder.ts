@@ -78,9 +78,10 @@ function buildClassificationsSection(classifications: CriteriaClassification[]):
 
   // Zona de Perigo
   if (byLevel.danger.length > 0) {
-    lines.push('### 🔴 ZONA CRÍTICA (Danger)\n');
+    lines.push('### 🔴 ZONA CRÍTICA (Perigo)\n');
     byLevel.danger.forEach((c) => {
-      lines.push(`- **${c.criterion}** (${c.metric})`);
+      const name = c.label || c.criterion;
+      lines.push(`- **${name}** (${c.metric})`);
       lines.push(
         `  - Valor: ${c.value}${c.unit || ''} | Range Perigoso: ${c.range.danger}`
       );
@@ -96,9 +97,10 @@ function buildClassificationsSection(classifications: CriteriaClassification[]):
 
   // Zona de Alerta
   if (byLevel.warning.length > 0) {
-    lines.push('### 🟡 ZONA DE ALERTA (Warning)\n');
+    lines.push('### 🟡 ZONA DE ALERTA\n');
     byLevel.warning.forEach((c) => {
-      lines.push(`- **${c.criterion}** (${c.metric})`);
+      const name = c.label || c.criterion;
+      lines.push(`- **${name}** (${c.metric})`);
       lines.push(
         `  - Valor: ${c.value}${c.unit || ''} | Range de Alerta: ${c.range.warning}`
       );
@@ -111,10 +113,11 @@ function buildClassificationsSection(classifications: CriteriaClassification[]):
 
   // Zona OK
   if (byLevel.acceptable.length > 0) {
-    lines.push('### 🟢 DENTRO DOS LIMITES (Acceptable/Good/Excellent)\n');
+    lines.push('### 🟢 DENTRO DOS LIMITES (Aceitável/Bom/Excelente)\n');
     byLevel.acceptable.forEach((c) => {
+      const name = c.label || c.criterion;
       const rangeText = c.range.excellent || c.range.good || c.range.acceptable;
-      lines.push(`- **${c.criterion}**: ${c.value}${c.unit || ''} (${rangeText})`);
+      lines.push(`- **${name}**: ${c.value}${c.unit || ''} (${rangeText})`);
     });
     lines.push('');
   }
@@ -164,7 +167,7 @@ function buildRAGSection(ragContext?: RAGContext[]): string {
 function buildCriteriaSection(template: CategoryTemplate, exerciseName: string): string {
   const lines: string[] = [
     `## Critérios de Avaliação para ${exerciseName}\n`,
-    `Categoria: **${template.category}**\n`,
+    `Categoria: **${template.label || template.category}**\n`,
     'Articulações monitoradas: ' + template.key_joints.join(', ') + '\n',
     'Fases do movimento: ' + template.phases.join(', ') + '\n',
   ];
@@ -237,7 +240,7 @@ export function buildPrompt(input: PromptBuilderInput): BuiltPrompt {
   // Header
   userPromptLines.push('# ANÁLISE BIOMECÂNICA DO EXERCÍCIO\n');
   userPromptLines.push(`**Exercício**: ${exerciseName}`);
-  userPromptLines.push(`**Categoria**: ${template.category}`);
+  userPromptLines.push(`**Categoria**: ${template.label || template.category}`);
   userPromptLines.push(`**Data/Hora**: ${result.timestamp}`);
   if (videoMetadata?.duration) {
     userPromptLines.push(`**Duração do Vídeo**: ${videoMetadata.duration.toFixed(1)}s`);
@@ -298,7 +301,7 @@ export function buildMinimalPrompt(
   const userPromptLines: string[] = [];
 
   userPromptLines.push('# ANÁLISE BIOMECÂNICA\n');
-  userPromptLines.push(`Exercício: ${exerciseName} (${template.category})`);
+  userPromptLines.push(`Exercício: ${exerciseName} (${template.label || template.category})`);
   userPromptLines.push(`Score: ${result.overallScore}/10\n`);
 
   // Apenas dados críticos
@@ -309,7 +312,8 @@ export function buildMinimalPrompt(
   if (critical.length > 0) {
     userPromptLines.push('### Problemas Identificados:\n');
     critical.forEach((c) => {
-      userPromptLines.push(`- ${c.criterion}: ${c.value}${c.unit || ''}`);
+      const name = c.label || c.criterion;
+      userPromptLines.push(`- ${name}: ${c.value}${c.unit || ''}`);
       if (c.classification === 'danger') {
         userPromptLines.push(`  PERIGOSO: ${c.range.danger}`);
       } else {
@@ -326,7 +330,8 @@ export function buildMinimalPrompt(
   if (acceptable.length > 0) {
     userPromptLines.push('### Dentro dos Limites:\n');
     acceptable.slice(0, 5).forEach((c) => {
-      userPromptLines.push(`- ${c.criterion}: ${c.value}${c.unit || ''} ✓`);
+      const name = c.label || c.criterion;
+      userPromptLines.push(`- ${name}: ${c.value}${c.unit || ''} ✓`);
     });
   }
 

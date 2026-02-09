@@ -10,7 +10,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getExerciseCategory, getCategoryTemplate } from '@/lib/biomechanics/category-templates';
+import { getExerciseCategory, getCategoryTemplate, translateClassification, translateCategory } from '@/lib/biomechanics/category-templates';
 import { classifyMetrics, MetricValue, extractAllRAGTopics } from '@/lib/biomechanics/criteria-classifier';
 import { buildPrompt, buildMinimalPrompt } from '@/lib/biomechanics/prompt-builder';
 import { queryRAG } from '@/lib/biomechanics/biomechanics-rag';
@@ -217,6 +217,7 @@ export async function POST(request: NextRequest) {
       success: true,
       exercise,
       category,
+      category_label: translateCategory(category),
       processing_time_ms: Date.now() - startTime,
 
       classification: {
@@ -226,10 +227,12 @@ export async function POST(request: NextRequest) {
         has_warning_safety: classification.hasWarningSafetyCriteria,
         details: classification.classifications.map((c) => ({
           criterion: c.criterion,
+          label: c.label,
           metric: c.metric,
           value: c.value,
           unit: c.unit,
           level: c.classification,
+          level_label: c.classificationLabel,
           is_safety_critical: c.isSafetyCritical,
           range: c.range,
           note: c.note,

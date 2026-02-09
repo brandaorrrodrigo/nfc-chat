@@ -3,7 +3,7 @@
  * Compara métricas numéricas contra ranges definidos nos templates
  */
 
-import { CategoryTemplate, CriterionRange } from './category-templates';
+import { CategoryTemplate, CriterionRange, translateClassification, translateCategory } from './category-templates';
 
 export type ClassificationLevel = 'excellent' | 'good' | 'acceptable' | 'warning' | 'danger';
 
@@ -15,10 +15,12 @@ export interface MetricValue {
 
 export interface CriteriaClassification {
   criterion: string;
+  label: string; // Nome em PT para exibição
   metric: string;
   value: number;
   unit?: string;
   classification: ClassificationLevel;
+  classificationLabel: string; // Nível traduzido (ex: "Perigo", "Excelente")
   isSafetyCritical: boolean;
   range: {
     excellent?: string;
@@ -33,6 +35,7 @@ export interface CriteriaClassification {
 
 export interface ClassificationResult {
   category: string;
+  categoryLabel: string; // Nome da categoria em PT
   exerciseType?: string;
   timestamp: string;
   classifications: CriteriaClassification[];
@@ -183,10 +186,12 @@ export function classifyMetrics(
 
     classifications.push({
       criterion: criterionName,
+      label: criterionRange.label || criterionName,
       metric: criterionRange.metric,
       value: metricValue.value,
       unit: metricValue.unit || (criterionRange.metric.includes('degree') ? '°' : 'cm'),
       classification: level,
+      classificationLabel: translateClassification(level),
       isSafetyCritical,
       range: {
         excellent: getStringValue((criterionRange as any).excellent),
@@ -210,6 +215,7 @@ export function classifyMetrics(
 
   return {
     category: template.category,
+    categoryLabel: template.label || translateCategory(template.category),
     exerciseType,
     timestamp: new Date().toISOString(),
     classifications,
@@ -290,19 +296,21 @@ export function extractAllRAGTopics(result: ClassificationResult): string[] {
  * Gera resumo textual de uma classificação
  */
 export function summarizeClassification(classification: CriteriaClassification): string {
+  const name = classification.label || classification.criterion;
   const value = `${classification.value}${classification.unit || ''}`;
+  const levelLabel = classification.classificationLabel || translateClassification(classification.classification);
 
   switch (classification.classification) {
     case 'excellent':
-      return `✓ ${classification.criterion}: ${value} (excelente)`;
+      return `✓ ${name}: ${value} (${levelLabel})`;
     case 'good':
-      return `✓ ${classification.criterion}: ${value} (bom)`;
+      return `✓ ${name}: ${value} (${levelLabel})`;
     case 'acceptable':
-      return `○ ${classification.criterion}: ${value} (aceitável)`;
+      return `○ ${name}: ${value} (${levelLabel})`;
     case 'warning':
-      return `⚠ ${classification.criterion}: ${value} (atenção)`;
+      return `⚠ ${name}: ${value} (${levelLabel})`;
     case 'danger':
-      return `✗ ${classification.criterion}: ${value} (perigoso)`;
+      return `✗ ${name}: ${value} (${levelLabel})`;
   }
 }
 

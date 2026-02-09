@@ -207,9 +207,9 @@ function extractProblemsFromClassification(classification: ClassificationResult)
   return classification.classifications
     .filter((c) => c.classification === 'danger' || c.classification === 'warning')
     .map((c) => ({
-      nome: c.criterion,
+      nome: c.label || c.criterion,
       severidade: (c.classification === 'danger' ? 'CRITICA' : 'MODERADA') as 'CRITICA' | 'MODERADA',
-      descricao: `${c.metric}: ${c.value}${c.unit || ''} (range ${c.classification}: ${c.range[c.classification]})`,
+      descricao: `${c.metric}: ${c.value}${c.unit || ''} (range ${c.classificationLabel || c.classification}: ${c.range[c.classification]})`,
       causa_provavel: c.note,
     }));
 }
@@ -217,7 +217,7 @@ function extractProblemsFromClassification(classification: ClassificationResult)
 function extractPositivesFromClassification(classification: ClassificationResult): string[] {
   return classification.classifications
     .filter((c) => ['excellent', 'good', 'acceptable'].includes(c.classification))
-    .map((c) => `${c.criterion}: ${c.value}${c.unit || ''} (${c.classification})`);
+    .map((c) => `${c.label || c.criterion}: ${c.value}${c.unit || ''} (${c.classificationLabel || c.classification})`);
 }
 
 /**
@@ -241,7 +241,7 @@ function createFallbackReport(
       .map((c, i) => ({
         prioridade: i + 1,
         categoria: c.isSafetyCritical ? 'Segurança' : 'Técnica',
-        descricao: `Corrigir ${c.criterion}: valor atual ${c.value}${c.unit || ''}`,
+        descricao: `Corrigir ${c.label || c.criterion}: valor atual ${c.value}${c.unit || ''}`,
       })),
     score_geral: Math.round(score * 10) / 10,
     classificacao: validateClassificacao(null, score),

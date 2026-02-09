@@ -252,7 +252,7 @@ function generateDiagnosticSummary(
   if (dangerItems.length > 0) {
     lines.push('🔴 PROBLEMAS CRÍTICOS:');
     dangerItems.forEach((item) => {
-      lines.push(`   • ${item.criterion}: ${item.value}${item.unit || ''}`);
+      lines.push(`   • ${item.label || item.criterion}: ${item.value}${item.unit || ''}`);
       if (item.isSafetyCritical) {
         lines.push(`     ⚠️ RISCO DE LESÃO`);
       }
@@ -265,7 +265,7 @@ function generateDiagnosticSummary(
   if (warningItems.length > 0) {
     lines.push('🟡 ÁREAS DE ALERTA:');
     warningItems.slice(0, 3).forEach((item) => {
-      lines.push(`   • ${item.criterion}: ${item.value}${item.unit || ''}`);
+      lines.push(`   • ${item.label || item.criterion}: ${item.value}${item.unit || ''}`);
     });
     if (warningItems.length > 3) {
       lines.push(`   ... e ${warningItems.length - 3} mais`);
