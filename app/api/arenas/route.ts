@@ -70,23 +70,32 @@ export async function GET(request: NextRequest) {
 
     console.log(`[Arenas] Found ${arenas?.length || 0} arenas`)
 
-    // ✅ Calcular total de usuários únicos por arena
+    // ✅ Calcular total de usuários únicos por arena (com groupBy otimizado)
     let arenasWithUserCount = arenas || []
     try {
-      const arenasWithCounts = await Promise.all(
-        arenasWithUserCount.map(async (arena) => {
-          const uniqueUsers = await prisma.post.findMany({
-            where: { arenaId: arena.id },
-            select: { userId: true },
-            distinct: ['userId'],
-          })
-          return {
-            ...arena,
-            totalUsers: uniqueUsers.length,
-          }
-        })
+      // Buscar contagem agregada para cada arena
+      const userCountByArena = await prisma.post.groupBy({
+        by: ['arenaId'],
+        _count: {
+          userId: true,
+        },
+        where: {
+          arenaId: {
+            in: arenasWithUserCount.map((a) => a.id),
+          },
+        },
+      })
+
+      // Criar mapa de arenaId -> totalUsers
+      const userCountMap = new Map(
+        userCountByArena.map((item) => [item.arenaId, item._count.userId])
       )
-      arenasWithUserCount = arenasWithCounts
+
+      // Adicionar totalUsers a cada arena
+      arenasWithUserCount = arenasWithUserCount.map((arena) => ({
+        ...arena,
+        totalUsers: userCountMap.get(arena.id) || 0,
+      }))
     } catch (err) {
       console.warn('[Arenas] Failed to calculate totalUsers:', err)
       // Continue sem contar usuários se houver erro
