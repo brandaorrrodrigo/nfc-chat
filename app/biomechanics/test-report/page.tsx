@@ -248,11 +248,11 @@ export default function TestReportPage() {
                 </div>
 
                 {/* Identified Problems */}
-                {result.report.problemas_identificados.length > 0 && (
+                {(result?.report?.problemas_identificados?.length ?? 0) > 0 && (
                   <div className="mb-6">
                     <h3 className="text-lg font-semibold text-red-300 mb-3 flex items-center gap-2">
                       <AlertCircle className="w-5 h-5" />
-                      Problemas Identificados ({result.report.problemas_identificados.length})
+                      Problemas Identificados ({result?.report?.problemas_identificados?.length ?? 0})
                     </h3>
                     <div className="space-y-3">
                       {result.report.problemas_identificados.map((problema, idx) => (
@@ -285,11 +285,11 @@ export default function TestReportPage() {
                 )}
 
                 {/* Positive Points */}
-                {result.report.pontos_positivos.length > 0 && (
+                {(result?.report?.pontos_positivos?.length ?? 0) > 0 && (
                   <div className="mb-6">
                     <h3 className="text-lg font-semibold text-green-300 mb-3 flex items-center gap-2">
                       <CheckCircle className="w-5 h-5" />
-                      Pontos Positivos ({result.report.pontos_positivos.length})
+                      Pontos Positivos ({result?.report?.pontos_positivos?.length ?? 0})
                     </h3>
                     <ul className="space-y-2">
                       {result.report.pontos_positivos.map((ponto, idx) => (
@@ -303,11 +303,11 @@ export default function TestReportPage() {
                 )}
 
                 {/* Recommendations */}
-                {result.report.recomendacoes.length > 0 && (
+                {(result?.report?.recomendacoes?.length ?? 0) > 0 && (
                   <div className="mb-6">
                     <h3 className="text-lg font-semibold text-yellow-300 mb-3 flex items-center gap-2">
                       <Target className="w-5 h-5" />
-                      Recomendações ({result.report.recomendacoes.length})
+                      Recomendações ({result?.report?.recomendacoes?.length ?? 0})
                     </h3>
                     <div className="space-y-3">
                       {result.report.recomendacoes.map((rec, idx) => (
@@ -336,7 +336,7 @@ export default function TestReportPage() {
                 )}
 
                 {/* Next Steps */}
-                {result.report.proximos_passos.length > 0 && (
+                {(result?.report?.proximos_passos?.length ?? 0) > 0 && (
                   <div>
                     <h3 className="text-lg font-semibold text-blue-300 mb-3 flex items-center gap-2">
                       <TrendingUp className="w-5 h-5" />

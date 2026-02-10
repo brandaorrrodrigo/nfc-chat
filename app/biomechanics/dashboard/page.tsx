@@ -268,7 +268,7 @@ export default function BiomechanicsDashboard() {
               <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
                 <p className="text-slate-400 text-sm font-semibold mb-2">TÓPICOS RAG</p>
                 <p className="text-xl font-bold text-purple-400">
-                  {analysis.analysis.rag_topics_used.length}
+                  {(analysis?.analysis?.rag_topics_used || []).length}
                 </p>
               </div>
             </div>
@@ -492,7 +492,7 @@ export default function BiomechanicsDashboard() {
                 </div>
 
                 {/* Identified Problems */}
-                {analysis.report.problemas_identificados.length > 0 && (
+                {(analysis?.report?.problemas_identificados?.length ?? 0) > 0 && (
                   <div className="mb-6">
                     <h3 className="text-lg font-semibold text-red-300 mb-3 flex items-center gap-2">
                       <AlertCircle className="w-5 h-5" />
@@ -534,7 +534,7 @@ export default function BiomechanicsDashboard() {
                 )}
 
                 {/* Positive Points */}
-                {analysis.report.pontos_positivos.length > 0 && (
+                {(analysis?.report?.pontos_positivos?.length ?? 0) > 0 && (
                   <div className="mb-6">
                     <h3 className="text-lg font-semibold text-green-300 mb-3 flex items-center gap-2">
                       <CheckCircle className="w-5 h-5" />
@@ -552,7 +552,7 @@ export default function BiomechanicsDashboard() {
                 )}
 
                 {/* Recommendations */}
-                {analysis.report.recomendacoes.length > 0 && (
+                {(analysis?.report?.recomendacoes?.length ?? 0) > 0 && (
                   <div className="mb-6">
                     <h3 className="text-lg font-semibold text-yellow-300 mb-3 flex items-center gap-2">
                       <Target className="w-5 h-5" />
@@ -585,7 +585,7 @@ export default function BiomechanicsDashboard() {
                 )}
 
                 {/* Next Steps */}
-                {analysis.report.proximos_passos.length > 0 && (
+                {(analysis?.report?.proximos_passos?.length ?? 0) > 0 && (
                   <div className="mb-6">
                     <h3 className="text-lg font-semibold text-blue-300 mb-3 flex items-center gap-2">
                       <TrendingUp className="w-5 h-5" />
@@ -605,7 +605,7 @@ export default function BiomechanicsDashboard() {
             )}
 
             {/* RAG Topics Section */}
-            {analysis.analysis.rag_topics_used.length > 0 && (
+            {(analysis?.analysis?.rag_topics_used?.length ?? 0) > 0 && (
               <div className="bg-slate-800 rounded-lg border border-purple-700/50 p-6">
                 <h2 className="text-xl font-bold text-white mb-4">Tópicos de Conhecimento</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">

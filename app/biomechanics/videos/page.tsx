@@ -94,7 +94,7 @@ export default function VideosPage() {
         )}
 
         {/* Empty State */}
-        {!loading && !error && videos.length === 0 && (
+        {!loading && !error && (videos?.length ?? 0) === 0 && (
           <div className="text-center py-12">
             <Video className="w-16 h-16 text-slate-600 mx-auto mb-4" />
             <p className="text-slate-400 text-lg">Nenhum vídeo analisado ainda</p>
@@ -102,7 +102,7 @@ export default function VideosPage() {
         )}
 
         {/* Videos Grid */}
-        {!loading && !error && videos.length > 0 && (
+        {!loading && !error && (videos?.length ?? 0) > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {videos.map((video) => (
               <Link
@@ -151,25 +151,25 @@ export default function VideosPage() {
         )}
 
         {/* Stats */}
-        {!loading && !error && videos.length > 0 && (
+        {!loading && !error && (videos?.length ?? 0) > 0 && (
           <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
               <p className="text-slate-400 text-sm font-semibold mb-2">TOTAL DE VÍDEOS</p>
-              <p className="text-3xl font-bold text-cyan-400">{videos.length}</p>
+              <p className="text-3xl font-bold text-cyan-400">{videos?.length ?? 0}</p>
             </div>
             <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
               <p className="text-slate-400 text-sm font-semibold mb-2">ANALISADOS</p>
               <p className="text-3xl font-bold text-green-400">
-                {videos.filter(v => v.status === 'BIOMECHANICS_ANALYZED_V2').length}
+                {(videos?.filter(v => v.status === 'BIOMECHANICS_ANALYZED_V2')?.length ?? 0)}
               </p>
             </div>
             <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
               <p className="text-slate-400 text-sm font-semibold mb-2">SCORE MÉDIO</p>
               <p className="text-3xl font-bold text-yellow-400">
                 {Math.round(
-                  videos.filter(v => v.overall_score)
+                  (videos?.filter(v => v.overall_score) || [])
                     .reduce((sum, v) => sum + (v.overall_score || 0), 0) /
-                    (videos.filter(v => v.overall_score).length || 1)
+                    ((videos?.filter(v => v.overall_score)?.length ?? 0) || 1)
                 )}
               </p>
             </div>
