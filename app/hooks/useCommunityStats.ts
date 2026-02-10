@@ -22,7 +22,7 @@ export function useCommunityStats() {
   useEffect(() => {
     async function fetchStats() {
       try {
-        const response = await fetch('/api/community/stats')
+        const response = await fetch('/api/community-stats')
 
         if (!response.ok) {
           throw new Error('Failed to fetch community stats')
