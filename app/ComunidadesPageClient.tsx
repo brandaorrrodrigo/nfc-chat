@@ -293,9 +293,14 @@ export default function ComunidadesPageClient() {
           // Handle both array response and grouped response
           const arenas = Array.isArray(data) ? data : data.arenas || [];
           setApiArenas(arenas);
+        } else {
+          // Se API falha, usa fallback (não deixa vazio)
+          setApiArenas([]);
         }
       } catch (err) {
         console.error('Failed to fetch arenas:', err);
+        // Fallback quando erro: continua com array vazio
+        setApiArenas([]);
       } finally {
         setLoading(false);
       }
@@ -425,7 +430,7 @@ export default function ComunidadesPageClient() {
           </section>
 
           {/* ===== ÍNDICE DE ARENAS ===== */}
-          {!loading && indexArenas.length > 0 && (
+          {!loading && (
             <section className="mb-8">
               <ArenaIndex arenas={indexArenas} />
             </section>

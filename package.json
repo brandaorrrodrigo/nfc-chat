@@ -44,7 +44,13 @@
     "seed:pricing": "npx tsx scripts/seed-biometric-pricing.ts",
     "stats:fix": "ts-node --project tsconfig.scripts.json scripts/fix-fake-counters.ts",
     "diagnose:community": "ts-node --project tsconfig.scripts.json scripts/diagnose-community-data.ts",
-    "diagnose": "ts-node --project tsconfig.scripts.json scripts/diagnose-visual.ts"
+    "diagnose": "ts-node --project tsconfig.scripts.json scripts/diagnose-visual.ts",
+    "monitor:seeds": "bash scripts/monitor-seeds.sh",
+    "seeds:peptideos": "npx tsx scripts/seed-peptideos-farmacologia.ts",
+    "seeds:performance": "npx tsx scripts/seed-performance-biohacking.ts",
+    "seeds:receitas": "npx tsx scripts/seed-receitas-alimentacao.ts",
+    "seeds:exercicios": "npx tsx scripts/seed-exercicios-tecnica.ts",
+    "seeds:all-new": "npm run seeds:peptideos && npm run seeds:performance && npm run seeds:receitas && npm run seeds:exercicios"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.73.0",

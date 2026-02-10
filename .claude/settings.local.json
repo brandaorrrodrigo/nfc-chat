@@ -96,7 +96,8 @@
       "Bash(python3:*)",
       "Bash(1 grep -o 'knee_valgus.*is_safety_critical.*,' /tmp/result.json)",
       "Bash(xargs:*)",
-      "Bash(head:*)"
+      "Bash(head:*)",
+      "Bash(pkill:*)"
     ]
   }
 }
