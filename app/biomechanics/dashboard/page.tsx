@@ -100,8 +100,8 @@ export default function BiomechanicsDashboard() {
   ];
 
   useEffect(() => {
-    // Load default video on mount
-    analyzeVideo('va_1770241761873_ckobfl93u');
+    // Load default video on mount - REMOVED hardcoded ID
+    // User must now enter a video ID or select from list
   }, []);
 
   const analyzeVideo = async (id?: string) => {
