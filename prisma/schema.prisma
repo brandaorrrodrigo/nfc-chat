@@ -96,6 +96,7 @@ model Arena {
   icon              String
   color             String
   category          String
+  hub_slug          String?   // Campo para agrupar arenas em hubs
 
   // Configurações
   isActive          Boolean   @default(true)

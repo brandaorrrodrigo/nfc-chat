@@ -41,6 +41,7 @@ export interface ArenaWithTags {
   totalUsers?: number;
   status: ArenaStatus;
   tags: ArenaTag[];
+  hub_slug?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -67,4 +68,5 @@ export interface CommunityCardData {
   arenaType?: ArenaType;
   totalPosts?: number;
   status?: ArenaStatus;
+  hub_slug?: string | null;
 }

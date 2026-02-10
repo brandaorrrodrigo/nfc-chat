@@ -95,6 +95,7 @@ export function arenaToDisplayFormat(arena: ArenaWithTags): CommunityCardData {
     arenaType: arena.arenaType,
     totalPosts: arena.totalPosts,
     status: arena.status,
+    hub_slug: arena.hub_slug,
   };
 }
 

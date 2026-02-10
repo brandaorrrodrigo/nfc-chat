@@ -166,8 +166,13 @@ interface CommunityCardProps {
 function CommunityCard({ community }: CommunityCardProps) {
   const IconComponent = ICON_MAP[community.icon] || Activity;
 
+  // Se a arena tem hub_slug, redireciona para o HUB ao invés da arena direta
+  const href = community.hub_slug
+    ? `/comunidades/hub/${community.hub_slug}`
+    : `/comunidades/${community.slug}`;
+
   return (
-    <Link href={`/comunidades/${community.slug}`}>
+    <Link href={href}>
       <div className="card-premium group relative overflow-hidden rounded-2xl p-6 cursor-pointer">
         {/* Glow de fundo no hover */}
         <div
