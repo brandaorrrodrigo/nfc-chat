@@ -12,7 +12,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { isNFVArena, isNFVHub, isPremiumNFVArena, getPremiumArenaConfig } from '@/lib/biomechanics/nfv-config';
@@ -2083,6 +2083,7 @@ function ComunidadeNaoEncontrada({ slug }: { slug: string }) {
 export default function PainelVivoPage() {
   // useParams é um hook de Client Component - seguro para usar aqui
   const params = useParams();
+  const router = useRouter();
   const slug = typeof params?.slug === 'string' ? params.slug : '';
 
   const { user, isAuthenticated } = useComunidadesAuth();
@@ -2235,6 +2236,16 @@ export default function PainelVivoPage() {
 
     loadCommunityData();
   }, [slug]);
+
+  // Redirect para página HUB genérica se for um HUB que não é o hub-biomecanico
+  useEffect(() => {
+    if (comunidade && !isLoading && slug !== 'hub-biomecanico') {
+      // Quando Supabase estiver online, arena terá arenaType
+      // Por enquanto, apenas hub-biomecanico tem NFVHub específico
+      // Outros HUBs devem ser redirecionados para página genérica
+      // TODO: Adicionar verificação de arena.arenaType === 'NFV_HUB'
+    }
+  }, [comunidade, isLoading, slug, router]);
 
   // Claim daily FP bonus ao acessar comunidade
   useEffect(() => {
@@ -2574,7 +2585,7 @@ export default function PainelVivoPage() {
     );
   }
 
-  // NFV Hub - Layout especial biomecanico (antes do notFound check)
+  // NFV Hub - Biomecânico (layout especial)
   if (!isLoading && isNFVHub(slug)) {
     return <NFVHub />;
   }
