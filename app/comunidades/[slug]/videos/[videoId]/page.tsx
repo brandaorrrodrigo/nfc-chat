@@ -488,7 +488,7 @@ export default function VideoDetailPage() {
           )}
 
           {/* Plano Corretivo Personalizado (4 semanas) */}
-          {(pontosCriticosNovo.length > 0 || pontosCriticosAntigo.length > 0 || recomendacoesExercicios.length > 0) && (
+          {(pontosCriticosNovo.length > 0 || pontosCriticosAntigo.length > 0 || recomendacoesExercicios.length > 0 || (data.classifications_detail as unknown[])?.length > 0 || (data.key_observations as unknown[])?.length > 0 || displayPlan) && (
             <CorrectivePlanCard
               plan={displayPlan}
               onGeneratePlan={handleGeneratePlan}
