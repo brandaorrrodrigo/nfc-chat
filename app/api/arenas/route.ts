@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
 
     let query = supabase
       .from('Arena')
-      .select('*, tags:ArenaTag(tag), hub_slug')
+      .select('*, tags:ArenaTag(tag)')
       .eq('isActive', true)
 
     if (category) {

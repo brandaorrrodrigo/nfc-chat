@@ -166,9 +166,9 @@ interface CommunityCardProps {
 function CommunityCard({ community }: CommunityCardProps) {
   const IconComponent = ICON_MAP[community.icon] || Activity;
 
-  // Se a arena tem hub_slug, redireciona para o HUB ao invés da arena direta
-  const href = community.hub_slug
-    ? `/comunidades/hub/${community.hub_slug}`
+  // Se a arena é um HUB, redireciona para a página de grid do HUB
+  const href = community.arenaType === 'NFV_HUB'
+    ? `/comunidades/hub/${community.slug}`
     : `/comunidades/${community.slug}`;
 
   return (
@@ -309,16 +309,19 @@ export default function ComunidadesPageClient() {
   }, []);
 
   // ✅ SEMPRE usa dados REAIS da API - Sem fallback hardcoded
+  // Filtra arenas filhas (parentArenaSlug) — só aparecem dentro do hub
   const communities = useMemo<CommunityCardData[]>(() => {
     if (apiArenas && apiArenas.length > 0) {
-      return apiArenas.map(arenaToDisplayFormat);
+      return apiArenas
+        .filter(a => !a.parentArenaSlug)
+        .map(arenaToDisplayFormat);
     }
-    return []; // Sem dados: retorna vazio (não mostra números falsos)
+    return [];
   }, [apiArenas]);
 
-  // ArenaIndex data: sempre dados reais da API
+  // ArenaIndex data: também sem arenas filhas
   const indexArenas = useMemo<ArenaWithTags[]>(() => {
-    return apiArenas || [];
+    return (apiArenas || []).filter(a => !a.parentArenaSlug);
   }, [apiArenas]);
 
   // Apply category filter
@@ -564,7 +567,6 @@ export default function ComunidadesPageClient() {
                 <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
                   {activeFilter ? (
                     <>Arenas de <span className="gradient-text">{
-                      FALLBACK_COMMUNITIES.find(c => c.categoria === activeFilter)?.title?.split(' ')[0] ||
                       activeFilter.split('_')[0]
                     }</span></>
                   ) : (

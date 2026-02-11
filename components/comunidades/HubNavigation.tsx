@@ -19,28 +19,16 @@ interface HubLink {
 
 const HUBS: HubLink[] = [
   {
-    slug: 'avaliacao-fisica',
+    slug: 'hub-avaliacao-fisica',
     title: 'Hub de Avaliação Física',
     emoji: '👤',
     description: 'Composição, postura, assimetrias e transformação',
   },
   {
-    slug: 'mobilidade-flexibilidade',
-    title: 'Hub de Mobilidade & Flexibilidade',
-    emoji: '🧘',
-    description: 'Amplitude de movimento e padrões posturais',
-  },
-  {
-    slug: 'treino-forca',
-    title: 'Hub de Treino & Força',
-    emoji: '💪',
-    description: 'Ganho muscular, força máxima e periodização',
-  },
-  {
-    slug: 'nutricao-dieta',
-    title: 'Hub de Nutrição & Dieta',
-    emoji: '🥗',
-    description: 'Alimentação, macros e nutrição personalizada',
+    slug: 'hub-biomecanico',
+    title: 'Hub Biomecânica - Análise de Exercício',
+    emoji: '⚡',
+    description: 'Agachamento, terra, supino, puxadas e elevação pélvica',
   },
 ];
 

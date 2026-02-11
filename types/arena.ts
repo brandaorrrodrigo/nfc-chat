@@ -41,6 +41,7 @@ export interface ArenaWithTags {
   totalUsers?: number;
   status: ArenaStatus;
   tags: ArenaTag[];
+  parentArenaSlug?: string | null;
   hub_slug?: string | null;
   createdAt: string;
   updatedAt: string;
