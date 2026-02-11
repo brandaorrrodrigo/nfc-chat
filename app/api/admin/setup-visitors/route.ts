@@ -51,12 +51,27 @@ export async function POST(request: NextRequest) {
 
     // Parse manual da URL para evitar bug com username contendo ponto
     const url = new URL(directUrl)
-    const client = new Client({
+    const connParams = {
       host: url.hostname,
       port: parseInt(url.port) || 5432,
       database: url.pathname.slice(1),
       user: decodeURIComponent(url.username),
       password: decodeURIComponent(url.password),
+    }
+
+    // Debug: retornar params parseados (sem password)
+    if (request.nextUrl.searchParams.get('debug') === 'true') {
+      return NextResponse.json({
+        host: connParams.host,
+        port: connParams.port,
+        database: connParams.database,
+        user: connParams.user,
+        passwordLength: connParams.password.length,
+      })
+    }
+
+    const client = new Client({
+      ...connParams,
       ssl: { rejectUnauthorized: false },
     })
 
