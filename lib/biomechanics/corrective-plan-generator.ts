@@ -64,7 +64,7 @@ export interface PlannedExercise {
 // ============================
 
 const CRITERION_TO_EXERCISE_KEY: Record<string, string[]> = {
-  // V1 pipeline criteria
+  // Membros inferiores / agachamento
   knee_valgus: ['valgo'],
   trunk_control: ['anteriorização', 'cifose'],
   lumbar_control: ['lordose', 'coluna'],
@@ -75,26 +75,72 @@ const CRITERION_TO_EXERCISE_KEY: Record<string, string[]> = {
   hip_hinge_dominance: ['quadril'],
   bar_path: ['coluna'],
   tempo: [],
-  // V2 pipeline criteria (labels normalizados)
   profundidade: ['quadril'],
-  'mobilidade_de_tornozelo': ['anteriorização'],
-  'controle_lombar': ['lordose', 'coluna'],
-  'valgo_de_joelho': ['valgo'],
-  'controle_de_tronco': ['anteriorização', 'cifose'],
-  'assimetria_bilateral': ['joelho'],
-  // Text-extracted criteria
+  mobilidade_de_tornozelo: ['anteriorização'],
+  controle_lombar: ['lordose', 'coluna'],
+  valgo_de_joelho: ['valgo'],
+  controle_de_tronco: ['anteriorização', 'cifose'],
+  assimetria_bilateral: ['joelho'],
   compensation: ['anteriorização', 'cifose'],
   trunk_lean: ['anteriorização', 'cifose'],
   posture: ['cifose', 'coluna'],
   bar_alignment: ['coluna'],
   strength_deficit: ['quadril', 'coluna'],
   hip_control: ['quadril'],
-  shoulder_stability: ['coluna'],
   thoracic_kyphosis: ['cifose'],
   squat_form: ['anteriorização', 'quadril'],
   core_control: ['lordose', 'coluna'],
   lumbar_compensation: ['lordose', 'coluna'],
+  // Membros superiores / puxadas / supino
+  shoulder_stability: ['coluna'],
+  scapular_retraction: ['coluna'],
+  rom_pull: ['coluna'],
+  torso_stability_row: ['coluna'],
+  lumbar_position_row: ['lordose', 'coluna'],
+  retração_escapular: ['coluna'],
+  amplitude_da_puxada: ['coluna'],
+  estabilidade_do_tronco: ['coluna'],
+  posição_lombar: ['lordose', 'coluna'],
 };
+
+// ============================
+// Criterios que SÓ se aplicam a membros inferiores
+// Se o exercicio for de membros superiores, esses criterios sao ignorados
+// ============================
+
+const LOWER_BODY_ONLY_CRITERIA = new Set([
+  'knee_valgus', 'valgo_de_joelho',
+  'ankle_mobility', 'mobilidade_de_tornozelo',
+  'depth', 'profundidade',
+  'hip_hinge_dominance',
+  'squat_form',
+  'hip_control',
+]);
+
+const UPPER_BODY_CATEGORIES = new Set([
+  'pull', 'puxadas', 'remada', 'puxada',
+  'horizontal_press', 'supino', 'bench',
+  'vertical_press', 'desenvolvimento', 'overhead',
+]);
+
+/**
+ * Filtra criterios irrelevantes para o tipo de exercicio.
+ * Ex: tornozelo e valgo nao fazem sentido para puxadas sentado.
+ */
+function filterCriteriaForExerciseType(
+  criteria: CriteriaClassification[],
+  exerciseType: string
+): CriteriaClassification[] {
+  const normalized = exerciseType.toLowerCase();
+  const isUpperBody = UPPER_BODY_CATEGORIES.has(normalized) ||
+    normalized.includes('puxad') || normalized.includes('remad') ||
+    normalized.includes('supin') || normalized.includes('press') ||
+    normalized.includes('pull') || normalized.includes('push');
+
+  if (!isUpperBody) return criteria;
+
+  return criteria.filter((c) => !LOWER_BODY_ONLY_CRITERIA.has(c.criterion));
+}
 
 // ============================
 // Funcao auxiliar: encontrar modelo Ollama
@@ -126,17 +172,21 @@ async function findTextModel(): Promise<string | null> {
  * Se Ollama indisponivel, retorna fallback baseado apenas no EXERCISE_DATABASE.
  */
 export async function generateCorrectivePlan(
-  classificationResult: ClassificationResult
+  classificationResult: ClassificationResult,
+  exerciseType?: string
 ): Promise<CorrectivePlan> {
   const planoId = crypto.randomUUID();
   const geradoEm = new Date().toISOString();
+  const category = exerciseType || classificationResult.category || '';
 
   // 1. Filtrar criterios com warning/danger (nao informativos)
-  const problemCriteria = classificationResult.classifications.filter(
+  // E remover criterios irrelevantes para o tipo de exercicio
+  const rawProblemCriteria = classificationResult.classifications.filter(
     (c) =>
       (c.classification === 'warning' || c.classification === 'danger') &&
       !c.isInformativeOnly
   );
+  const problemCriteria = filterCriteriaForExerciseType(rawProblemCriteria, category);
 
   if (problemCriteria.length === 0) {
     return {
@@ -471,11 +521,16 @@ function generateFallbackPlan(
 export async function generateCorrectivePlanFromAnalysis(
   aiAnalysis: Record<string, unknown>
 ): Promise<CorrectivePlan> {
+  // Determinar tipo de exercicio para filtrar criterios irrelevantes
+  const exerciseType = (aiAnalysis.exercise_type as string)
+    || (aiAnalysis.movement_pattern as string)
+    || '';
+
   // Tentar extrair ClassificationResult se existir (V1)
   const classificationData = aiAnalysis.classification_result as ClassificationResult | undefined;
 
   if (classificationData?.classifications) {
-    return generateCorrectivePlan(classificationData);
+    return generateCorrectivePlan(classificationData, exerciseType);
   }
 
   // Fonte V2: classifications_detail (pipeline biomecanico V2)
@@ -533,7 +588,7 @@ export async function generateCorrectivePlanFromAnalysis(
       },
     };
 
-    return generateCorrectivePlan(mockResult);
+    return generateCorrectivePlan(mockResult, exerciseType);
   }
 
   // Coletar problemas de multiplas fontes (fallback)
