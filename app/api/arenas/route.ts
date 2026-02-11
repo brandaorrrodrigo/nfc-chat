@@ -110,7 +110,7 @@ export async function GET(request: NextRequest) {
     try {
       const fifteenMinAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString()
       const { data: onlineData } = await supabase
-        .from('UserArenaActivity')
+        .from('user_arena_activity')
         .select('arenaId, userId')
         .gte('lastSeenAt', fifteenMinAgo)
 
@@ -128,14 +128,14 @@ export async function GET(request: NextRequest) {
       console.warn('[Arenas] Failed to calculate onlineNow:', err)
     }
 
-    // ✅ Visitantes anônimos (PostgreSQL) — distribuir proporcionalmente por totalPosts
+    // ✅ Visitantes anônimos (Supabase) — distribuir proporcionalmente por totalPosts
     try {
-      const twoMinAgo = new Date(Date.now() - 2 * 60 * 1000)
-      const result: { count: bigint }[] = await prisma.$queryRawUnsafe(
-        `SELECT COUNT(*) as count FROM "AnonymousVisitor" WHERE "lastSeenAt" >= $1`,
-        twoMinAgo
-      )
-      const anonymousCount = Number(result[0]?.count || 0)
+      const twoMinAgo = new Date(Date.now() - 2 * 60 * 1000).toISOString()
+      const { count: anonymousRaw } = await supabase
+        .from('anonymous_visitor')
+        .select('*', { count: 'exact', head: true })
+        .gte('lastSeenAt', twoMinAgo)
+      const anonymousCount = anonymousRaw || 0
 
       if (anonymousCount > 0) {
         const totalPostsAll = arenasWithUserCount.reduce((sum, a) => sum + (a.totalPosts || 0), 0) || 1

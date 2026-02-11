@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { prisma } from '@/lib/prisma'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -51,21 +50,21 @@ export async function GET() {
     // Usuários online (últimos 15 minutos)
     const fifteenMinAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString()
     const { data: onlineData } = await supabase
-      .from('UserArenaActivity')
+      .from('user_arena_activity')
       .select('userId')
       .gte('lastSeenAt', fifteenMinAgo)
 
     const onlineUsers = new Set(onlineData?.map(u => u.userId) || []).size
 
-    // ✅ Contar visitantes anônimos do PostgreSQL (inclui logados e não-logados)
+    // ✅ Contar visitantes anônimos do Supabase (inclui logados e não-logados)
     let anonymousVisitors = 0
     try {
-      const twoMinAgo = new Date(Date.now() - 2 * 60 * 1000)
-      const result: { count: bigint }[] = await prisma.$queryRawUnsafe(
-        `SELECT COUNT(*) as count FROM "AnonymousVisitor" WHERE "lastSeenAt" >= $1`,
-        twoMinAgo
-      )
-      anonymousVisitors = Number(result[0]?.count || 0)
+      const twoMinAgo = new Date(Date.now() - 2 * 60 * 1000).toISOString()
+      const { count } = await supabase
+        .from('anonymous_visitor')
+        .select('*', { count: 'exact', head: true })
+        .gte('lastSeenAt', twoMinAgo)
+      anonymousVisitors = count || 0
     } catch (err) {
       console.warn('[Community Stats] Failed to count anonymous visitors:', err)
     }

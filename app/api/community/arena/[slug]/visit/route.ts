@@ -45,7 +45,7 @@ export async function POST(
 
     // Verificar se já existe atividade do usuário
     const { data: existingActivity } = await supabase
-      .from('UserArenaActivity')
+      .from('user_arena_activity')
       .select('id, visitCount')
       .eq('userId', session.user.id)
       .eq('arenaId', arena.id)
@@ -54,7 +54,7 @@ export async function POST(
     if (existingActivity) {
       // Atualizar atividade existente
       await supabase
-        .from('UserArenaActivity')
+        .from('user_arena_activity')
         .update({
           lastSeenAt: new Date().toISOString(),
           visitCount: (existingActivity.visitCount || 0) + 1
@@ -63,7 +63,7 @@ export async function POST(
     } else {
       // Criar nova atividade
       await supabase
-        .from('UserArenaActivity')
+        .from('user_arena_activity')
         .insert({
           userId: session.user.id,
           arenaId: arena.id,

@@ -74,7 +74,7 @@ export async function GET(
     // Usuários online agora (últimos 15 minutos)
     const fifteenMinAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString()
     const { data: onlineData } = await supabase
-      .from('UserArenaActivity')
+      .from('user_arena_activity')
       .select('userId')
       .eq('arenaId', arena.id)
       .gte('lastSeenAt', fifteenMinAgo)
