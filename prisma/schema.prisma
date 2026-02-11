@@ -702,3 +702,14 @@ model UserArenaActivity {
   @@index([userId])
   @@map("user_arena_activity")
 }
+
+// ============================================
+// Visitantes anônimos (presença sem login)
+// ============================================
+
+model AnonymousVisitor {
+  visitorId  String   @id
+  lastSeenAt DateTime @default(now())
+
+  @@index([lastSeenAt])
+}

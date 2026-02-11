@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { safeRedis } from '@/lib/redis'
+import { prisma } from '@/lib/prisma'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -57,17 +57,21 @@ export async function GET() {
 
     const onlineUsers = new Set(onlineData?.map(u => u.userId) || []).size
 
-    // ✅ Contar visitantes anônimos do Redis (inclui logados e não-logados)
+    // ✅ Contar visitantes anônimos do PostgreSQL (inclui logados e não-logados)
     let anonymousVisitors = 0
     try {
-      const visitorKeys = await safeRedis.keys('visitor:*')
-      anonymousVisitors = visitorKeys.length
+      const twoMinAgo = new Date(Date.now() - 2 * 60 * 1000)
+      const result: { count: bigint }[] = await prisma.$queryRawUnsafe(
+        `SELECT COUNT(*) as count FROM "AnonymousVisitor" WHERE "lastSeenAt" >= $1`,
+        twoMinAgo
+      )
+      anonymousVisitors = Number(result[0]?.count || 0)
     } catch (err) {
       console.warn('[Community Stats] Failed to count anonymous visitors:', err)
     }
 
-    // onlineNow = máximo entre visitantes Redis e usuários logados no DB
-    // (Redis já inclui os logados pois eles também pingam como visitor)
+    // onlineNow = máximo entre visitantes DB e usuários logados
+    // (visitantes já inclui logados pois eles também pingam como visitor)
     const totalOnline = Math.max(anonymousVisitors, onlineUsers)
 
     const stats = {

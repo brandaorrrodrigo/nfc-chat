@@ -2,19 +2,40 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth-config'
 import { createClient } from '@supabase/supabase-js'
-import { safeRedis } from '@/lib/redis'
+import { prisma } from '@/lib/prisma'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
+let tableEnsured = false
+
+async function ensureTable() {
+  if (tableEnsured) return
+  try {
+    await prisma.$executeRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS "AnonymousVisitor" (
+        "visitorId" TEXT PRIMARY KEY,
+        "lastSeenAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      )
+    `)
+    await prisma.$executeRawUnsafe(`
+      CREATE INDEX IF NOT EXISTS "AnonymousVisitor_lastSeenAt_idx"
+      ON "AnonymousVisitor" ("lastSeenAt")
+    `)
+    tableEnsured = true
+  } catch (err) {
+    console.warn('[Presence] ensureTable:', err)
+  }
+}
+
 /**
  * POST /api/presence
  * Registra presença de QUALQUER visitante (logado ou anônimo).
  *
- * - Anônimos: armazenados no Redis com TTL de 2 min (chave visitor:{id})
- * - Logados: atualiza UserArenaActivity + Redis
+ * - Todos: upsert na tabela AnonymousVisitor (Prisma/PostgreSQL)
+ * - Logados: também atualiza UserArenaActivity (Supabase)
  *
  * Body: { visitorId: string }
  */
@@ -27,10 +48,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'visitorId required' }, { status: 400 })
     }
 
-    // ✅ Registrar visitante no Redis (TTL 2 minutos) — funciona para todos
-    await safeRedis.setEx(`visitor:${visitorId}`, 120, '1')
+    // ✅ Garantir que a tabela existe (1x por cold start)
+    await ensureTable()
 
-    // Se logado, também atualizar UserArenaActivity (contagem precisa por arena)
+    // ✅ Registrar visitante no PostgreSQL (funciona na Vercel)
+    await prisma.$executeRawUnsafe(
+      `INSERT INTO "AnonymousVisitor" ("visitorId", "lastSeenAt")
+       VALUES ($1, NOW())
+       ON CONFLICT ("visitorId") DO UPDATE SET "lastSeenAt" = NOW()`,
+      visitorId
+    )
+
+    // Se logado, também atualizar UserArenaActivity (contagem por arena)
     const session = await getServerSession(authOptions)
 
     if (session?.user?.id) {

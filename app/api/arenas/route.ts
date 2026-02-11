@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { safeRedis } from '@/lib/redis'
-import prisma from '@/lib/prisma'
+import { prisma } from '@/lib/prisma'
 import fallbackArenas from './fallback-arenas.json'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
@@ -128,10 +128,14 @@ export async function GET(request: NextRequest) {
       console.warn('[Arenas] Failed to calculate onlineNow:', err)
     }
 
-    // ✅ Visitantes anônimos (Redis) — distribuir proporcionalmente por totalPosts
+    // ✅ Visitantes anônimos (PostgreSQL) — distribuir proporcionalmente por totalPosts
     try {
-      const visitorKeys = await safeRedis.keys('visitor:*')
-      const anonymousCount = visitorKeys.length
+      const twoMinAgo = new Date(Date.now() - 2 * 60 * 1000)
+      const result: { count: bigint }[] = await prisma.$queryRawUnsafe(
+        `SELECT COUNT(*) as count FROM "AnonymousVisitor" WHERE "lastSeenAt" >= $1`,
+        twoMinAgo
+      )
+      const anonymousCount = Number(result[0]?.count || 0)
 
       if (anonymousCount > 0) {
         const totalPostsAll = arenasWithUserCount.reduce((sum, a) => sum + (a.totalPosts || 0), 0) || 1
