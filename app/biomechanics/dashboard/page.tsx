@@ -6,7 +6,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { AlertCircle, CheckCircle, AlertTriangle, Zap, Target, TrendingUp, Info } from 'lucide-react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { AlertCircle, CheckCircle, AlertTriangle, Zap, Target, TrendingUp, Info, Trash2, ArrowLeft, X, Loader2 } from 'lucide-react';
 
 interface Classification {
   criterion: string;
@@ -84,11 +85,17 @@ interface AnalysisResult {
 }
 
 export default function BiomechanicsDashboard() {
-  const [videoId, setVideoId] = useState('va_1770241761873_ckobfl93u');
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const urlVideoId = searchParams.get('videoId');
+
+  const [videoId, setVideoId] = useState(urlVideoId || '');
   const [equipmentConstraint, setEquipmentConstraint] = useState('none');
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const CONSTRAINT_OPTIONS = [
     { value: 'none', label: 'Sem limitação' },
@@ -99,10 +106,14 @@ export default function BiomechanicsDashboard() {
     { value: 'rehab', label: 'Em reabilitação' },
   ];
 
+  // Auto-load quando videoId vem da URL
   useEffect(() => {
-    // Load default video on mount - REMOVED hardcoded ID
-    // User must now enter a video ID or select from list
-  }, []);
+    if (urlVideoId) {
+      setVideoId(urlVideoId);
+      analyzeVideo(urlVideoId);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlVideoId]);
 
   const analyzeVideo = async (id?: string) => {
     const idToAnalyze = id || videoId;
@@ -139,6 +150,27 @@ export default function BiomechanicsDashboard() {
 
   const handleAnalyzeClick = () => analyzeVideo(videoId);
 
+  const handleDelete = async () => {
+    const idToDelete = videoId.trim();
+    if (!idToDelete) return;
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/nfv/videos/${idToDelete}`, { method: 'DELETE' });
+      if (res.ok) {
+        setAnalysis(null);
+        setVideoId('');
+        setShowDeleteConfirm(false);
+        router.push('/biomechanics/videos');
+        return;
+      }
+    } catch {
+      // silently fail
+    } finally {
+      setDeleting(false);
+      setShowDeleteConfirm(false);
+    }
+  };
+
   const getScoreColor = (score: number) => {
     if (score >= 8) return 'text-green-600';
     if (score >= 6) return 'text-yellow-600';
@@ -171,12 +203,28 @@ export default function BiomechanicsDashboard() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2 flex items-center gap-3">
-            <Zap className="w-8 h-8 text-cyan-400" />
-            Dashboard Biomecânico
-          </h1>
-          <p className="text-slate-400">Análise avançada de movimento e técnica de exercício</p>
+        <div className="mb-8 flex items-start justify-between">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <button onClick={() => router.push('/biomechanics/videos')} className="text-slate-400 hover:text-white transition-colors">
+                <ArrowLeft className="w-6 h-6" />
+              </button>
+              <h1 className="text-4xl font-bold text-white flex items-center gap-3">
+                <Zap className="w-8 h-8 text-cyan-400" />
+                Dashboard Biomecânico
+              </h1>
+            </div>
+            <p className="text-slate-400 ml-9">Análise avançada de movimento e técnica de exercício</p>
+          </div>
+          {analysis && (
+            <button
+              onClick={() => setShowDeleteConfirm(true)}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600/10 border border-red-600/20 text-red-400 text-sm font-medium hover:bg-red-600/20 transition-colors"
+            >
+              <Trash2 className="w-4 h-4" />
+              Excluir Video
+            </button>
+          )}
         </div>
 
         {/* Input Section */}
@@ -634,10 +682,57 @@ export default function BiomechanicsDashboard() {
         {!analysis && !loading && (
           <div className="text-center py-12">
             <Zap className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-            <p className="text-slate-400 text-lg">Insira um ID de vídeo e clique em "Analisar" para começar</p>
+            <p className="text-slate-400 text-lg">Insira um ID de vídeo e clique em &quot;Analisar&quot; para começar</p>
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => !deleting && setShowDeleteConfirm(false)} />
+          <div className="relative bg-slate-900 border border-slate-700 rounded-2xl max-w-sm w-full p-6">
+            <button
+              onClick={() => !deleting && setShowDeleteConfirm(false)}
+              className="absolute top-4 right-4 text-slate-500 hover:text-slate-300"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
+                <AlertTriangle className="w-5 h-5 text-red-400" />
+              </div>
+              <h3 className="text-sm font-semibold text-white">Excluir video</h3>
+            </div>
+
+            <p className="text-sm text-slate-400 mb-2">
+              Tem certeza que deseja excluir este video?
+            </p>
+            <p className="text-xs text-slate-500 mb-6">
+              ID: {videoId}
+            </p>
+
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={deleting}
+                className="flex-1 px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 text-sm hover:bg-slate-700 transition-colors disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="flex-1 px-4 py-2 rounded-lg bg-red-600/20 border border-red-600/30 text-red-300 text-sm hover:bg-red-600/30 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                Excluir
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
