@@ -2,7 +2,7 @@
  * API Route: Plano Corretivo Automatico
  *
  * POST /api/nfv/corrective-plan
- *   Body: { analysisId: string }
+ *   Body: { analysisId: string, force?: boolean }
  *   Gera plano corretivo de 4 semanas para analise com criterios warning/danger
  *
  * GET /api/nfv/corrective-plan?analysisId=xxx
@@ -14,6 +14,22 @@ import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
 import { generateCorrectivePlanFromAnalysis } from '@/lib/biomechanics/corrective-plan-generator';
 
 const TABLE = 'nfc_chat_video_analyses';
+
+/**
+ * Deep-parse ai_analysis que pode estar serializada como string (single ou double)
+ */
+function deepParseAnalysis(raw: unknown): Record<string, unknown> | null {
+  if (!raw) return null;
+  let data = raw;
+  // Parse strings recursivamente (max 3 niveis de serialização)
+  for (let i = 0; i < 3; i++) {
+    if (typeof data === 'string') {
+      try { data = JSON.parse(data); } catch { break; }
+    } else { break; }
+  }
+  if (typeof data !== 'object' || data === null) return null;
+  return data as Record<string, unknown>;
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -29,7 +45,7 @@ export async function GET(request: NextRequest) {
     const supabase = getSupabase();
     const { data: analysis, error } = await supabase
       .from(TABLE)
-      .select('ai_analysis, published_analysis')
+      .select('ai_analysis')
       .eq('id', analysisId)
       .single();
 
@@ -37,7 +53,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Analise nao encontrada' }, { status: 404 });
     }
 
-    const aiData = (analysis.published_analysis || analysis.ai_analysis) as Record<string, unknown> | null;
+    const aiData = deepParseAnalysis(analysis.ai_analysis);
     const plan = aiData?.corrective_plan;
 
     if (!plan) {
@@ -80,9 +96,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Analise nao encontrada' }, { status: 404 });
     }
 
+    // Deep parse ai_analysis (pode estar serializada como string)
+    const aiData = deepParseAnalysis(analysis.ai_analysis);
+
+    if (!aiData) {
+      return NextResponse.json(
+        { error: 'Analise nao contem dados de IA' },
+        { status: 400 }
+      );
+    }
+
     // Verificar se ja existe plano valido (com semanas nao-vazias)
-    const aiData = (analysis.published_analysis || analysis.ai_analysis) as Record<string, unknown> | null;
-    const existingPlan = aiData?.corrective_plan as Record<string, unknown> | undefined;
+    const existingPlan = aiData.corrective_plan as Record<string, unknown> | undefined;
     const forceRegenerate = body.force === true;
     const planHasContent = existingPlan &&
       Array.isArray(existingPlan.semanas) &&
@@ -96,13 +121,6 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    if (!aiData) {
-      return NextResponse.json(
-        { error: 'Analise nao contem dados de IA' },
-        { status: 400 }
-      );
-    }
-
     console.log(`[CorrectivePlan API] Gerando plano para analise ${analysisId}`);
 
     // Gerar plano corretivo
@@ -114,17 +132,13 @@ export async function POST(request: NextRequest) {
       corrective_plan: plan,
     };
 
-    // Determinar qual campo atualizar
-    const updateField = analysis.published_analysis ? 'published_analysis' : 'ai_analysis';
-
     const { error: updateError } = await supabase
       .from(TABLE)
-      .update({ [updateField]: updatedAiAnalysis })
+      .update({ ai_analysis: updatedAiAnalysis })
       .eq('id', analysisId);
 
     if (updateError) {
       console.error('[CorrectivePlan API] Erro ao salvar:', updateError);
-      // Retornar o plano mesmo se falhar ao salvar
       return NextResponse.json({
         exists: true,
         plan,

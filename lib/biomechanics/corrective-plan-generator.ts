@@ -442,22 +442,81 @@ function generateFallbackPlan(
 /**
  * Gera plano corretivo a partir de dados brutos de analise (formato ai_analysis do banco).
  * Extrai problemas de multiplas fontes:
- * 1. classification_result (se existir — pipeline biomecanico)
- * 2. pontos_criticos / recomendacoes_exercicios (formato script seed)
- * 3. key_observations (formato vision_model pipeline)
- * 4. frame_scores baixos + overall_score < threshold
+ * 1. classification_result (se existir — pipeline biomecanico V1)
+ * 2. classifications_detail (formato V2 do pipeline biomecanico)
+ * 3. pontos_criticos / recomendacoes_exercicios (formato script seed)
+ * 4. key_observations (formato vision_model pipeline)
+ * 5. frame_scores baixos + overall_score < threshold
  */
 export async function generateCorrectivePlanFromAnalysis(
   aiAnalysis: Record<string, unknown>
 ): Promise<CorrectivePlan> {
-  // Tentar extrair ClassificationResult se existir
+  // Tentar extrair ClassificationResult se existir (V1)
   const classificationData = aiAnalysis.classification_result as ClassificationResult | undefined;
 
   if (classificationData?.classifications) {
     return generateCorrectivePlan(classificationData);
   }
 
-  // Coletar problemas de multiplas fontes
+  // Fonte V2: classifications_detail (pipeline biomecanico V2)
+  const classificationsDetail = aiAnalysis.classifications_detail as Array<{
+    criterion?: string;
+    label?: string;
+    value?: number;
+    unit?: string;
+    classification?: string;
+    isSafetyCritical?: boolean;
+    isInformativeOnly?: boolean;
+    note?: string;
+    ragTopics?: string[];
+  }> | undefined;
+
+  if (classificationsDetail && Array.isArray(classificationsDetail) && classificationsDetail.length > 0) {
+    const classifs: CriteriaClassification[] = classificationsDetail.map((c) => ({
+      criterion: c.criterion || (c.label || '').toLowerCase().replace(/\s+/g, '_'),
+      label: c.label || c.criterion || 'Criterio',
+      metric: 'biomechanics_v2',
+      value: c.value || 0,
+      unit: c.unit || '',
+      classification: (c.classification as 'warning' | 'danger' | 'acceptable' | 'good' | 'excellent') || 'acceptable',
+      classificationLabel: c.classification === 'danger' ? 'Perigo' : c.classification === 'warning' ? 'Alerta' : 'OK',
+      isSafetyCritical: c.isSafetyCritical ?? (c.classification === 'danger'),
+      isInformativeOnly: c.isInformativeOnly ?? false,
+      range: {},
+      ragTopics: c.ragTopics || mapProblemToRagTopics(c.label || ''),
+      note: c.note,
+    }));
+
+    const overallScore = (aiAnalysis.overall_score as number) || 7;
+    const summary = aiAnalysis.classification_summary as Record<string, number> | undefined;
+
+    const mockResult: ClassificationResult = {
+      category: (aiAnalysis.exercise_type as string) || 'squat',
+      categoryLabel: 'Exercicio',
+      timestamp: (aiAnalysis.timestamp as string) || new Date().toISOString(),
+      classifications: classifs,
+      overallScore,
+      hasDangerCriteria: classifs.some((c) => c.classification === 'danger'),
+      hasWarningSafetyCriteria: classifs.some((c) => c.classification === 'warning'),
+      summary: summary ? {
+        excellent: summary.excellent || 0,
+        good: summary.good || 0,
+        acceptable: summary.acceptable || 0,
+        warning: summary.warning || 0,
+        danger: summary.danger || 0,
+      } : {
+        excellent: 0,
+        good: 0,
+        acceptable: classifs.filter((c) => c.classification === 'acceptable').length,
+        warning: classifs.filter((c) => c.classification === 'warning').length,
+        danger: classifs.filter((c) => c.classification === 'danger').length,
+      },
+    };
+
+    return generateCorrectivePlan(mockResult);
+  }
+
+  // Coletar problemas de multiplas fontes (fallback)
   const mockClassifications: CriteriaClassification[] = [];
 
   // Fonte 1: pontos_criticos (formato seed script)
