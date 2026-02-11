@@ -80,12 +80,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Analise nao encontrada' }, { status: 404 });
     }
 
-    // Verificar se ja existe plano
+    // Verificar se ja existe plano valido (com semanas nao-vazias)
     const aiData = (analysis.published_analysis || analysis.ai_analysis) as Record<string, unknown> | null;
-    if (aiData?.corrective_plan) {
+    const existingPlan = aiData?.corrective_plan as Record<string, unknown> | undefined;
+    const forceRegenerate = body.force === true;
+    const planHasContent = existingPlan &&
+      Array.isArray(existingPlan.semanas) &&
+      (existingPlan.semanas as unknown[]).length > 0;
+
+    if (planHasContent && !forceRegenerate) {
       return NextResponse.json({
         exists: true,
-        plan: aiData.corrective_plan,
+        plan: existingPlan,
         message: 'Plano corretivo ja existe',
       });
     }

@@ -441,7 +441,11 @@ function generateFallbackPlan(
 
 /**
  * Gera plano corretivo a partir de dados brutos de analise (formato ai_analysis do banco).
- * Extrai problemas do campo pontos_criticos ou recomendacoes_exercicios.
+ * Extrai problemas de multiplas fontes:
+ * 1. classification_result (se existir — pipeline biomecanico)
+ * 2. pontos_criticos / recomendacoes_exercicios (formato script seed)
+ * 3. key_observations (formato vision_model pipeline)
+ * 4. frame_scores baixos + overall_score < threshold
  */
 export async function generateCorrectivePlanFromAnalysis(
   aiAnalysis: Record<string, unknown>
@@ -453,20 +457,15 @@ export async function generateCorrectivePlanFromAnalysis(
     return generateCorrectivePlan(classificationData);
   }
 
-  // Fallback: construir ClassificationResult a partir de dados disponiveis
+  // Coletar problemas de multiplas fontes
+  const mockClassifications: CriteriaClassification[] = [];
+
+  // Fonte 1: pontos_criticos (formato seed script)
   const pontosCriticos = (aiAnalysis.pontos_criticos as Array<{
     nome: string;
     severidade: string;
     frames_afetados?: number[];
   }>) || [];
-
-  const recomendacoes = (aiAnalysis.recomendacoes_exercicios as Array<{
-    desvio: string;
-    severidade: string;
-  }>) || [];
-
-  // Mapear pontos criticos para CriteriaClassification mock
-  const mockClassifications: CriteriaClassification[] = [];
 
   for (const ponto of pontosCriticos) {
     const level = ponto.severidade?.toUpperCase() === 'CRITICA' ? 'danger' as const : 'warning' as const;
@@ -485,7 +484,12 @@ export async function generateCorrectivePlanFromAnalysis(
     });
   }
 
-  // Adicionar de recomendacoes se nao duplicado
+  // Fonte 2: recomendacoes_exercicios
+  const recomendacoes = (aiAnalysis.recomendacoes_exercicios as Array<{
+    desvio: string;
+    severidade: string;
+  }>) || [];
+
   for (const rec of recomendacoes) {
     const exists = mockClassifications.some(
       (c) => c.label.toLowerCase() === rec.desvio.toLowerCase()
@@ -508,6 +512,36 @@ export async function generateCorrectivePlanFromAnalysis(
     }
   }
 
+  // Fonte 3: key_observations (formato vision_model pipeline)
+  const keyObservations = (aiAnalysis.key_observations as string[]) || [];
+  const suggestions = (aiAnalysis.suggestions as string[]) || [];
+  const requiresAttention = (aiAnalysis.requires_attention as string[]) || [];
+  const allTextObservations = [...keyObservations, ...requiresAttention];
+
+  if (allTextObservations.length > 0) {
+    const extracted = extractProblemsFromText(allTextObservations);
+    for (const problem of extracted) {
+      const exists = mockClassifications.some(
+        (c) => c.criterion === problem.criterion
+      );
+      if (!exists) {
+        mockClassifications.push(problem);
+      }
+    }
+  }
+
+  // Fonte 4: score baixo por frame (inferir problemas gerais)
+  const overallScore = (aiAnalysis.score as number) || (aiAnalysis.overall_score as number) || 10;
+  const frameScores = (aiAnalysis.frame_scores as number[]) || [];
+  const lowFrames = frameScores.filter((s) => s < 7);
+
+  if (mockClassifications.length === 0 && (overallScore < 8 || lowFrames.length > 0)) {
+    // Inferir problemas genericos baseado no tipo de exercicio
+    const movementPattern = (aiAnalysis.movement_pattern as string) || 'agachamento';
+    const genericProblems = inferProblemsFromMovement(movementPattern, overallScore);
+    mockClassifications.push(...genericProblems);
+  }
+
   if (mockClassifications.length === 0) {
     return {
       plano_id: crypto.randomUUID(),
@@ -524,7 +558,7 @@ export async function generateCorrectivePlanFromAnalysis(
     categoryLabel: 'Exercicio',
     timestamp: new Date().toISOString(),
     classifications: mockClassifications,
-    overallScore: (aiAnalysis.score as number) || (aiAnalysis.overall_score as number) || 5,
+    overallScore,
     hasDangerCriteria: mockClassifications.some((c) => c.classification === 'danger'),
     hasWarningSafetyCriteria: mockClassifications.some((c) => c.isSafetyCritical && c.classification === 'warning'),
     summary: {
@@ -537,6 +571,104 @@ export async function generateCorrectivePlanFromAnalysis(
   };
 
   return generateCorrectivePlan(mockResult);
+}
+
+/**
+ * Extrai problemas biomecanicos de texto livre (key_observations do Vision pipeline)
+ */
+function extractProblemsFromText(observations: string[]): CriteriaClassification[] {
+  const problems: CriteriaClassification[] = [];
+  const combined = observations.join(' ').toLowerCase();
+
+  const patterns: Array<{
+    keywords: string[];
+    label: string;
+    criterion: string;
+    severity: 'warning' | 'danger';
+  }> = [
+    { keywords: ['valgo', 'valgismo', 'joelho para dentro', 'knee cave', 'colapso medial'], label: 'Valgo de Joelho', criterion: 'knee_valgus', severity: 'danger' },
+    { keywords: ['compensação', 'compensacao', 'compensar', 'compensando'], label: 'Compensacao no Movimento', criterion: 'compensation', severity: 'warning' },
+    { keywords: ['inclinação', 'inclinacao', 'inclinada', 'inclinado', 'lean', 'tronco'], label: 'Inclinacao Excessiva de Tronco', criterion: 'trunk_lean', severity: 'warning' },
+    { keywords: ['lombar', 'lordose', 'butt wink', 'arredondamento', 'coluna'], label: 'Controle Lombar', criterion: 'lumbar_control', severity: 'warning' },
+    { keywords: ['postura', 'postural', 'alinhamento'], label: 'Desvio Postural', criterion: 'posture', severity: 'warning' },
+    { keywords: ['assimetria', 'assimétrico', 'desigual', 'desbalanceado', 'um lado'], label: 'Assimetria Bilateral', criterion: 'asymmetry', severity: 'warning' },
+    { keywords: ['tornozelo', 'dorsiflexão', 'dorsiflexao', 'calcanhar'], label: 'Mobilidade de Tornozelo', criterion: 'ankle_mobility', severity: 'warning' },
+    { keywords: ['quadril', 'hip', 'pelve', 'pélvica', 'pelvica'], label: 'Controle de Quadril', criterion: 'hip_control', severity: 'warning' },
+    { keywords: ['ombro', 'escapular', 'impingement', 'shoulder'], label: 'Estabilidade de Ombro', criterion: 'shoulder_stability', severity: 'warning' },
+    { keywords: ['cifose', 'cifótica', 'dorso curvo', 'rounded back'], label: 'Cifose Toracica', criterion: 'thoracic_kyphosis', severity: 'warning' },
+    { keywords: ['profundidade', 'amplitude', 'parcial', 'raso'], label: 'Amplitude Insuficiente', criterion: 'depth', severity: 'warning' },
+    { keywords: ['barra', 'desalinhada', 'inclinada para'], label: 'Desalinhamento da Barra', criterion: 'bar_alignment', severity: 'warning' },
+    { keywords: ['forca', 'força', 'fraqueza', 'fraco'], label: 'Deficit de Forca', criterion: 'strength_deficit', severity: 'warning' },
+  ];
+
+  for (const pattern of patterns) {
+    const found = pattern.keywords.some((kw) => combined.includes(kw));
+    if (found) {
+      const ragTopics = mapProblemToRagTopics(pattern.label);
+      problems.push({
+        criterion: pattern.criterion,
+        label: pattern.label,
+        metric: 'text_observation',
+        value: 0,
+        classification: pattern.severity,
+        classificationLabel: pattern.severity === 'danger' ? 'Perigo' : 'Alerta',
+        isSafetyCritical: pattern.severity === 'danger',
+        isInformativeOnly: false,
+        range: {},
+        ragTopics,
+      });
+    }
+  }
+
+  return problems;
+}
+
+/**
+ * Infere problemas genericos baseado no tipo de exercicio quando score e baixo
+ */
+function inferProblemsFromMovement(movementPattern: string, score: number): CriteriaClassification[] {
+  const normalized = movementPattern.toLowerCase();
+  const severity: 'warning' | 'danger' = score < 5 ? 'danger' : 'warning';
+
+  const movementProblems: Record<string, Array<{ label: string; criterion: string }>> = {
+    'agachamento': [
+      { label: 'Tecnica de Agachamento', criterion: 'squat_form' },
+      { label: 'Controle de Tronco', criterion: 'trunk_control' },
+    ],
+    'terra': [
+      { label: 'Controle Lombar', criterion: 'lumbar_control' },
+      { label: 'Padrao Hip Hinge', criterion: 'hip_hinge' },
+    ],
+    'supino': [
+      { label: 'Estabilidade Escapular', criterion: 'scapular_stability' },
+      { label: 'Alinhamento de Ombro', criterion: 'shoulder_alignment' },
+    ],
+    'puxadas': [
+      { label: 'Retracao Escapular', criterion: 'scapular_retraction' },
+      { label: 'Controle de Core', criterion: 'core_control' },
+    ],
+    'desenvolvimento': [
+      { label: 'Mobilidade Overhead', criterion: 'overhead_mobility' },
+      { label: 'Compensacao Lombar', criterion: 'lumbar_compensation' },
+    ],
+  };
+
+  const key = Object.keys(movementProblems).find((k) => normalized.includes(k)) || 'agachamento';
+  const problems = movementProblems[key] || movementProblems['agachamento'];
+
+  return problems.map((p) => ({
+    criterion: p.criterion,
+    label: p.label,
+    metric: 'score_inference',
+    value: score,
+    unit: '/10',
+    classification: severity,
+    classificationLabel: severity === 'danger' ? 'Perigo' : 'Alerta',
+    isSafetyCritical: severity === 'danger',
+    isInformativeOnly: false,
+    range: {},
+    ragTopics: mapProblemToRagTopics(p.label),
+  }));
 }
 
 /**
