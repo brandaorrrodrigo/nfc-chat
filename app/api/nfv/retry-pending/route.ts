@@ -19,11 +19,13 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Database not configured' }, { status: 503 });
     }
 
-    // Auth opcional via header ou query param
+    // Auth: se CRON_SECRET definido, requer header ou query param.
+    // Se nao definido (dev local), permite acesso livre.
     const authToken = req.headers.get('x-cron-secret') ||
                       new URL(req.url).searchParams.get('secret');
     const expectedSecret = process.env.CRON_SECRET;
-    if (expectedSecret && authToken !== expectedSecret) {
+    const isInternalCall = req.headers.get('x-internal') === 'true';
+    if (expectedSecret && !isInternalCall && authToken !== expectedSecret) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

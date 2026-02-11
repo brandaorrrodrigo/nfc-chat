@@ -31,6 +31,32 @@ export default function VideoGallery({ arenaSlug, onSelectAnalysis }: VideoGalle
     fetchAnalyses(0);
   }, [fetchAnalyses]);
 
+  // Auto-retry: quando galeria carrega, detecta videos stuck e re-trigga analise
+  useEffect(() => {
+    if (analyses.length === 0) return;
+    const stuckVideos = analyses.filter(a =>
+      ['PENDING_AI', 'ERROR'].includes(a.status)
+    );
+    if (stuckVideos.length === 0) return;
+
+    console.log(`[NFV Gallery] Found ${stuckVideos.length} stuck videos, triggering auto-retry...`);
+    stuckVideos.forEach(video => {
+      fetch('/api/nfv/analysis', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ analysisId: video.id }),
+      }).catch(() => {/* background retry */});
+    });
+
+    // Re-fetch apos 15s para pegar resultados
+    const refreshTimer = setTimeout(() => {
+      fetchAnalyses(0);
+    }, 15000);
+
+    return () => clearTimeout(refreshTimer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [analyses.length]); // Roda quando lista carrega
+
   const patterns = arenaSlug
     ? NFV_CONFIG.PREMIUM_ARENAS.filter(a => a.slug === arenaSlug).map(a => a.pattern)
     : NFV_CONFIG.PREMIUM_ARENAS.map(a => a.pattern);

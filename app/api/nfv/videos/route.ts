@@ -15,39 +15,56 @@ const TABLE = 'nfc_chat_video_analyses';
 /**
  * Trigger automatico para analise com IA (Ollama llama3.2-vision)
  * Chamado em background apos criar registro de video.
- * Se falhar, seta status ERROR no banco.
+ * Faz ate 3 tentativas com backoff exponencial (5s, 15s, 45s).
+ * Se todas falharem, seta status ERROR no banco.
  */
+const RETRY_DELAYS = [5000, 15000, 45000]; // 5s, 15s, 45s
+
 async function triggerAIAnalysis(analysisId: string): Promise<void> {
-  console.log(`[NFV] Triggering AI analysis for: ${analysisId}`);
+  const baseUrl = process.env.NEXTAUTH_URL ||
+                 process.env.NEXT_PUBLIC_APP_URL ||
+                 'http://localhost:3000';
 
-  try {
-    const baseUrl = process.env.NEXTAUTH_URL ||
-                   process.env.NEXT_PUBLIC_APP_URL ||
-                   'http://localhost:3000';
+  for (let attempt = 0; attempt <= RETRY_DELAYS.length; attempt++) {
+    console.log(`[NFV] Triggering AI analysis for ${analysisId} (attempt ${attempt + 1}/${RETRY_DELAYS.length + 1})`);
 
-    const response = await fetch(`${baseUrl}/api/nfv/analysis`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ analysisId }),
-    });
+    try {
+      const response = await fetch(`${baseUrl}/api/nfv/analysis`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ analysisId }),
+      });
 
-    if (!response.ok) {
+      if (response.ok) {
+        const result = await response.json();
+        console.log(`[NFV] AI analysis completed (attempt ${attempt + 1}):`, {
+          score: result.aiResult?.overall_score,
+          type: result.aiResult?.analysis_type,
+        });
+        return; // Sucesso — sair do loop
+      }
+
       const errorData = await response.json().catch(() => ({}));
-      console.error('[NFV] AI analysis trigger failed:', errorData);
-      // O endpoint /api/nfv/analysis ja seta ERROR, mas como safety net:
-      await setAnalysisError(analysisId, errorData.error || 'Trigger de analise falhou');
-      return;
+      console.warn(`[NFV] AI analysis attempt ${attempt + 1} failed:`, errorData.error);
+
+      // Se ja processou (status nao e PENDING_AI/ERROR), parar de tentar
+      if (response.status === 400) return;
+
+    } catch (error: any) {
+      console.warn(`[NFV] AI analysis attempt ${attempt + 1} error:`, error.message);
     }
 
-    const result = await response.json();
-    console.log(`[NFV] AI analysis completed:`, {
-      score: result.aiResult?.overall_score,
-      type: result.aiResult?.analysis_type,
-    });
-  } catch (error: any) {
-    console.error('[NFV] AI analysis trigger error:', error);
-    await setAnalysisError(analysisId, error.message || 'Erro de conexao com servico de analise');
+    // Se ainda tem retries, esperar antes da proxima tentativa
+    if (attempt < RETRY_DELAYS.length) {
+      const delay = RETRY_DELAYS[attempt];
+      console.log(`[NFV] Retrying in ${delay / 1000}s...`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
   }
+
+  // Todas as tentativas falharam
+  console.error(`[NFV] All ${RETRY_DELAYS.length + 1} analysis attempts failed for ${analysisId}`);
+  await setAnalysisError(analysisId, 'Analise falhou apos multiplas tentativas. Verifique se o Ollama esta rodando.');
 }
 
 async function setAnalysisError(analysisId: string, errorMessage: string): Promise<void> {

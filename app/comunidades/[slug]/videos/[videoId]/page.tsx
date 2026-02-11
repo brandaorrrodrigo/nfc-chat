@@ -80,6 +80,27 @@ export default function VideoDetailPage() {
     return () => clearInterval(intervalId);
   }, [analysis?.status, fetchAnalysis]);
 
+  // Auto-retry: se video fica stuck em PENDING_AI ou ERROR por >30s, re-trigger analise automaticamente
+  useEffect(() => {
+    if (!analysis) return;
+    if (!['PENDING_AI', 'ERROR'].includes(analysis.status)) return;
+
+    const autoRetryTimer = setTimeout(async () => {
+      console.log(`[NFV] Auto-retry: re-triggering analysis for ${videoId}`);
+      try {
+        await fetch('/api/nfv/analysis', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ analysisId: videoId }),
+        });
+      } catch {
+        // polling vai detectar mudancas
+      }
+    }, 30000); // 30 segundos
+
+    return () => clearTimeout(autoRetryTimer);
+  }, [analysis?.status, videoId]);
+
   const handleRetryAnalysis = async () => {
     setRetrying(true);
     try {

@@ -334,16 +334,27 @@ export async function analyzeExerciseVideo(
     await fs.mkdir(tempDir, { recursive: true });
 
     // 2. Obter path do vídeo (baixar se necessário)
-    let localVideoPath = videoPath;
+    let localVideoPath: string | undefined;
 
+    // Verificar se videoPath é um arquivo local que existe
+    if (videoPath) {
+      try {
+        await fs.access(videoPath);
+        localVideoPath = videoPath;
+        console.log(`📁 Using local video file: ${videoPath}`);
+      } catch {
+        // videoPath não é um arquivo local — é um path no Supabase Storage
+        console.log(`☁️ videoPath "${videoPath}" is not a local file, downloading from storage...`);
+        localVideoPath = await downloadVideoFromSupabase(videoPath, tempDir);
+      }
+    }
+
+    // Se não conseguiu via videoPath, tentar via videoUrl
     if (!localVideoPath && videoUrl) {
-      // Baixar vídeo do Supabase Storage ou URL
       if (videoUrl.includes('supabase') || videoUrl.startsWith(supabaseUrl || '')) {
-        // É URL do Supabase - extrair path
         const urlPath = videoUrl.split('/nfv-videos/')[1] || videoUrl;
         localVideoPath = await downloadVideoFromSupabase(urlPath, tempDir);
       } else {
-        // URL pública externa
         localVideoPath = await downloadVideoFromUrl(videoUrl, tempDir);
       }
     }
