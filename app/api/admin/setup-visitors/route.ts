@@ -40,8 +40,8 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    // Usar pg direto com DIRECT_URL (disponível na Vercel)
-    const directUrl = process.env.DIRECT_URL || process.env.DATABASE_URL
+    // Usar pg direto com DATABASE_URL (pooler na Vercel)
+    const directUrl = process.env.DATABASE_URL
     if (!directUrl) {
       return NextResponse.json({ error: 'No DATABASE_URL configured' }, { status: 500 })
     }
