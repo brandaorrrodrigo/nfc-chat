@@ -84,7 +84,7 @@ export function arenaToDisplayFormat(arena: ArenaWithTags): CommunityCardData {
     description: arena.description,
     members: arena.dailyActiveUsers, // ✅ REAL: usuários ativos hoje
     totalMembers: arena.totalUsers, // ✅ NOVO: Total de usuários que já participaram
-    activeNow: 0, // ✅ Será buscado via useArenaStats hook (online últimos 15min)
+    activeNow: (arena as any).onlineNow || 0,
     slug: arena.slug,
     icon: arena.icon,
     gradient: CATEGORIA_GRADIENTS[arena.categoria] || 'from-zinc-500 to-zinc-600',

@@ -283,6 +283,15 @@ export default function ComunidadesPageClient() {
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState<ArenaCategoria | null>(null);
 
+  // ✅ Registrar presença online (ping a cada 60s)
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const ping = () => fetch('/api/presence', { method: 'POST' }).catch(() => {});
+    ping();
+    const interval = setInterval(ping, 60000);
+    return () => clearInterval(interval);
+  }, [isAuthenticated]);
+
   // Fetch arenas from API
   useEffect(() => {
     async function fetchArenas() {

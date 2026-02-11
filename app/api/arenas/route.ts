@@ -106,6 +106,28 @@ export async function GET(request: NextRequest) {
       // Continue sem contar usuários se houver erro
     }
 
+    // ✅ Buscar usuários online por arena (últimos 15 minutos)
+    try {
+      const fifteenMinAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString()
+      const { data: onlineData } = await supabase
+        .from('UserArenaActivity')
+        .select('arenaId, userId')
+        .gte('lastSeenAt', fifteenMinAgo)
+
+      const onlineByArena = new Map<string, Set<string>>()
+      for (const row of onlineData || []) {
+        if (!onlineByArena.has(row.arenaId)) onlineByArena.set(row.arenaId, new Set())
+        onlineByArena.get(row.arenaId)!.add(row.userId)
+      }
+
+      arenasWithUserCount = arenasWithUserCount.map((arena) => ({
+        ...arena,
+        onlineNow: onlineByArena.get(arena.id)?.size || 0,
+      }))
+    } catch (err) {
+      console.warn('[Arenas] Failed to calculate onlineNow:', err)
+    }
+
     let result: unknown
 
     if (grouped) {
