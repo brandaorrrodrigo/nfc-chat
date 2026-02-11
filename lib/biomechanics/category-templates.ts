@@ -568,11 +568,13 @@ export const EXERCISE_CATEGORY_MAP: Record<string, string> = {
   agachamento_calice: 'squat',
 
   // ===== Português - Hinge =====
+  terra: 'hinge',
   levantamento_terra: 'hinge',
   levantamento_terra_convencional: 'hinge',
   levantamento_terra_sumo: 'hinge',
   terra_convencional: 'hinge',
   terra_sumo: 'hinge',
+  deadlift: 'hinge',
   stiff: 'hinge',
   romeno: 'hinge',
   bom_dia: 'hinge',
@@ -602,8 +604,14 @@ export const EXERCISE_CATEGORY_MAP: Record<string, string> = {
   remada_com_halter: 'pull',
   remada_cavaleiro: 'pull',
   puxada: 'pull',
+  puxadas: 'pull',
   puxada_frontal: 'pull',
   puxada_alta: 'pull',
+  puxada_aberta: 'pull',
+  puxada_fechada: 'pull',
+  puxada_supinada: 'pull',
+  puxada_pronada: 'pull',
+  pulldown: 'pull',
   barra_fixa: 'pull',
 
   // ===== Português - Unilateral =====
