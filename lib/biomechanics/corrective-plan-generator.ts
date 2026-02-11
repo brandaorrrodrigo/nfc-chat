@@ -64,6 +64,7 @@ export interface PlannedExercise {
 // ============================
 
 const CRITERION_TO_EXERCISE_KEY: Record<string, string[]> = {
+  // V1 pipeline criteria
   knee_valgus: ['valgo'],
   trunk_control: ['anteriorização', 'cifose'],
   lumbar_control: ['lordose', 'coluna'],
@@ -74,6 +75,25 @@ const CRITERION_TO_EXERCISE_KEY: Record<string, string[]> = {
   hip_hinge_dominance: ['quadril'],
   bar_path: ['coluna'],
   tempo: [],
+  // V2 pipeline criteria (labels normalizados)
+  profundidade: ['quadril'],
+  'mobilidade_de_tornozelo': ['anteriorização'],
+  'controle_lombar': ['lordose', 'coluna'],
+  'valgo_de_joelho': ['valgo'],
+  'controle_de_tronco': ['anteriorização', 'cifose'],
+  'assimetria_bilateral': ['joelho'],
+  // Text-extracted criteria
+  compensation: ['anteriorização', 'cifose'],
+  trunk_lean: ['anteriorização', 'cifose'],
+  posture: ['cifose', 'coluna'],
+  bar_alignment: ['coluna'],
+  strength_deficit: ['quadril', 'coluna'],
+  hip_control: ['quadril'],
+  shoulder_stability: ['coluna'],
+  thoracic_kyphosis: ['cifose'],
+  squat_form: ['anteriorização', 'quadril'],
+  core_control: ['lordose', 'coluna'],
+  lumbar_compensation: ['lordose', 'coluna'],
 };
 
 // ============================
@@ -163,7 +183,7 @@ export async function generateCorrectivePlan(
     return {
       criterio: c.label || c.criterion,
       nivel: c.classification as 'warning' | 'danger',
-      valor: `${c.value}${c.unit || ''}`,
+      valor: c.unit && String(c.value).includes(c.unit) ? `${c.value}` : `${c.value}${c.unit || ''}`,
       causa_provavel: ragForCriterion[0]?.content?.split('\n').find((l) => l.includes('Causa'))?.trim() || c.note || 'A ser avaliado',
       rag_fonte: ragForCriterion[0]?.source || 'Base de conhecimento local',
     };
