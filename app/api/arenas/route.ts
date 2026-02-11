@@ -128,6 +128,40 @@ export async function GET(request: NextRequest) {
       console.warn('[Arenas] Failed to calculate onlineNow:', err)
     }
 
+    // ✅ Visitantes anônimos (Redis) — distribuir proporcionalmente por totalPosts
+    try {
+      const visitorKeys = await safeRedis.keys('visitor:*')
+      const anonymousCount = visitorKeys.length
+
+      if (anonymousCount > 0) {
+        const totalPostsAll = arenasWithUserCount.reduce((sum, a) => sum + (a.totalPosts || 0), 0) || 1
+        let distributed = 0
+
+        arenasWithUserCount = arenasWithUserCount.map((arena) => {
+          const weight = (arena.totalPosts || 0) / totalPostsAll
+          const share = Math.round(anonymousCount * weight)
+          distributed += share
+          return { ...arena, onlineNow: (arena.onlineNow || 0) + share }
+        })
+
+        // Distribuir resto nas arenas mais ativas
+        let remainder = anonymousCount - distributed
+        if (remainder > 0) {
+          const sorted = [...arenasWithUserCount].sort((a, b) => (b.totalPosts || 0) - (a.totalPosts || 0))
+          for (const top of sorted) {
+            if (remainder <= 0) break
+            const idx = arenasWithUserCount.findIndex((a) => a.id === top.id)
+            if (idx >= 0) {
+              arenasWithUserCount[idx] = { ...arenasWithUserCount[idx], onlineNow: (arenasWithUserCount[idx].onlineNow || 0) + 1 }
+              remainder--
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.warn('[Arenas] Failed to count anonymous visitors:', err)
+    }
+
     let result: unknown
 
     if (grouped) {
@@ -142,8 +176,8 @@ export async function GET(request: NextRequest) {
       result = arenasWithUserCount
     }
 
-    // Cache 5 minutes
-    await safeRedis.setEx(cacheKey, 300, JSON.stringify(result))
+    // Cache 1 minuto (reduzido para refletir presença online rapidamente)
+    await safeRedis.setEx(cacheKey, 60, JSON.stringify(result))
 
     return NextResponse.json(result)
   } catch (error) {

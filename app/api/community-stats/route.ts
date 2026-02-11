@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { safeRedis } from '@/lib/redis'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -56,12 +57,25 @@ export async function GET() {
 
     const onlineUsers = new Set(onlineData?.map(u => u.userId) || []).size
 
+    // ✅ Contar visitantes anônimos do Redis (inclui logados e não-logados)
+    let anonymousVisitors = 0
+    try {
+      const visitorKeys = await safeRedis.keys('visitor:*')
+      anonymousVisitors = visitorKeys.length
+    } catch (err) {
+      console.warn('[Community Stats] Failed to count anonymous visitors:', err)
+    }
+
+    // onlineNow = máximo entre visitantes Redis e usuários logados no DB
+    // (Redis já inclui os logados pois eles também pingam como visitor)
+    const totalOnline = Math.max(anonymousVisitors, onlineUsers)
+
     const stats = {
       totalArenas: totalArenas || 0,
       totalPosts: totalPosts || 0,
       totalComments: totalComments || 0,
       totalUsers: uniqueUsers,
-      onlineNow: onlineUsers,
+      onlineNow: totalOnline,
       recentActivity24h: recentActivity || 0,
       updatedAt: new Date().toISOString(),
     }

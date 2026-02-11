@@ -283,14 +283,34 @@ export default function ComunidadesPageClient() {
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState<ArenaCategoria | null>(null);
 
-  // ✅ Registrar presença online (ping a cada 60s)
+  // ✅ Registrar presença online para TODOS (logados e anônimos)
+  // Aguarda 2s para contar como visita real, depois pinga a cada 60s
   useEffect(() => {
-    if (!isAuthenticated) return;
-    const ping = () => fetch('/api/presence', { method: 'POST' }).catch(() => {});
-    ping();
-    const interval = setInterval(ping, 60000);
-    return () => clearInterval(interval);
-  }, [isAuthenticated]);
+    let vid = localStorage.getItem('nfc_visitor_id');
+    if (!vid) {
+      vid = crypto.randomUUID();
+      localStorage.setItem('nfc_visitor_id', vid);
+    }
+    const ping = () =>
+      fetch('/api/presence', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ visitorId: vid }),
+      }).catch(() => {});
+
+    // Primeiro ping após 2 segundos (visitante real)
+    const timeout = setTimeout(() => {
+      ping();
+      // Depois a cada 60s
+      intervalRef = setInterval(ping, 60000);
+    }, 2000);
+
+    let intervalRef: ReturnType<typeof setInterval> | null = null;
+    return () => {
+      clearTimeout(timeout);
+      if (intervalRef) clearInterval(intervalRef);
+    };
+  }, []);
 
   // Fetch arenas from API
   useEffect(() => {
