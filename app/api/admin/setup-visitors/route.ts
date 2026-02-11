@@ -48,8 +48,15 @@ export async function POST(request: NextRequest) {
 
     // Dynamic import para evitar bundling issues
     const { Client } = await import('pg')
+
+    // Parse manual da URL para evitar bug com username contendo ponto
+    const url = new URL(directUrl)
     const client = new Client({
-      connectionString: directUrl,
+      host: url.hostname,
+      port: parseInt(url.port) || 5432,
+      database: url.pathname.slice(1),
+      user: decodeURIComponent(url.username),
+      password: decodeURIComponent(url.password),
       ssl: { rejectUnauthorized: false },
     })
 
