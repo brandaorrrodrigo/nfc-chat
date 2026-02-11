@@ -120,27 +120,29 @@ export default function VideoAnalysisCard({ analysis, onClick, onDelete, onShare
           <StatusBadge status={analysis.status} />
         </div>
 
-        {/* Action buttons (top-right) */}
-        <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          {onShare && ['AI_ANALYZED', 'APPROVED'].includes(analysis.status || '') && (
-            <button
-              onClick={(e) => { e.stopPropagation(); onShare(analysis.id); }}
-              className="p-1.5 rounded-lg bg-black/60 backdrop-blur-sm text-zinc-300 hover:text-white hover:bg-black/80 transition-colors"
-              title="Compartilhar"
-            >
-              <Share2 className="w-3.5 h-3.5" />
-            </button>
-          )}
-          {onDelete && (
-            <button
-              onClick={(e) => { e.stopPropagation(); onDelete(analysis.id); }}
-              className="p-1.5 rounded-lg bg-black/60 backdrop-blur-sm text-zinc-300 hover:text-red-400 hover:bg-black/80 transition-colors"
-              title="Excluir"
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-            </button>
-          )}
-        </div>
+        {/* Action buttons (top-right) — sempre visivel */}
+        {(onDelete || (onShare && ['AI_ANALYZED', 'APPROVED'].includes(analysis.status || ''))) && (
+          <div className="absolute top-2 right-2 flex items-center gap-1">
+            {onShare && ['AI_ANALYZED', 'APPROVED'].includes(analysis.status || '') && (
+              <button
+                onClick={(e) => { e.stopPropagation(); onShare(analysis.id); }}
+                className="p-1.5 rounded-lg bg-black/60 backdrop-blur-sm text-zinc-300 hover:text-white hover:bg-black/80 transition-colors"
+                title="Compartilhar"
+              >
+                <Share2 className="w-3.5 h-3.5" />
+              </button>
+            )}
+            {onDelete && (
+              <button
+                onClick={(e) => { e.stopPropagation(); onDelete(analysis.id); }}
+                className="p-1.5 rounded-lg bg-black/60 backdrop-blur-sm text-zinc-300 hover:text-red-400 hover:bg-black/80 transition-colors"
+                title="Excluir"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+        )}
 
       </div>
 

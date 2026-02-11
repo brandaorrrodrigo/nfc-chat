@@ -636,7 +636,7 @@ export default function VideoDetailPage() {
             {displayAnalysis && (
               <button
                 onClick={() => setShowShareModal(true)}
-                className="p-2 text-zinc-500 hover:text-purple-400 transition-colors"
+                className="p-2 rounded-lg text-zinc-400 hover:text-purple-400 hover:bg-zinc-800 transition-colors"
                 title="Compartilhar"
               >
                 <Share2 className="w-5 h-5" />
@@ -644,7 +644,7 @@ export default function VideoDetailPage() {
             )}
             <button
               onClick={() => setShowDeleteConfirm(true)}
-              className="p-2 text-zinc-500 hover:text-red-400 transition-colors"
+              className="p-2 rounded-lg text-zinc-400 hover:text-red-400 hover:bg-zinc-800 transition-colors"
               title="Excluir"
             >
               <Trash2 className="w-5 h-5" />
