@@ -1,26 +1,21 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
 
 /**
  * GET /api/admin/setup-visitors
- * Cria a tabela anonymous_visitor se não existir.
- * Use a Supabase SQL Editor para criar manualmente se este endpoint falhar.
+ * Verifica se a tabela anonymous_visitor existe.
  *
- * SQL para criar manualmente:
- * CREATE TABLE IF NOT EXISTS anonymous_visitor (
- *   "visitorId" TEXT PRIMARY KEY,
- *   "lastSeenAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
- * );
- * CREATE INDEX IF NOT EXISTS idx_anonymous_visitor_last_seen ON anonymous_visitor ("lastSeenAt");
+ * POST /api/admin/setup-visitors?action=create
+ * Cria a tabela via conexão direta (DIRECT_URL).
  */
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
+
 export async function GET() {
   try {
-    // Tenta inserir e deletar um registro para verificar se a tabela existe
     const { error: testError } = await supabase
       .from('anonymous_visitor')
       .select('visitorId')
@@ -30,28 +25,74 @@ export async function GET() {
       return NextResponse.json({
         exists: false,
         error: testError.message,
-        instruction: 'Crie a tabela manualmente no Supabase SQL Editor com o SQL abaixo:',
-        sql: `
-CREATE TABLE IF NOT EXISTS anonymous_visitor (
-  "visitorId" TEXT PRIMARY KEY,
-  "lastSeenAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-CREATE INDEX IF NOT EXISTS idx_anonymous_visitor_last_seen ON anonymous_visitor ("lastSeenAt");
-
--- Desabilitar RLS para permitir acesso via anon key
-ALTER TABLE anonymous_visitor ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Allow all" ON anonymous_visitor FOR ALL USING (true) WITH CHECK (true);
-        `.trim()
+        instruction: 'Acesse POST /api/admin/setup-visitors para criar, ou use o Supabase SQL Editor',
       })
     }
 
-    return NextResponse.json({
-      exists: true,
-      message: 'Tabela anonymous_visitor já existe!'
-    })
+    return NextResponse.json({ exists: true, message: 'Tabela anonymous_visitor existe!' })
   } catch (error) {
     return NextResponse.json({
       error: 'Failed',
+      detail: error instanceof Error ? error.message : String(error)
+    }, { status: 500 })
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    // Usar pg direto com DIRECT_URL (disponível na Vercel)
+    const directUrl = process.env.DIRECT_URL || process.env.DATABASE_URL
+    if (!directUrl) {
+      return NextResponse.json({ error: 'No DATABASE_URL configured' }, { status: 500 })
+    }
+
+    // Dynamic import para evitar bundling issues
+    const { Client } = await import('pg')
+    const client = new Client({
+      connectionString: directUrl,
+      ssl: { rejectUnauthorized: false },
+    })
+
+    await client.connect()
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS anonymous_visitor (
+        "visitorId" TEXT PRIMARY KEY,
+        "lastSeenAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+    `)
+
+    await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_anonymous_visitor_last_seen
+      ON anonymous_visitor ("lastSeenAt");
+    `)
+
+    // Enable RLS with permissive policy
+    await client.query(`
+      ALTER TABLE anonymous_visitor ENABLE ROW LEVEL SECURITY;
+    `)
+
+    await client.query(`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_policies WHERE tablename = 'anonymous_visitor' AND policyname = 'Allow all'
+        ) THEN
+          CREATE POLICY "Allow all" ON anonymous_visitor FOR ALL USING (true) WITH CHECK (true);
+        END IF;
+      END
+      $$;
+    `)
+
+    await client.end()
+
+    return NextResponse.json({
+      success: true,
+      message: 'Tabela anonymous_visitor criada com sucesso!'
+    })
+  } catch (error) {
+    return NextResponse.json({
+      error: 'Failed to create table',
       detail: error instanceof Error ? error.message : String(error)
     }, { status: 500 })
   }
