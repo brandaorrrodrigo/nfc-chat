@@ -15,6 +15,10 @@ export interface FrameAnalysis {
     joelho_dir_graus: number;
     flexao_quadril_graus: number;
     inclinacao_tronco_graus: number;
+    cotovelo_esq_graus: number;
+    cotovelo_dir_graus: number;
+    ombro_flexao_graus: number;
+    lombar_flexao_graus: number;
   };
   alinhamentos: {
     joelhos_sobre_pes: boolean;
@@ -22,6 +26,8 @@ export interface FrameAnalysis {
     joelho_dir_valgo: boolean;
     coluna_neutra: boolean;
     peso_nos_calcanhares: boolean;
+    escapulas_retraidas: boolean;
+    tronco_estavel: boolean;
   };
   desvios_criticos: string[];
   score: number;
@@ -31,7 +37,7 @@ export interface FrameAnalysis {
 const VISION_PROMPT_TEMPLATE = (frameNumber: number, totalFrames: number, exerciseType: string) => `
 Você é um biomecânico PhD especializado em análise de movimento.
 
-Analise este frame ${frameNumber}/${totalFrames} de um ${exerciseType}.
+Analise este frame ${frameNumber}/${totalFrames} de um exercício: ${exerciseType}.
 
 Retorne APENAS JSON válido com esta estrutura exata:
 
@@ -41,27 +47,39 @@ Retorne APENAS JSON válido com esta estrutura exata:
     "joelho_esq_graus": 90,
     "joelho_dir_graus": 92,
     "flexao_quadril_graus": 85,
-    "inclinacao_tronco_graus": 15
+    "inclinacao_tronco_graus": 15,
+    "cotovelo_esq_graus": 160,
+    "cotovelo_dir_graus": 160,
+    "ombro_flexao_graus": 30,
+    "lombar_flexao_graus": 10
   },
   "alinhamentos": {
     "joelhos_sobre_pes": true,
     "joelho_esq_valgo": false,
     "joelho_dir_valgo": false,
     "coluna_neutra": true,
-    "peso_nos_calcanhares": true
+    "peso_nos_calcanhares": true,
+    "escapulas_retraidas": false,
+    "tronco_estavel": true
   },
   "desvios_criticos": [
     "Valgo dinâmico de joelho esquerdo de ~10°"
   ],
   "score": 7,
-  "justificativa": "Profundidade adequada mas joelho esquerdo colapsa medialmente"
+  "justificativa": "Breve justificativa técnica do score"
 }
 
-IMPORTANTE:
-- Estime os ângulos visualmente (não precisa ser exato)
-- Liste APENAS desvios que você consegue VER claramente na imagem
-- Score de 1-10 baseado na qualidade técnica
-- RETORNE APENAS O JSON, sem texto antes ou depois
+REGRAS:
+- Estime TODOS os ângulos visualmente baseado na imagem
+- joelho: ângulo entre coxa e perna (180° = estendido, 90° = flexionado)
+- quadril: ângulo de flexão do quadril (180° = em pé, 90° = sentado)
+- tronco: inclinação do tronco em relação à vertical (0° = ereto)
+- cotovelo: ângulo do cotovelo (180° = estendido, 90° = flexionado)
+- ombro: flexão do ombro (0° = braço ao lado, 90° = braço à frente, 180° = acima)
+- lombar: flexão lombar em relação à posição neutra (0° = neutra)
+- Se algum ângulo NÃO é visível, use -1
+- Score de 1-10 baseado na qualidade técnica do ${exerciseType}
+- RETORNE APENAS O JSON
 `;
 
 export async function analyzeFrameWithVision(
@@ -112,28 +130,40 @@ export async function analyzeFrameWithVision(
 }
 
 function validateAndNormalizeAnalysis(data: any, frameNumber: number): FrameAnalysis {
-  // Determinar fase baseado no número do frame se não vier no JSON
   const faseDefault = frameNumber <= 2 ? 'excentrica' : frameNumber <= 4 ? 'isometrica' : 'concentrica';
+  const a = data.angulos_aproximados || {};
+  const al = data.alinhamentos || {};
 
   return {
     fase: data.fase || faseDefault,
     angulos_aproximados: {
-      joelho_esq_graus: data.angulos_aproximados?.joelho_esq_graus || 90,
-      joelho_dir_graus: data.angulos_aproximados?.joelho_dir_graus || 90,
-      flexao_quadril_graus: data.angulos_aproximados?.flexao_quadril_graus || 85,
-      inclinacao_tronco_graus: data.angulos_aproximados?.inclinacao_tronco_graus || 15,
+      joelho_esq_graus: validAngle(a.joelho_esq_graus, -1),
+      joelho_dir_graus: validAngle(a.joelho_dir_graus, -1),
+      flexao_quadril_graus: validAngle(a.flexao_quadril_graus, -1),
+      inclinacao_tronco_graus: validAngle(a.inclinacao_tronco_graus, -1),
+      cotovelo_esq_graus: validAngle(a.cotovelo_esq_graus, -1),
+      cotovelo_dir_graus: validAngle(a.cotovelo_dir_graus, -1),
+      ombro_flexao_graus: validAngle(a.ombro_flexao_graus, -1),
+      lombar_flexao_graus: validAngle(a.lombar_flexao_graus, -1),
     },
     alinhamentos: {
-      joelhos_sobre_pes: data.alinhamentos?.joelhos_sobre_pes ?? true,
-      joelho_esq_valgo: data.alinhamentos?.joelho_esq_valgo ?? false,
-      joelho_dir_valgo: data.alinhamentos?.joelho_dir_valgo ?? false,
-      coluna_neutra: data.alinhamentos?.coluna_neutra ?? true,
-      peso_nos_calcanhares: data.alinhamentos?.peso_nos_calcanhares ?? true,
+      joelhos_sobre_pes: al.joelhos_sobre_pes ?? true,
+      joelho_esq_valgo: al.joelho_esq_valgo ?? false,
+      joelho_dir_valgo: al.joelho_dir_valgo ?? false,
+      coluna_neutra: al.coluna_neutra ?? true,
+      peso_nos_calcanhares: al.peso_nos_calcanhares ?? true,
+      escapulas_retraidas: al.escapulas_retraidas ?? false,
+      tronco_estavel: al.tronco_estavel ?? true,
     },
     desvios_criticos: Array.isArray(data.desvios_criticos) ? data.desvios_criticos : [],
     score: typeof data.score === 'number' ? Math.min(10, Math.max(1, data.score)) : 7,
     justificativa: data.justificativa || 'Análise automática',
   };
+}
+
+function validAngle(v: any, fallback: number): number {
+  if (typeof v === 'number' && v >= -1 && v <= 360) return v;
+  return fallback;
 }
 
 function createFallbackAnalysis(frameNumber: number, totalFrames: number): FrameAnalysis {
@@ -146,10 +176,14 @@ function createFallbackAnalysis(frameNumber: number, totalFrames: number): Frame
   return {
     fase,
     angulos_aproximados: {
-      joelho_esq_graus: 90,
-      joelho_dir_graus: 90,
-      flexao_quadril_graus: 85,
-      inclinacao_tronco_graus: 15,
+      joelho_esq_graus: -1,
+      joelho_dir_graus: -1,
+      flexao_quadril_graus: -1,
+      inclinacao_tronco_graus: -1,
+      cotovelo_esq_graus: -1,
+      cotovelo_dir_graus: -1,
+      ombro_flexao_graus: -1,
+      lombar_flexao_graus: -1,
     },
     alinhamentos: {
       joelhos_sobre_pes: true,
@@ -157,6 +191,8 @@ function createFallbackAnalysis(frameNumber: number, totalFrames: number): Frame
       joelho_dir_valgo: false,
       coluna_neutra: true,
       peso_nos_calcanhares: true,
+      escapulas_retraidas: false,
+      tronco_estavel: true,
     },
     desvios_criticos: [],
     score: 7,
