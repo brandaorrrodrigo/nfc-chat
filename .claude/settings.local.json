@@ -100,7 +100,8 @@
       "Bash(pkill:*)",
       "Bash(git restore:*)",
       "Bash(export NEXT_PUBLIC_SUPABASE_URL=\"https://qducbqhuwqdyqioqevle.supabase.co\")",
-      "Bash(export NEXT_PUBLIC_SUPABASE_ANON_KEY:*)"
+      "Bash(export NEXT_PUBLIC_SUPABASE_ANON_KEY:*)",
+      "Bash(NEXT_PUBLIC_SUPABASE_URL=\"https://qducbqhuwqdyqioqevle.supabase.co\" NEXT_PUBLIC_SUPABASE_ANON_KEY=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFkdWNicWh1d3FkeXFpb3FldmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5NDM3NjgsImV4cCI6MjA4NDUxOTc2OH0.hzOmMJcRGFPShGLRecDruzOr8_W3kwdtykI2NJpyOXE\" node:*)"
     ]
   }
 }
