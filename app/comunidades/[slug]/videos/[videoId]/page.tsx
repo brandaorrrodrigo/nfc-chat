@@ -11,6 +11,7 @@ import { ArrowLeft, ThumbsUp, ThumbsDown, Eye, Clock, User, Loader2, CheckCircle
 import VideoPlayer from '@/components/nfv/VideoPlayer';
 import MovementPatternBadge from '@/components/nfv/MovementPatternBadge';
 import ShareModal from '@/components/nfv/ShareModal';
+import CorrectivePlanCard from '@/components/nfv/CorrectivePlanCard';
 
 interface AnalysisDetail {
   id: string;
@@ -42,6 +43,9 @@ export default function VideoDetailPage() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [correctivePlan, setCorrectivePlan] = useState<Record<string, unknown> | null>(null);
+  const [planLoading, setPlanLoading] = useState(false);
+  const [planError, setPlanError] = useState<string | null>(null);
 
   // Mock userId
   const userId = 'user_mock_001';
@@ -105,6 +109,27 @@ export default function VideoDetailPage() {
     } finally {
       setDeleting(false);
       setShowDeleteConfirm(false);
+    }
+  };
+
+  const handleGeneratePlan = async () => {
+    setPlanLoading(true);
+    setPlanError(null);
+    try {
+      const res = await fetch('/api/nfv/corrective-plan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ analysisId: videoId }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Erro ao gerar plano');
+      if (data.plan) {
+        setCorrectivePlan(data.plan);
+      }
+    } catch (err) {
+      setPlanError(err instanceof Error ? err.message : 'Erro ao gerar plano corretivo');
+    } finally {
+      setPlanLoading(false);
     }
   };
 
@@ -441,6 +466,16 @@ export default function VideoDetailPage() {
             </div>
           )}
 
+          {/* Plano Corretivo Personalizado (4 semanas) */}
+          {(pontosCriticosNovo.length > 0 || pontosCriticosAntigo.length > 0 || recomendacoesExercicios.length > 0) && (
+            <CorrectivePlanCard
+              plan={displayPlan}
+              onGeneratePlan={handleGeneratePlan}
+              loading={planLoading}
+              error={planError}
+            />
+          )}
+
           {/* Frame by Frame Analysis */}
           {frameAnalyses.length > 0 && (
             <div>
@@ -613,6 +648,12 @@ export default function VideoDetailPage() {
     }
   }
 
+  // Extrair plano corretivo se ja existir nos dados da analise
+  const existingPlan = (analysis.published_analysis as any)?.corrective_plan
+    || (parsedAiAnalysis as any)?.corrective_plan
+    || null;
+  const displayPlan = correctivePlan || existingPlan;
+
   const displayAnalysis = analysis.published_analysis || parsedAiAnalysis;
 
   return (
@@ -661,6 +702,26 @@ export default function VideoDetailPage() {
           thumbnailUrl={analysis.thumbnail_url}
           className="max-h-96"
         />
+
+        {/* Action Bar */}
+        <div className="flex items-center gap-3">
+          {displayAnalysis && (
+            <button
+              onClick={() => setShowShareModal(true)}
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-purple-600/20 border border-purple-600/30 text-purple-300 text-sm font-medium hover:bg-purple-600/30 transition-colors"
+            >
+              <Share2 className="w-4 h-4" />
+              Compartilhar
+            </button>
+          )}
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-red-600/10 border border-red-600/20 text-red-400 text-sm font-medium hover:bg-red-600/20 transition-colors"
+          >
+            <Trash2 className="w-4 h-4" />
+            Excluir
+          </button>
+        </div>
 
         {/* Meta */}
         <div className="flex items-center justify-between">
