@@ -82,7 +82,7 @@ export async function sendPromptToOllama(
   builtPrompt: BuiltPrompt,
   classification: ClassificationResult,
   options: LLMBridgeOptions = {}
-): Promise<LLMAnalysisReport> {
+): Promise<LLMAnalysisReport | null> {
   const {
     temperature = 0.3,
     maxTokens = 4000,
@@ -91,8 +91,8 @@ export async function sendPromptToOllama(
 
   const textModel = await findTextModel();
   if (!textModel) {
-    console.warn('[LLM Bridge] Ollama indisponível, usando fallback determinístico');
-    return createFallbackReport(classification, builtPrompt.metadata.exerciseName);
+    console.warn('[LLM Bridge] Ollama indisponivel');
+    return null;
   }
 
   // Montar prompt completo: system + user
@@ -126,9 +126,9 @@ export async function sendPromptToOllama(
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
 
     if (!jsonMatch) {
-      console.warn('[LLM Bridge] ❌ Ollama não retornou JSON válido');
+      console.warn('[LLM Bridge] Ollama nao retornou JSON valido');
       console.warn('[LLM Bridge] Resposta completa:', responseText.substring(0, 1000));
-      return createFallbackReport(classification, builtPrompt.metadata.exerciseName);
+      return null;
     }
 
     try {
@@ -136,13 +136,13 @@ export async function sendPromptToOllama(
       console.log('[LLM Bridge] ✅ JSON parseado com sucesso');
       return normalizeReport(parsed, classification);
     } catch (parseError) {
-      console.error('[LLM Bridge] ❌ Erro ao fazer parse do JSON:', parseError);
-      console.error('[LLM Bridge] JSON extraído:', jsonMatch[0].substring(0, 500));
-      return createFallbackReport(classification, builtPrompt.metadata.exerciseName);
+      console.error('[LLM Bridge] Erro ao fazer parse do JSON:', parseError);
+      console.error('[LLM Bridge] JSON extraido:', jsonMatch[0].substring(0, 500));
+      return null;
     }
   } catch (error: any) {
     console.error('[LLM Bridge] Erro:', error.message);
-    return createFallbackReport(classification, builtPrompt.metadata.exerciseName);
+    return null;
   }
 }
 
@@ -241,60 +241,13 @@ function extractAttentionPointsFromClassification(classification: Classification
 }
 
 function extractRecommendationsFromClassification(classification: ClassificationResult): Recommendation[] {
-  const recommendations = classification.classifications
+  return classification.classifications
     .filter((c) => c.classification === 'danger')
     .slice(0, 3)
     .map((c, i) => ({
       prioridade: i + 1,
       descricao: `Corrigir ${c.label}: valor atual ${c.value}${c.unit || ''}`,
     }));
-
-  // Preencher com recomendações genéricas se houver menos de 3
-  while (recommendations.length < 3) {
-    const idx = recommendations.length + 1;
-    recommendations.push({
-      prioridade: idx,
-      descricao: idx === 2
-        ? 'Trabalhar controle de core e estabilização'
-        : 'Reavaliar técnica em 2-4 semanas',
-    });
-  }
-
-  return recommendations;
-}
-
-/**
- * Relatório determinístico gerado a partir dos dados de classificação
- * quando o Ollama está indisponível (fallback NFV).
- */
-function createFallbackReport(
-  classification: ClassificationResult,
-  exerciseName: string
-): LLMAnalysisReport {
-  const score = classification.overallScore;
-
-  return {
-    resumo_executivo: `Análise de ${exerciseName} com score ${score.toFixed(1)}/10. ` +
-      `${classification.summary.danger} critérios críticos identificados.`,
-
-    analise_cadeia_movimento: {
-      fase_excentrica: 'Avaliação baseada em dados de classificação.',
-      fase_concentrica: 'Avaliação baseada em dados de classificação.',
-      relacoes_proporcionais: 'Relacionamento entre articulações foi analisado durante a classificação.',
-    },
-
-    pontos_positivos: extractPositivesFromClassification(classification),
-
-    pontos_atencao: extractAttentionPointsFromClassification(classification),
-
-    conclusao_cientifica: `O movimento apresenta ${classification.summary.danger} problema(s) crítico(s) ` +
-      `e ${classification.summary.warning} alerta(s). Recomenda-se revisão técnica com profissional antes de aumentar carga.`,
-
-    recomendacoes_top3: extractRecommendationsFromClassification(classification),
-
-    score_geral: Math.round(score * 10) / 10,
-    classificacao: validateClassificacao(null, score),
-  };
 }
 
 /**

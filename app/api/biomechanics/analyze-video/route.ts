@@ -249,27 +249,39 @@ export async function POST(request: NextRequest) {
       const mediapipeReport = pipelineBData.report;
 
       // 9. Gerar relatório técnico do Pipeline A com Llama 3.1 (com ou sem RAG)
-      let report: BiomechanicsReport | EnhancedBiomechanicsReport;
+      let report: BiomechanicsReport | EnhancedBiomechanicsReport | null = null;
       let ragUsed = false;
 
       if (useRAG) {
-        console.log('📝 Gerando relatório técnico com RAG...');
+        console.log('Gerando relatorio tecnico com RAG...');
         const ragAvailability = await checkRAGAvailability();
 
         if (ragAvailability.available) {
           report = await generateBiomechanicsReportWithRAG(frameAnalyses, exerciseType);
-          ragUsed = true;
-          console.log(`   ✅ Relatório gerado com RAG (${(report as EnhancedBiomechanicsReport).rag_chunks_used || 0} chunks)`);
-        } else {
-          console.log(`   ⚠️ RAG não disponível: ${ragAvailability.error}`);
-          console.log('   📝 Gerando relatório sem RAG...');
+          if (report) {
+            ragUsed = true;
+            console.log(`Relatorio gerado com RAG (${(report as EnhancedBiomechanicsReport).rag_chunks_used || 0} chunks)`);
+          }
+        }
+
+        if (!report) {
+          console.log('RAG indisponivel ou falhou, tentando sem RAG...');
           report = await generateBiomechanicsReport(frameAnalyses, exerciseType);
-          console.log('   ✅ Relatório gerado');
+          if (report) console.log('Relatorio gerado sem RAG');
         }
       } else {
-        console.log('📝 Gerando relatório técnico (sem RAG)...');
+        console.log('Gerando relatorio tecnico (sem RAG)...');
         report = await generateBiomechanicsReport(frameAnalyses, exerciseType);
-        console.log('   ✅ Relatório gerado');
+        if (report) console.log('Relatorio gerado');
+      }
+
+      if (!report) {
+        console.warn('Nenhum relatorio gerado — Ollama pode estar offline');
+        await updateAnalysisError(analysisId, 'Servico de geracao de relatorio indisponivel');
+        return NextResponse.json(
+          { error: 'Nao foi possivel gerar relatorio. Ollama pode estar offline.' },
+          { status: 503 }
+        );
       }
 
       // 10. Calcular métricas finais (merge Pipeline A + B)
@@ -359,7 +371,6 @@ export async function POST(request: NextRequest) {
         .update({
           ai_analysis: finalResult,
           ai_analyzed_at: new Date().toISOString(),
-          ai_confidence: avgScore / 10,
           status: 'AI_ANALYZED',
         })
         .eq('id', analysisId);

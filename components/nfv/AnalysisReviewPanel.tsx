@@ -19,7 +19,6 @@ interface AnalysisData {
   user_description?: string;
   status: string;
   ai_analysis?: Record<string, unknown>;
-  ai_confidence?: number;
   admin_notes?: string;
   created_at: string;
 }
@@ -167,11 +166,6 @@ export default function AnalysisReviewPanel({
       <div>
         <div className="flex items-center justify-between mb-2">
           <h3 className="text-sm font-semibold text-zinc-300">Analise da IA</h3>
-          {analysis.ai_confidence !== undefined && (
-            <span className="text-xs text-zinc-500">
-              Confianca: {Math.round(analysis.ai_confidence * 100)}%
-            </span>
-          )}
         </div>
         <textarea
           value={editedAnalysis}

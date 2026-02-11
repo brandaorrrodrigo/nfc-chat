@@ -13,14 +13,14 @@ import { checkVideoUploadPermission } from '@/lib/biomechanics/video-gating';
 const TABLE = 'nfc_chat_video_analyses';
 
 /**
- * Trigger automático para análise com IA (Ollama llama3.2-vision)
- * Chamado em background após criar registro de vídeo
+ * Trigger automatico para analise com IA (Ollama llama3.2-vision)
+ * Chamado em background apos criar registro de video.
+ * Se falhar, seta status ERROR no banco.
  */
 async function triggerAIAnalysis(analysisId: string): Promise<void> {
-  console.log(`[NFV] 🤖 Triggering AI analysis for: ${analysisId}`);
+  console.log(`[NFV] Triggering AI analysis for: ${analysisId}`);
 
   try {
-    // Determinar base URL
     const baseUrl = process.env.NEXTAUTH_URL ||
                    process.env.NEXT_PUBLIC_APP_URL ||
                    'http://localhost:3000';
@@ -34,17 +34,37 @@ async function triggerAIAnalysis(analysisId: string): Promise<void> {
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       console.error('[NFV] AI analysis trigger failed:', errorData);
+      // O endpoint /api/nfv/analysis ja seta ERROR, mas como safety net:
+      await setAnalysisError(analysisId, errorData.error || 'Trigger de analise falhou');
       return;
     }
 
     const result = await response.json();
-    console.log(`[NFV] ✅ AI analysis completed:`, {
+    console.log(`[NFV] AI analysis completed:`, {
       score: result.aiResult?.overall_score,
       type: result.aiResult?.analysis_type,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('[NFV] AI analysis trigger error:', error);
+    await setAnalysisError(analysisId, error.message || 'Erro de conexao com servico de analise');
   }
+}
+
+async function setAnalysisError(analysisId: string, errorMessage: string): Promise<void> {
+  try {
+    if (!isSupabaseConfigured()) return;
+    const supabase = getSupabase();
+    await supabase
+      .from(TABLE)
+      .update({
+        status: 'ERROR',
+        ai_analysis: {
+          error: errorMessage,
+          timestamp: new Date().toISOString(),
+        },
+      })
+      .eq('id', analysisId);
+  } catch { /* best effort */ }
 }
 
 // POST - Criar registro de video analysis
@@ -176,8 +196,8 @@ export async function GET(req: NextRequest) {
         query = query.eq('status', status);
       }
     } else {
-      // Por padrão, mostrar todos os vídeos públicos (na fila, analisados e aprovados)
-      query = query.in('status', ['PENDING_AI', 'AI_ANALYZED', 'APPROVED']);
+      // Mostrar todos os videos (na fila, processando, analisados, aprovados e com erro)
+      query = query.in('status', ['PENDING_AI', 'PROCESSING', 'AI_ANALYZED', 'APPROVED', 'ERROR']);
     }
 
     if (pattern) {

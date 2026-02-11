@@ -7,9 +7,10 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, ThumbsUp, ThumbsDown, Eye, Clock, User, Loader2, CheckCircle, Bot, Target, Play, Star, AlertTriangle, Shield, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, ThumbsUp, ThumbsDown, Eye, Clock, User, Loader2, CheckCircle, Bot, Target, Play, Star, AlertTriangle, RefreshCw, Trash2, Share2, X } from 'lucide-react';
 import VideoPlayer from '@/components/nfv/VideoPlayer';
 import MovementPatternBadge from '@/components/nfv/MovementPatternBadge';
+import ShareModal from '@/components/nfv/ShareModal';
 
 interface AnalysisDetail {
   id: string;
@@ -20,7 +21,6 @@ interface AnalysisDetail {
   user_description?: string;
   status: string;
   ai_analysis?: Record<string, unknown>;
-  ai_confidence?: number;
   published_analysis?: Record<string, unknown>;
   published_at?: string;
   view_count: number;
@@ -38,12 +38,15 @@ export default function VideoDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [voted, setVoted] = useState<string | null>(null);
   const [voting, setVoting] = useState(false);
+  const [retrying, setRetrying] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   // Mock userId
   const userId = 'user_mock_001';
 
   const fetchAnalysis = useCallback(async () => {
-    setLoading(true);
     try {
       const res = await fetch(`/api/nfv/videos/${videoId}`);
       const data = await res.json();
@@ -59,6 +62,51 @@ export default function VideoDetailPage() {
   useEffect(() => {
     fetchAnalysis();
   }, [fetchAnalysis]);
+
+  // Polling: re-fetch a cada 10s quando status e PENDING_AI ou PROCESSING
+  useEffect(() => {
+    if (!analysis) return;
+    const shouldPoll = ['PENDING_AI', 'PROCESSING'].includes(analysis.status);
+    if (!shouldPoll) return;
+
+    const intervalId = setInterval(() => {
+      fetchAnalysis();
+    }, 10000);
+
+    return () => clearInterval(intervalId);
+  }, [analysis?.status, fetchAnalysis]);
+
+  const handleRetryAnalysis = async () => {
+    setRetrying(true);
+    try {
+      await fetch('/api/nfv/analysis', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ analysisId: videoId }),
+      });
+      await fetchAnalysis();
+    } catch {
+      // polling vai pegar as mudancas
+    } finally {
+      setRetrying(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/nfv/videos/${videoId}`, { method: 'DELETE' });
+      if (res.ok) {
+        router.back();
+        return;
+      }
+    } catch {
+      // silently fail
+    } finally {
+      setDeleting(false);
+      setShowDeleteConfirm(false);
+    }
+  };
 
   const handleVote = async (voteType: 'helpful' | 'not_helpful') => {
     if (voting || voted) return;
@@ -159,10 +207,6 @@ export default function VideoDetailPage() {
       const framesAnalyzed = (data.frames_analyzed as number) || (data.metadata as Record<string,unknown>)?.frames_analyzed as number || frameAnalyses.length;
       const classificacao = (report.classificacao as string) || (data.classificacao as string) || (data.classification as string);
 
-      // Validação e confiança - novo formato
-      const validationResult = data.validation_result as { isSuspicious: boolean; issues: string[]; recommendation: string; confidenceLevel: string } | undefined;
-      const confidenceLevel = validationResult?.confidenceLevel || (data.metadata as Record<string,unknown>)?.confidence_level as string || 'media';
-      const interpolationApplied = (data.metadata as Record<string,unknown>)?.interpolation_applied as boolean || false;
 
       // Pontos críticos - novo formato do script (com fallback para formato antigo)
       const pontosCriticosNovo = data.pontos_criticos as Array<{ nome: string; severidade: string; frames_afetados: number[]; frequencia: string }> || [];
@@ -248,44 +292,6 @@ export default function VideoDetailPage() {
             )}
           </div>
 
-          {/* Aviso de Confiança */}
-          {validationResult?.isSuspicious && (
-            <div className="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-xl">
-              <div className="flex items-center gap-2 mb-2">
-                <AlertTriangle className="w-5 h-5 text-yellow-400" />
-                <p className="font-bold text-yellow-400">
-                  Analise com Confianca Reduzida
-                </p>
-              </div>
-
-              <ul className="text-sm text-yellow-300 space-y-1 mb-3">
-                {validationResult.issues?.map((issue, i) => (
-                  <li key={i}>• {issue}</li>
-                ))}
-              </ul>
-
-              <p className="text-xs text-yellow-400">
-                💡 {validationResult.recommendation}
-              </p>
-
-              {interpolationApplied && (
-                <p className="text-xs text-yellow-500 mt-2 italic">
-                  ⚠️ Interpolacao biomecanica foi aplicada para melhorar a precisao
-                </p>
-              )}
-            </div>
-          )}
-
-          {/* Badge de Confiança */}
-          {!validationResult?.isSuspicious && confidenceLevel === 'alta' && (
-            <div className="flex items-center gap-2 p-3 bg-green-500/10 border border-green-500/30 rounded-xl">
-              <ShieldCheck className="w-5 h-5 text-green-400" />
-              <div>
-                <p className="text-sm text-green-400 font-medium">Alta Confianca</p>
-                <p className="text-xs text-green-400/70">Analise validada sem inconsistencias</p>
-              </div>
-            </div>
-          )}
 
           {/* Pontos Criticos - Novo formato */}
           {pontosCriticosNovo.length > 0 && (
@@ -533,11 +539,6 @@ export default function VideoDetailPage() {
                       {frame.justificativa || frame.analysis}
                     </p>
 
-                    {frame.confianca_medida && (
-                      <span className="text-[10px] text-zinc-500 mt-1 block">
-                        Confiança: {frame.confianca_medida}
-                      </span>
-                    )}
                   </div>
                 ))}
               </div>
@@ -574,16 +575,6 @@ export default function VideoDetailPage() {
           );
         })}
 
-        {data.note && (
-          <p className="text-xs text-zinc-500 italic">{String(data.note)}</p>
-        )}
-
-        {data.confidence_level && (
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-zinc-500">Nivel de confianca:</span>
-            <span className="text-xs text-purple-400 font-medium">{String(data.confidence_level)}</span>
-          </div>
-        )}
       </div>
     );
   };
@@ -641,6 +632,24 @@ export default function VideoDetailPage() {
               <MovementPatternBadge pattern={analysis.movement_pattern} size="sm" />
             </div>
           </div>
+          <div className="flex items-center gap-1">
+            {displayAnalysis && (
+              <button
+                onClick={() => setShowShareModal(true)}
+                className="p-2 text-zinc-500 hover:text-purple-400 transition-colors"
+                title="Compartilhar"
+              >
+                <Share2 className="w-5 h-5" />
+              </button>
+            )}
+            <button
+              onClick={() => setShowDeleteConfirm(true)}
+              className="p-2 text-zinc-500 hover:text-red-400 transition-colors"
+              title="Excluir"
+            >
+              <Trash2 className="w-5 h-5" />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -683,12 +692,38 @@ export default function VideoDetailPage() {
         )}
 
         {/* Analysis Content */}
-        {displayAnalysis && (
+        {analysis.status === 'PENDING_AI' || analysis.status === 'PROCESSING' ? (
+          <div className="bg-zinc-900 rounded-xl p-5 border border-zinc-800 text-center">
+            <Loader2 className="w-8 h-8 text-purple-400 animate-spin mx-auto mb-3" />
+            <p className="text-sm text-zinc-300 font-medium">
+              {analysis.status === 'PROCESSING' ? 'Analisando video...' : 'Na fila de analise...'}
+            </p>
+            <p className="text-xs text-zinc-500 mt-1">Atualizando automaticamente</p>
+          </div>
+        ) : analysis.status === 'ERROR' ? (
+          <div className="bg-zinc-900 rounded-xl p-5 border border-red-800/50">
+            <div className="flex items-center gap-2 mb-3">
+              <AlertTriangle className="w-5 h-5 text-red-400" />
+              <p className="text-sm text-red-400 font-medium">Erro na analise</p>
+            </div>
+            <p className="text-xs text-zinc-400 mb-4">
+              {(parsedAiAnalysis as any)?.error || 'Ocorreu um erro durante a analise do video.'}
+            </p>
+            <button
+              onClick={handleRetryAnalysis}
+              disabled={retrying}
+              className="px-4 py-2 rounded-lg bg-purple-600/20 border border-purple-600/30 text-purple-300 text-sm hover:bg-purple-600/30 transition-colors disabled:opacity-50 flex items-center gap-2"
+            >
+              {retrying ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+              Tentar novamente
+            </button>
+          </div>
+        ) : displayAnalysis ? (
           <div className="bg-zinc-900 rounded-xl p-5 border border-zinc-800">
             <h3 className="text-sm font-bold text-white mb-4">Resultado da Analise</h3>
             {renderPublishedAnalysis(displayAnalysis)}
           </div>
-        )}
+        ) : null}
 
         {/* Vote */}
         <div className="bg-zinc-900/50 rounded-xl p-4 border border-zinc-800">
@@ -724,6 +759,60 @@ export default function VideoDetailPage() {
           )}
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => !deleting && setShowDeleteConfirm(false)} />
+          <div className="relative bg-zinc-900 border border-zinc-700 rounded-2xl max-w-sm w-full p-6">
+            <button
+              onClick={() => !deleting && setShowDeleteConfirm(false)}
+              className="absolute top-4 right-4 text-zinc-500 hover:text-zinc-300"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
+                <AlertTriangle className="w-5 h-5 text-red-400" />
+              </div>
+              <h3 className="text-sm font-semibold text-white">Excluir video</h3>
+            </div>
+
+            <p className="text-sm text-zinc-400 mb-6">
+              Tem certeza que deseja excluir este video? Esta acao nao pode ser desfeita.
+            </p>
+
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={deleting}
+                className="flex-1 px-4 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm hover:bg-zinc-700 transition-colors disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="flex-1 px-4 py-2 rounded-lg bg-red-600/20 border border-red-600/30 text-red-300 text-sm hover:bg-red-600/30 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                Excluir
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Share Modal */}
+      {showShareModal && analysis && displayAnalysis && (
+        <ShareModal
+          analysis={analysis}
+          displayAnalysis={displayAnalysis}
+          open={showShareModal}
+          onClose={() => setShowShareModal(false)}
+        />
+      )}
     </div>
   );
 }

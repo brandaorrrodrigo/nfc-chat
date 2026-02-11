@@ -138,7 +138,7 @@ export async function POST(request: NextRequest) {
     );
 
     // 5.5. Gerar relatório via Ollama + RAG
-    let llmReport = null;
+    let llmReport: Awaited<ReturnType<typeof sendPromptToOllama>> = null;
     try {
       llmReport = await sendPromptToOllama(analysis.prompt, analysis.classification, {
         timeoutMs: 180000,

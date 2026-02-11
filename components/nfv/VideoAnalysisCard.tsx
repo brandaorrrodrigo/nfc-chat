@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { Play, ThumbsUp, Eye, Clock, User, Loader2, Bot, CheckCircle } from 'lucide-react';
+import { Play, ThumbsUp, Eye, Clock, User, Loader2, Bot, CheckCircle, AlertTriangle, Trash2, Share2 } from 'lucide-react';
 import MovementPatternBadge from './MovementPatternBadge';
 
 interface VideoAnalysisCardProps {
@@ -21,9 +21,10 @@ interface VideoAnalysisCardProps {
     created_at?: string;
     view_count: number;
     helpful_votes: number;
-    ai_confidence?: number;
   };
   onClick?: () => void;
+  onDelete?: (id: string) => void;
+  onShare?: (id: string) => void;
 }
 
 // Badge de status do vídeo
@@ -43,6 +44,13 @@ function StatusBadge({ status }: { status?: string }) {
           Analisado
         </div>
       );
+    case 'PROCESSING':
+      return (
+        <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-400 text-[10px]">
+          <Loader2 className="w-3 h-3 animate-spin" />
+          Processando
+        </div>
+      );
     case 'APPROVED':
       return (
         <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-500/20 text-green-400 text-[10px]">
@@ -50,12 +58,19 @@ function StatusBadge({ status }: { status?: string }) {
           Aprovado
         </div>
       );
+    case 'ERROR':
+      return (
+        <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 text-[10px]">
+          <AlertTriangle className="w-3 h-3" />
+          Erro
+        </div>
+      );
     default:
       return null;
   }
 }
 
-export default function VideoAnalysisCard({ analysis, onClick }: VideoAnalysisCardProps) {
+export default function VideoAnalysisCard({ analysis, onClick, onDelete, onShare }: VideoAnalysisCardProps) {
   const formatDate = (date?: string) => {
     if (!date) return '';
     const d = new Date(date);
@@ -105,12 +120,28 @@ export default function VideoAnalysisCard({ analysis, onClick }: VideoAnalysisCa
           <StatusBadge status={analysis.status} />
         </div>
 
-        {/* Confidence */}
-        {analysis.ai_confidence !== undefined && (
-          <div className="absolute top-2 right-2 px-1.5 py-0.5 rounded bg-black/60 text-[10px] text-zinc-300">
-            {Math.round(analysis.ai_confidence * 100)}% conf.
-          </div>
-        )}
+        {/* Action buttons (top-right) */}
+        <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          {onShare && ['AI_ANALYZED', 'APPROVED'].includes(analysis.status || '') && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onShare(analysis.id); }}
+              className="p-1.5 rounded-lg bg-black/60 backdrop-blur-sm text-zinc-300 hover:text-white hover:bg-black/80 transition-colors"
+              title="Compartilhar"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+            </button>
+          )}
+          {onDelete && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onDelete(analysis.id); }}
+              className="p-1.5 rounded-lg bg-black/60 backdrop-blur-sm text-zinc-300 hover:text-red-400 hover:bg-black/80 transition-colors"
+              title="Excluir"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+
       </div>
 
       {/* Info */}

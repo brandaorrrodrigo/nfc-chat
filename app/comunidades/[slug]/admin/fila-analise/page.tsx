@@ -19,7 +19,6 @@ interface QueueAnalysis {
   movement_pattern: string;
   user_description?: string;
   status: string;
-  ai_confidence?: number;
   created_at: string;
   arena_slug: string;
 }

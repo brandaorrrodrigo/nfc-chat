@@ -1,23 +1,43 @@
 /**
- * API Route: NFV Analysis - Trigger IA pre-analise
- * POST - Iniciar analise por IA
+ * API Route: NFV Analysis - Trigger IA analise de video
+ * POST - Iniciar analise por IA (Ollama llama3.2-vision)
+ *
+ * Fluxo: PENDING_AI -> PROCESSING -> AI_ANALYZED ou ERROR
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
-import { getMovementAnalysisPrompt } from '@/lib/biomechanics/movement-patterns';
 import { analyzeExerciseVideo, checkVisionModelAvailable } from '@/lib/vision/video-analysis';
 
 const TABLE = 'nfc_chat_video_analyses';
 
+async function setAnalysisError(analysisId: string, errorMessage: string): Promise<void> {
+  try {
+    if (!isSupabaseConfigured()) return;
+    const supabase = getSupabase();
+    await supabase
+      .from(TABLE)
+      .update({
+        status: 'ERROR',
+        ai_analysis: {
+          error: errorMessage,
+          timestamp: new Date().toISOString(),
+        },
+      })
+      .eq('id', analysisId);
+  } catch { /* best effort */ }
+}
+
 export async function POST(req: NextRequest) {
+  let analysisId: string | undefined;
+
   try {
     if (!isSupabaseConfigured()) {
       return NextResponse.json({ error: 'Database not configured' }, { status: 503 });
     }
 
     const body = await req.json();
-    const { analysisId } = body;
+    analysisId = body.analysisId;
 
     if (!analysisId) {
       return NextResponse.json({ error: 'analysisId obrigatorio' }, { status: 400 });
@@ -36,81 +56,77 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Analise nao encontrada' }, { status: 404 });
     }
 
-    if (analysis.status !== 'PENDING_AI') {
+    if (!['PENDING_AI', 'ERROR'].includes(analysis.status)) {
       return NextResponse.json({ error: 'Analise ja foi processada' }, { status: 400 });
     }
 
-    // Verificar se Vision Model está disponível
+    // Setar status PROCESSING antes de comecar
+    await supabase
+      .from(TABLE)
+      .update({ status: 'PROCESSING' })
+      .eq('id', analysisId);
+
+    // Verificar se Vision Model esta disponivel
     const visionAvailable = await checkVisionModelAvailable();
 
-    let aiAnalysis: any;
-
-    if (visionAvailable && (analysis.video_url || analysis.video_path)) {
-      // 🎥 ANÁLISE REAL COM VISION MODEL (Ollama llama3.2-vision)
-      console.log('🎥 Starting vision-based analysis with Ollama...');
-      console.log(`   Video URL: ${analysis.video_url}`);
-      console.log(`   Video Path: ${analysis.video_path}`);
-
-      try {
-        const visionResult = await analyzeExerciseVideo({
-          videoUrl: analysis.video_url, // URL do Supabase Storage
-          videoPath: analysis.video_path, // Path no bucket (fallback)
-          exerciseType: analysis.movement_pattern,
-          focusAreas: ['técnica', 'postura', 'amplitude', 'compensações'],
-          framesCount: 6,
-        });
-
-        aiAnalysis = {
-          movement_pattern: analysis.movement_pattern,
-          analysis_type: 'vision_model',
-          timestamp: new Date().toISOString(),
-          model: 'llama3.2-vision',
-
-          // Dados da análise de vídeo
-          overall_score: visionResult.overallScore,
-          summary: visionResult.summary,
-          key_observations: visionResult.technicalIssues.slice(0, 5),
-          suggestions: visionResult.recommendations,
-          requires_attention: visionResult.technicalIssues.filter(i =>
-            i.toLowerCase().includes('grave') || i.toLowerCase().includes('severo')
-          ),
-
-          // Análise frame-by-frame
-          frames_analyzed: visionResult.frames.length,
-          frame_scores: visionResult.frames.map(f => f.score),
-          confidence_level: visionResult.overallScore >= 7 ? 'high' : 'medium',
-
-          // Detalhes técnicos
-          technical_details: {
-            lowest_score_frame: Math.min(...visionResult.frames.map(f => f.score)),
-            highest_score_frame: Math.max(...visionResult.frames.map(f => f.score)),
-            total_issues: visionResult.technicalIssues.length,
-          },
-        };
-
-        console.log(`✅ Vision analysis complete (score: ${visionResult.overallScore.toFixed(1)}/10)`);
-      } catch (visionError) {
-        console.error('Vision analysis failed, using fallback:', visionError);
-        aiAnalysis = createFallbackAnalysis(analysis);
-      }
-    } else {
-      // FALLBACK: Análise baseada em prompt
-      console.log('⚠️ Vision model not available, using prompt-based analysis');
-      aiAnalysis = createFallbackAnalysis(analysis);
+    if (!visionAvailable) {
+      console.log('[NFV] Vision model nao disponivel, setando ERROR');
+      await setAnalysisError(analysisId, 'Servico de analise indisponivel. Ollama nao esta rodando ou nao tem modelo de visao.');
+      return NextResponse.json({
+        error: 'Servico de analise indisponivel',
+      }, { status: 503 });
     }
 
-    // Calcular confiança baseada no tipo de análise
-    const aiConfidence = aiAnalysis.analysis_type === 'vision_model'
-      ? aiAnalysis.overall_score / 10
-      : 0.5;
+    if (!analysis.video_url && !analysis.video_path) {
+      await setAnalysisError(analysisId, 'Video nao encontrado no registro');
+      return NextResponse.json({
+        error: 'Video nao encontrado',
+      }, { status: 400 });
+    }
 
-    // Atualizar registro
+    // Analise real com Vision Model
+    console.log(`[NFV] Iniciando analise Vision para ${analysisId}`);
+
+    const visionResult = await analyzeExerciseVideo({
+      videoUrl: analysis.video_url,
+      videoPath: analysis.video_path,
+      exerciseType: analysis.movement_pattern,
+      focusAreas: ['tecnica', 'postura', 'amplitude', 'compensacoes'],
+      framesCount: 6,
+    });
+
+    const aiAnalysis = {
+      movement_pattern: analysis.movement_pattern,
+      analysis_type: 'vision_model',
+      timestamp: new Date().toISOString(),
+      model: 'llama3.2-vision',
+
+      overall_score: visionResult.overallScore,
+      summary: visionResult.summary,
+      key_observations: visionResult.technicalIssues.slice(0, 5),
+      suggestions: visionResult.recommendations,
+      requires_attention: visionResult.technicalIssues.filter(i =>
+        i.toLowerCase().includes('grave') || i.toLowerCase().includes('severo')
+      ),
+
+      frames_analyzed: visionResult.frames.length,
+      frame_scores: visionResult.frames.map(f => f.score),
+
+      technical_details: {
+        lowest_score_frame: Math.min(...visionResult.frames.map(f => f.score)),
+        highest_score_frame: Math.max(...visionResult.frames.map(f => f.score)),
+        total_issues: visionResult.technicalIssues.length,
+      },
+    };
+
+    console.log(`[NFV] Analise completa (score: ${visionResult.overallScore.toFixed(1)}/10)`);
+
+    // Atualizar registro com resultado
     const { data: updated, error: updateError } = await supabase
       .from(TABLE)
       .update({
         ai_analysis: aiAnalysis,
         ai_analyzed_at: new Date().toISOString(),
-        ai_confidence: aiConfidence,
         status: 'AI_ANALYZED',
       })
       .eq('id', analysisId)
@@ -127,46 +143,11 @@ export async function POST(req: NextRequest) {
       analysis: updated,
       aiResult: aiAnalysis,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('[NFV] Analysis POST error:', error);
+    if (analysisId) {
+      await setAnalysisError(analysisId, error.message || 'Erro interno na analise');
+    }
     return NextResponse.json({ error: 'Erro interno' }, { status: 500 });
   }
-}
-
-/**
- * Cria análise fallback quando Vision Model não está disponível
- */
-function createFallbackAnalysis(analysis: any) {
-  const prompt = getMovementAnalysisPrompt(
-    analysis.movement_pattern,
-    analysis.user_description || ''
-  );
-
-  return {
-    movement_pattern: analysis.movement_pattern,
-    analysis_type: 'prompt_based',
-    timestamp: new Date().toISOString(),
-    prompt_used: prompt,
-
-    // Pontos de análise baseados no padrão
-    key_observations: [
-      'Análise automática do padrão de movimento',
-      'Verificar alinhamento articular',
-      'Avaliar cadeia cinética',
-    ],
-
-    // Sugestões gerais
-    suggestions: [
-      'Manter alinhamento neutro da coluna',
-      'Verificar ativação muscular correta',
-      'Observar compensações durante o movimento',
-    ],
-
-    // Flags para revisão humana
-    requires_attention: [],
-    confidence_level: 'low',
-
-    // Nota
-    note: 'Pré-análise baseada em prompt. Recomenda-se análise com Vision Model para maior precisão.',
-  };
 }

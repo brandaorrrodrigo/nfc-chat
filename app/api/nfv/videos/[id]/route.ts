@@ -63,7 +63,7 @@ export async function PATCH(
     // Campos permitidos para update
     const allowedFields = [
       'user_description', 'status', 'ai_analysis', 'ai_analyzed_at',
-      'ai_confidence', 'admin_reviewer_id', 'admin_notes',
+      'admin_reviewer_id', 'admin_notes',
       'admin_edited_analysis', 'reviewed_at', 'published_analysis',
       'published_at', 'rejection_reason',
     ];
@@ -114,7 +114,7 @@ export async function DELETE(
     // Buscar dados para remover do storage
     const { data: analysis } = await supabase
       .from(TABLE)
-      .select('video_path, user_id')
+      .select('video_path, thumbnail_url, user_id')
       .eq('id', id)
       .single();
 
@@ -122,11 +122,21 @@ export async function DELETE(
       return NextResponse.json({ error: 'Video nao encontrado' }, { status: 404 });
     }
 
-    // Remover do storage
+    // Remover video do storage
     if (analysis.video_path) {
       await supabase.storage
         .from('nfc-videos')
         .remove([analysis.video_path]);
+    }
+
+    // Remover thumbnail do storage (best effort)
+    if (analysis.thumbnail_url) {
+      try {
+        const thumbPath = new URL(analysis.thumbnail_url).pathname.split('/storage/v1/object/public/nfc-videos/')[1];
+        if (thumbPath) {
+          await supabase.storage.from('nfc-videos').remove([thumbPath]);
+        }
+      } catch { /* best effort */ }
     }
 
     // Remover registro
@@ -140,6 +150,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Erro ao remover' }, { status: 500 });
     }
 
+    console.log(`[NFV] Video deleted: ${id}`);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('[NFV] DELETE error:', error);

@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
     });
 
     // 5. Chamar Ollama
-    let llmReport = null;
+    let llmReport: Awaited<ReturnType<typeof sendPromptToOllama>> = null;
     try {
       llmReport = await sendPromptToOllama(prompt, classification, { timeoutMs: 180000 });
       console.log('[generate-report] Relatório Ollama gerado com sucesso');

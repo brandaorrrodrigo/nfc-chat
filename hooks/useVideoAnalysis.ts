@@ -17,7 +17,6 @@ interface VideoAnalysis {
   user_description?: string;
   status: string;
   ai_analysis?: Record<string, unknown>;
-  ai_confidence?: number;
   published_analysis?: Record<string, unknown>;
   published_at?: string;
   rejection_reason?: string;
@@ -106,6 +105,24 @@ export function useVideoAnalysis(options: UseVideoAnalysisOptions = {}) {
     }
   }, []);
 
+  const deleteAnalysis = useCallback(async (analysisId: string): Promise<boolean> => {
+    try {
+      const res = await fetch(`/api/nfv/videos/${analysisId}`, {
+        method: 'DELETE',
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Erro ao deletar');
+      }
+
+      setAnalyses(prev => prev.filter(a => a.id !== analysisId));
+      return true;
+    } catch {
+      return false;
+    }
+  }, []);
+
   return {
     analyses,
     loading,
@@ -114,6 +131,7 @@ export function useVideoAnalysis(options: UseVideoAnalysisOptions = {}) {
     fetchAnalyses,
     loadMore,
     vote,
+    deleteAnalysis,
   };
 }
 

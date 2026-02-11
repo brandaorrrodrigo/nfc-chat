@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { Clock, User, Video, AlertTriangle, CheckCircle, XCircle, Eye } from 'lucide-react';
+import { Clock, User, Video, AlertTriangle, CheckCircle, XCircle, Eye, Loader2 } from 'lucide-react';
 import MovementPatternBadge from './MovementPatternBadge';
 
 interface AnalysisQueueItemProps {
@@ -15,7 +15,6 @@ interface AnalysisQueueItemProps {
     movement_pattern: string;
     user_description?: string;
     status: string;
-    ai_confidence?: number;
     created_at: string;
     arena_slug: string;
   };
@@ -24,11 +23,13 @@ interface AnalysisQueueItemProps {
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
   PENDING_AI: { label: 'Aguardando IA', color: 'text-yellow-400 bg-yellow-400/10 border-yellow-400/20', icon: <Clock className="w-3 h-3" /> },
+  PROCESSING: { label: 'Processando', color: 'text-purple-400 bg-purple-400/10 border-purple-400/20', icon: <Loader2 className="w-3 h-3 animate-spin" /> },
   AI_ANALYZED: { label: 'IA Concluiu', color: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/20', icon: <Eye className="w-3 h-3" /> },
   PENDING_REVIEW: { label: 'Pendente Revisao', color: 'text-amber-400 bg-amber-400/10 border-amber-400/20', icon: <AlertTriangle className="w-3 h-3" /> },
   APPROVED: { label: 'Aprovado', color: 'text-green-400 bg-green-400/10 border-green-400/20', icon: <CheckCircle className="w-3 h-3" /> },
   REJECTED: { label: 'Rejeitado', color: 'text-red-400 bg-red-400/10 border-red-400/20', icon: <XCircle className="w-3 h-3" /> },
   REVISION_NEEDED: { label: 'Revisao Necessaria', color: 'text-orange-400 bg-orange-400/10 border-orange-400/20', icon: <AlertTriangle className="w-3 h-3" /> },
+  ERROR: { label: 'Erro', color: 'text-red-400 bg-red-400/10 border-red-400/20', icon: <AlertTriangle className="w-3 h-3" /> },
 };
 
 export default function AnalysisQueueItem({ analysis, onSelect }: AnalysisQueueItemProps) {
@@ -76,11 +77,6 @@ export default function AnalysisQueueItem({ analysis, onSelect }: AnalysisQueueI
               <Clock className="w-3 h-3" />
               {formatDate(analysis.created_at)}
             </span>
-            {analysis.ai_confidence !== undefined && (
-              <span>
-                Confianca IA: {Math.round(analysis.ai_confidence * 100)}%
-              </span>
-            )}
           </div>
         </div>
       </div>

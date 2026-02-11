@@ -23,7 +23,6 @@ export interface VideoAnalysis {
   status: string;
   ai_analysis?: Record<string, unknown>;
   ai_analyzed_at?: string;
-  ai_confidence?: number;
   admin_reviewer_id?: string;
   admin_notes?: string;
   admin_edited_analysis?: Record<string, unknown>;

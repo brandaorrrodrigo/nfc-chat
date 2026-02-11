@@ -5,7 +5,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { Search, Filter, Loader2 } from 'lucide-react';
+import { Search, Filter, Loader2, AlertTriangle, X } from 'lucide-react';
 import { NFV_CONFIG } from '@/lib/biomechanics/nfv-config';
 import { useVideoAnalysis } from '@/hooks/useVideoAnalysis';
 import VideoAnalysisCard from './VideoAnalysisCard';
@@ -17,10 +17,11 @@ interface VideoGalleryProps {
 
 export default function VideoGallery({ arenaSlug, onSelectAnalysis }: VideoGalleryProps) {
   const [selectedPattern, setSelectedPattern] = useState<string | undefined>();
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
-  const { analyses, loading, error, hasMore, fetchAnalyses, loadMore } = useVideoAnalysis({
+  const { analyses, loading, error, hasMore, fetchAnalyses, loadMore, deleteAnalysis } = useVideoAnalysis({
     arenaSlug,
-    // Mostrar todos: pendentes, analisados e aprovados
     status: undefined,
     pattern: selectedPattern,
     limit: 12,
@@ -33,6 +34,14 @@ export default function VideoGallery({ arenaSlug, onSelectAnalysis }: VideoGalle
   const patterns = arenaSlug
     ? NFV_CONFIG.PREMIUM_ARENAS.filter(a => a.slug === arenaSlug).map(a => a.pattern)
     : NFV_CONFIG.PREMIUM_ARENAS.map(a => a.pattern);
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteTargetId) return;
+    setDeleting(true);
+    await deleteAnalysis(deleteTargetId);
+    setDeleting(false);
+    setDeleteTargetId(null);
+  };
 
   return (
     <div className="space-y-4">
@@ -110,6 +119,7 @@ export default function VideoGallery({ arenaSlug, onSelectAnalysis }: VideoGalle
               key={analysis.id}
               analysis={analysis}
               onClick={() => onSelectAnalysis?.(analysis.id)}
+              onDelete={(id) => setDeleteTargetId(id)}
             />
           ))}
         </div>
@@ -132,6 +142,50 @@ export default function VideoGallery({ arenaSlug, onSelectAnalysis }: VideoGalle
               'Carregar mais'
             )}
           </button>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteTargetId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => !deleting && setDeleteTargetId(null)} />
+          <div className="relative bg-zinc-900 border border-zinc-700 rounded-2xl max-w-sm w-full p-6">
+            <button
+              onClick={() => !deleting && setDeleteTargetId(null)}
+              className="absolute top-4 right-4 text-zinc-500 hover:text-zinc-300"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
+                <AlertTriangle className="w-5 h-5 text-red-400" />
+              </div>
+              <h3 className="text-sm font-semibold text-white">Excluir video</h3>
+            </div>
+
+            <p className="text-sm text-zinc-400 mb-6">
+              Tem certeza que deseja excluir este video? Esta acao nao pode ser desfeita.
+            </p>
+
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setDeleteTargetId(null)}
+                disabled={deleting}
+                className="flex-1 px-4 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-300 text-sm hover:bg-zinc-700 transition-colors disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleDeleteConfirm}
+                disabled={deleting}
+                className="flex-1 px-4 py-2 rounded-lg bg-red-600/20 border border-red-600/30 text-red-300 text-sm hover:bg-red-600/30 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                Excluir
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -105,7 +105,7 @@ REGRAS:
 export async function generateBiomechanicsReport(
   frameAnalyses: FrameAnalysis[],
   exerciseType: string = 'agachamento'
-): Promise<BiomechanicsReport> {
+): Promise<BiomechanicsReport | null> {
   const prompt = REPORT_PROMPT(exerciseType, frameAnalyses);
 
   try {
@@ -144,20 +144,20 @@ export async function generateBiomechanicsReport(
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
 
     if (!jsonMatch) {
-      console.warn('Llama 3.1 não retornou JSON válido, usando fallback');
-      return createFallbackReport(frameAnalyses, exerciseType);
+      console.warn('Ollama nao retornou JSON valido para relatorio');
+      return null;
     }
 
     try {
       const parsed = JSON.parse(jsonMatch[0]);
       return validateAndNormalizeReport(parsed, frameAnalyses);
     } catch (parseError) {
-      console.warn('Erro ao parsear JSON do relatório:', parseError);
-      return createFallbackReport(frameAnalyses, exerciseType);
+      console.warn('Erro ao parsear JSON do relatorio:', parseError);
+      return null;
     }
   } catch (error: any) {
-    console.error('Erro ao gerar relatório:', error.message);
-    return createFallbackReport(frameAnalyses, exerciseType);
+    console.error('Erro ao gerar relatorio:', error.message);
+    return null;
   }
 }
 
@@ -346,13 +346,6 @@ function generateDefaultRecommendations(frameAnalyses: FrameAnalysis[]): Recomen
   return recomendacoes;
 }
 
-function createFallbackReport(
-  frameAnalyses: FrameAnalysis[],
-  exerciseType: string
-): BiomechanicsReport {
-  return validateAndNormalizeReport({}, frameAnalyses);
-}
-
 export async function checkTextModelAvailable(): Promise<{ available: boolean; model: string }> {
   try {
     const response = await axios.get(`${OLLAMA_URL}/api/tags`, { timeout: 5000 });
@@ -509,7 +502,7 @@ export interface EnhancedBiomechanicsReport extends BiomechanicsReport {
 export async function generateBiomechanicsReportWithRAG(
   frameAnalyses: FrameAnalysis[],
   exerciseType: string = 'agachamento'
-): Promise<EnhancedBiomechanicsReport> {
+): Promise<EnhancedBiomechanicsReport | null> {
   // 1. Extrair todos os desvios detectados
   const allDeviations = frameAnalyses
     .flatMap(f => f.desvios_criticos)
@@ -597,13 +590,8 @@ export async function generateBiomechanicsReportWithRAG(
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
 
     if (!jsonMatch) {
-      console.warn('Llama 3.1 não retornou JSON válido com RAG, usando fallback');
-      const fallbackReport = await generateBiomechanicsReport(frameAnalyses, exerciseType);
-      return {
-        ...fallbackReport,
-        rag_chunks_used: 0,
-        rag_sources: [],
-      };
+      console.warn('Ollama nao retornou JSON valido com RAG');
+      return null;
     }
 
     try {
@@ -616,22 +604,12 @@ export async function generateBiomechanicsReportWithRAG(
         rag_sources: ragSources,
       };
     } catch (parseError) {
-      console.warn('Erro ao parsear JSON do relatório com RAG:', parseError);
-      const fallbackReport = await generateBiomechanicsReport(frameAnalyses, exerciseType);
-      return {
-        ...fallbackReport,
-        rag_chunks_used: ragChunks.length,
-        rag_sources: ragSources,
-      };
+      console.warn('Erro ao parsear JSON do relatorio com RAG:', parseError);
+      return null;
     }
   } catch (error: any) {
-    console.error('Erro ao gerar relatório com RAG:', error.message);
-    const fallbackReport = createFallbackReport(frameAnalyses, exerciseType);
-    return {
-      ...fallbackReport,
-      rag_chunks_used: 0,
-      rag_sources: [],
-    };
+    console.error('Erro ao gerar relatorio com RAG:', error.message);
+    return null;
   }
 }
 

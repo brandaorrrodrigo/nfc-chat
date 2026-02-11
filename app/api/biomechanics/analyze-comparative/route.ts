@@ -145,7 +145,6 @@ export async function POST(request: NextRequest) {
         .update({
           ai_analysis: finalResult,
           ai_analyzed_at: new Date().toISOString(),
-          ai_confidence: result.score / 10,
           status: 'AI_ANALYZED',
         })
         .eq('id', analysisId)
