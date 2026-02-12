@@ -199,6 +199,17 @@ export default function VideoDetailPage() {
   };
 
   const renderPublishedAnalysis = (data: Record<string, unknown>) => {
+    // Helper: converte qualquer item (string ou objeto desvio) para string segura
+    const safeString = (item: unknown): string => {
+      if (typeof item === 'string') return item;
+      if (item && typeof item === 'object') {
+        const obj = item as Record<string, unknown>;
+        const parts = [obj.criterio, obj.valor, obj.o_que_indica, obj.nome, obj.descricao, obj.item, obj.acao].filter(Boolean);
+        return parts.length > 0 ? parts.join(' — ') : JSON.stringify(item);
+      }
+      return String(item ?? '');
+    };
+
     // Verificar se é análise biomecânica estruturada (novo formato)
     const analysisType = data.analysis_type as string || '';
     const system = data.system as string || '';
@@ -418,15 +429,15 @@ export default function VideoDetailPage() {
                   <div className="bg-red-500/5 rounded-xl p-4 border border-red-500/20">
                     <div className="text-[10px] text-red-400 uppercase tracking-wider font-semibold mb-2">Atencao</div>
                     {problems.slice(0, 3).map((p, i) => (
-                      <p key={i} className="text-xs text-red-300/80 mb-1">• {p}</p>
+                      <p key={i} className="text-xs text-red-300/80 mb-1">• {safeString(p)}</p>
                     ))}
                   </div>
                 )}
                 {positives.length > 0 && (
                   <div className="bg-green-500/5 rounded-xl p-4 border border-green-500/20">
                     <div className="text-[10px] text-green-400 uppercase tracking-wider font-semibold mb-2">Pontos Fortes</div>
-                    {(positives as string[]).slice(0, 3).map((p, i) => (
-                      <p key={i} className="text-xs text-green-300/80 mb-1">+ {p}</p>
+                    {(positives as unknown[]).slice(0, 3).map((p, i) => (
+                      <p key={i} className="text-xs text-green-300/80 mb-1">+ {safeString(p)}</p>
                     ))}
                   </div>
                 )}
@@ -533,7 +544,7 @@ export default function VideoDetailPage() {
                         <div className="mt-1.5 flex flex-wrap gap-1">
                           {s.corrective_exercises.map((ex, j) => (
                             <span key={j} className="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/15 text-purple-400 border border-purple-500/20">
-                              {ex}
+                              {safeString(ex)}
                             </span>
                           ))}
                         </div>
@@ -648,7 +659,7 @@ export default function VideoDetailPage() {
                       {pontosPositivos.map((p, i) => (
                         <li key={i} className="flex items-start gap-2 text-xs text-zinc-300">
                           <span className="text-green-400 mt-0.5">+</span>
-                          {p}
+                          {safeString(p)}
                         </li>
                       ))}
                     </ul>
@@ -909,7 +920,7 @@ export default function VideoDetailPage() {
                           {rec.ajustes_tecnicos.map((aj, j) => (
                             <li key={j} className="text-xs text-zinc-400 flex items-start gap-2">
                               <span className="text-yellow-400">•</span>
-                              <span>{aj}</span>
+                              <span>{safeString(aj)}</span>
                             </li>
                           ))}
                         </ul>
@@ -956,7 +967,7 @@ export default function VideoDetailPage() {
                 {recommendations.map((rec, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-zinc-300">
                     <Star className="w-4 h-4 text-yellow-400 flex-shrink-0 mt-0.5" />
-                    {rec}
+                    {safeString(rec)}
                   </li>
                 ))}
               </ul>
