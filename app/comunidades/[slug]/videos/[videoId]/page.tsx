@@ -359,7 +359,7 @@ export default function VideoDetailPage() {
                   Score da Analise
                 </div>
                 <div className={`text-5xl font-bold ${getScoreColor(score)}`}>
-                  {score.toFixed(1)}
+                  {Number(score).toFixed(1)}
                   <span className="text-2xl text-zinc-500">/10</span>
                 </div>
                 {classificacao && (
@@ -378,7 +378,7 @@ export default function VideoDetailPage() {
                   </>
                 )}
                 <div className="text-xs text-zinc-500">{pipelineVersion ? 'MediaPipe' : 'Vision'}</div>
-                <div className="text-sm text-zinc-400">{pipelineVersion ? `conf ${(mediapipeConfidence * 100).toFixed(0)}%` : modelVision}</div>
+                <div className="text-sm text-zinc-400">{pipelineVersion ? `conf ${(Number(mediapipeConfidence) * 100).toFixed(0)}%` : modelVision}</div>
                 {modelText && (
                   <>
                     <div className="text-xs text-zinc-500 mt-2">Text</div>
@@ -395,11 +395,11 @@ export default function VideoDetailPage() {
               <div className="mt-4 border-t border-zinc-700/50 pt-4 grid grid-cols-2 gap-3">
                 <div className="bg-zinc-800/50 rounded-lg p-3 text-center">
                   <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Motor (60%)</div>
-                  <div className={`text-xl font-bold ${getScoreColor(motorScore)}`}>{motorScore.toFixed(1)}</div>
+                  <div className={`text-xl font-bold ${getScoreColor(motorScore)}`}>{Number(motorScore).toFixed(1)}</div>
                 </div>
                 <div className="bg-zinc-800/50 rounded-lg p-3 text-center">
                   <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Estabilizador (40%)</div>
-                  <div className={`text-xl font-bold ${getScoreColor(stabilizerScore)}`}>{stabilizerScore.toFixed(1)}</div>
+                  <div className={`text-xl font-bold ${getScoreColor(stabilizerScore)}`}>{Number(stabilizerScore).toFixed(1)}</div>
                 </div>
               </div>
             )}
@@ -488,7 +488,7 @@ export default function VideoDetailPage() {
                 <Target className="w-4 h-4 text-green-400" />
                 Analise Motora
                 <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-500/20 text-green-400">
-                  {motorScore != null ? `${motorScore.toFixed(1)}/10` : ''}
+                  {motorScore != null ? `${Number(motorScore).toFixed(1)}/10` : ''}
                 </span>
               </div>
               <div className="space-y-2">
@@ -511,15 +511,15 @@ export default function VideoDetailPage() {
                         <span>Movimento: {m.movement}</span>
                         <span>ROM: {m.rom.value}{m.rom.unit}</span>
                         {m.rom.min != null && m.rom.max != null && (
-                          <span>({m.rom.min.toFixed(0)}-{m.rom.max.toFixed(0)}{m.rom.unit})</span>
+                          <span>({Number(m.rom.min).toFixed(0)}-{Number(m.rom.max).toFixed(0)}{m.rom.unit})</span>
                         )}
                       </div>
                       {m.peak_contraction != null && (
-                        <div className="text-[10px] text-zinc-500 mt-0.5">Pico contracao: {m.peak_contraction.toFixed(0)}{m.rom.unit}</div>
+                        <div className="text-[10px] text-zinc-500 mt-0.5">Pico contracao: {Number(m.peak_contraction).toFixed(0)}{m.rom.unit}</div>
                       )}
                       {m.symmetry != null && (
-                        <div className={`text-[10px] mt-0.5 ${Math.abs(m.symmetry) > 15 ? 'text-orange-400' : 'text-zinc-500'}`}>
-                          Simetria: {m.symmetry > 0 ? '+' : ''}{m.symmetry.toFixed(1)}%
+                        <div className={`text-[10px] mt-0.5 ${Math.abs(Number(m.symmetry)) > 15 ? 'text-orange-400' : 'text-zinc-500'}`}>
+                          Simetria: {Number(m.symmetry) > 0 ? '+' : ''}{Number(m.symmetry).toFixed(1)}%
                         </div>
                       )}
                     </div>
@@ -538,7 +538,7 @@ export default function VideoDetailPage() {
                 </svg>
                 Analise Estabilizadores
                 <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400">
-                  {stabilizerScore != null ? `${stabilizerScore.toFixed(1)}/10` : ''}
+                  {stabilizerScore != null ? `${Number(stabilizerScore).toFixed(1)}/10` : ''}
                 </span>
               </div>
               <div className="space-y-2">
@@ -556,7 +556,7 @@ export default function VideoDetailPage() {
                         </span>
                       </div>
                       <div className="text-[10px] text-zinc-500 mb-1">
-                        Esperado: {s.expected_state} | Variacao: {s.variation.value.toFixed(1)}{s.variation.unit}
+                        Esperado: {s.expected_state} | Variacao: {Number(s.variation.value).toFixed(1)}{s.variation.unit}
                       </div>
                       <p className="text-[10px] text-zinc-400">{s.interpretation}</p>
                       {Array.isArray(s.corrective_exercises) && s.corrective_exercises.length > 0 && (

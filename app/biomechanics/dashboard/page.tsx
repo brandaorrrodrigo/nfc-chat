@@ -498,7 +498,7 @@ export default function BiomechanicsDashboard() {
               <div className={`rounded-lg border border-slate-700 p-6 ${getScoreBgColor(analysis.analysis.overall_score)}`}>
                 <p className="text-slate-600 text-sm font-semibold mb-2">SCORE GERAL</p>
                 <p className={`text-4xl font-bold ${getScoreColor(analysis.analysis.overall_score)}`}>
-                  {analysis.analysis.overall_score.toFixed(1)}
+                  {Number(analysis.analysis.overall_score).toFixed(1)}
                   <span className="text-xl">/10</span>
                 </p>
                 {analysis.analysis.equipment_constraint && analysis.analysis.equipment_constraint !== 'none' && (
@@ -548,20 +548,20 @@ export default function BiomechanicsDashboard() {
                   </div>
                   {analysis.mediapipeConfidence != null && (
                     <p className="text-slate-400 text-sm">
-                      Confianca MediaPipe: <span className="text-cyan-400 font-semibold">{(analysis.mediapipeConfidence * 100).toFixed(0)}%</span>
+                      Confianca MediaPipe: <span className="text-cyan-400 font-semibold">{(Number(analysis.mediapipeConfidence) * 100).toFixed(0)}%</span>
                     </p>
                   )}
                 </div>
                 <div className={`rounded-lg border border-slate-700 p-6 ${getScoreBgColor(analysis.motorScore)}`}>
                   <p className="text-slate-600 text-sm font-semibold mb-1">SCORE MOTOR (60%)</p>
                   <p className={`text-3xl font-bold ${getScoreColor(analysis.motorScore)}`}>
-                    {analysis.motorScore.toFixed(1)}<span className="text-lg">/10</span>
+                    {Number(analysis.motorScore).toFixed(1)}<span className="text-lg">/10</span>
                   </p>
                 </div>
                 <div className={`rounded-lg border border-slate-700 p-6 ${getScoreBgColor(analysis.stabilizerScore)}`}>
                   <p className="text-slate-600 text-sm font-semibold mb-1">SCORE ESTABILIZADOR (40%)</p>
                   <p className={`text-3xl font-bold ${getScoreColor(analysis.stabilizerScore)}`}>
-                    {analysis.stabilizerScore.toFixed(1)}<span className="text-lg">/10</span>
+                    {Number(analysis.stabilizerScore).toFixed(1)}<span className="text-lg">/10</span>
                   </p>
                 </div>
               </div>
@@ -718,19 +718,19 @@ export default function BiomechanicsDashboard() {
                         {m.rom.min != null && m.rom.max != null && (
                           <div>
                             <p className="text-slate-500 text-xs">Range</p>
-                            <p className="text-slate-400 font-mono">{m.rom.min.toFixed(0)} - {m.rom.max.toFixed(0)}{m.rom.unit}</p>
+                            <p className="text-slate-400 font-mono">{Number(m.rom.min).toFixed(0)} - {Number(m.rom.max).toFixed(0)}{m.rom.unit}</p>
                           </div>
                         )}
                         {m.peak_contraction != null && (
                           <div>
                             <p className="text-slate-500 text-xs">Pico Contracao</p>
-                            <p className="text-slate-400 font-mono">{m.peak_contraction.toFixed(0)}{m.rom.unit}</p>
+                            <p className="text-slate-400 font-mono">{Number(m.peak_contraction).toFixed(0)}{m.rom.unit}</p>
                           </div>
                         )}
                       </div>
                       {m.symmetry != null && (
-                        <p className={`text-xs mt-2 ${Math.abs(m.symmetry) > 15 ? 'text-orange-400' : 'text-slate-500'}`}>
-                          Simetria bilateral: {m.symmetry > 0 ? '+' : ''}{m.symmetry.toFixed(1)}%
+                        <p className={`text-xs mt-2 ${Math.abs(Number(m.symmetry)) > 15 ? 'text-orange-400' : 'text-slate-500'}`}>
+                          Simetria bilateral: {Number(m.symmetry) > 0 ? '+' : ''}{Number(m.symmetry).toFixed(1)}%
                         </p>
                       )}
                     </div>
@@ -773,7 +773,7 @@ export default function BiomechanicsDashboard() {
                           </div>
                           <div>
                             <p className="text-slate-500 text-xs">Variacao</p>
-                            <p className="text-cyan-400 font-mono">{s.variation.value.toFixed(1)}{s.variation.unit}</p>
+                            <p className="text-cyan-400 font-mono">{Number(s.variation.value).toFixed(1)}{s.variation.unit}</p>
                           </div>
                         </div>
                         <p className="text-slate-400 text-sm">{s.interpretation}</p>
@@ -926,7 +926,7 @@ export default function BiomechanicsDashboard() {
                   <div className="bg-slate-700/50 rounded-lg p-4 border border-cyan-600/30">
                     <p className="text-slate-400 text-sm font-semibold mb-1">SCORE GERAL (IA)</p>
                     <p className={`text-3xl font-bold ${getScoreColor(analysis.report.score_geral)}`}>
-                      {analysis.report.score_geral.toFixed(1)}/10
+                      {Number(analysis.report.score_geral).toFixed(1)}/10
                     </p>
                   </div>
                   <div className="bg-slate-700/50 rounded-lg p-4 border border-cyan-600/30">
