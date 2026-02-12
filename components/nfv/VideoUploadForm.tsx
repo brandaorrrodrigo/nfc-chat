@@ -39,7 +39,7 @@ export default function VideoUploadForm({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { uploadVideo, uploading, progress, error: uploadError, reset: resetUpload } = useVideoUpload();
-  const { gatingResult, loading: gatingLoading, checkGating } = useNFVGating(userId, arenaSlug);
+  const { gating, checkPermission } = useNFVGating(userId, arenaSlug);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -76,9 +76,9 @@ export default function VideoUploadForm({
     if (!selectedFile) return;
 
     // Verificar gating
-    await checkGating();
+    await checkPermission();
 
-    if (gatingResult && !gatingResult.allowed) {
+    if (!gating.allowed) {
       setShowGatingModal(true);
       return;
     }
@@ -102,7 +102,7 @@ export default function VideoUploadForm({
         arenaSlug,
         movementPattern,
         userDescription: description,
-        paidWithSubscription: paidWithSubscription || (gatingResult?.reason === 'subscriber'),
+        paidWithSubscription: paidWithSubscription || (gating.reason === 'subscription'),
       });
 
       if (result?.analysisId) {
@@ -259,10 +259,10 @@ export default function VideoUploadForm({
           {/* Submit Button */}
           <button
             onClick={handleSubmit}
-            disabled={!selectedFile || uploading || gatingLoading}
+            disabled={!selectedFile || uploading || gating.isLoading}
             className="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-semibold hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            {gatingLoading ? (
+            {gating.isLoading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
                 Verificando permissao...
@@ -286,8 +286,8 @@ export default function VideoUploadForm({
       <FPGatingModal
         isOpen={showGatingModal}
         onClose={() => setShowGatingModal(false)}
-        fpBalance={gatingResult?.fpBalance || 0}
-        fpCost={gatingResult?.fpCost || 25}
+        fpBalance={gating.fpBalance}
+        fpCost={gating.fpCost}
         arenaName={arenaName}
         onConfirmSpend={handleConfirmSpend}
       />
