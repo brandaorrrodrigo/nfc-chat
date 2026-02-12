@@ -7,7 +7,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, ThumbsUp, ThumbsDown, Eye, Clock, User, Loader2, CheckCircle, Bot, Target, Play, Star, AlertTriangle, RefreshCw, Trash2, Share2, X } from 'lucide-react';
+import { ArrowLeft, ThumbsUp, ThumbsDown, Eye, Clock, User, Loader2, CheckCircle, Bot, Target, Play, Star, AlertTriangle, RefreshCw, Trash2, Share2, X, ChevronDown, Calendar } from 'lucide-react';
 import VideoPlayer from '@/components/nfv/VideoPlayer';
 import MovementPatternBadge from '@/components/nfv/MovementPatternBadge';
 import ShareModal from '@/components/nfv/ShareModal';
@@ -46,6 +46,7 @@ export default function VideoDetailPage() {
   const [correctivePlan, setCorrectivePlan] = useState<Record<string, unknown> | null>(null);
   const [planLoading, setPlanLoading] = useState(false);
   const [planError, setPlanError] = useState<string | null>(null);
+  const [showTechnicalData, setShowTechnicalData] = useState(false);
 
   // Mock userId
   const userId = 'user_mock_001';
@@ -350,142 +351,82 @@ export default function VideoDetailPage() {
       };
 
       return (
-        <div className="space-y-6">
-          {/* Score Card */}
-          <div className={`border rounded-xl p-5 ${getScoreBg(score)}`}>
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="flex items-center gap-2 text-sm text-zinc-400 mb-1">
-                  <Bot className="w-4 h-4" />
-                  Score da Analise
-                </div>
-                <div className={`text-5xl font-bold ${getScoreColor(score)}`}>
-                  {Number(score).toFixed(1)}
-                  <span className="text-2xl text-zinc-500">/10</span>
-                </div>
-                {classificacao && (
-                  <span className={`inline-block mt-2 px-2 py-0.5 rounded text-xs font-semibold ${getClassificacaoColor(classificacao)}`}>
-                    {classificacao}
-                  </span>
-                )}
+        <div className="space-y-8">
+          {/* ═══ a) HERO: Score Geral ═══ */}
+          <div className={`rounded-2xl p-6 border ${getScoreBg(score)} bg-gradient-to-br from-zinc-900 via-zinc-900/95 to-zinc-800/80`}>
+            <div className="text-center mb-5">
+              <div className="text-[10px] text-zinc-500 uppercase tracking-[0.2em] mb-3">Score da Analise</div>
+              <div className={`text-7xl font-black tracking-tight ${getScoreColor(score)}`}>
+                {Number(score).toFixed(1)}
+                <span className="text-3xl text-zinc-600 font-normal">/10</span>
               </div>
-              <div className="text-right">
-                {pipelineVersion && (
-                  <>
-                    <span className={`inline-block text-[10px] px-2 py-0.5 rounded font-semibold ${pipelineVersion === 'v2' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30' : 'bg-zinc-700 text-zinc-400 border border-zinc-600'}`}>
-                      Pipeline {pipelineVersion.toUpperCase()}
-                    </span>
-                    <div className="mt-1.5" />
-                  </>
-                )}
-                <div className="text-xs text-zinc-500">{pipelineVersion ? 'MediaPipe' : 'Vision'}</div>
-                <div className="text-sm text-zinc-400">{pipelineVersion ? `conf ${(Number(mediapipeConfidence) * 100).toFixed(0)}%` : modelVision}</div>
-                {modelText && (
-                  <>
-                    <div className="text-xs text-zinc-500 mt-2">Text</div>
-                    <div className="text-sm text-zinc-400">{modelText}</div>
-                  </>
-                )}
-                <div className="text-xs text-zinc-500 mt-2">Frames</div>
-                <div className="text-sm text-zinc-400">{framesAnalyzed}</div>
-              </div>
+              {classificacao && (
+                <span className={`inline-block mt-3 px-4 py-1.5 rounded-lg text-sm font-bold ${getClassificacaoColor(classificacao)}`}>
+                  {classificacao}
+                </span>
+              )}
             </div>
 
-            {/* V2: Motor / Stabilizer sub-scores */}
+            {/* Motor / Stabilizer sub-scores */}
             {motorScore != null && stabilizerScore != null && (
-              <div className="mt-4 border-t border-zinc-700/50 pt-4 grid grid-cols-2 gap-3">
-                <div className="bg-zinc-800/50 rounded-lg p-3 text-center">
-                  <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Motor (60%)</div>
-                  <div className={`text-xl font-bold ${getScoreColor(motorScore)}`}>{Number(motorScore).toFixed(1)}</div>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="bg-zinc-800/60 rounded-xl p-4 text-center border border-zinc-700/30">
+                  <div className="text-xs text-zinc-500 uppercase tracking-wider mb-2">Motor (60%)</div>
+                  <div className={`text-3xl font-bold ${getScoreColor(motorScore)}`}>{Number(motorScore).toFixed(1)}</div>
                 </div>
-                <div className="bg-zinc-800/50 rounded-lg p-3 text-center">
-                  <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Estabilizador (40%)</div>
-                  <div className={`text-xl font-bold ${getScoreColor(stabilizerScore)}`}>{Number(stabilizerScore).toFixed(1)}</div>
+                <div className="bg-zinc-800/60 rounded-xl p-4 text-center border border-zinc-700/30">
+                  <div className="text-xs text-zinc-500 uppercase tracking-wider mb-2">Estabilizador (40%)</div>
+                  <div className={`text-3xl font-bold ${getScoreColor(stabilizerScore)}`}>{Number(stabilizerScore).toFixed(1)}</div>
                 </div>
               </div>
             )}
 
             {(summary || String(report.resumo_executivo || report.resumo || '')) && (
-              <p className="mt-4 text-sm text-zinc-300 border-t border-zinc-700/50 pt-4">
+              <p className="text-sm text-zinc-300 border-t border-zinc-800 pt-4">
                 {String(report.resumo_executivo || report.resumo || '') || summary}
               </p>
             )}
+
+            <div className="flex items-center justify-between mt-3 pt-3 border-t border-zinc-800">
+              <span className="text-[10px] text-zinc-600">{framesAnalyzed} frames analisados</span>
+              <div className="flex items-center gap-2">
+                {pipelineVersion && (
+                  <span className={`text-[10px] px-2 py-0.5 rounded ${pipelineVersion === 'v2' ? 'bg-cyan-500/20 text-cyan-400' : 'bg-zinc-700 text-zinc-400'}`}>
+                    {pipelineVersion.toUpperCase()}
+                  </span>
+                )}
+                <span className="text-[10px] text-zinc-600">
+                  {pipelineVersion ? `MediaPipe ${(Number(mediapipeConfidence) * 100).toFixed(0)}%` : modelVision}
+                </span>
+              </div>
+            </div>
           </div>
 
-
-          {/* Classifications Detail - Tabela de critérios biomecânicos (v3) */}
+          {/* ═══ b) RESUMO RÁPIDO ═══ */}
           {(() => {
-            const classificationsDetail = data.classifications_detail as Array<{
-              type?: 'motor' | 'stabilizer';
-              criterion: string;
-              label: string;
-              value: string;
-              raw_value: number;
-              unit: string;
-              classification: string;
-              classification_label: string;
-              is_safety_critical: boolean;
-              is_informative: boolean;
-              note?: string;
-            }> || [];
-            if (classificationsDetail.length === 0) return null;
-
-            const categoryLabel = (data.category as string) || '';
-            const visionScore = data.vision_score as number;
-
+            const problems = stabilizerAnalysis
+              .filter(s => s.variation.classification !== 'firme')
+              .map(s => s.instability_meaning || s.interpretation || `${s.label}: ${s.variation.classificationLabel}`);
+            const positives = (report.pontos_positivos as string[]) || motorAnalysis
+              .filter(m => ['excellent', 'good'].includes(m.rom.classification))
+              .slice(0, 3)
+              .map(m => `${m.label}: ${m.rom.classificationLabel}`);
+            if (problems.length === 0 && positives.length === 0) return null;
             return (
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2 text-sm font-medium text-white">
-                    <Target className="w-4 h-4 text-cyan-400" />
-                    Classificacao por Criterio
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {problems.length > 0 && (
+                  <div className="bg-red-500/5 rounded-xl p-4 border border-red-500/20">
+                    <div className="text-[10px] text-red-400 uppercase tracking-wider font-semibold mb-2">Atencao</div>
+                    {problems.slice(0, 3).map((p, i) => (
+                      <p key={i} className="text-xs text-red-300/80 mb-1">• {p}</p>
+                    ))}
                   </div>
-                  {categoryLabel && (
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
-                      {categoryLabel}
-                    </span>
-                  )}
-                </div>
-                {visionScore != null && (
-                  <p className="text-xs text-zinc-500 mb-3">Vision score medio: {visionScore.toFixed?.(1) ?? visionScore}/10</p>
                 )}
-                <div className="space-y-1.5">
-                  {classificationsDetail.map((c, i) => (
-                    <div key={i} className={`flex items-center justify-between bg-zinc-800/50 rounded-lg px-3 py-2 ${c.is_safety_critical ? 'border-l-2 border-red-500/70' : ''}`}>
-                      <div className="flex items-center gap-2 flex-1 min-w-0">
-                        {(() => {
-                          const isStab = c.type === 'stabilizer' || c.note?.startsWith('✓') || c.note?.startsWith('⚠') || c.note?.startsWith('Estabilizador');
-                          return (
-                            <span className={`text-[8px] px-1 py-0.5 rounded flex-shrink-0 ${
-                              isStab ? 'bg-blue-500/15 text-blue-400' : 'bg-green-500/15 text-green-400'
-                            }`}>{isStab ? 'EST' : 'MOT'}</span>
-                          );
-                        })()}
-                        <span className="text-xs text-zinc-300 truncate">{c.label || c.criterion}</span>
-                        {c.is_informative && (
-                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-zinc-700 text-zinc-500 flex-shrink-0">INFO</span>
-                        )}
-                        {c.is_safety_critical && (
-                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-red-500/20 text-red-400 flex-shrink-0">SEGURANCA</span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-                        <span className="text-xs text-zinc-400 font-mono">{c.value}</span>
-                        <span className={`text-[10px] px-2 py-0.5 rounded border ${getClassBadge(c.classification)}`}>
-                          {c.classification_label || c.classification}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                {classificationsDetail.some(c => c.note) && (
-                  <div className="mt-2 space-y-1">
-                    {classificationsDetail.filter(c => c.note).map((c, i) => (
-                      <p key={i} className={`text-[10px] ${
-                        c.note?.startsWith('⚠') ? 'text-orange-400' : c.note?.startsWith('✓') ? 'text-green-400' : 'text-zinc-500'
-                      }`}>
-                        <span className="text-zinc-400">{c.label || c.criterion}:</span> {c.note}
-                      </p>
+                {positives.length > 0 && (
+                  <div className="bg-green-500/5 rounded-xl p-4 border border-green-500/20">
+                    <div className="text-[10px] text-green-400 uppercase tracking-wider font-semibold mb-2">Pontos Fortes</div>
+                    {(positives as string[]).slice(0, 3).map((p, i) => (
+                      <p key={i} className="text-xs text-green-300/80 mb-1">+ {p}</p>
                     ))}
                   </div>
                 )}
@@ -493,17 +434,20 @@ export default function VideoDetailPage() {
             );
           })()}
 
-          {/* V2: Motor Analysis */}
+
+          {/* Classifications Detail movido para seção técnica colapsável */}
+
+          {/* ═══ c) ANÁLISE MOTORA ═══ */}
           {motorAnalysis.length > 0 && (
             <div>
-              <div className="flex items-center gap-2 text-sm font-medium text-white mb-3">
-                <Target className="w-4 h-4 text-green-400" />
+              <div className="flex items-center gap-2 text-sm font-semibold text-white mb-4">
+                <Target className="w-5 h-5 text-green-400" />
                 Analise Motora
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-500/20 text-green-400">
+                <span className="text-xs px-2 py-0.5 rounded-lg bg-green-500/20 text-green-400 font-bold">
                   {motorScore != null ? `${Number(motorScore).toFixed(1)}/10` : ''}
                 </span>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {motorAnalysis.map((m, i) => {
                   const romClass = m.rom.classification;
                   const romBg = romClass === 'excellent' ? 'border-green-500/50'
@@ -512,9 +456,9 @@ export default function VideoDetailPage() {
                     : romClass === 'warning' ? 'border-orange-500/50'
                     : romClass === 'danger' ? 'border-red-500/50' : 'border-zinc-700';
                   return (
-                    <div key={i} className={`bg-zinc-800/50 rounded-lg p-3 border-l-2 ${romBg}`}>
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs text-zinc-300 font-medium">{m.label || m.joint}</span>
+                    <div key={i} className={`bg-zinc-800/50 rounded-xl p-4 border-l-3 ${romBg}`}>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm text-zinc-200 font-medium">{m.label || m.joint}</span>
                         <span className={`text-[10px] px-2 py-0.5 rounded border ${getClassBadge(romClass)}`}>
                           {m.rom.classificationLabel || romClass}
                         </span>
@@ -550,28 +494,28 @@ export default function VideoDetailPage() {
             </div>
           )}
 
-          {/* V2: Stabilizer Analysis */}
+          {/* ═══ d) ANÁLISE ESTABILIZADORES ═══ */}
           {stabilizerAnalysis.length > 0 && (
             <div>
-              <div className="flex items-center gap-2 text-sm font-medium text-white mb-3">
-                <svg className="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="flex items-center gap-2 text-sm font-semibold text-white mb-4">
+                <svg className="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
                 Analise Estabilizadores
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400">
+                <span className="text-xs px-2 py-0.5 rounded-lg bg-blue-500/20 text-blue-400 font-bold">
                   {stabilizerScore != null ? `${Number(stabilizerScore).toFixed(1)}/10` : ''}
                 </span>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {stabilizerAnalysis.map((s, i) => {
                   const stabClass = s.variation.classification === 'firme' ? 'excellent'
                     : s.variation.classification === 'alerta' ? 'warning' : 'danger';
                   const stabBorder = stabClass === 'excellent' ? 'border-green-500/50'
                     : stabClass === 'warning' ? 'border-orange-500/50' : 'border-red-500/50';
                   return (
-                    <div key={i} className={`bg-zinc-800/50 rounded-lg p-3 border-l-2 ${stabBorder}`}>
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs text-zinc-300 font-medium">{s.label || s.joint}</span>
+                    <div key={i} className={`bg-zinc-800/50 rounded-xl p-4 border-l-3 ${stabBorder}`}>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm text-zinc-200 font-medium">{s.label || s.joint}</span>
                         <span className={`text-[10px] px-2 py-0.5 rounded border ${getClassBadge(stabClass)}`}>
                           {s.variation.classificationLabel || s.variation.classification}
                         </span>
@@ -624,7 +568,65 @@ export default function VideoDetailPage() {
             </div>
           ) : null}
 
-          {/* V2: LLM Report (Ollama) */}
+          {/* ═══ f) PLANO CORRETIVO ═══ */}
+          {(() => {
+            const hasStabProblems = stabilizerAnalysis.some(s => s.variation.classification !== 'firme');
+            const hasAnyProblems = hasStabProblems || pontosCriticosNovo.length > 0 || pontosCriticosAntigo.length > 0;
+            if (!hasAnyProblems && !displayPlan) return null;
+            return (
+              <CorrectivePlanCard
+                plan={displayPlan}
+                onGeneratePlan={handleGeneratePlan}
+                loading={planLoading}
+                error={planError}
+              />
+            );
+          })()}
+
+          {/* ═══ g) AGENDAR RETESTE ═══ */}
+          <div className="text-center">
+            <button
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-cyan-600/15 border border-cyan-500/30 text-cyan-300 text-sm font-medium hover:bg-cyan-600/25 transition-colors"
+            >
+              <Calendar className="w-4 h-4" />
+              Agendar Reteste em 2-4 Semanas
+            </button>
+            <p className="text-[10px] text-zinc-600 mt-2">Recomendado apos seguir o plano corretivo</p>
+          </div>
+
+          {/* ═══ VOTE: Esta análise foi útil? ═══ */}
+          <div className="bg-zinc-900/50 rounded-xl p-4 border border-zinc-800">
+            <p className="text-sm text-zinc-300 mb-3">Esta analise foi util?</p>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => handleVote('helpful')}
+                disabled={voting || voted !== null}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm transition-all ${
+                  voted === 'helpful'
+                    ? 'bg-green-600/20 border border-green-600/30 text-green-300'
+                    : 'bg-zinc-800 border border-zinc-700 text-zinc-400 hover:border-green-600/30 hover:text-green-300'
+                } disabled:opacity-50`}
+              >
+                <ThumbsUp className="w-4 h-4" />
+                Util ({analysis?.helpful_votes || 0})
+              </button>
+              <button
+                onClick={() => handleVote('not_helpful')}
+                disabled={voting || voted !== null}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm transition-all ${
+                  voted === 'not_helpful'
+                    ? 'bg-red-600/20 border border-red-600/30 text-red-300'
+                    : 'bg-zinc-800 border border-zinc-700 text-zinc-400 hover:border-red-600/30 hover:text-red-300'
+                } disabled:opacity-50`}
+              >
+                <ThumbsDown className="w-4 h-4" />
+                Nao util
+              </button>
+            </div>
+            {voted && <p className="text-xs text-zinc-500 mt-2">Obrigado pelo seu voto!</p>}
+          </div>
+
+          {/* ═══ h) RELATÓRIO IA ═══ */}
           {report && typeof report === 'object' && Object.keys(report).length > 0 && (() => {
             const pontosPositivos = report.pontos_positivos as string[] || [];
             const pontosAtencao = report.pontos_de_atencao as Array<{ item: string; severidade: string; sugestao: string }> || [];
@@ -717,6 +719,96 @@ export default function VideoDetailPage() {
                 {conclusao && (
                   <div className="bg-zinc-800/30 rounded-lg p-3 border border-zinc-700/50">
                     <p className="text-xs text-zinc-400 italic">{conclusao}</p>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+
+          {/* ═══ i) DADOS TÉCNICOS [Colapsado] ═══ */}
+          <div>
+            <button
+              onClick={() => setShowTechnicalData(!showTechnicalData)}
+              className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-zinc-800/30 border border-zinc-800 text-sm text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800/50 transition-colors"
+            >
+              <span className="flex items-center gap-2">
+                <Target className="w-4 h-4 text-zinc-500" />
+                Ver dados tecnicos
+              </span>
+              <ChevronDown className={`w-4 h-4 transition-transform ${showTechnicalData ? 'rotate-180' : ''}`} />
+            </button>
+          </div>
+
+          {showTechnicalData && (
+            <div className="space-y-6 border border-zinc-800/50 rounded-xl p-4 bg-zinc-900/30">
+
+          {/* Classifications Detail - Tabela de critérios biomecânicos */}
+          {(() => {
+            const classificationsDetail = data.classifications_detail as Array<{
+              type?: 'motor' | 'stabilizer';
+              criterion: string;
+              label: string;
+              value: string;
+              raw_value: number;
+              unit: string;
+              classification: string;
+              classification_label: string;
+              is_safety_critical: boolean;
+              is_informative: boolean;
+              note?: string;
+            }> || [];
+            if (classificationsDetail.length === 0) return null;
+
+            const categoryLabel = (data.category as string) || '';
+
+            return (
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2 text-sm font-medium text-white">
+                    <Target className="w-4 h-4 text-cyan-400" />
+                    Classificacao por Criterio
+                  </div>
+                  {categoryLabel && (
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
+                      {categoryLabel}
+                    </span>
+                  )}
+                </div>
+                <div className="space-y-1.5">
+                  {classificationsDetail.map((c, i) => (
+                    <div key={i} className={`flex items-center justify-between bg-zinc-800/50 rounded-lg px-3 py-2 ${c.is_safety_critical ? 'border-l-2 border-red-500/70' : ''}`}>
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        {(() => {
+                          const isStab = c.type === 'stabilizer' || c.note?.startsWith('✓') || c.note?.startsWith('⚠') || c.note?.startsWith('Estabilizador');
+                          return (
+                            <span className={`text-[8px] px-1 py-0.5 rounded flex-shrink-0 ${
+                              isStab ? 'bg-blue-500/15 text-blue-400' : 'bg-green-500/15 text-green-400'
+                            }`}>{isStab ? 'EST' : 'MOT'}</span>
+                          );
+                        })()}
+                        <span className="text-xs text-zinc-300 truncate">{c.label || c.criterion}</span>
+                        {c.is_safety_critical && (
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-red-500/20 text-red-400 flex-shrink-0">!</span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                        <span className="text-xs text-zinc-400 font-mono">{c.value}</span>
+                        <span className={`text-[10px] px-2 py-0.5 rounded border ${getClassBadge(c.classification)}`}>
+                          {c.classification_label || c.classification}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {classificationsDetail.some(c => c.note) && (
+                  <div className="mt-2 space-y-1">
+                    {classificationsDetail.filter(c => c.note).map((c, i) => (
+                      <p key={i} className={`text-[10px] ${
+                        c.note?.startsWith('⚠') ? 'text-orange-400' : c.note?.startsWith('✓') ? 'text-green-400' : 'text-zinc-500'
+                      }`}>
+                        <span className="text-zinc-400">{c.label || c.criterion}:</span> {c.note}
+                      </p>
+                    ))}
                   </div>
                 )}
               </div>
@@ -870,22 +962,6 @@ export default function VideoDetailPage() {
               </ul>
             </div>
           )}
-
-          {/* Plano Corretivo Personalizado (4 semanas) */}
-          {(() => {
-            const hasStabProblems = stabilizerAnalysis.some(s => s.variation.classification !== 'firme');
-            const hasAnyProblems = hasStabProblems || pontosCriticosNovo.length > 0 || pontosCriticosAntigo.length > 0;
-            // Esconder se todos estabilizadores firme E sem problemas E sem plano existente
-            if (!hasAnyProblems && !displayPlan) return null;
-            return (
-              <CorrectivePlanCard
-                plan={displayPlan}
-                onGeneratePlan={handleGeneratePlan}
-                loading={planLoading}
-                error={planError}
-              />
-            );
-          })()}
 
           {/* V2: MediaPipe Frames (raw angles per frame) */}
           {pipelineVersion && frameAnalyses.length === 0 && (() => {
@@ -1056,6 +1132,9 @@ export default function VideoDetailPage() {
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
             </div>
           )}
         </div>
@@ -1259,45 +1338,8 @@ export default function VideoDetailPage() {
             </button>
           </div>
         ) : displayAnalysis ? (
-          <div className="bg-zinc-900 rounded-xl p-5 border border-zinc-800">
-            <h3 className="text-sm font-bold text-white mb-4">Resultado da Analise</h3>
-            {renderPublishedAnalysis(displayAnalysis)}
-          </div>
+          renderPublishedAnalysis(displayAnalysis)
         ) : null}
-
-        {/* Vote */}
-        <div className="bg-zinc-900/50 rounded-xl p-4 border border-zinc-800">
-          <p className="text-sm text-zinc-300 mb-3">Esta analise foi util?</p>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => handleVote('helpful')}
-              disabled={voting || voted !== null}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm transition-all ${
-                voted === 'helpful'
-                  ? 'bg-green-600/20 border border-green-600/30 text-green-300'
-                  : 'bg-zinc-800 border border-zinc-700 text-zinc-400 hover:border-green-600/30 hover:text-green-300'
-              } disabled:opacity-50`}
-            >
-              <ThumbsUp className="w-4 h-4" />
-              Util ({analysis.helpful_votes})
-            </button>
-            <button
-              onClick={() => handleVote('not_helpful')}
-              disabled={voting || voted !== null}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm transition-all ${
-                voted === 'not_helpful'
-                  ? 'bg-red-600/20 border border-red-600/30 text-red-300'
-                  : 'bg-zinc-800 border border-zinc-700 text-zinc-400 hover:border-red-600/30 hover:text-red-300'
-              } disabled:opacity-50`}
-            >
-              <ThumbsDown className="w-4 h-4" />
-              Nao util
-            </button>
-          </div>
-          {voted && (
-            <p className="text-xs text-zinc-500 mt-2">Obrigado pelo seu voto!</p>
-          )}
-        </div>
       </div>
 
       {/* Delete Confirmation Modal */}
