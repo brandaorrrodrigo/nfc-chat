@@ -221,6 +221,7 @@ export async function POST(request: NextRequest) {
           joint: s.joint,
           label: s.label,
           expected_state: s.expectedState,
+          instability_meaning: s.instabilityMeaning,
           variation: s.variation,
           interpretation: s.interpretation,
           corrective_exercises: s.correctiveExercises,
@@ -259,7 +260,9 @@ export async function POST(request: NextRequest) {
             classification_label: s.variation.classificationLabel,
             is_safety_critical: s.variation.classification === 'compensação',
             is_informative: false,
-            note: `Estabilizador: ${s.expectedState}`,
+            note: s.variation.classification === 'firme'
+              ? `✓ ${s.expectedState}`
+              : `⚠ ${s.instabilityMeaning}`,
             rag_topics: s.ragTopics,
           })),
         ],

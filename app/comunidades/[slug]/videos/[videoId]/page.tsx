@@ -298,6 +298,7 @@ export default function VideoDetailPage() {
         joint: string;
         label: string;
         expected_state: string;
+        instability_meaning?: string;
         variation: { value: number; unit: string; classification: string; classificationLabel: string };
         interpretation: string;
         corrective_exercises: string[];
@@ -471,7 +472,9 @@ export default function VideoDetailPage() {
                 {classificationsDetail.some(c => c.note) && (
                   <div className="mt-2 space-y-1">
                     {classificationsDetail.filter(c => c.note).map((c, i) => (
-                      <p key={i} className="text-[10px] text-zinc-500">
+                      <p key={i} className={`text-[10px] ${
+                        c.note?.startsWith('⚠') ? 'text-orange-400' : c.note?.startsWith('✓') ? 'text-green-400' : 'text-zinc-500'
+                      }`}>
                         <span className="text-zinc-400">{c.label || c.criterion}:</span> {c.note}
                       </p>
                     ))}
@@ -555,10 +558,15 @@ export default function VideoDetailPage() {
                           {s.variation.classificationLabel || s.variation.classification}
                         </span>
                       </div>
-                      <div className="text-[10px] text-zinc-500 mb-1">
-                        Esperado: {s.expected_state} | Variacao: {Number(s.variation.value).toFixed(1)}{s.variation.unit}
+                      <div className="text-[10px] mb-1">
+                        {s.variation.classification === 'firme'
+                          ? <span className="text-green-400">✓ {s.expected_state}</span>
+                          : <span className="text-orange-400">⚠ {s.instability_meaning || s.interpretation}</span>
+                        }
                       </div>
-                      <p className="text-[10px] text-zinc-400">{s.interpretation}</p>
+                      <div className="text-[10px] text-zinc-500">
+                        Variacao: {Number(s.variation.value).toFixed(1)}{s.variation.unit}
+                      </div>
                       {Array.isArray(s.corrective_exercises) && s.corrective_exercises.length > 0 && (
                         <div className="mt-1.5 flex flex-wrap gap-1">
                           {s.corrective_exercises.map((ex, j) => (

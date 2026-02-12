@@ -35,6 +35,7 @@ export interface StabilizerJointResult {
   joint: string;
   label: string;
   expectedState: string;
+  instabilityMeaning: string;
   variation: { value: number; unit: string; classification: StabilizerClassification; classificationLabel: string };
   interpretation: string;
   correctiveExercises: string[];
@@ -241,6 +242,7 @@ export function classifyExerciseV2(
       joint: sj.joint,
       label: sj.label,
       expectedState: sj.expectedState,
+      instabilityMeaning: sj.instabilityMeaning,
       variation: {
         value: input.variationValue,
         unit: input.unit || sj.criteria.maxVariation.unit,

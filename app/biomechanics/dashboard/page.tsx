@@ -69,6 +69,7 @@ interface StabilizerAnalysisItem {
   joint: string;
   label: string;
   expected_state: string;
+  instability_meaning?: string;
   variation: { value: number; unit: string; classification: string; classificationLabel: string };
   interpretation: string;
   corrective_exercises: string[];
@@ -767,16 +768,18 @@ export default function BiomechanicsDashboard() {
                           </span>
                         </div>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm mb-2">
-                          <div>
-                            <p className="text-slate-500 text-xs">Estado Esperado</p>
-                            <p className="text-slate-300">{s.expected_state}</p>
+                          <div className="col-span-2">
+                            <p className="text-slate-500 text-xs">Estado</p>
+                            {s.variation.classification === 'firme'
+                              ? <p className="text-green-300">✓ {s.expected_state}</p>
+                              : <p className="text-orange-300">⚠ {s.instability_meaning || s.interpretation}</p>
+                            }
                           </div>
                           <div>
                             <p className="text-slate-500 text-xs">Variacao</p>
                             <p className="text-cyan-400 font-mono">{Number(s.variation.value).toFixed(1)}{s.variation.unit}</p>
                           </div>
                         </div>
-                        <p className="text-slate-400 text-sm">{s.interpretation}</p>
                         {Array.isArray(s.corrective_exercises) && s.corrective_exercises.length > 0 && (
                           <div className="mt-2 flex flex-wrap gap-1">
                             {s.corrective_exercises.map((ex, j) => (
@@ -897,7 +900,9 @@ export default function BiomechanicsDashboard() {
                             <span className="text-slate-500">-</span>
                           )}
                         </td>
-                        <td className="px-4 py-3 text-slate-400 text-xs max-w-[200px] truncate">
+                        <td className={`px-4 py-3 text-xs max-w-[250px] ${
+                          c.note?.startsWith('⚠') ? 'text-orange-300' : c.note?.startsWith('✓') ? 'text-green-300' : 'text-slate-400'
+                        }`}>
                           {c.note || '-'}
                         </td>
                       </tr>
