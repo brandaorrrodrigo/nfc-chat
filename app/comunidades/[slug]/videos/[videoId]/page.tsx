@@ -218,7 +218,7 @@ export default function VideoDetailPage() {
         frame: number;
         score: number;
         fase?: string;
-        desvios?: string[];
+        desvios?: Array<string | { criterio?: string; valor?: string; o_que_indica?: string; possivel_causa?: string; corretivo_sugerido?: string }>;
         justificativa?: string;
       }> || [];
       const frameAnalyses = (data.frame_analyses as Array<{
@@ -237,8 +237,8 @@ export default function VideoDetailPage() {
           inclinacao_tronco?: number;
         };
         alinhamentos?: { joelhos_sobre_pes?: boolean; joelho_esq_valgo?: boolean; joelho_dir_valgo?: boolean; coluna_neutra?: boolean };
-        desvios?: string[];
-        desvios_detectados?: string[];
+        desvios?: Array<string | { criterio?: string; valor?: string; o_que_indica?: string; possivel_causa?: string; corretivo_sugerido?: string }>;
+        desvios_detectados?: Array<string | { criterio?: string; valor?: string; o_que_indica?: string; possivel_causa?: string; corretivo_sugerido?: string }>;
         analysis?: string;
         justificativa?: string;
         score: number;
@@ -1005,17 +1005,39 @@ export default function VideoDetailPage() {
                       </div>
                     )}
 
-                    {/* Desvios - suporta formato antigo e novo */}
+                    {/* Desvios - suporta string (V1) e objeto (V2) */}
                     {(() => {
                       const desvios = frame.desvios_detectados || frame.desvios;
                       if (!Array.isArray(desvios) || desvios.length === 0) return null;
                       return (
-                        <div className="mb-2">
-                          {desvios.map((desvio, j) => (
-                            <span key={j} className="text-[10px] text-orange-400 block">
-                              ⚠ {desvio}
-                            </span>
-                          ))}
+                        <div className="mb-2 space-y-1">
+                          {desvios.map((desvio, j) => {
+                            if (typeof desvio === 'string') {
+                              return (
+                                <span key={j} className="text-[10px] text-orange-400 block">
+                                  ⚠ {desvio}
+                                </span>
+                              );
+                            }
+                            if (desvio && typeof desvio === 'object') {
+                              return (
+                                <div key={j} className="text-[10px] text-orange-400 bg-orange-500/10 rounded px-2 py-1">
+                                  <span className="font-medium">⚠ {desvio.criterio || 'Desvio'}</span>
+                                  {desvio.valor && <span className="text-zinc-400 ml-1">({desvio.valor})</span>}
+                                  {desvio.o_que_indica && (
+                                    <p className="text-zinc-400 mt-0.5">{desvio.o_que_indica}</p>
+                                  )}
+                                  {desvio.possivel_causa && (
+                                    <p className="text-zinc-500 mt-0.5">Causa: {desvio.possivel_causa}</p>
+                                  )}
+                                  {desvio.corretivo_sugerido && (
+                                    <p className="text-cyan-400/70 mt-0.5">Corretivo: {desvio.corretivo_sugerido}</p>
+                                  )}
+                                </div>
+                              );
+                            }
+                            return null;
+                          })}
                         </div>
                       );
                     })()}
