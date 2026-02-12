@@ -300,13 +300,33 @@ export default function CorrectivePlanCard({
         ))}
       </div>
 
-      {/* Meta de reteste */}
-      <div className="flex items-start gap-2 p-3 rounded-lg bg-indigo-500/10 border border-indigo-500/20">
-        <RefreshCw className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" />
-        <div>
-          <p className="text-sm text-indigo-300 font-medium">{plan.meta_reteste}</p>
-          <p className="text-xs text-zinc-500 mt-1">{plan.observacoes_gerais}</p>
+      {/* Meta de reteste + botão Schedule */}
+      <div className="p-3 rounded-lg bg-indigo-500/10 border border-indigo-500/20">
+        <div className="flex items-start gap-2">
+          <RefreshCw className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <p className="text-sm text-indigo-300 font-medium">{plan.meta_reteste}</p>
+            <p className="text-xs text-zinc-500 mt-1">{plan.observacoes_gerais}</p>
+          </div>
         </div>
+        <button
+          onClick={() => {
+            const retestDate = new Date();
+            retestDate.setDate(retestDate.getDate() + 28);
+            const formatted = retestDate.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+            if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+              new Notification('Lembrete de Reteste', {
+                body: `Hora de reavaliar! Data sugerida: ${formatted}`,
+                icon: '/favicon.ico',
+              });
+            }
+            alert(`Reteste agendado para ${formatted} (4 semanas a partir de hoje).\n\nLembre-se de gravar um novo vídeo para comparar a evolução.`);
+          }}
+          className="mt-3 flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600/20 border border-indigo-600/30 text-indigo-300 text-xs font-medium hover:bg-indigo-600/30 transition-colors w-full justify-center"
+        >
+          <Calendar className="w-3.5 h-3.5" />
+          Agendar Reteste (4 semanas)
+        </button>
       </div>
 
       {/* Metadata */}

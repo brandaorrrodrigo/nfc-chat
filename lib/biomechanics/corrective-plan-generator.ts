@@ -533,6 +533,27 @@ export async function generateCorrectivePlanFromAnalysis(
     return generateCorrectivePlan(classificationData, exerciseType);
   }
 
+  // Fonte V2 direta: stabilizer_analysis com corrective_exercises do template
+  const stabilizerAnalysis = aiAnalysis.stabilizer_analysis as Array<{
+    joint: string;
+    label: string;
+    expected_state: string;
+    variation: { value: number; unit: string; classification: string; classificationLabel: string };
+    interpretation: string;
+    corrective_exercises: string[];
+  }> | undefined;
+
+  if (stabilizerAnalysis && Array.isArray(stabilizerAnalysis) && stabilizerAnalysis.length > 0) {
+    const unstableStabilizers = stabilizerAnalysis.filter(
+      (s) => s.variation.classification === 'alerta' || s.variation.classification === 'compensação'
+    );
+
+    if (unstableStabilizers.length > 0) {
+      console.log(`[CorrectivePlan] V2 path: ${unstableStabilizers.length} estabilizadores instáveis`);
+      return generateV2CorrectivePlan(unstableStabilizers, exerciseType, aiAnalysis);
+    }
+  }
+
   // Fonte V2: classifications_detail (pipeline biomecanico V2)
   const classificationsDetail = aiAnalysis.classifications_detail as Array<{
     criterion?: string;
@@ -803,6 +824,133 @@ function inferProblemsFromMovement(movementPattern: string, score: number): Crit
     range: {},
     ragTopics: mapProblemToRagTopics(p.label),
   }));
+}
+
+// ============================
+// V2: Plano corretivo direto dos correctiveExercises do template
+// ============================
+
+interface UnstableStabilizer {
+  joint: string;
+  label: string;
+  expected_state: string;
+  variation: { value: number; unit: string; classification: string; classificationLabel: string };
+  interpretation: string;
+  corrective_exercises: string[];
+}
+
+function generateV2CorrectivePlan(
+  unstable: UnstableStabilizer[],
+  exerciseType: string,
+  aiAnalysis: Record<string, unknown>
+): CorrectivePlan {
+  const planoId = crypto.randomUUID();
+  const geradoEm = new Date().toISOString();
+
+  // Separar por severidade: compensação (danger) antes de alerta (warning)
+  const sorted = [...unstable].sort((a, b) => {
+    const aLevel = a.variation.classification === 'compensação' ? 0 : 1;
+    const bLevel = b.variation.classification === 'compensação' ? 0 : 1;
+    return aLevel - bLevel;
+  });
+
+  // Coletar todos os exercicios corretivos unicos
+  const allExercises: Array<{ nome: string; desvio: string; severidade: string }> = [];
+  for (const stab of sorted) {
+    for (const ex of stab.corrective_exercises) {
+      if (!allExercises.some((e) => e.nome === ex)) {
+        allExercises.push({
+          nome: ex,
+          desvio: stab.label,
+          severidade: stab.variation.classification,
+        });
+      }
+    }
+  }
+
+  // Dividir exercicios: mobilidade/ativação (semanas 1-2) vs fortalecimento (semanas 3-4)
+  const mobilityKeywords = ['stretch', 'along', 'foam', 'mobilidade', '90/90', 'hip stretch', 'dead bug', 'bird dog', 'breathing', 'chin tuck', 'consciência', 'proprioceptiva', 'pausa', 'isométrica'];
+  const isMobility = (name: string) => mobilityKeywords.some((k) => name.toLowerCase().includes(k));
+
+  const mobilityExercises = allExercises.filter((e) => isMobility(e.nome));
+  const strengthExercises = allExercises.filter((e) => !isMobility(e.nome));
+
+  // Se não há separação clara, dividir pela metade
+  if (mobilityExercises.length === 0 && strengthExercises.length > 0) {
+    const half = Math.ceil(strengthExercises.length / 2);
+    mobilityExercises.push(...strengthExercises.splice(0, half));
+  }
+
+  const toPlannedExercise = (
+    e: { nome: string; desvio: string; severidade: string },
+    weekNum: number
+  ): PlannedExercise => ({
+    nome: e.nome,
+    objetivo: `Corrigir ${e.desvio}`,
+    series: weekNum <= 2 ? '3x12-15' : '3x8-12',
+    frequencia: weekNum <= 2 ? '4x/semana' : '5x/semana',
+    execucao: weekNum <= 2
+      ? ['Foco em controle e ativação', 'Velocidade lenta e controlada', 'Pausa de 2s na contração']
+      : ['Aumentar carga progressivamente', 'Integrar ao padrão do exercício principal', 'Manter controle total'],
+    progressao: weekNum <= 2
+      ? 'Aumentar tempo sob tensão na próxima semana'
+      : 'Aumentar carga ou volume antes do reteste',
+    desvio_alvo: e.desvio,
+  });
+
+  const semanas: WeekPlan[] = [
+    {
+      semana: 1,
+      foco: 'Mobilidade e Ativacao',
+      dias_treino: 4,
+      exercicios: (mobilityExercises.length > 0 ? mobilityExercises : allExercises)
+        .slice(0, 4).map((e) => toPlannedExercise(e, 1)),
+      objetivo_semanal: 'Melhorar mobilidade e ativar estabilizadores fracos',
+    },
+    {
+      semana: 2,
+      foco: 'Mobilidade e Ativacao (progressao)',
+      dias_treino: 4,
+      exercicios: (mobilityExercises.length > 0 ? mobilityExercises : allExercises)
+        .slice(0, 4).map((e) => toPlannedExercise(e, 2)),
+      objetivo_semanal: 'Consolidar ganhos de mobilidade e melhorar controle motor',
+    },
+    {
+      semana: 3,
+      foco: 'Fortalecimento e Integracao',
+      dias_treino: 5,
+      exercicios: (strengthExercises.length > 0 ? strengthExercises : allExercises)
+        .slice(0, 4).map((e) => toPlannedExercise(e, 3)),
+      objetivo_semanal: 'Fortalecer estabilizadores e integrar ao exercício principal',
+    },
+    {
+      semana: 4,
+      foco: 'Fortalecimento e Integracao (progressao)',
+      dias_treino: 5,
+      exercicios: (strengthExercises.length > 0 ? strengthExercises : allExercises)
+        .slice(0, 4).map((e) => toPlannedExercise(e, 4)),
+      objetivo_semanal: 'Maximizar adaptacoes e preparar para reavaliacao',
+    },
+  ];
+
+  const criterios: CriterionSummary[] = sorted.map((s) => ({
+    criterio: s.label,
+    nivel: s.variation.classification === 'compensação' ? 'danger' as const : 'warning' as const,
+    valor: `${s.variation.value.toFixed(1)}${s.variation.unit}`,
+    causa_provavel: s.interpretation,
+    rag_fonte: 'Template V2',
+  }));
+
+  const score = (aiAnalysis.overall_score as number) || 0;
+
+  return {
+    plano_id: planoId,
+    gerado_em: geradoEm,
+    criterios_alerta: criterios,
+    semanas,
+    meta_reteste: `Reavaliar ${exerciseType || 'exercicio'} em 4 semanas com novo video (score atual: ${score.toFixed(1)}/10)`,
+    observacoes_gerais: `Plano gerado automaticamente a partir dos estabilizadores instáveis identificados na análise V2. ${sorted.length} estabilizador(es) requerem atenção.`,
+  };
 }
 
 /**

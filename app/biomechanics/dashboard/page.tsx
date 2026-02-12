@@ -40,6 +40,7 @@ interface LLMRecommendation {
   exercicio_corretivo?: string;
 }
 
+// V1 Report Format
 interface LLMAnalysisReport {
   resumo_executivo: string;
   problemas_identificados: LLMProblem[];
@@ -48,6 +49,29 @@ interface LLMAnalysisReport {
   score_geral: number;
   classificacao: 'EXCELENTE' | 'BOM' | 'REGULAR' | 'NECESSITA_CORRECAO';
   proximos_passos: string[];
+  // V2 fields (optional)
+  cadeia_de_movimento?: Array<{ fase: string; descricao: string }>;
+  pontos_de_atencao?: Array<{ item: string; severidade: string; sugestao: string }>;
+  conclusao?: string;
+  recomendacoes_top3?: Array<{ prioridade: number; acao: string; motivo: string }>;
+}
+
+interface MotorAnalysisItem {
+  joint: string;
+  label: string;
+  movement: string;
+  rom: { value: number; unit: string; min?: number; max?: number; classification: string; classificationLabel: string };
+  peak_contraction?: number | null;
+  symmetry?: number | null;
+}
+
+interface StabilizerAnalysisItem {
+  joint: string;
+  label: string;
+  expected_state: string;
+  variation: { value: number; unit: string; classification: string; classificationLabel: string };
+  interpretation: string;
+  corrective_exercises: string[];
 }
 
 interface AnalysisResult {
@@ -83,6 +107,14 @@ interface AnalysisResult {
     positive: (Classification & Record<string, any>)[];
   };
   report?: LLMAnalysisReport | null;
+  // V2 pipeline data
+  pipelineVersion?: string;
+  motorScore?: number;
+  stabilizerScore?: number;
+  motorAnalysis?: MotorAnalysisItem[];
+  stabilizerAnalysis?: StabilizerAnalysisItem[];
+  mediapipeConfidence?: number;
+  muscles?: { primary?: string[]; secondary?: string[]; stabilizers?: string[] };
 }
 
 export default function BiomechanicsDashboard() {
@@ -160,6 +192,14 @@ export default function BiomechanicsDashboard() {
         ),
       },
       report: aiData.llm_report || null,
+      // V2 pipeline data
+      pipelineVersion: aiData.pipeline_version || undefined,
+      motorScore: aiData.motor_score,
+      stabilizerScore: aiData.stabilizer_score,
+      motorAnalysis: aiData.motor_analysis || [],
+      stabilizerAnalysis: aiData.stabilizer_analysis || [],
+      mediapipeConfidence: aiData.mediapipe_confidence,
+      muscles: aiData.muscles || undefined,
     };
   };
 
@@ -496,6 +536,37 @@ export default function BiomechanicsDashboard() {
               </div>
             </div>
 
+            {/* V2: Motor / Stabilizer Score Breakdown */}
+            {analysis.motorScore != null && analysis.stabilizerScore != null && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div className="bg-slate-800 rounded-lg border border-cyan-700/30 p-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-slate-400 text-sm font-semibold">PIPELINE</p>
+                    <span className="px-2 py-0.5 rounded text-xs font-semibold bg-cyan-900/40 text-cyan-300 border border-cyan-700/30">
+                      {(analysis.pipelineVersion || 'v2').toUpperCase()}
+                    </span>
+                  </div>
+                  {analysis.mediapipeConfidence != null && (
+                    <p className="text-slate-400 text-sm">
+                      Confianca MediaPipe: <span className="text-cyan-400 font-semibold">{(analysis.mediapipeConfidence * 100).toFixed(0)}%</span>
+                    </p>
+                  )}
+                </div>
+                <div className={`rounded-lg border border-slate-700 p-6 ${getScoreBgColor(analysis.motorScore)}`}>
+                  <p className="text-slate-600 text-sm font-semibold mb-1">SCORE MOTOR (60%)</p>
+                  <p className={`text-3xl font-bold ${getScoreColor(analysis.motorScore)}`}>
+                    {analysis.motorScore.toFixed(1)}<span className="text-lg">/10</span>
+                  </p>
+                </div>
+                <div className={`rounded-lg border border-slate-700 p-6 ${getScoreBgColor(analysis.stabilizerScore)}`}>
+                  <p className="text-slate-600 text-sm font-semibold mb-1">SCORE ESTABILIZADOR (40%)</p>
+                  <p className={`text-3xl font-bold ${getScoreColor(analysis.stabilizerScore)}`}>
+                    {analysis.stabilizerScore.toFixed(1)}<span className="text-lg">/10</span>
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* Summary Grid */}
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
               <div className="bg-green-900/30 border border-green-700/50 rounded-lg p-4">
@@ -611,6 +682,158 @@ export default function BiomechanicsDashboard() {
                 </div>
               </div>
             )}
+
+            {/* V2: Motor Analysis */}
+            {(analysis.motorAnalysis?.length ?? 0) > 0 && (
+              <div className="bg-slate-800 rounded-lg border border-green-700/30 p-6 mb-8">
+                <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                  <TrendingUp className="w-6 h-6 text-green-400" />
+                  Analise Motora
+                  <span className="text-sm font-normal text-green-400/70">(Amplitude de Movimento)</span>
+                </h2>
+                <div className="space-y-3">
+                  {analysis.motorAnalysis!.map((m, idx) => (
+                    <div key={idx} className="bg-slate-700/30 border border-slate-600/50 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="font-semibold text-white">{m.label || m.joint}</p>
+                        <span className={`px-3 py-1 rounded text-xs font-semibold ${
+                          m.rom.classification === 'excellent' ? 'bg-green-900/50 text-green-300'
+                          : m.rom.classification === 'good' ? 'bg-emerald-900/50 text-emerald-300'
+                          : m.rom.classification === 'acceptable' ? 'bg-blue-900/50 text-blue-300'
+                          : m.rom.classification === 'warning' ? 'bg-yellow-900/50 text-yellow-300'
+                          : 'bg-red-900/50 text-red-300'
+                        }`}>
+                          {m.rom.classificationLabel || m.rom.classification}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                        <div>
+                          <p className="text-slate-500 text-xs">Movimento</p>
+                          <p className="text-slate-300">{m.movement}</p>
+                        </div>
+                        <div>
+                          <p className="text-slate-500 text-xs">ROM</p>
+                          <p className="text-cyan-400 font-mono">{m.rom.value}{m.rom.unit}</p>
+                        </div>
+                        {m.rom.min != null && m.rom.max != null && (
+                          <div>
+                            <p className="text-slate-500 text-xs">Range</p>
+                            <p className="text-slate-400 font-mono">{m.rom.min.toFixed(0)} - {m.rom.max.toFixed(0)}{m.rom.unit}</p>
+                          </div>
+                        )}
+                        {m.peak_contraction != null && (
+                          <div>
+                            <p className="text-slate-500 text-xs">Pico Contracao</p>
+                            <p className="text-slate-400 font-mono">{m.peak_contraction.toFixed(0)}{m.rom.unit}</p>
+                          </div>
+                        )}
+                      </div>
+                      {m.symmetry != null && (
+                        <p className={`text-xs mt-2 ${Math.abs(m.symmetry) > 15 ? 'text-orange-400' : 'text-slate-500'}`}>
+                          Simetria bilateral: {m.symmetry > 0 ? '+' : ''}{m.symmetry.toFixed(1)}%
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* V2: Stabilizer Analysis */}
+            {(analysis.stabilizerAnalysis?.length ?? 0) > 0 && (
+              <div className="bg-slate-800 rounded-lg border border-blue-700/30 p-6 mb-8">
+                <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                  <Target className="w-6 h-6 text-blue-400" />
+                  Analise Estabilizadores
+                  <span className="text-sm font-normal text-blue-400/70">(Controle e Estabilidade)</span>
+                </h2>
+                <div className="space-y-3">
+                  {analysis.stabilizerAnalysis!.map((s, idx) => {
+                    const stabLevel = s.variation.classification === 'firme' ? 'excellent'
+                      : s.variation.classification === 'alerta' ? 'warning' : 'danger';
+                    return (
+                      <div key={idx} className={`bg-slate-700/30 border rounded-lg p-4 ${
+                        stabLevel === 'excellent' ? 'border-green-700/30'
+                        : stabLevel === 'warning' ? 'border-yellow-700/30' : 'border-red-700/30'
+                      }`}>
+                        <div className="flex items-center justify-between mb-2">
+                          <p className="font-semibold text-white">{s.label || s.joint}</p>
+                          <span className={`px-3 py-1 rounded text-xs font-semibold ${
+                            stabLevel === 'excellent' ? 'bg-green-900/50 text-green-300'
+                            : stabLevel === 'warning' ? 'bg-yellow-900/50 text-yellow-300'
+                            : 'bg-red-900/50 text-red-300'
+                          }`}>
+                            {s.variation.classificationLabel || s.variation.classification}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm mb-2">
+                          <div>
+                            <p className="text-slate-500 text-xs">Estado Esperado</p>
+                            <p className="text-slate-300">{s.expected_state}</p>
+                          </div>
+                          <div>
+                            <p className="text-slate-500 text-xs">Variacao</p>
+                            <p className="text-cyan-400 font-mono">{s.variation.value.toFixed(1)}{s.variation.unit}</p>
+                          </div>
+                        </div>
+                        <p className="text-slate-400 text-sm">{s.interpretation}</p>
+                        {Array.isArray(s.corrective_exercises) && s.corrective_exercises.length > 0 && (
+                          <div className="mt-2 flex flex-wrap gap-1">
+                            {s.corrective_exercises.map((ex, j) => (
+                              <span key={j} className="bg-purple-900/30 text-purple-300 text-xs px-2 py-1 rounded border border-purple-700/30">
+                                {ex}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* V2: Muscles */}
+            {analysis.muscles && (analysis.muscles.primary?.length || analysis.muscles.secondary?.length || analysis.muscles.stabilizers?.length) ? (
+              <div className="bg-slate-800 rounded-lg border border-slate-700 p-6 mb-8">
+                <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                  <Zap className="w-6 h-6 text-pink-400" />
+                  Musculos Envolvidos
+                </h2>
+                <div className="space-y-3">
+                  {analysis.muscles.primary?.length ? (
+                    <div>
+                      <p className="text-slate-500 text-xs font-semibold mb-1">PRIMÁRIOS</p>
+                      <div className="flex flex-wrap gap-2">
+                        {analysis.muscles.primary.map((m, i) => (
+                          <span key={i} className="bg-pink-900/30 text-pink-300 text-sm px-3 py-1 rounded border border-pink-700/30">{m}</span>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+                  {analysis.muscles.secondary?.length ? (
+                    <div>
+                      <p className="text-slate-500 text-xs font-semibold mb-1">SECUNDÁRIOS</p>
+                      <div className="flex flex-wrap gap-2">
+                        {analysis.muscles.secondary.map((m, i) => (
+                          <span key={i} className="bg-slate-700 text-slate-300 text-sm px-3 py-1 rounded border border-slate-600">{m}</span>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+                  {analysis.muscles.stabilizers?.length ? (
+                    <div>
+                      <p className="text-slate-500 text-xs font-semibold mb-1">ESTABILIZADORES</p>
+                      <div className="flex flex-wrap gap-2">
+                        {analysis.muscles.stabilizers.map((m, i) => (
+                          <span key={i} className="bg-blue-900/30 text-blue-300 text-sm px-3 py-1 rounded border border-blue-700/30">{m}</span>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
 
             {/* All Classifications Table */}
             <div className="bg-slate-800 rounded-lg border border-slate-700 p-6 mb-8">
@@ -774,15 +997,88 @@ export default function BiomechanicsDashboard() {
                   </div>
                 )}
 
-                {/* Recommendations */}
-                {(analysis?.report?.recomendacoes?.length ?? 0) > 0 && (
+                {/* V2: Cadeia de Movimento */}
+                {(analysis?.report?.cadeia_de_movimento?.length ?? 0) > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-cyan-300 mb-3 flex items-center gap-2">
+                      <TrendingUp className="w-5 h-5" />
+                      Cadeia de Movimento
+                    </h3>
+                    <div className="space-y-2">
+                      {analysis.report!.cadeia_de_movimento!.map((fase, idx) => (
+                        <div key={idx} className="bg-slate-700/30 border border-cyan-700/20 rounded p-3 flex items-start gap-3">
+                          <span className={`px-2 py-0.5 rounded text-xs font-semibold flex-shrink-0 ${
+                            fase.fase?.toLowerCase() === 'excentrica' ? 'bg-blue-900/50 text-blue-300'
+                            : fase.fase?.toLowerCase() === 'isometrica' ? 'bg-purple-900/50 text-purple-300'
+                            : fase.fase?.toLowerCase() === 'concentrica' ? 'bg-green-900/50 text-green-300'
+                            : 'bg-slate-600 text-slate-300'
+                          }`}>{fase.fase}</span>
+                          <p className="text-slate-300 text-sm">{fase.descricao}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* V2: Pontos de Atencao */}
+                {(analysis?.report?.pontos_de_atencao?.length ?? 0) > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-orange-300 mb-3 flex items-center gap-2">
+                      <AlertTriangle className="w-5 h-5" />
+                      Pontos de Atencao
+                    </h3>
+                    <div className="space-y-3">
+                      {analysis.report!.pontos_de_atencao!.map((p, idx) => (
+                        <div key={idx} className="bg-orange-900/15 border border-orange-700/30 rounded p-3">
+                          <div className="flex items-start gap-2 mb-1">
+                            <span className={`px-2 py-0.5 rounded text-xs font-semibold ${
+                              p.severidade?.toUpperCase() === 'CRITICA' ? 'bg-red-900/60 text-red-200'
+                              : p.severidade?.toUpperCase() === 'MODERADA' ? 'bg-yellow-900/60 text-yellow-200'
+                              : 'bg-blue-900/60 text-blue-200'
+                            }`}>{p.severidade}</span>
+                            <p className="font-semibold text-white text-sm">{p.item}</p>
+                          </div>
+                          <p className="text-orange-300/80 text-sm">{p.sugestao}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* V2: Recomendacoes Top 3 */}
+                {(analysis?.report?.recomendacoes_top3?.length ?? 0) > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-yellow-300 mb-3 flex items-center gap-2">
+                      <Target className="w-5 h-5" />
+                      Recomendacoes Top 3
+                    </h3>
+                    <div className="space-y-3">
+                      {analysis.report!.recomendacoes_top3!.map((r, idx) => (
+                        <div key={idx} className="bg-yellow-900/15 border border-yellow-700/30 rounded p-3">
+                          <div className="flex items-start gap-2">
+                            <span className="px-2 py-0.5 rounded text-xs font-semibold bg-yellow-900/60 text-yellow-200">
+                              #{r.prioridade}
+                            </span>
+                            <div className="flex-1">
+                              <p className="font-semibold text-white text-sm">{r.acao}</p>
+                              <p className="text-yellow-300/80 text-xs mt-1">{r.motivo}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* V1: Recommendations (fallback) */}
+                {(analysis?.report?.recomendacoes?.length ?? 0) > 0 && !(analysis?.report?.recomendacoes_top3?.length) && (
                   <div className="mb-6">
                     <h3 className="text-lg font-semibold text-yellow-300 mb-3 flex items-center gap-2">
                       <Target className="w-5 h-5" />
                       Recomendações
                     </h3>
                     <div className="space-y-3">
-                      {analysis.report.recomendacoes.map((rec, idx) => (
+                      {analysis.report!.recomendacoes.map((rec, idx) => (
                         <div
                           key={idx}
                           className="bg-yellow-900/20 border border-yellow-700/30 rounded p-3"
@@ -807,15 +1103,23 @@ export default function BiomechanicsDashboard() {
                   </div>
                 )}
 
-                {/* Next Steps */}
-                {(analysis?.report?.proximos_passos?.length ?? 0) > 0 && (
+                {/* V2: Conclusao */}
+                {analysis?.report?.conclusao && (
+                  <div className="mb-6 bg-slate-700/30 rounded-lg p-4 border border-cyan-600/20">
+                    <h3 className="text-lg font-semibold text-cyan-300 mb-2">Conclusao</h3>
+                    <p className="text-slate-300 text-sm italic">{analysis.report.conclusao}</p>
+                  </div>
+                )}
+
+                {/* V1: Next Steps (fallback) */}
+                {(analysis?.report?.proximos_passos?.length ?? 0) > 0 && !analysis?.report?.conclusao && (
                   <div className="mb-6">
                     <h3 className="text-lg font-semibold text-blue-300 mb-3 flex items-center gap-2">
                       <TrendingUp className="w-5 h-5" />
                       Próximos Passos
                     </h3>
                     <ol className="space-y-2">
-                      {analysis.report.proximos_passos.map((passo, idx) => (
+                      {analysis.report!.proximos_passos.map((passo, idx) => (
                         <li key={idx} className="text-blue-300 text-sm flex items-start gap-2">
                           <span className="font-semibold text-blue-400 flex-shrink-0">{idx + 1}.</span>
                           <span>{passo}</span>

@@ -1,7 +1,21 @@
+const path = require('path');
+
 /** @type {import('next').NextConfig} */
-// BUILD MARKER: 2026-02-03 - Redis timeout fixes + Windows network folder exclusion
+// BUILD MARKER: 2026-02-12 - outputFileTracingRoot fix for Windows + MediaPipe pipeline
 const nextConfig = {
   reactStrictMode: true,
+
+  // Fix: limitar file tracing ao diretório do projeto (evita scan de pastas do Windows)
+  outputFileTracingRoot: path.join(__dirname),
+
+  outputFileTracingExcludes: {
+    '*': [
+      '**/Ambiente de Impressão/**',
+      '**/Ambiente de Rede/**',
+      '**/AppData/**',
+      'C:\\Users\\NFC\\Ambiente*',
+    ],
+  },
 
   typescript: {
     ignoreBuildErrors: true,

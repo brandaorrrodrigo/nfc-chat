@@ -4,7 +4,7 @@
  * Retorna ângulos articulares REAIS (sem Ollama Vision)
  *
  * Melhorias v4.1:
- * - Filtro de confidence: descarta frames com confidence < 0.5
+ * - Filtro de confidence DUAL: motor >= 0.3 (captura extremos), estabilizador >= 0.5 (filtra ruído)
  * - Percentil 10-90 para variação dos estabilizadores (elimina outliers)
  * - Média ponderada por confidence (frames melhores pesam mais)
  * - Aviso de qualidade do vídeo quando confidence < 0.6
@@ -20,8 +20,11 @@ const execAsync = promisify(exec);
 
 const SCRIPT_PATH = path.join(process.cwd(), 'scripts', 'mediapipe_analyze_frame.py');
 
-/** Confidence mínimo para incluir um frame na análise */
-const MIN_CONFIDENCE = 0.5;
+/** Confidence mínimo para MOTOR (min/max ROM) — mais permissivo para capturar posições extremas */
+const MOTOR_MIN_CONFIDENCE = 0.3;
+
+/** Confidence mínimo para ESTABILIZADOR (variação) — mais restritivo para filtrar ruído */
+const STABILIZER_MIN_CONFIDENCE = 0.5;
 
 // ============================
 // Tipos MediaPipe
@@ -177,15 +180,25 @@ function weightedAverage(values: number[], weights: number[]): number {
 // Agregação de Frames MediaPipe
 // ============================
 
+/** Métricas que devem usar coordenadas 2D da imagem (não world 3D) */
+const IMAGE_ONLY_METRICS = new Set([
+  'knee_valgus_left_cm', 'knee_valgus_right_cm',
+  'shoulder_elevation_left', 'shoulder_elevation_right',
+  'wrist_angle_left', 'wrist_angle_right',
+  'hip_width_norm', 'calibration_factor',
+]);
+
 export interface AggregatedMediaPipeData {
   avgAngles: MediaPipeAngles;
+  /** Min/max calculados com MOTOR threshold (conf >= 0.3) — captura extremos */
   minAngles: MediaPipeAngles;
   maxAngles: MediaPipeAngles;
-  /** Ângulos de cada frame (já filtrados por confidence) */
+  /** Ângulos de cada frame com STABILIZER threshold (conf >= 0.5) — para variação */
   allFrameAngles: MediaPipeAngles[];
   /** Confidence de cada frame filtrado (mesmo índice que allFrameAngles) */
   frameConfidences: number[];
   framesProcessed: number;
+  /** Frames descartados (conf < threshold motor) */
   framesFiltered: number;
   avgConfidence: number;
   /** Aviso se qualidade do vídeo é baixa */
@@ -195,11 +208,12 @@ export interface AggregatedMediaPipeData {
 /**
  * Agrega ângulos de múltiplos frames MediaPipe
  *
- * Melhorias:
- * 1. Filtra frames com confidence < 0.5
- * 2. Usa média ponderada por confidence
- * 3. Percentil 10-90 disponível para estabilizadores (via robustVariation)
- * 4. Gera aviso de qualidade quando confidence < 0.6
+ * Estratégia DUAL de filtragem:
+ * - MOTOR (min/max): conf >= 0.3 — mais permissivo para capturar posições extremas
+ *   (ex: fundo do agachamento tem conf mais baixo por oclusão, mas os ângulos são válidos)
+ * - STABILIZER (variação): conf >= 0.5 — mais restritivo para filtrar ruído
+ * - Média ponderada por confidence
+ * - Aviso de qualidade quando conf médio < 0.6
  */
 export function aggregateMediaPipeFrames(result: MediaPipeResult): AggregatedMediaPipeData {
   const successFrames = result.frames.filter(f => f.success);
@@ -213,35 +227,65 @@ export function aggregateMediaPipeFrames(result: MediaPipeResult): AggregatedMed
     };
   }
 
-  // Escolher world_angles (3D métrico) quando disponível
-  const allAngles = successFrames.map(f =>
-    Object.keys(f.world_angles || {}).length > 2 ? f.world_angles : f.angles,
-  );
+  // Mesclar world_angles (3D) + image angles (2D) para cada frame:
+  // - Ângulos articulares (knee, hip, shoulder, elbow, trunk) → world_angles (mais preciso em 3D)
+  // - Métricas posicionais (valgo, elevação ombro) → image angles (plano frontal 2D)
+  const allAngles = successFrames.map(f => {
+    const hasWorld = Object.keys(f.world_angles || {}).length > 2;
+    if (!hasWorld) return f.angles;
 
+    // Começar com world_angles (ângulos articulares em 3D)
+    const merged: MediaPipeAngles = { ...f.world_angles };
+
+    // Substituir métricas posicionais pelas da imagem 2D
+    for (const key of IMAGE_ONLY_METRICS) {
+      const imgVal = (f.angles as Record<string, number | undefined>)[key];
+      if (imgVal !== undefined) {
+        (merged as Record<string, number>)[key] = imgVal;
+      } else {
+        // Remover valor 3D incorreto
+        delete (merged as Record<string, number | undefined>)[key];
+      }
+    }
+
+    // Confidence da imagem (world não tem)
+    merged.confidence = f.angles.confidence;
+    return merged;
+  });
   const allConfidences = allAngles.map(a => a.confidence ?? 0);
 
-  // --- FILTRO 1: Descartar frames com confidence < MIN_CONFIDENCE ---
-  const filtered: { angles: MediaPipeAngles; confidence: number }[] = [];
+  // --- FILTRO DUAL ---
+  // Motor: conf >= 0.3 (captura posições extremas como fundo do agachamento)
+  const motorFrames: { angles: MediaPipeAngles; confidence: number }[] = [];
+  // Stabilizer: conf >= 0.5 (filtra ruído para variação)
+  const stabFrames: { angles: MediaPipeAngles; confidence: number }[] = [];
+
   for (let i = 0; i < allAngles.length; i++) {
-    if (allConfidences[i] >= MIN_CONFIDENCE) {
-      filtered.push({ angles: allAngles[i], confidence: allConfidences[i] });
+    const conf = allConfidences[i];
+    if (conf >= MOTOR_MIN_CONFIDENCE) {
+      motorFrames.push({ angles: allAngles[i], confidence: conf });
+    }
+    if (conf >= STABILIZER_MIN_CONFIDENCE) {
+      stabFrames.push({ angles: allAngles[i], confidence: conf });
     }
   }
 
-  const framesFiltered = successFrames.length - filtered.length;
-  if (framesFiltered > 0) {
-    console.log(`[MediaPipe] Filtro confidence: ${framesFiltered} frames descartados (conf < ${MIN_CONFIDENCE})`);
+  const framesFilteredMotor = successFrames.length - motorFrames.length;
+  const framesFilteredStab = successFrames.length - stabFrames.length;
+  if (framesFilteredMotor > 0 || framesFilteredStab > 0) {
+    console.log(`[MediaPipe] Filtro: ${framesFilteredMotor} frames removidos para motor (conf<${MOTOR_MIN_CONFIDENCE}), ${framesFilteredStab} para estabilizador (conf<${STABILIZER_MIN_CONFIDENCE})`);
   }
 
-  // Se todos foram descartados, usar os originais (melhor algo que nada)
-  const useFrames = filtered.length > 0 ? filtered : allAngles.map((a, i) => ({ angles: a, confidence: allConfidences[i] }));
+  // Fallback: se TODOS foram descartados, usar originais
+  const useMotorFrames = motorFrames.length > 0 ? motorFrames : allAngles.map((a, i) => ({ angles: a, confidence: allConfidences[i] }));
+  const useStabFrames = stabFrames.length > 0 ? stabFrames : allAngles.map((a, i) => ({ angles: a, confidence: allConfidences[i] }));
 
-  const frameAngles = useFrames.map(f => f.angles);
-  const frameConfs = useFrames.map(f => f.confidence);
+  // === MIN/MAX a partir dos frames MOTOR (threshold mais baixo) ===
+  const motorAngles = useMotorFrames.map(f => f.angles);
+  const motorConfs = useMotorFrames.map(f => f.confidence);
 
-  // Coletar todas as keys
   const allKeys = new Set<string>();
-  for (const angles of frameAngles) {
+  for (const angles of motorAngles) {
     for (const key of Object.keys(angles)) {
       if (key !== 'confidence' && key !== 'hip_width_norm' && key !== 'calibration_factor') {
         allKeys.add(key);
@@ -254,31 +298,35 @@ export function aggregateMediaPipeFrames(result: MediaPipeResult): AggregatedMed
   const max: MediaPipeAngles = {};
 
   for (const key of allKeys) {
-    const valuesWithConf: { value: number; confidence: number }[] = [];
-    for (let i = 0; i < frameAngles.length; i++) {
-      const v = (frameAngles[i] as Record<string, number | undefined>)[key];
+    // MIN/MAX: from motor frames (conf >= 0.3)
+    const motorValues: { value: number; confidence: number }[] = [];
+    for (let i = 0; i < motorAngles.length; i++) {
+      const v = (motorAngles[i] as Record<string, number | undefined>)[key];
       if (v !== undefined && v >= 0) {
-        valuesWithConf.push({ value: v, confidence: frameConfs[i] });
+        motorValues.push({ value: v, confidence: motorConfs[i] });
       }
     }
+    if (motorValues.length === 0) continue;
 
-    if (valuesWithConf.length === 0) continue;
+    const vals = motorValues.map(v => v.value);
+    (min as Record<string, number>)[key] = Math.round(Math.min(...vals) * 10) / 10;
+    (max as Record<string, number>)[key] = Math.round(Math.max(...vals) * 10) / 10;
 
-    const values = valuesWithConf.map(v => v.value);
-    const weights = valuesWithConf.map(v => v.confidence);
-
-    // --- MELHORIA 3: Média ponderada por confidence ---
-    (avg as Record<string, number>)[key] = weightedAverage(values, weights);
-    (min as Record<string, number>)[key] = Math.round(Math.min(...values) * 10) / 10;
-    (max as Record<string, number>)[key] = Math.round(Math.max(...values) * 10) / 10;
+    // AVG: weighted average from motor frames
+    const weights = motorValues.map(v => v.confidence);
+    (avg as Record<string, number>)[key] = weightedAverage(vals, weights);
   }
 
-  // Confidence médio (dos frames FILTRADOS)
-  const avgConf = frameConfs.length > 0
-    ? Math.round((frameConfs.reduce((s, v) => s + v, 0) / frameConfs.length) * 1000) / 1000
+  // === allFrameAngles para estabilizadores (threshold mais alto) ===
+  const stabAngles = useStabFrames.map(f => f.angles);
+  const stabConfs = useStabFrames.map(f => f.confidence);
+
+  // Confidence médio (dos frames estabilizadores)
+  const avgConf = stabConfs.length > 0
+    ? Math.round((stabConfs.reduce((s, v) => s + v, 0) / stabConfs.length) * 1000) / 1000
     : 0;
 
-  // --- MELHORIA 4: Aviso de qualidade do vídeo ---
+  // Aviso de qualidade do vídeo
   let videoQualityWarning: string | null = null;
   if (avgConf < 0.6) {
     videoQualityWarning = 'Qualidade do vídeo limitada — análise pode ser imprecisa. Para análise mais precisa, filme de perfil ou de frente, com boa iluminação e corpo inteiro visível.';
@@ -288,10 +336,10 @@ export function aggregateMediaPipeFrames(result: MediaPipeResult): AggregatedMed
     avgAngles: avg,
     minAngles: min,
     maxAngles: max,
-    allFrameAngles: frameAngles,
-    frameConfidences: frameConfs,
-    framesProcessed: useFrames.length,
-    framesFiltered,
+    allFrameAngles: stabAngles,
+    frameConfidences: stabConfs,
+    framesProcessed: useMotorFrames.length,
+    framesFiltered: framesFilteredMotor,
     avgConfidence: avgConf,
     videoQualityWarning,
   };
@@ -317,7 +365,7 @@ export function mediapipeToMetricsV2(
   }
 
   for (const sj of template.stabilizerJoints) {
-    const input = mapMediaPipeStabilizer(sj.joint, sj.criteria.maxVariation.metric, agg);
+    const input = mapMediaPipeStabilizer(sj.joint, sj.criteria.maxVariation.metric, agg, template.category);
     if (input) stabilizerMetrics.push(input);
   }
 
@@ -462,11 +510,17 @@ function mapMediaPipeMotor(
 /**
  * Mapeia articulação estabilizadora do MediaPipe
  * Usa percentil 10-90 para variação (elimina spikes de outliers)
+ *
+ * Para exercícios hinge (deadlift, RDL):
+ * - trunk_inclination varia ~60° por design (o tronco DEVE inclinar)
+ * - Para isolar instabilidade REAL (spine rounding), subtrai a variação esperada pelo hip ROM
+ * - Fórmula: adjustedVar = trunkVar - hipVar * 0.5 (clamped >= 0)
  */
 function mapMediaPipeStabilizer(
   joint: string,
   _metric: string,
   agg: AggregatedMediaPipeData,
+  category?: string,
 ): StabilizerMetricInput | null {
   const { allFrameAngles } = agg;
 
@@ -481,6 +535,26 @@ function mapMediaPipeStabilizer(
     }
     if (values.length < 2) return null;
     return robustVariation(values);
+  };
+
+  /**
+   * Corrige variação do tronco para exercícios onde o tronco DEVE mover (hinge).
+   * Em deadlift com spine neutra: trunk_inclination ≈ f(hip_flexion)
+   * A variação que NÃO é explicada pelo hip ROM = instabilidade espinhal real.
+   */
+  const getHipCorrectedTrunkVariation = (): number | null => {
+    const trunkVar = getRobustVariation('trunk_inclination');
+    if (trunkVar === null) return null;
+
+    // Só corrige para hinge — em squat/press o tronco não deve mover tanto
+    if (category !== 'hinge') return trunkVar;
+
+    const hipVar = getRobustVariation('hip_avg');
+    if (hipVar === null || hipVar < 10) return trunkVar;
+
+    // Fator 0.5: em spine neutra, trunk move ~50% do que o hip
+    const corrected = Math.max(0, trunkVar - hipVar * 0.5);
+    return Math.round(corrected * 10) / 10;
   };
 
   // Helper: P90 robusto para valores absolutos (valgo)
@@ -500,19 +574,19 @@ function mapMediaPipeStabilizer(
 
   switch (joint) {
     case 'lumbar': {
-      const variation = getRobustVariation('trunk_inclination');
+      const variation = getHipCorrectedTrunkVariation();
       if (variation === null) return null;
       return { joint: 'lumbar', variationValue: variation, unit: '°' };
     }
 
     case 'trunk': {
-      const variation = getRobustVariation('trunk_inclination');
+      const variation = getHipCorrectedTrunkVariation();
       if (variation === null) return null;
       return { joint: 'trunk', variationValue: variation, unit: '°' };
     }
 
     case 'thoracic': {
-      const variation = getRobustVariation('trunk_inclination');
+      const variation = getHipCorrectedTrunkVariation();
       if (variation === null) return null;
       return { joint: 'thoracic', variationValue: variation, unit: '°' };
     }
@@ -574,7 +648,7 @@ function mapMediaPipeStabilizer(
 
     case 'thoracic_arch': {
       // Variação da inclinação do tronco como proxy para estabilidade do arco
-      const variation = getRobustVariation('trunk_inclination');
+      const variation = getHipCorrectedTrunkVariation();
       if (variation === null) return null;
       return { joint: 'thoracic_arch', variationValue: variation, unit: '°' };
     }

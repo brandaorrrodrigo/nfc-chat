@@ -1,28 +1,33 @@
 /**
- * API Route: NFV Analysis - Trigger IA analise de video
- * POST - Iniciar analise por IA (Pipeline Biomecânico Completo)
+ * API Route: NFV Analysis - Auto-trigger de análise biomecânica
+ * POST - Pipeline completo MediaPipe + V2 Classifier + RAG + Ollama TEXT
  *
- * Fluxo: PENDING_AI -> PROCESSING -> BIOMECHANICS_ANALYZED_V2 ou ERROR
+ * Fluxo: PENDING_AI → PROCESSING → BIOMECHANICS_ANALYZED_V2 ou ERROR
  *
- * Pipeline:
+ * Pipeline (idêntico ao /api/biomechanics/analyze):
  * 1. Baixa vídeo do Supabase Storage
  * 2. Extrai frames com ffmpeg
- * 3. Analisa cada frame com Ollama Vision (ângulos estruturados)
- * 4. Mapeia ângulos para métricas da categoria do exercício
- * 5. Classifica contra ranges do template (squat/hinge/pull/press/etc)
- * 6. Gera relatório com LLM + RAG
+ * 3. Analisa cada frame com MediaPipe Pose (Python, heavy model)
+ * 4. V2: Motor/Estabilizador | V1 fallback: categoria genérica
+ * 5. Gera relatório com Ollama TEXT (llama3.1) + RAG
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabase, isSupabaseConfigured } from '@/lib/supabase';
-import { downloadVideoFromSupabase, downloadVideoFromUrl, extractFrames, checkVisionModelAvailable } from '@/lib/vision/video-analysis';
-import { analyzeAllFrames } from '@/lib/biomechanics/vision-analyzer';
+import { downloadVideoFromSupabase, downloadVideoFromUrl, extractFrames } from '@/lib/vision/video-analysis';
+import {
+  analyzeFramesWithMediaPipe,
+  aggregateMediaPipeFrames,
+  mediapipeToMetricsV2,
+  mediapipeToMetricsV1,
+} from '@/lib/biomechanics/mediapipe-bridge';
 import { classifyMetrics, extractAllRAGTopics } from '@/lib/biomechanics/criteria-classifier';
 import { getCategoryTemplate, getExerciseCategory } from '@/lib/biomechanics/category-templates';
-import { buildPrompt } from '@/lib/biomechanics/prompt-builder';
+import { buildPrompt, buildPromptV2, type RAGContext } from '@/lib/biomechanics/prompt-builder';
 import { sendPromptToOllama } from '@/lib/biomechanics/llm-bridge';
 import { queryRAG } from '@/lib/biomechanics/biomechanics-rag';
-import { aggregateFrameAnalyses, visionToMetrics } from '@/lib/biomechanics/frame-aggregator';
+import { getExerciseTemplateV2 } from '@/lib/biomechanics/exercise-templates-v2';
+import { classifyExerciseV2, extractV2RAGTopics } from '@/lib/biomechanics/classifier-v2';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
@@ -64,7 +69,7 @@ export async function POST(req: NextRequest) {
 
     const supabase = getSupabase();
 
-    // 1. Buscar analise
+    // 1. Buscar análise
     const { data: analysis, error: fetchError } = await supabase
       .from(TABLE)
       .select('*')
@@ -85,15 +90,6 @@ export async function POST(req: NextRequest) {
       .update({ status: 'PROCESSING' })
       .eq('id', analysisId);
 
-    // 3. Verificar se Vision Model esta disponivel
-    const visionAvailable = await checkVisionModelAvailable();
-
-    if (!visionAvailable) {
-      console.log('[NFV] Vision model nao disponivel, setando ERROR');
-      await setAnalysisError(analysisId, 'Servico de analise indisponivel. Ollama nao esta rodando ou nao tem modelo de visao.');
-      return NextResponse.json({ error: 'Servico de analise indisponivel' }, { status: 503 });
-    }
-
     if (!analysis.video_url && !analysis.video_path) {
       await setAnalysisError(analysisId, 'Video nao encontrado no registro');
       return NextResponse.json({ error: 'Video nao encontrado' }, { status: 400 });
@@ -102,12 +98,11 @@ export async function POST(req: NextRequest) {
     const exerciseName = analysis.movement_pattern || 'exercicio';
     const category = getExerciseCategory(exerciseName);
     const template = getCategoryTemplate(category);
-    const frameCount = 6;
 
-    console.log(`[NFV] Iniciando pipeline biomecânico para ${analysisId}`);
+    console.log(`[NFV] Pipeline MediaPipe para ${analysisId}`);
     console.log(`[NFV] Exercicio: ${exerciseName} → Categoria: ${category}`);
 
-    // 4. Baixar video e extrair frames
+    // 3. Baixar vídeo e extrair frames
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'nfv-analysis-'));
     let localVideoPath: string | null = null;
 
@@ -129,124 +124,240 @@ export async function POST(req: NextRequest) {
 
     console.log(`[NFV] Video baixado: ${localVideoPath}`);
 
-    // 5. Extrair frames
+    // 4. Extrair frames
+    const frameCount = 6;
     const framesDir = path.join(tempDir, 'frames');
     fs.mkdirSync(framesDir, { recursive: true });
     const framePaths = await extractFrames(localVideoPath, framesDir, frameCount);
 
     console.log(`[NFV] ${framePaths.length} frames extraidos`);
 
-    // 6. Converter frames para base64 e analisar com Vision (ângulos estruturados)
-    const framesBase64: string[] = [];
-    for (const fp of framePaths) {
-      const buffer = await fs.promises.readFile(fp);
-      framesBase64.push(buffer.toString('base64'));
+    // 5. Analisar frames com MediaPipe (Python)
+    console.log(`[NFV] Analisando ${framePaths.length} frames com MediaPipe Pose...`);
+    const mediapipeResult = await analyzeFramesWithMediaPipe(framePaths);
+
+    if (!mediapipeResult.success || mediapipeResult.frames_processed === 0) {
+      console.error('[NFV] MediaPipe failed:', mediapipeResult.error);
+      await setAnalysisError(analysisId, `MediaPipe falhou: ${mediapipeResult.error}`);
+      return NextResponse.json({ error: 'MediaPipe analysis failed' }, { status: 500 });
     }
 
-    console.log(`[NFV] Analisando ${framesBase64.length} frames com Vision (${exerciseName})...`);
-    const visionResults = await analyzeAllFrames(framesBase64, exerciseName);
+    console.log(`[NFV] MediaPipe: ${mediapipeResult.frames_processed}/${mediapipeResult.frames_total} frames`);
 
-    // Log dos ângulos extraídos
-    for (let i = 0; i < visionResults.length; i++) {
-      const r = visionResults[i];
-      console.log(`[NFV] Frame ${i + 1}: score=${r.score}, hip=${r.angulos_aproximados.flexao_quadril_graus}°, knee_L=${r.angulos_aproximados.joelho_esq_graus}°, trunk=${r.angulos_aproximados.inclinacao_tronco_graus}°, lombar=${r.angulos_aproximados.lombar_flexao_graus}°`);
+    // 6. Agregar resultados dos frames
+    const aggregated = aggregateMediaPipeFrames(mediapipeResult);
+
+    console.log(`[NFV] Aggregated: conf=${aggregated.avgConfidence}, frames=${aggregated.framesProcessed} (filtrados=${aggregated.framesFiltered})`);
+    if (aggregated.videoQualityWarning) {
+      console.log(`[NFV] Aviso qualidade: ${aggregated.videoQualityWarning}`);
     }
 
-    // 7. Agregar resultados dos frames
-    const aggregated = aggregateFrameAnalyses(visionResults);
-    console.log(`[NFV] Agregado: avgScore=${aggregated.avgScore.toFixed(1)}, trunkVar=${aggregated.trunkVariation.toFixed(1)}°, valgus=${aggregated.hasValgus}`);
+    // 7. V2 (Motor/Estabilizador) ou V1 fallback
+    const templateV2 = getExerciseTemplateV2(exerciseName);
+    const isV2 = !!templateV2;
 
-    // 8. Mapear para MetricValue[] da categoria correta
-    const metrics = visionToMetrics(aggregated, category);
+    let biomechanicsResult: Record<string, unknown>;
+    let llmReport: unknown = null;
 
-    console.log(`[NFV] Metricas para ${category}:`);
-    for (const m of metrics) {
-      console.log(`  ${m.metric}: ${m.value}${m.unit || ''}`);
-    }
+    if (isV2 && templateV2) {
+      // ========== PIPELINE V2 ==========
+      console.log(`[NFV] V2: ${templateV2.exerciseId} (${templateV2.exerciseName})`);
 
-    // 9. Classificar contra template
-    const equipmentConstraint = body.equipmentConstraint || undefined;
-    const classification = classifyMetrics(metrics, template, exerciseName, equipmentConstraint);
+      const { motorMetrics, stabilizerMetrics } = mediapipeToMetricsV2(aggregated, templateV2);
+      const resultV2 = classifyExerciseV2(motorMetrics, stabilizerMetrics, templateV2);
 
-    console.log(`[NFV] Score: ${classification.overallScore.toFixed(1)}/10 (${classification.summary.excellent}E ${classification.summary.good}G ${classification.summary.acceptable}A ${classification.summary.warning}W ${classification.summary.danger}D)`);
+      console.log(`[NFV] V2 Score: ${resultV2.overallScore}/10 (Motor: ${resultV2.motorScore}, Stab: ${resultV2.stabilizerScore})`);
 
-    // 10. Extrair tópicos RAG
-    const ragTopics = extractAllRAGTopics(classification);
-    let ragContexts: any[] = [];
-    if (ragTopics.length > 0) {
-      try {
-        const ragResults = await queryRAG(ragTopics);
-        ragContexts = ragResults || [];
-      } catch {
-        console.warn('[NFV] RAG query failed, continuando sem RAG');
+      // RAG
+      const ragTopics = extractV2RAGTopics(resultV2);
+      let ragContexts: RAGContext[] = [];
+      if (ragTopics.length > 0) {
+        try {
+          const ragResults = await queryRAG(ragTopics);
+          ragContexts = ragResults || [];
+        } catch {
+          console.warn('[NFV] RAG failed, continuing');
+        }
       }
+
+      // Ollama LLM report
+      const prompt = buildPromptV2({
+        result: resultV2,
+        template: templateV2,
+        ragContext: ragContexts,
+        videoMetadata: { frameCount: framePaths.length },
+      });
+
+      try {
+        llmReport = await sendPromptToOllama(prompt, null, { timeoutMs: 180000 });
+        console.log('[NFV] Relatório Ollama gerado');
+      } catch (llmError: unknown) {
+        console.warn('[NFV] Ollama indisponível:', llmError instanceof Error ? llmError.message : 'unknown');
+      }
+
+      biomechanicsResult = {
+        timestamp: new Date().toISOString(),
+        system: 'biomechanics-v4-mediapipe',
+        pipeline_version: 'v2',
+        angle_source: 'mediapipe_pose_heavy',
+        exercise_id: templateV2.exerciseId,
+        exercise_type: resultV2.exerciseName,
+        category: resultV2.category,
+        type: resultV2.type,
+        overall_score: resultV2.overallScore,
+        motor_score: resultV2.motorScore,
+        stabilizer_score: resultV2.stabilizerScore,
+        mediapipe_confidence: aggregated.avgConfidence,
+        frames_filtered: aggregated.framesFiltered,
+        video_quality_warning: aggregated.videoQualityWarning,
+        equipment_constraint: body.equipmentConstraint || null,
+
+        motor_analysis: resultV2.motorAnalysis.map(m => ({
+          joint: m.joint,
+          label: m.label,
+          movement: m.movement,
+          rom: m.rom,
+          peak_contraction: m.peakContraction || null,
+          symmetry: m.symmetry || null,
+        })),
+
+        stabilizer_analysis: resultV2.stabilizerAnalysis.map(s => ({
+          joint: s.joint,
+          label: s.label,
+          expected_state: s.expectedState,
+          variation: s.variation,
+          interpretation: s.interpretation,
+          corrective_exercises: s.correctiveExercises,
+        })),
+
+        classification_summary: {
+          motor: resultV2.summary.motor,
+          stabilizer: resultV2.summary.stabilizer,
+        },
+
+        classifications_detail: [
+          ...resultV2.motorAnalysis.map(m => ({
+            criterion: m.joint,
+            label: m.label,
+            metric: m.rom.unit === 'cm' ? `${m.joint}_cm` : `${m.joint}_rom`,
+            value: `${m.rom.value}${m.rom.unit}`,
+            raw_value: m.rom.value,
+            unit: m.rom.unit,
+            classification: m.rom.classification,
+            classification_label: m.rom.classificationLabel,
+            is_safety_critical: false,
+            is_informative: false,
+            note: `Motor: ${m.movement}`,
+            rag_topics: m.ragTopics,
+          })),
+          ...resultV2.stabilizerAnalysis.map(s => ({
+            criterion: s.joint,
+            label: s.label,
+            metric: `${s.joint}_variation`,
+            value: `${s.variation.value}${s.variation.unit}`,
+            raw_value: s.variation.value,
+            unit: s.variation.unit,
+            classification: s.variation.classification === 'firme' ? 'excellent'
+              : s.variation.classification === 'alerta' ? 'warning' : 'danger',
+            classification_label: s.variation.classificationLabel,
+            is_safety_critical: s.variation.classification === 'compensação',
+            is_informative: false,
+            note: `Estabilizador: ${s.expectedState}`,
+            rag_topics: s.ragTopics,
+          })),
+        ],
+
+        muscles: resultV2.muscles,
+        rag_topics_used: ragTopics,
+        frames_analyzed: framePaths.length,
+        mediapipe_frames: mediapipeResult.frames.map((f, i) => ({
+          frame: i + 1,
+          success: f.success,
+          angles: f.success ? (f.world_angles || f.angles) : null,
+          error: f.error || null,
+        })),
+        llm_report: llmReport || null,
+      };
+
+    } else {
+      // ========== PIPELINE V1 FALLBACK ==========
+      console.log(`[NFV] V1 fallback: ${category}`);
+
+      const metrics = mediapipeToMetricsV1(aggregated, category);
+      const classification = classifyMetrics(metrics, template, exerciseName, body.equipmentConstraint || undefined);
+
+      console.log(`[NFV] V1 Score: ${classification.overallScore.toFixed(1)}/10`);
+
+      const ragTopics = extractAllRAGTopics(classification);
+      let ragContexts: RAGContext[] = [];
+      if (ragTopics.length > 0) {
+        try {
+          const ragResults = await queryRAG(ragTopics);
+          ragContexts = ragResults || [];
+        } catch {
+          console.warn('[NFV] RAG failed, continuing');
+        }
+      }
+
+      const prompt = buildPrompt({
+        result: classification,
+        template,
+        exerciseName,
+        ragContext: ragContexts,
+        equipmentConstraint: body.equipmentConstraint || undefined,
+        videoMetadata: { duration: 0, frameCount: framePaths.length, fps: 30 },
+      });
+
+      try {
+        llmReport = await sendPromptToOllama(prompt, classification, { timeoutMs: 180000 });
+        console.log('[NFV] Relatório Ollama V1 gerado');
+      } catch (llmError: unknown) {
+        console.warn('[NFV] Ollama indisponível:', llmError instanceof Error ? llmError.message : 'unknown');
+      }
+
+      biomechanicsResult = {
+        timestamp: new Date().toISOString(),
+        system: 'biomechanics-v4-mediapipe',
+        pipeline_version: 'v1',
+        angle_source: 'mediapipe_pose_heavy',
+        exercise_type: exerciseName,
+        category,
+        overall_score: classification.overallScore,
+        mediapipe_confidence: aggregated.avgConfidence,
+        frames_filtered: aggregated.framesFiltered,
+        video_quality_warning: aggregated.videoQualityWarning,
+        equipment_constraint: classification.constraintApplied || null,
+        classification_summary: classification.summary,
+        classifications_detail: classification.classifications.map(c => ({
+          criterion: c.criterion,
+          label: c.label || c.criterion,
+          metric: c.metric,
+          value: `${c.value}${c.unit || ''}`,
+          raw_value: c.value,
+          unit: c.unit || '',
+          classification: c.classification,
+          classification_label: c.classificationLabel || c.classification,
+          is_safety_critical: c.isSafetyCritical,
+          is_informative: c.isInformativeOnly || false,
+          note: c.note,
+          rag_topics: c.ragTopics,
+        })),
+        rag_topics_used: ragTopics,
+        frames_analyzed: framePaths.length,
+        mediapipe_frames: mediapipeResult.frames.map((f, i) => ({
+          frame: i + 1,
+          success: f.success,
+          angles: f.success ? (f.world_angles || f.angles) : null,
+          error: f.error || null,
+        })),
+        llm_report: llmReport || null,
+      };
     }
 
-    // 11. Build prompt para LLM
-    const prompt = buildPrompt({
-      result: classification,
-      template,
-      exerciseName,
-      ragContext: ragContexts,
-      equipmentConstraint,
-      videoMetadata: {
-        duration: 0,
-        frameCount: framePaths.length,
-        fps: 30,
-      },
-    });
+    console.log(`[NFV] Pipeline completo! Score: ${biomechanicsResult.overall_score}/10`);
 
-    // 12. Gerar relatório via Ollama LLM
-    let llmReport: Awaited<ReturnType<typeof sendPromptToOllama>> = null;
-    try {
-      llmReport = await sendPromptToOllama(prompt, classification, { timeoutMs: 180000 });
-      console.log('[NFV] Relatório Ollama gerado com sucesso');
-    } catch (llmError: any) {
-      console.warn('[NFV] Ollama LLM indisponivel:', llmError.message);
-    }
-
-    // 13. Preparar resultado estruturado
-    const biomechanicsResult = {
-      timestamp: new Date().toISOString(),
-      system: 'biomechanics-v3-vision',
-      exercise_type: exerciseName,
-      category,
-      overall_score: classification.overallScore,
-      vision_score: aggregated.avgScore,
-      equipment_constraint: classification.constraintApplied || null,
-      equipment_constraint_label: classification.constraintLabel || null,
-      classification_summary: classification.summary,
-      classifications_detail: classification.classifications.map(c => ({
-        criterion: c.criterion,
-        label: c.label || c.criterion,
-        metric: c.metric,
-        value: `${c.value}${c.unit || ''}`,
-        raw_value: c.value,
-        unit: c.unit || '',
-        classification: c.classification,
-        classification_label: c.classificationLabel || c.classification,
-        is_safety_critical: c.isSafetyCritical,
-        is_informative: c.isInformativeOnly || false,
-        note: c.note,
-        rag_topics: c.ragTopics,
-      })),
-      rag_topics_used: ragTopics,
-      frames_analyzed: framePaths.length,
-      frame_scores: visionResults.map(f => f.score),
-      frame_details: visionResults.map((f, i) => ({
-        frame: i + 1,
-        score: f.score,
-        fase: f.fase,
-        desvios: f.desvios_criticos,
-        justificativa: f.justificativa,
-      })),
-      llm_report: llmReport || null,
-    };
-
-    console.log(`[NFV] Pipeline completo! Score: ${classification.overallScore.toFixed(1)}/10 | Categoria: ${category}`);
-
-    // 14. Salvar no banco
-    const { data: updated, error: updateError } = await supabase
+    // 8. Salvar no banco
+    const { error: updateError } = await supabase
       .from(TABLE)
       .update({
         ai_analysis: biomechanicsResult,
@@ -254,28 +365,26 @@ export async function POST(req: NextRequest) {
         status: 'BIOMECHANICS_ANALYZED_V2',
         updated_at: new Date().toISOString(),
       })
-      .eq('id', analysisId)
-      .select()
-      .single();
+      .eq('id', analysisId);
 
     if (updateError) {
-      console.error('[NFV] Error updating analysis:', updateError);
+      console.error('[NFV] Error updating:', updateError);
       return NextResponse.json({ error: 'Erro ao salvar analise' }, { status: 500 });
     }
 
     return NextResponse.json({
       success: true,
-      analysis: updated,
-      aiResult: biomechanicsResult,
+      analysisId,
+      pipeline: isV2 ? 'v2' : 'v1',
+      score: biomechanicsResult.overall_score,
     });
-  } catch (error: any) {
-    console.error('[NFV] Analysis POST error:', error);
+  } catch (error: unknown) {
+    console.error('[NFV] Analysis error:', error);
     if (analysisId) {
-      await setAnalysisError(analysisId, error.message || 'Erro interno na analise');
+      await setAnalysisError(analysisId, error instanceof Error ? error.message : 'Erro interno');
     }
     return NextResponse.json({ error: 'Erro interno' }, { status: 500 });
   } finally {
-    // Cleanup temp files
     if (tempDir && fs.existsSync(tempDir)) {
       try {
         fs.rmSync(tempDir, { recursive: true, force: true });

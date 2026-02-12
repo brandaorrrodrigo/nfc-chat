@@ -849,6 +849,7 @@ function normalizeExerciseName(name: string): string {
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[_-]/g, ' ')
     .trim();
 }
 

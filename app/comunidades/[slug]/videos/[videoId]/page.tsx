@@ -270,6 +270,40 @@ export default function VideoDetailPage() {
       const framesAnalyzed = (data.frames_analyzed as number) || (data.metadata as Record<string,unknown>)?.frames_analyzed as number || frameAnalyses.length;
       const classificacao = (report.classificacao as string) || (data.classificacao as string) || (data.classification as string);
 
+      const getClassBadge = (cls: string) => {
+        switch (cls) {
+          case 'excellent': return 'bg-green-500/20 text-green-400 border-green-500/30';
+          case 'good': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+          case 'acceptable': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
+          case 'warning': return 'bg-orange-500/20 text-orange-400 border-orange-500/30';
+          case 'danger': return 'bg-red-500/20 text-red-400 border-red-500/30';
+          default: return 'bg-zinc-700/50 text-zinc-400 border-zinc-600/30';
+        }
+      };
+
+      // V2 Pipeline data
+      const pipelineVersion = data.pipeline_version as string || '';
+      const motorScore = data.motor_score as number;
+      const stabilizerScore = data.stabilizer_score as number;
+      const mediapipeConfidence = (data.mediapipe_confidence as number) || 0;
+      const motorAnalysis = data.motor_analysis as Array<{
+        joint: string;
+        label: string;
+        movement: string;
+        rom: { value: number; unit: string; min?: number; max?: number; classification: string; classificationLabel: string };
+        peak_contraction?: number | null;
+        symmetry?: number | null;
+      }> || [];
+      const stabilizerAnalysis = data.stabilizer_analysis as Array<{
+        joint: string;
+        label: string;
+        expected_state: string;
+        variation: { value: number; unit: string; classification: string; classificationLabel: string };
+        interpretation: string;
+        corrective_exercises: string[];
+      }> || [];
+      const muscles = data.muscles as { primary?: string[]; secondary?: string[]; stabilizers?: string[] } | null;
+
 
       // Pontos críticos - novo formato do script (com fallback para formato antigo)
       const pontosCriticosNovo = data.pontos_criticos as Array<{ nome: string; severidade: string; frames_afetados: number[]; frequencia: string }> || [];
@@ -335,8 +369,16 @@ export default function VideoDetailPage() {
                 )}
               </div>
               <div className="text-right">
-                <div className="text-xs text-zinc-500">Vision</div>
-                <div className="text-sm text-zinc-400">{modelVision}</div>
+                {pipelineVersion && (
+                  <>
+                    <span className={`inline-block text-[10px] px-2 py-0.5 rounded font-semibold ${pipelineVersion === 'v2' ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30' : 'bg-zinc-700 text-zinc-400 border border-zinc-600'}`}>
+                      Pipeline {pipelineVersion.toUpperCase()}
+                    </span>
+                    <div className="mt-1.5" />
+                  </>
+                )}
+                <div className="text-xs text-zinc-500">{pipelineVersion ? 'MediaPipe' : 'Vision'}</div>
+                <div className="text-sm text-zinc-400">{pipelineVersion ? `conf ${(mediapipeConfidence * 100).toFixed(0)}%` : modelVision}</div>
                 {modelText && (
                   <>
                     <div className="text-xs text-zinc-500 mt-2">Text</div>
@@ -348,9 +390,23 @@ export default function VideoDetailPage() {
               </div>
             </div>
 
-            {(summary || String(report.resumo || '')) && (
+            {/* V2: Motor / Stabilizer sub-scores */}
+            {motorScore != null && stabilizerScore != null && (
+              <div className="mt-4 border-t border-zinc-700/50 pt-4 grid grid-cols-2 gap-3">
+                <div className="bg-zinc-800/50 rounded-lg p-3 text-center">
+                  <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Motor (60%)</div>
+                  <div className={`text-xl font-bold ${getScoreColor(motorScore)}`}>{motorScore.toFixed(1)}</div>
+                </div>
+                <div className="bg-zinc-800/50 rounded-lg p-3 text-center">
+                  <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Estabilizador (40%)</div>
+                  <div className={`text-xl font-bold ${getScoreColor(stabilizerScore)}`}>{stabilizerScore.toFixed(1)}</div>
+                </div>
+              </div>
+            )}
+
+            {(summary || String(report.resumo_executivo || report.resumo || '')) && (
               <p className="mt-4 text-sm text-zinc-300 border-t border-zinc-700/50 pt-4">
-                {String(report.resumo || '') || summary}
+                {String(report.resumo_executivo || report.resumo || '') || summary}
               </p>
             )}
           </div>
@@ -371,17 +427,6 @@ export default function VideoDetailPage() {
               note?: string;
             }> || [];
             if (classificationsDetail.length === 0) return null;
-
-            const getClassBadge = (cls: string) => {
-              switch (cls) {
-                case 'excellent': return 'bg-green-500/20 text-green-400 border-green-500/30';
-                case 'good': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
-                case 'acceptable': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
-                case 'warning': return 'bg-orange-500/20 text-orange-400 border-orange-500/30';
-                case 'danger': return 'bg-red-500/20 text-red-400 border-red-500/30';
-                default: return 'bg-zinc-700/50 text-zinc-400 border-zinc-600/30';
-              }
-            };
 
             const categoryLabel = (data.category as string) || '';
             const visionScore = data.vision_score as number;
@@ -430,6 +475,222 @@ export default function VideoDetailPage() {
                         <span className="text-zinc-400">{c.label || c.criterion}:</span> {c.note}
                       </p>
                     ))}
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+
+          {/* V2: Motor Analysis */}
+          {motorAnalysis.length > 0 && (
+            <div>
+              <div className="flex items-center gap-2 text-sm font-medium text-white mb-3">
+                <Target className="w-4 h-4 text-green-400" />
+                Analise Motora
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-500/20 text-green-400">
+                  {motorScore != null ? `${motorScore.toFixed(1)}/10` : ''}
+                </span>
+              </div>
+              <div className="space-y-2">
+                {motorAnalysis.map((m, i) => {
+                  const romClass = m.rom.classification;
+                  const romBg = romClass === 'excellent' ? 'border-green-500/50'
+                    : romClass === 'good' ? 'border-blue-500/50'
+                    : romClass === 'acceptable' ? 'border-yellow-500/50'
+                    : romClass === 'warning' ? 'border-orange-500/50'
+                    : romClass === 'danger' ? 'border-red-500/50' : 'border-zinc-700';
+                  return (
+                    <div key={i} className={`bg-zinc-800/50 rounded-lg p-3 border-l-2 ${romBg}`}>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs text-zinc-300 font-medium">{m.label || m.joint}</span>
+                        <span className={`text-[10px] px-2 py-0.5 rounded border ${getClassBadge(romClass)}`}>
+                          {m.rom.classificationLabel || romClass}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3 text-[10px] text-zinc-500">
+                        <span>Movimento: {m.movement}</span>
+                        <span>ROM: {m.rom.value}{m.rom.unit}</span>
+                        {m.rom.min != null && m.rom.max != null && (
+                          <span>({m.rom.min.toFixed(0)}-{m.rom.max.toFixed(0)}{m.rom.unit})</span>
+                        )}
+                      </div>
+                      {m.peak_contraction != null && (
+                        <div className="text-[10px] text-zinc-500 mt-0.5">Pico contracao: {m.peak_contraction.toFixed(0)}{m.rom.unit}</div>
+                      )}
+                      {m.symmetry != null && (
+                        <div className={`text-[10px] mt-0.5 ${Math.abs(m.symmetry) > 15 ? 'text-orange-400' : 'text-zinc-500'}`}>
+                          Simetria: {m.symmetry > 0 ? '+' : ''}{m.symmetry.toFixed(1)}%
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* V2: Stabilizer Analysis */}
+          {stabilizerAnalysis.length > 0 && (
+            <div>
+              <div className="flex items-center gap-2 text-sm font-medium text-white mb-3">
+                <svg className="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                Analise Estabilizadores
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400">
+                  {stabilizerScore != null ? `${stabilizerScore.toFixed(1)}/10` : ''}
+                </span>
+              </div>
+              <div className="space-y-2">
+                {stabilizerAnalysis.map((s, i) => {
+                  const stabClass = s.variation.classification === 'firme' ? 'excellent'
+                    : s.variation.classification === 'alerta' ? 'warning' : 'danger';
+                  const stabBorder = stabClass === 'excellent' ? 'border-green-500/50'
+                    : stabClass === 'warning' ? 'border-orange-500/50' : 'border-red-500/50';
+                  return (
+                    <div key={i} className={`bg-zinc-800/50 rounded-lg p-3 border-l-2 ${stabBorder}`}>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs text-zinc-300 font-medium">{s.label || s.joint}</span>
+                        <span className={`text-[10px] px-2 py-0.5 rounded border ${getClassBadge(stabClass)}`}>
+                          {s.variation.classificationLabel || s.variation.classification}
+                        </span>
+                      </div>
+                      <div className="text-[10px] text-zinc-500 mb-1">
+                        Esperado: {s.expected_state} | Variacao: {s.variation.value.toFixed(1)}{s.variation.unit}
+                      </div>
+                      <p className="text-[10px] text-zinc-400">{s.interpretation}</p>
+                      {Array.isArray(s.corrective_exercises) && s.corrective_exercises.length > 0 && (
+                        <div className="mt-1.5 flex flex-wrap gap-1">
+                          {s.corrective_exercises.map((ex, j) => (
+                            <span key={j} className="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/15 text-purple-400 border border-purple-500/20">
+                              {ex}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* V2: Musculos utilizados */}
+          {muscles && (muscles.primary?.length || muscles.secondary?.length || muscles.stabilizers?.length) ? (
+            <div>
+              <div className="flex items-center gap-2 text-sm font-medium text-white mb-3">
+                <svg className="w-4 h-4 text-pink-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Musculos Envolvidos
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {muscles.primary?.map((m, i) => (
+                  <span key={`p-${i}`} className="text-[10px] px-2 py-0.5 rounded bg-pink-500/20 text-pink-400 border border-pink-500/20">{m}</span>
+                ))}
+                {muscles.secondary?.map((m, i) => (
+                  <span key={`s-${i}`} className="text-[10px] px-2 py-0.5 rounded bg-zinc-700/50 text-zinc-400 border border-zinc-600/30">{m}</span>
+                ))}
+                {muscles.stabilizers?.map((m, i) => (
+                  <span key={`st-${i}`} className="text-[10px] px-2 py-0.5 rounded bg-blue-500/15 text-blue-400 border border-blue-500/20">{m}</span>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          {/* V2: LLM Report (Ollama) */}
+          {report && typeof report === 'object' && Object.keys(report).length > 0 && (() => {
+            const pontosPositivos = report.pontos_positivos as string[] || [];
+            const pontosAtencao = report.pontos_de_atencao as Array<{ item: string; severidade: string; sugestao: string }> || [];
+            const conclusao = report.conclusao as string;
+            const recsTop3 = report.recomendacoes_top3 as Array<{ prioridade: number; acao: string; motivo: string }> || [];
+            const cadeiaMovimento = report.cadeia_de_movimento as Array<{ fase: string; descricao: string }> || [];
+            if (pontosPositivos.length === 0 && pontosAtencao.length === 0 && !conclusao && recsTop3.length === 0) return null;
+
+            return (
+              <div className="space-y-4">
+                {/* Pontos positivos */}
+                {pontosPositivos.length > 0 && (
+                  <div>
+                    <div className="flex items-center gap-2 text-sm font-medium text-white mb-2">
+                      <CheckCircle className="w-4 h-4 text-green-400" />
+                      Pontos Positivos
+                    </div>
+                    <ul className="space-y-1">
+                      {pontosPositivos.map((p, i) => (
+                        <li key={i} className="flex items-start gap-2 text-xs text-zinc-300">
+                          <span className="text-green-400 mt-0.5">+</span>
+                          {p}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Cadeia de movimento */}
+                {cadeiaMovimento.length > 0 && (
+                  <div>
+                    <div className="flex items-center gap-2 text-sm font-medium text-white mb-2">
+                      <Play className="w-4 h-4 text-cyan-400" />
+                      Cadeia de Movimento
+                    </div>
+                    <div className="space-y-1.5">
+                      {cadeiaMovimento.map((fase, i) => (
+                        <div key={i} className="flex items-start gap-2 text-xs">
+                          <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${getFaseColor(fase.fase?.toLowerCase())}`}>{fase.fase}</span>
+                          <span className="text-zinc-400">{fase.descricao}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Pontos de atencao */}
+                {pontosAtencao.length > 0 && (
+                  <div>
+                    <div className="flex items-center gap-2 text-sm font-medium text-white mb-2">
+                      <AlertTriangle className="w-4 h-4 text-orange-400" />
+                      Pontos de Atencao
+                    </div>
+                    <div className="space-y-2">
+                      {pontosAtencao.map((p, i) => (
+                        <div key={i} className="bg-zinc-800/50 rounded-lg p-2.5 border-l-2 border-orange-500/50">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className={`text-[10px] font-semibold ${getSeveridadeColor(p.severidade)}`}>{p.severidade}</span>
+                            <span className="text-xs text-zinc-300">{p.item}</span>
+                          </div>
+                          <p className="text-[10px] text-zinc-500">{p.sugestao}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Recomendacoes top 3 */}
+                {recsTop3.length > 0 && (
+                  <div>
+                    <div className="flex items-center gap-2 text-sm font-medium text-white mb-2">
+                      <Star className="w-4 h-4 text-yellow-400" />
+                      Recomendacoes
+                    </div>
+                    <div className="space-y-1.5">
+                      {recsTop3.map((r, i) => (
+                        <div key={i} className="flex items-start gap-2 text-xs">
+                          <span className="text-yellow-400 font-bold">#{r.prioridade}</span>
+                          <div>
+                            <span className="text-zinc-300">{r.acao}</span>
+                            <span className="text-zinc-500 ml-1">— {r.motivo}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Conclusao */}
+                {conclusao && (
+                  <div className="bg-zinc-800/30 rounded-lg p-3 border border-zinc-700/50">
+                    <p className="text-xs text-zinc-400 italic">{conclusao}</p>
                   </div>
                 )}
               </div>
@@ -594,7 +855,49 @@ export default function VideoDetailPage() {
             />
           )}
 
-          {/* Frame by Frame Analysis */}
+          {/* V2: MediaPipe Frames (raw angles per frame) */}
+          {pipelineVersion && frameAnalyses.length === 0 && (() => {
+            const mpFrames = data.mediapipe_frames as Array<{
+              frame: number;
+              success: boolean;
+              angles: Record<string, number> | null;
+              error: string | null;
+            }> || [];
+            if (mpFrames.length === 0) return null;
+
+            return (
+              <div>
+                <div className="flex items-center gap-2 text-sm font-medium text-white mb-3">
+                  <Play className="w-4 h-4 text-cyan-400" />
+                  Dados MediaPipe por Frame
+                </div>
+                <div className="space-y-2">
+                  {mpFrames.map((mf, i) => (
+                    <div key={i} className={`bg-zinc-800/50 rounded-lg p-2.5 ${mf.success ? '' : 'opacity-50'}`}>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[10px] text-zinc-500">Frame {mf.frame}</span>
+                        <span className={`text-[9px] px-1.5 py-0.5 rounded ${mf.success ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                          {mf.success ? 'OK' : 'FALHOU'}
+                        </span>
+                      </div>
+                      {mf.success && mf.angles && (
+                        <div className="flex flex-wrap gap-1.5">
+                          {Object.entries(mf.angles).slice(0, 8).map(([key, val]) => (
+                            <span key={key} className="text-[9px] bg-zinc-900 px-1.5 py-0.5 rounded text-zinc-500">
+                              {key.replace(/_/g, ' ')}: {typeof val === 'number' ? val.toFixed(1) : val}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      {mf.error && <p className="text-[10px] text-red-400">{mf.error}</p>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Frame by Frame Analysis (legacy/vision format) */}
           {frameAnalyses.length > 0 && (
             <div>
               <div className="flex items-center gap-2 text-sm font-medium text-white mb-4">

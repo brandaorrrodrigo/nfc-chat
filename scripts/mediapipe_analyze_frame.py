@@ -162,23 +162,27 @@ def calculate_angles(landmarks):
         angles['calibration_factor'] = round(REFERENCE_HIP_WIDTH_CM / hip_width_norm, 2) if hip_width_norm > 0.001 else 0
 
     # --- Valgo de joelho (desvio medial em cm CALIBRADO) ---
-    for side in ['left', 'right']:
-        hp = lm_xyz(landmarks, f'{side}_hip')
-        kn = lm_xyz(landmarks, f'{side}_knee')
-        ak = lm_xyz(landmarks, f'{side}_ankle')
-        if all(v is not None for v in [hp, kn, ak]):
-            # Posicao X esperada do joelho = media entre quadril e tornozelo
-            expected_x = (hp[0] + ak[0]) / 2
-            deviation_norm = abs(kn[0] - expected_x)
+    # IMPORTANTE: Valgo so e confiavel em vista FRONTAL.
+    # hip_width_norm < 0.12 indica vista lateral (quadris sobrepostos) => skip
+    # Tambem limita a 15cm max (nenhum humano tem valgo > 15cm)
+    MIN_HIP_WIDTH_FOR_VALGUS = 0.12
+    MAX_VALGUS_CM = 15.0
 
-            if hip_width_norm and hip_width_norm > 0.001:
-                # Calibrado: converter usando largura do quadril como referencia
+    if hip_width_norm and hip_width_norm >= MIN_HIP_WIDTH_FOR_VALGUS:
+        for side in ['left', 'right']:
+            hp = lm_xyz(landmarks, f'{side}_hip')
+            kn = lm_xyz(landmarks, f'{side}_knee')
+            ak = lm_xyz(landmarks, f'{side}_ankle')
+            if all(v is not None for v in [hp, kn, ak]):
+                # Posicao X esperada do joelho = media entre quadril e tornozelo
+                expected_x = (hp[0] + ak[0]) / 2
+                deviation_norm = abs(kn[0] - expected_x)
+
                 estimated_cm = round(deviation_norm * (REFERENCE_HIP_WIDTH_CM / hip_width_norm), 1)
-            else:
-                # Fallback: estimativa grosseira
-                estimated_cm = round(deviation_norm * 100, 1)
+                # Cap: nenhum valgo real > 15cm
+                estimated_cm = min(estimated_cm, MAX_VALGUS_CM)
 
-            angles[f'knee_valgus_{side}_cm'] = estimated_cm
+                angles[f'knee_valgus_{side}_cm'] = estimated_cm
 
     # --- Shoulder elevation (distancia vertical ombro-quadril normalizada) ---
     for side in ['left', 'right']:
