@@ -29,11 +29,15 @@ async function triggerAIAnalysis(analysisId: string): Promise<void> {
     console.log(`[NFV] Triggering AI analysis for ${analysisId} (attempt ${attempt + 1}/${RETRY_DELAYS.length + 1})`);
 
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 min timeout (pipeline completo é lento)
       const response = await fetch(`${baseUrl}/api/nfv/analysis`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ analysisId }),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
 
       if (response.ok) {
         const result = await response.json();
@@ -214,7 +218,7 @@ export async function GET(req: NextRequest) {
       }
     } else {
       // Mostrar todos os videos (na fila, processando, analisados, aprovados e com erro)
-      query = query.in('status', ['PENDING_AI', 'PROCESSING', 'AI_ANALYZED', 'APPROVED', 'ERROR']);
+      query = query.in('status', ['PENDING_AI', 'PROCESSING', 'AI_ANALYZED', 'BIOMECHANICS_ANALYZED_V2', 'APPROVED', 'ERROR']);
     }
 
     if (pattern) {

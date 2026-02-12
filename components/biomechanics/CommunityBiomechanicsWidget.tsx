@@ -38,11 +38,11 @@ export default function CommunityBiomechanicsWidget({ communitySlug, limit = 5 }
       // Fetch all analyzed videos and filter by community
       const response = await fetch(`/api/biomechanics/list-videos?community=${communitySlug}`);
 
-      if (!response.ok) {
-        throw new Error(`API error: ${response.statusText}`);
-      }
-
       const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || `API error: ${response.status}`);
+      }
 
       // For now, show all videos (will be filtered by community on backend)
       setVideos(data.videos?.slice(0, limit) || []);

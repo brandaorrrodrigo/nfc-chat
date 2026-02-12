@@ -87,12 +87,13 @@ export default function TestReportPage() {
         body: JSON.stringify(testData),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error(`API error: ${response.statusText}`);
+        throw new Error(data.error || `API error: ${response.status}`);
       }
 
-      const data: ReportResponse = await response.json();
-      setResult(data);
+      setResult(data as ReportResponse);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao gerar relatório');
     } finally {

@@ -135,13 +135,15 @@ export default function BiomechanicsDashboard() {
         }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error(`API error: ${response.statusText}`);
+        throw new Error(data.error || data.details || `API error: ${response.status}`);
       }
 
-      const data = await response.json();
       setAnalysis(data);
     } catch (err) {
+      console.error('[Dashboard] Erro na análise:', err);
       setError(err instanceof Error ? err.message : 'Erro ao analisar vídeo');
     } finally {
       setLoading(false);

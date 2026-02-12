@@ -35,11 +35,12 @@ export default function VideosPage() {
       setLoading(true);
       const response = await fetch('/api/biomechanics/list-videos');
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error(`API error: ${response.statusText}`);
+        throw new Error(data.error || `API error: ${response.status}`);
       }
 
-      const data = await response.json();
       setVideos(data.videos || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao carregar vídeos');

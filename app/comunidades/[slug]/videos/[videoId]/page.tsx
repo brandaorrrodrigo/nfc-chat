@@ -200,7 +200,8 @@ export default function VideoDetailPage() {
   const renderPublishedAnalysis = (data: Record<string, unknown>) => {
     // Verificar se é análise biomecânica estruturada (novo formato)
     const analysisType = data.analysis_type as string || '';
-    const isBiomechanicsAnalysis = analysisType.startsWith('biomechanics_');
+    const system = data.system as string || '';
+    const isBiomechanicsAnalysis = analysisType.startsWith('biomechanics_') || system.startsWith('biomechanics-');
 
     // Verificar se é análise do Ollama Vision (tem overall_score)
     const isVisionAnalysis = 'overall_score' in data || 'frame_analyses' in data;
@@ -210,9 +211,16 @@ export default function VideoDetailPage() {
       const score = (data.score as number) || (data.overall_score as number) || 0;
       const summary = data.summary as string;
       const recommendations = data.recommendations as string[] || [];
-      const report = data.report as Record<string, unknown> || {};
-      // Frame analyses - suporta formato antigo e novo
+      const report = data.report as Record<string, unknown> || data.llm_report as Record<string, unknown> || {};
+      // Frame analyses - suporta formato antigo, novo e biomechanics-v3
       const visionAnalysis = data.vision_analysis as Array<Record<string, unknown>> || [];
+      const frameDetails = data.frame_details as Array<{
+        frame: number;
+        score: number;
+        fase?: string;
+        desvios?: string[];
+        justificativa?: string;
+      }> || [];
       const frameAnalyses = (data.frame_analyses as Array<{
         frame: number;
         frame_numero?: number;
@@ -236,18 +244,27 @@ export default function VideoDetailPage() {
         score: number;
         confianca_medida?: string;
         interpolated?: boolean;
-      }> || visionAnalysis.map((v, i) => ({
-        frame: (v.frame_numero as number) || i + 1,
-        timestamp: v.timestamp as string || `${i * 0.4}s`,
-        fase: v.fase as string,
-        angulos: v.angulos as Record<string, number>,
-        alinhamentos: v.alinhamentos as Record<string, boolean>,
-        desvios: (v.desvios_detectados as string[]) || (v.desvios as string[]),
-        justificativa: v.justificativa as string,
-        score: v.score as number || 0,
-        confianca_medida: v.confianca_medida as string,
-        interpolated: v.interpolated as boolean
-      })));
+      }> || (frameDetails.length > 0
+        ? frameDetails.map((fd, i) => ({
+            frame: fd.frame || i + 1,
+            timestamp: `Frame ${fd.frame || i + 1}`,
+            fase: fd.fase,
+            desvios: fd.desvios,
+            justificativa: fd.justificativa,
+            score: fd.score || 0,
+          }))
+        : visionAnalysis.map((v, i) => ({
+            frame: (v.frame_numero as number) || i + 1,
+            timestamp: v.timestamp as string || `${i * 0.4}s`,
+            fase: v.fase as string,
+            angulos: v.angulos as Record<string, number>,
+            alinhamentos: v.alinhamentos as Record<string, boolean>,
+            desvios: (v.desvios_detectados as string[]) || (v.desvios as string[]),
+            justificativa: v.justificativa as string,
+            score: v.score as number || 0,
+            confianca_medida: v.confianca_medida as string,
+            interpolated: v.interpolated as boolean
+          }))));
       const modelVision = data.model_vision as string || data.model as string || 'IA';
       const modelText = data.model_text as string;
       const framesAnalyzed = (data.frames_analyzed as number) || (data.metadata as Record<string,unknown>)?.frames_analyzed as number || frameAnalyses.length;
@@ -331,13 +348,93 @@ export default function VideoDetailPage() {
               </div>
             </div>
 
-            {(summary || report.resumo) && (
+            {(summary || String(report.resumo || '')) && (
               <p className="mt-4 text-sm text-zinc-300 border-t border-zinc-700/50 pt-4">
-                {(report.resumo as string) || summary}
+                {String(report.resumo || '') || summary}
               </p>
             )}
           </div>
 
+
+          {/* Classifications Detail - Tabela de critérios biomecânicos (v3) */}
+          {(() => {
+            const classificationsDetail = data.classifications_detail as Array<{
+              criterion: string;
+              label: string;
+              value: string;
+              raw_value: number;
+              unit: string;
+              classification: string;
+              classification_label: string;
+              is_safety_critical: boolean;
+              is_informative: boolean;
+              note?: string;
+            }> || [];
+            if (classificationsDetail.length === 0) return null;
+
+            const getClassBadge = (cls: string) => {
+              switch (cls) {
+                case 'excellent': return 'bg-green-500/20 text-green-400 border-green-500/30';
+                case 'good': return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+                case 'acceptable': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
+                case 'warning': return 'bg-orange-500/20 text-orange-400 border-orange-500/30';
+                case 'danger': return 'bg-red-500/20 text-red-400 border-red-500/30';
+                default: return 'bg-zinc-700/50 text-zinc-400 border-zinc-600/30';
+              }
+            };
+
+            const categoryLabel = (data.category as string) || '';
+            const visionScore = data.vision_score as number;
+
+            return (
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2 text-sm font-medium text-white">
+                    <Target className="w-4 h-4 text-cyan-400" />
+                    Classificacao por Criterio
+                  </div>
+                  {categoryLabel && (
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
+                      {categoryLabel}
+                    </span>
+                  )}
+                </div>
+                {visionScore != null && (
+                  <p className="text-xs text-zinc-500 mb-3">Vision score medio: {visionScore.toFixed?.(1) ?? visionScore}/10</p>
+                )}
+                <div className="space-y-1.5">
+                  {classificationsDetail.map((c, i) => (
+                    <div key={i} className={`flex items-center justify-between bg-zinc-800/50 rounded-lg px-3 py-2 ${c.is_safety_critical ? 'border-l-2 border-red-500/70' : ''}`}>
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <span className="text-xs text-zinc-300 truncate">{c.label || c.criterion}</span>
+                        {c.is_informative && (
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-zinc-700 text-zinc-500 flex-shrink-0">INFO</span>
+                        )}
+                        {c.is_safety_critical && (
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-red-500/20 text-red-400 flex-shrink-0">SEGURANCA</span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                        <span className="text-xs text-zinc-400 font-mono">{c.value}</span>
+                        <span className={`text-[10px] px-2 py-0.5 rounded border ${getClassBadge(c.classification)}`}>
+                          {c.classification_label || c.classification}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {classificationsDetail.some(c => c.note) && (
+                  <div className="mt-2 space-y-1">
+                    {classificationsDetail.filter(c => c.note).map((c, i) => (
+                      <p key={i} className="text-[10px] text-zinc-500">
+                        <span className="text-zinc-400">{c.label || c.criterion}:</span> {c.note}
+                      </p>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })()}
 
           {/* Pontos Criticos - Novo formato */}
           {pontosCriticosNovo.length > 0 && (
@@ -574,15 +671,19 @@ export default function VideoDetailPage() {
                     )}
 
                     {/* Desvios - suporta formato antigo e novo */}
-                    {((frame.desvios_detectados || frame.desvios) && (frame.desvios_detectados || frame.desvios)!.length > 0) && (
-                      <div className="mb-2">
-                        {(frame.desvios_detectados || frame.desvios)!.map((desvio, j) => (
-                          <span key={j} className="text-[10px] text-orange-400 block">
-                            ⚠ {desvio}
-                          </span>
-                        ))}
-                      </div>
-                    )}
+                    {(() => {
+                      const desvios = frame.desvios_detectados || frame.desvios;
+                      if (!Array.isArray(desvios) || desvios.length === 0) return null;
+                      return (
+                        <div className="mb-2">
+                          {desvios.map((desvio, j) => (
+                            <span key={j} className="text-[10px] text-orange-400 block">
+                              ⚠ {desvio}
+                            </span>
+                          ))}
+                        </div>
+                      );
+                    })()}
 
                     {/* Indicador de interpolação */}
                     {frame.interpolated && (

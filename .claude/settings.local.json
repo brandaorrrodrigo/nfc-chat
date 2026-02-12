@@ -101,7 +101,17 @@
       "Bash(git restore:*)",
       "Bash(export NEXT_PUBLIC_SUPABASE_URL=\"https://qducbqhuwqdyqioqevle.supabase.co\")",
       "Bash(export NEXT_PUBLIC_SUPABASE_ANON_KEY:*)",
-      "Bash(NEXT_PUBLIC_SUPABASE_URL=\"https://qducbqhuwqdyqioqevle.supabase.co\" NEXT_PUBLIC_SUPABASE_ANON_KEY=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFkdWNicWh1d3FkeXFpb3FldmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5NDM3NjgsImV4cCI6MjA4NDUxOTc2OH0.hzOmMJcRGFPShGLRecDruzOr8_W3kwdtykI2NJpyOXE\" node:*)"
+      "Bash(NEXT_PUBLIC_SUPABASE_URL=\"https://qducbqhuwqdyqioqevle.supabase.co\" NEXT_PUBLIC_SUPABASE_ANON_KEY=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFkdWNicWh1d3FkeXFpb3FldmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5NDM3NjgsImV4cCI6MjA4NDUxOTc2OH0.hzOmMJcRGFPShGLRecDruzOr8_W3kwdtykI2NJpyOXE\" node:*)",
+      "Bash(if not exist \"D:\\\\NUTRIFITCOACH_MASTER\\\\nfc-comunidades\\\\lib\\\\share\" mkdir \"D:\\\\NUTRIFITCOACH_MASTER\\\\nfc-comunidades\\\\lib\\\\share\")",
+      "Bash(tasklist:*)",
+      "Bash(start \"http://localhost:3000/comunidades/analise-agachamento/videos/va_1770817487770_noye0o9k1\")",
+      "Bash(git -C \"D:\\\\NUTRIFITCOACH_MASTER\\\\nfc-comunidades\" log --all --oneline --grep=\"uploadVideo\\\\|useVideoUpload\")",
+      "Bash(git -C \"D:\\\\NUTRIFITCOACH_MASTER\\\\nfc-comunidades\" log --all --oneline --source -- \"hooks/useVideoUpload.ts\")",
+      "Bash(where:*)",
+      "Bash(timeout:*)",
+      "Bash(pip show:*)",
+      "Bash(python:*)",
+      "Bash(ffmpeg:*)"
     ]
   }
 }
