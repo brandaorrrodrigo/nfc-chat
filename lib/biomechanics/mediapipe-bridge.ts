@@ -580,9 +580,11 @@ function mapMediaPipeStabilizer(
     }
 
     case 'trunk': {
-      const variation = getHipCorrectedTrunkVariation();
-      if (variation === null) return null;
-      return { joint: 'trunk', variationValue: variation, unit: '°' };
+      // Trunk = inclinação MÉDIA em relação à vertical (não variação)
+      // Ex: 35° = forward lean moderado. Ranges no template: acceptable=40, warning=52
+      const avgTrunk = agg.avgAngles.trunk_inclination;
+      if (avgTrunk === undefined || avgTrunk === null) return null;
+      return { joint: 'trunk', variationValue: avgTrunk, unit: '°' };
     }
 
     case 'thoracic': {

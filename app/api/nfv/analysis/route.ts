@@ -28,6 +28,7 @@ import { sendPromptToOllama } from '@/lib/biomechanics/llm-bridge';
 import { queryRAG } from '@/lib/biomechanics/biomechanics-rag';
 import { getExerciseTemplateV2 } from '@/lib/biomechanics/exercise-templates-v2';
 import { classifyExerciseV2, extractV2RAGTopics } from '@/lib/biomechanics/classifier-v2';
+import { generateCorrectivePlanFromAnalysis } from '@/lib/biomechanics/corrective-plan-generator';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
@@ -238,6 +239,7 @@ export async function POST(req: NextRequest) {
 
         classifications_detail: [
           ...resultV2.motorAnalysis.map(m => ({
+            type: 'motor' as const,
             criterion: m.joint,
             label: m.label,
             metric: m.rom.unit === 'cm' ? `${m.joint}_cm` : `${m.joint}_rom`,
@@ -248,10 +250,11 @@ export async function POST(req: NextRequest) {
             classification_label: m.rom.classificationLabel,
             is_safety_critical: false,
             is_informative: false,
-            note: `Motor: ${m.movement}`,
+            note: m.movement,
             rag_topics: m.ragTopics,
           })),
           ...resultV2.stabilizerAnalysis.map(s => ({
+            type: 'stabilizer' as const,
             criterion: s.joint,
             label: s.label,
             metric: `${s.joint}_variation`,
@@ -359,7 +362,22 @@ export async function POST(req: NextRequest) {
 
     console.log(`[NFV] Pipeline completo! Score: ${biomechanicsResult.overall_score}/10`);
 
-    // 8. Salvar no banco
+    // 8. Auto-generate corrective plan if problems detected
+    const hasProblems = (biomechanicsResult.stabilizer_analysis as Array<{ variation: { classification: string } }>)
+      ?.some(s => s.variation.classification !== 'firme');
+    if (hasProblems) {
+      try {
+        const plan = await generateCorrectivePlanFromAnalysis(biomechanicsResult);
+        if (plan && plan.semanas.length > 0) {
+          biomechanicsResult.corrective_plan = plan;
+          console.log(`[NFV] Plano corretivo auto-gerado: ${plan.semanas.length} semanas`);
+        }
+      } catch (planErr) {
+        console.warn('[NFV] Auto-corrective plan failed:', planErr);
+      }
+    }
+
+    // 9. Salvar no banco
     const { error: updateError } = await supabase
       .from(TABLE)
       .update({

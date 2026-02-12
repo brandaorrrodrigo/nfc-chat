@@ -292,7 +292,7 @@ export default function VideoDetailPage() {
         movement: string;
         rom: { value: number; unit: string; min?: number; max?: number; classification: string; classificationLabel: string };
         peak_contraction?: number | null;
-        symmetry?: number | null;
+        symmetry?: { diff: number; unit: string; classification: string } | number | null;
       }> || [];
       const stabilizerAnalysis = data.stabilizer_analysis as Array<{
         joint: string;
@@ -416,6 +416,7 @@ export default function VideoDetailPage() {
           {/* Classifications Detail - Tabela de critérios biomecânicos (v3) */}
           {(() => {
             const classificationsDetail = data.classifications_detail as Array<{
+              type?: 'motor' | 'stabilizer';
               criterion: string;
               label: string;
               value: string;
@@ -452,6 +453,14 @@ export default function VideoDetailPage() {
                   {classificationsDetail.map((c, i) => (
                     <div key={i} className={`flex items-center justify-between bg-zinc-800/50 rounded-lg px-3 py-2 ${c.is_safety_critical ? 'border-l-2 border-red-500/70' : ''}`}>
                       <div className="flex items-center gap-2 flex-1 min-w-0">
+                        {(() => {
+                          const isStab = c.type === 'stabilizer' || c.note?.startsWith('✓') || c.note?.startsWith('⚠') || c.note?.startsWith('Estabilizador');
+                          return (
+                            <span className={`text-[8px] px-1 py-0.5 rounded flex-shrink-0 ${
+                              isStab ? 'bg-blue-500/15 text-blue-400' : 'bg-green-500/15 text-green-400'
+                            }`}>{isStab ? 'EST' : 'MOT'}</span>
+                          );
+                        })()}
                         <span className="text-xs text-zinc-300 truncate">{c.label || c.criterion}</span>
                         {c.is_informative && (
                           <span className="text-[9px] px-1.5 py-0.5 rounded bg-zinc-700 text-zinc-500 flex-shrink-0">INFO</span>
@@ -520,11 +529,20 @@ export default function VideoDetailPage() {
                       {m.peak_contraction != null && (
                         <div className="text-[10px] text-zinc-500 mt-0.5">Pico contracao: {Number(m.peak_contraction).toFixed(0)}{m.rom.unit}</div>
                       )}
-                      {m.symmetry != null && (
-                        <div className={`text-[10px] mt-0.5 ${Math.abs(Number(m.symmetry)) > 15 ? 'text-orange-400' : 'text-zinc-500'}`}>
-                          Simetria: {Number(m.symmetry) > 0 ? '+' : ''}{Number(m.symmetry).toFixed(1)}%
-                        </div>
-                      )}
+                      {(() => {
+                        const symVal = m.symmetry == null ? null
+                          : typeof m.symmetry === 'number' ? m.symmetry
+                          : typeof m.symmetry === 'object' && 'diff' in m.symmetry ? Number(m.symmetry.diff)
+                          : null;
+                        if (symVal === null || isNaN(symVal)) return (
+                          <div className="text-[10px] mt-0.5 text-zinc-600">Vista lateral — simetria nao disponivel</div>
+                        );
+                        return (
+                          <div className={`text-[10px] mt-0.5 ${symVal > 15 ? 'text-orange-400' : 'text-zinc-500'}`}>
+                            Simetria: {symVal.toFixed(1)}° diferenca
+                          </div>
+                        );
+                      })()}
                     </div>
                   );
                 })}
@@ -854,14 +872,20 @@ export default function VideoDetailPage() {
           )}
 
           {/* Plano Corretivo Personalizado (4 semanas) */}
-          {(pontosCriticosNovo.length > 0 || pontosCriticosAntigo.length > 0 || recomendacoesExercicios.length > 0 || (data.classifications_detail as unknown[])?.length > 0 || (data.key_observations as unknown[])?.length > 0 || displayPlan) && (
-            <CorrectivePlanCard
-              plan={displayPlan}
-              onGeneratePlan={handleGeneratePlan}
-              loading={planLoading}
-              error={planError}
-            />
-          )}
+          {(() => {
+            const hasStabProblems = stabilizerAnalysis.some(s => s.variation.classification !== 'firme');
+            const hasAnyProblems = hasStabProblems || pontosCriticosNovo.length > 0 || pontosCriticosAntigo.length > 0;
+            // Esconder se todos estabilizadores firme E sem problemas E sem plano existente
+            if (!hasAnyProblems && !displayPlan) return null;
+            return (
+              <CorrectivePlanCard
+                plan={displayPlan}
+                onGeneratePlan={handleGeneratePlan}
+                loading={planLoading}
+                error={planError}
+              />
+            );
+          })()}
 
           {/* V2: MediaPipe Frames (raw angles per frame) */}
           {pipelineVersion && frameAnalyses.length === 0 && (() => {

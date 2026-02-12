@@ -235,6 +235,7 @@ export async function POST(request: NextRequest) {
         // V1-compatible fields for frontend backward compat
         classifications_detail: [
           ...resultV2.motorAnalysis.map(m => ({
+            type: 'motor' as const,
             criterion: m.joint,
             label: m.label,
             metric: m.rom.unit === 'cm' ? `${m.joint}_cm` : `${m.joint}_rom`,
@@ -245,10 +246,11 @@ export async function POST(request: NextRequest) {
             classification_label: m.rom.classificationLabel,
             is_safety_critical: false,
             is_informative: false,
-            note: `Motor: ${m.movement}`,
+            note: m.movement,
             rag_topics: m.ragTopics,
           })),
           ...resultV2.stabilizerAnalysis.map(s => ({
+            type: 'stabilizer' as const,
             criterion: s.joint,
             label: s.label,
             metric: `${s.joint}_variation`,

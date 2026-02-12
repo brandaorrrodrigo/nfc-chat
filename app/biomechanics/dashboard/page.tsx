@@ -62,7 +62,7 @@ interface MotorAnalysisItem {
   movement: string;
   rom: { value: number; unit: string; min?: number; max?: number; classification: string; classificationLabel: string };
   peak_contraction?: number | null;
-  symmetry?: number | null;
+  symmetry?: { diff: number; unit: string; classification: string } | number | null;
 }
 
 interface StabilizerAnalysisItem {
@@ -729,11 +729,20 @@ export default function BiomechanicsDashboard() {
                           </div>
                         )}
                       </div>
-                      {m.symmetry != null && (
-                        <p className={`text-xs mt-2 ${Math.abs(Number(m.symmetry)) > 15 ? 'text-orange-400' : 'text-slate-500'}`}>
-                          Simetria bilateral: {Number(m.symmetry) > 0 ? '+' : ''}{Number(m.symmetry).toFixed(1)}%
-                        </p>
-                      )}
+                      {(() => {
+                        const symVal = m.symmetry == null ? null
+                          : typeof m.symmetry === 'number' ? m.symmetry
+                          : typeof m.symmetry === 'object' && 'diff' in m.symmetry ? Number((m.symmetry as { diff: number }).diff)
+                          : null;
+                        if (symVal === null || isNaN(symVal)) return (
+                          <p className="text-xs mt-2 text-slate-600">Vista lateral — simetria nao disponivel</p>
+                        );
+                        return (
+                          <p className={`text-xs mt-2 ${symVal > 15 ? 'text-orange-400' : 'text-slate-500'}`}>
+                            Simetria bilateral: {symVal.toFixed(1)}° diferenca
+                          </p>
+                        );
+                      })()}
                     </div>
                   ))}
                 </div>
@@ -848,6 +857,7 @@ export default function BiomechanicsDashboard() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-slate-700">
+                      <th className="text-left px-4 py-2 text-slate-400 font-semibold">Tipo</th>
                       <th className="text-left px-4 py-2 text-slate-400 font-semibold">Critério</th>
                       <th className="text-left px-4 py-2 text-slate-400 font-semibold">Valor</th>
                       <th className="text-left px-4 py-2 text-slate-400 font-semibold">Nível</th>
@@ -861,6 +871,18 @@ export default function BiomechanicsDashboard() {
                         key={idx}
                         className="border-b border-slate-700 hover:bg-slate-700/30 transition"
                       >
+                        <td className="px-4 py-3">
+                          {(() => {
+                            const isStab = c.type === 'stabilizer' || c.note?.startsWith('✓') || c.note?.startsWith('⚠') || c.note?.startsWith('Estabilizador');
+                            return (
+                              <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                                isStab ? 'bg-blue-900/40 text-blue-300' : 'bg-green-900/40 text-green-300'
+                              }`}>
+                                {isStab ? 'ESTAB' : 'MOTOR'}
+                              </span>
+                            );
+                          })()}
+                        </td>
                         <td className="px-4 py-3 text-white font-semibold">
                           {c.label || c.criterion}
                         </td>
