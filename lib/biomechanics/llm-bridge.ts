@@ -80,7 +80,7 @@ async function findTextModel(): Promise<string | null> {
  */
 export async function sendPromptToOllama(
   builtPrompt: BuiltPrompt,
-  classification: ClassificationResult,
+  classification: ClassificationResult | null,
   options: LLMBridgeOptions = {}
 ): Promise<LLMAnalysisReport | null> {
   const {
@@ -152,11 +152,11 @@ export async function sendPromptToOllama(
 
 function normalizeReport(
   data: any,
-  classification: ClassificationResult
+  classification: ClassificationResult | null
 ): LLMAnalysisReport {
   const score = typeof data.score_geral === 'number'
     ? Math.min(10, Math.max(0, data.score_geral))
-    : classification.overallScore;
+    : classification?.overallScore ?? 5;
 
   return {
     resumo_executivo: data.resumo_executivo || `Análise biomecânica com score ${score.toFixed(1)}/10`,
@@ -169,7 +169,7 @@ function normalizeReport(
 
     pontos_positivos: Array.isArray(data.pontos_positivos)
       ? data.pontos_positivos
-      : extractPositivesFromClassification(classification),
+      : classification ? extractPositivesFromClassification(classification) : [],
 
     pontos_atencao: Array.isArray(data.pontos_atencao)
       ? data.pontos_atencao.map((p: any) => ({
@@ -179,7 +179,7 @@ function normalizeReport(
           possivel_causa: p.possivel_causa,
           corretivo_sugerido: p.corretivo_sugerido,
         }))
-      : extractAttentionPointsFromClassification(classification),
+      : classification ? extractAttentionPointsFromClassification(classification) : [],
 
     conclusao_cientifica: data.conclusao_cientifica || 'Análise concluída. Recomenda-se aplicar os exercícios corretivos conforme prioridade.',
 
@@ -188,16 +188,11 @@ function normalizeReport(
           prioridade: typeof r.prioridade === 'number' ? r.prioridade : 1,
           descricao: r.descricao || '',
         }))
-      : extractRecommendationsFromClassification(classification),
+      : classification ? extractRecommendationsFromClassification(classification) : [],
 
     score_geral: Math.round(score * 10) / 10,
     classificacao: validateClassificacao(data.classificacao, score),
   };
-}
-
-function validateSeveridade(s: any): 'CRITICA' | 'MODERADA' | 'LEVE' {
-  if (['CRITICA', 'MODERADA', 'LEVE'].includes(s)) return s;
-  return 'MODERADA';
 }
 
 function validateClassificacao(
@@ -209,17 +204,6 @@ function validateClassificacao(
   if (score >= 6) return 'BOM';
   if (score >= 4) return 'REGULAR';
   return 'NECESSITA_CORRECAO';
-}
-
-function extractProblemsFromClassification(classification: ClassificationResult): LLMProblem[] {
-  return classification.classifications
-    .filter((c) => c.classification === 'danger' || c.classification === 'warning')
-    .map((c) => ({
-      nome: c.label || c.criterion,
-      severidade: (c.classification === 'danger' ? 'CRITICA' : 'MODERADA') as 'CRITICA' | 'MODERADA',
-      descricao: `${c.metric}: ${c.value}${c.unit || ''} (range ${c.classificationLabel || c.classification}: ${c.range[c.classification]})`,
-      causa_provavel: c.note,
-    }));
 }
 
 function extractPositivesFromClassification(classification: ClassificationResult): string[] {

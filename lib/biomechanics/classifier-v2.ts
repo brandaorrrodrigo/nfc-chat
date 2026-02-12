@@ -1,0 +1,411 @@
+/**
+ * Classificador V2: Motor vs Estabilizador
+ *
+ * MOTORA: mais ROM = melhor (ranges com min/max numéricos)
+ * ESTABILIZADORA: menos variação = melhor (INVERTIDO!)
+ *
+ * Score final: Motor 60% + Estabilizador 40%
+ */
+
+import type {
+  ExerciseTemplate,
+  MotorJoint,
+  StabilizerJoint,
+  RomRanges,
+} from './exercise-templates-v2';
+
+// ============================
+// Interfaces de Resultado
+// ============================
+
+export type MotorClassification = 'excellent' | 'good' | 'acceptable' | 'warning' | 'danger';
+export type StabilizerClassification = 'firme' | 'alerta' | 'compensação';
+
+export interface MotorJointResult {
+  joint: string;
+  label: string;
+  movement: string;
+  rom: { value: number; unit: string; classification: MotorClassification; classificationLabel: string };
+  peakContraction?: { value: number; unit: string; classification: MotorClassification; classificationLabel: string };
+  symmetry?: { diff: number; unit: string; classification: 'ok' | 'assimetria_leve' | 'assimetria_significativa' };
+  ragTopics: string[];
+}
+
+export interface StabilizerJointResult {
+  joint: string;
+  label: string;
+  expectedState: string;
+  variation: { value: number; unit: string; classification: StabilizerClassification; classificationLabel: string };
+  interpretation: string;
+  correctiveExercises: string[];
+  ragTopics: string[];
+}
+
+export interface AnalysisResultV2 {
+  exerciseId: string;
+  exerciseName: string;
+  category: string;
+  type: 'compound' | 'isolation';
+  timestamp: string;
+
+  motorAnalysis: MotorJointResult[];
+  stabilizerAnalysis: StabilizerJointResult[];
+
+  motorScore: number;
+  stabilizerScore: number;
+  overallScore: number; // Motor 60% + Estabilizador 40%
+
+  muscles: {
+    primary: string[];
+    secondary: string[];
+    stabilizers: string[];
+  };
+
+  summary: {
+    motor: { excellent: number; good: number; acceptable: number; warning: number; danger: number };
+    stabilizer: { firme: number; alerta: number; compensação: number };
+  };
+
+  hasDangerMotor: boolean;
+  hasCompensationStabilizer: boolean;
+}
+
+// ============================
+// Métricas de Entrada
+// ============================
+
+export interface MotorMetricInput {
+  joint: string;
+  romValue: number;
+  romUnit?: string;
+  peakContractionValue?: number;
+  peakContractionUnit?: string;
+  leftValue?: number;
+  rightValue?: number;
+}
+
+export interface StabilizerMetricInput {
+  joint: string;
+  variationValue: number;
+  unit?: string;
+}
+
+// ============================
+// Classificação Motor
+// ============================
+
+const MOTOR_LABELS: Record<MotorClassification, string> = {
+  excellent: 'Excelente',
+  good: 'Bom',
+  acceptable: 'Aceitável',
+  warning: 'Alerta',
+  danger: 'Perigo',
+};
+
+/**
+ * Classifica valor de articulação MOTORA
+ * Compara value contra ranges numéricos {min?, max?}
+ */
+export function classifyMotor(value: number, ranges: RomRanges): MotorClassification {
+  const levels: MotorClassification[] = ['excellent', 'good', 'acceptable', 'warning', 'danger'];
+
+  for (const level of levels) {
+    const range = ranges[level];
+    if (!range) continue;
+
+    let matches = true;
+    if (range.min !== undefined && value < range.min) matches = false;
+    if (range.max !== undefined && value > range.max) matches = false;
+
+    if (matches) return level;
+  }
+
+  // Fallback: se nenhum range definido para um nível, verificar danger como last resort
+  return 'acceptable';
+}
+
+// ============================
+// Classificação Estabilizador
+// ============================
+
+const STABILIZER_LABELS: Record<StabilizerClassification, string> = {
+  firme: 'Firme',
+  alerta: 'Alerta',
+  'compensação': 'Compensação',
+};
+
+/**
+ * Classifica variação de articulação ESTABILIZADORA
+ * MENOS variação = MELHOR (lógica INVERTIDA vs motor)
+ */
+export function classifyStabilizer(
+  variation: number,
+  criteria: { acceptable: number; warning: number; danger: number }
+): StabilizerClassification {
+  if (variation <= criteria.acceptable) return 'firme';
+  if (variation <= criteria.warning) return 'alerta';
+  return 'compensação';
+}
+
+// ============================
+// Classificação de Simetria
+// ============================
+
+function classifySymmetry(
+  diff: number,
+  maxAcceptable: number
+): 'ok' | 'assimetria_leve' | 'assimetria_significativa' {
+  if (diff <= maxAcceptable) return 'ok';
+  if (diff <= maxAcceptable * 2) return 'assimetria_leve';
+  return 'assimetria_significativa';
+}
+
+// ============================
+// Classificação Completa V2
+// ============================
+
+/**
+ * Classifica um exercício completo usando o paradigma Motor vs Estabilizador
+ */
+export function classifyExerciseV2(
+  motorInputs: MotorMetricInput[],
+  stabilizerInputs: StabilizerMetricInput[],
+  template: ExerciseTemplate,
+): AnalysisResultV2 {
+  const motorAnalysis: MotorJointResult[] = [];
+  const stabilizerAnalysis: StabilizerJointResult[] = [];
+
+  const motorSummary = { excellent: 0, good: 0, acceptable: 0, warning: 0, danger: 0 };
+  const stabilizerSummary = { firme: 0, alerta: 0, 'compensação': 0 };
+
+  // --- Classificar articulações MOTORAS ---
+  for (const mj of template.motorJoints) {
+    const input = motorInputs.find(m => m.joint === mj.joint);
+    if (!input) continue;
+
+    // ROM
+    const romClass = classifyMotor(input.romValue, mj.criteria.rom);
+    motorSummary[romClass]++;
+
+    const result: MotorJointResult = {
+      joint: mj.joint,
+      label: mj.label,
+      movement: mj.movement,
+      rom: {
+        value: input.romValue,
+        unit: input.romUnit || '°',
+        classification: romClass,
+        classificationLabel: MOTOR_LABELS[romClass],
+      },
+      ragTopics: mj.ragTopics,
+    };
+
+    // Peak Contraction
+    if (mj.criteria.peakContraction && input.peakContractionValue !== undefined) {
+      const pcClass = classifyMotor(input.peakContractionValue, mj.criteria.peakContraction);
+      result.peakContraction = {
+        value: input.peakContractionValue,
+        unit: input.peakContractionUnit || mj.criteria.peakContraction.metric.includes('cm') ? 'cm' : '°',
+        classification: pcClass,
+        classificationLabel: MOTOR_LABELS[pcClass],
+      };
+    }
+
+    // Symmetry
+    if (mj.criteria.symmetry && input.leftValue !== undefined && input.rightValue !== undefined) {
+      const diff = Math.abs(input.leftValue - input.rightValue);
+      const symClass = classifySymmetry(diff, mj.criteria.symmetry.maxAcceptableDiff);
+      result.symmetry = {
+        diff,
+        unit: mj.criteria.symmetry.unit,
+        classification: symClass,
+      };
+    }
+
+    motorAnalysis.push(result);
+  }
+
+  // --- Classificar articulações ESTABILIZADORAS ---
+  for (const sj of template.stabilizerJoints) {
+    const input = stabilizerInputs.find(s => s.joint === sj.joint);
+    if (!input) continue;
+
+    const stabClass = classifyStabilizer(input.variationValue, sj.criteria.maxVariation);
+    stabilizerSummary[stabClass]++;
+
+    const interpretation = stabClass === 'firme'
+      ? `${sj.expectedState} ✓`
+      : `Instável — ${sj.instabilityMeaning}`;
+
+    stabilizerAnalysis.push({
+      joint: sj.joint,
+      label: sj.label,
+      expectedState: sj.expectedState,
+      variation: {
+        value: input.variationValue,
+        unit: input.unit || sj.criteria.maxVariation.unit,
+        classification: stabClass,
+        classificationLabel: STABILIZER_LABELS[stabClass],
+      },
+      interpretation,
+      correctiveExercises: stabClass !== 'firme' ? sj.correctiveExercises : [],
+      ragTopics: sj.ragTopics,
+    });
+  }
+
+  // --- Calcular scores ---
+  const motorScore = calculateMotorScore(motorAnalysis);
+  const stabilizerScore = calculateStabilizerScore(stabilizerAnalysis, template.stabilizerJoints);
+  const overallScore = Math.round((motorScore * 0.6 + stabilizerScore * 0.4) * 10) / 10;
+
+  return {
+    exerciseId: template.exerciseId,
+    exerciseName: template.exerciseName,
+    category: template.category,
+    type: template.type,
+    timestamp: new Date().toISOString(),
+    motorAnalysis,
+    stabilizerAnalysis,
+    motorScore,
+    stabilizerScore,
+    overallScore,
+    muscles: template.muscles,
+    summary: { motor: motorSummary, stabilizer: stabilizerSummary },
+    hasDangerMotor: motorAnalysis.some(m => m.rom.classification === 'danger'),
+    hasCompensationStabilizer: stabilizerAnalysis.some(s => s.variation.classification === 'compensação'),
+  };
+}
+
+// ============================
+// Cálculo de Scores
+// ============================
+
+const MOTOR_WEIGHTS: Record<MotorClassification, number> = {
+  excellent: 10,
+  good: 8,
+  acceptable: 6,
+  warning: 4,
+  danger: 2,
+};
+
+function calculateMotorScore(motorResults: MotorJointResult[]): number {
+  if (motorResults.length === 0) return 5;
+
+  let total = 0;
+  let count = 0;
+
+  for (const m of motorResults) {
+    total += MOTOR_WEIGHTS[m.rom.classification];
+    count++;
+
+    if (m.peakContraction) {
+      total += MOTOR_WEIGHTS[m.peakContraction.classification];
+      count++;
+    }
+  }
+
+  return Math.round((total / count) * 10) / 10;
+}
+
+const STABILIZER_WEIGHTS: Record<StabilizerClassification, number> = {
+  firme: 10,
+  alerta: 5,
+  'compensação': 1,
+};
+
+function calculateStabilizerScore(
+  stabResults: StabilizerJointResult[],
+  templateJoints: StabilizerJoint[],
+): number {
+  if (stabResults.length === 0) return 5;
+
+  let total = 0;
+  let weightSum = 0;
+
+  for (const s of stabResults) {
+    // Peso extra para estabilizadores com instabilityMeaning que contém "RISCO" ou "CRÍTICO"
+    const templateJoint = templateJoints.find(tj => tj.joint === s.joint);
+    const isCritical = templateJoint?.instabilityMeaning.toUpperCase().includes('RISCO') ?? false;
+    const weight = isCritical ? 2 : 1;
+
+    total += STABILIZER_WEIGHTS[s.variation.classification] * weight;
+    weightSum += weight;
+  }
+
+  return Math.round((total / weightSum) * 10) / 10;
+}
+
+// ============================
+// RAG Topics Extraction
+// ============================
+
+/**
+ * Extrai RAG topics apenas das articulações com problema
+ */
+export function extractV2RAGTopics(result: AnalysisResultV2): string[] {
+  const topics: string[] = [];
+
+  for (const m of result.motorAnalysis) {
+    if (m.rom.classification === 'warning' || m.rom.classification === 'danger') {
+      topics.push(...m.ragTopics);
+    }
+  }
+
+  for (const s of result.stabilizerAnalysis) {
+    if (s.variation.classification === 'alerta' || s.variation.classification === 'compensação') {
+      topics.push(...s.ragTopics);
+    }
+  }
+
+  return [...new Set(topics)];
+}
+
+// ============================
+// Formatação de Resumo
+// ============================
+
+/**
+ * Gera resumo textual V2 para prompt ou display
+ */
+export function summarizeV2Result(result: AnalysisResultV2): string {
+  const lines: string[] = [];
+
+  lines.push(`Exercício: ${result.exerciseName}`);
+  lines.push(`Score: ${result.overallScore}/10 | Motor: ${result.motorScore}/10 | Estabilização: ${result.stabilizerScore}/10`);
+  lines.push('');
+
+  lines.push('── ARTICULAÇÕES MOTORAS ──');
+  for (const m of result.motorAnalysis) {
+    const icon = m.rom.classification === 'excellent' || m.rom.classification === 'good' ? '🟢'
+      : m.rom.classification === 'acceptable' ? '🟡'
+      : m.rom.classification === 'warning' ? '🟠' : '🔴';
+    lines.push(`${icon} ${m.label} — ${m.movement}`);
+    lines.push(`   ROM: ${m.rom.value}${m.rom.unit} (${m.rom.classificationLabel})`);
+    if (m.peakContraction) {
+      lines.push(`   Contração: ${m.peakContraction.value}${m.peakContraction.unit} (${m.peakContraction.classificationLabel})`);
+    }
+    if (m.symmetry) {
+      lines.push(`   Simetria D/E: ${m.symmetry.diff}${m.symmetry.unit} (${m.symmetry.classification === 'ok' ? 'OK' : m.symmetry.classification})`);
+    }
+  }
+
+  lines.push('');
+  lines.push('── ARTICULAÇÕES ESTABILIZADORAS ──');
+  for (const s of result.stabilizerAnalysis) {
+    const icon = s.variation.classification === 'firme' ? '🟢'
+      : s.variation.classification === 'alerta' ? '🟡' : '🔴';
+    lines.push(`${icon} ${s.label} — ${s.interpretation}`);
+    lines.push(`   Variação: ${s.variation.value}${s.variation.unit} (${s.variation.classificationLabel})`);
+    if (s.correctiveExercises.length > 0) {
+      lines.push(`   → Corretivos: ${s.correctiveExercises.join(', ')}`);
+    }
+  }
+
+  lines.push('');
+  lines.push('── MÚSCULOS TRABALHADOS ──');
+  lines.push(`Primários: ${result.muscles.primary.join(', ')}`);
+  lines.push(`Secundários: ${result.muscles.secondary.join(', ')}`);
+  lines.push(`Estabilizadores: ${result.muscles.stabilizers.join(', ')}`);
+
+  return lines.join('\n');
+}
