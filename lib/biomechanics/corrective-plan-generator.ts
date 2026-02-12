@@ -881,55 +881,142 @@ function generateV2CorrectivePlan(
     mobilityExercises.push(...strengthExercises.splice(0, half));
   }
 
+  // Progressão por semana: volume, tempo sob tensão e complexidade aumentam
+  const weekParams: Record<number, {
+    series: string;
+    frequencia: string;
+    execucao: string[];
+    progressao: string;
+  }> = {
+    1: {
+      series: '3x8',
+      frequencia: '3x/semana',
+      execucao: [
+        'Foco em controle e ativação muscular',
+        'Velocidade lenta (3s excêntrica, 2s pausa, 2s concêntrica)',
+        'Pausa de 2s na contração máxima',
+      ],
+      progressao: 'Semana 2: aumentar para 3x10 e adicionar pausa de 3s',
+    },
+    2: {
+      series: '3x10',
+      frequencia: '4x/semana',
+      execucao: [
+        'Manter controle e aumentar tempo sob tensão',
+        'Pausa de 3s na contração máxima (progressão)',
+        'Foco na qualidade — reduzir compensações',
+      ],
+      progressao: 'Semana 3: progredir para exercícios de fortalecimento',
+    },
+    3: {
+      series: '3x8-10',
+      frequencia: '4x/semana',
+      execucao: [
+        'Aumentar carga levemente (RPE 6-7)',
+        'Integrar ao padrão do exercício principal',
+        'Pausa de 3-5s na posição mais desafiadora',
+      ],
+      progressao: 'Semana 4: aumentar volume e adicionar exercício de integração',
+    },
+    4: {
+      series: '3x10-12',
+      frequencia: '5x/semana',
+      execucao: [
+        'Carga moderada com foco em padrão motor correto (RPE 7-8)',
+        'Integrar correção ao exercício completo',
+        'Manter controle total em toda amplitude',
+      ],
+      progressao: 'Reteste: gravar novo vídeo para comparar evolução',
+    },
+  };
+
   const toPlannedExercise = (
     e: { nome: string; desvio: string; severidade: string },
     weekNum: number
-  ): PlannedExercise => ({
+  ): PlannedExercise => {
+    const params = weekParams[weekNum] || weekParams[1];
+    return {
+      nome: e.nome,
+      objetivo: weekNum <= 2
+        ? `Ativar e mobilizar — corrigir ${e.desvio}`
+        : `Fortalecer e integrar — corrigir ${e.desvio}`,
+      series: params.series,
+      frequencia: params.frequencia,
+      execucao: params.execucao,
+      progressao: params.progressao,
+      desvio_alvo: e.desvio,
+    };
+  };
+
+  // Garantir que ambas listas tenham exercícios para todas as semanas
+  const mobilityList = mobilityExercises.length > 0 ? mobilityExercises : allExercises;
+  const strengthList = strengthExercises.length > 0 ? strengthExercises : allExercises;
+
+  // Semanas 3-4: incluir exercícios de mobilidade como manutenção + exercícios de fortalecimento
+  const week3Exercises: PlannedExercise[] = [];
+  const week4Exercises: PlannedExercise[] = [];
+
+  // Manutenção: 1-2 exercícios de mobilidade com volume reduzido
+  const maintenanceExercises = mobilityList.slice(0, 2).map((e) => ({
     nome: e.nome,
-    objetivo: `Corrigir ${e.desvio}`,
-    series: weekNum <= 2 ? '3x12-15' : '3x8-12',
-    frequencia: weekNum <= 2 ? '4x/semana' : '5x/semana',
-    execucao: weekNum <= 2
-      ? ['Foco em controle e ativação', 'Velocidade lenta e controlada', 'Pausa de 2s na contração']
-      : ['Aumentar carga progressivamente', 'Integrar ao padrão do exercício principal', 'Manter controle total'],
-    progressao: weekNum <= 2
-      ? 'Aumentar tempo sob tensão na próxima semana'
-      : 'Aumentar carga ou volume antes do reteste',
+    objetivo: `Manutenção de mobilidade — ${e.desvio}`,
+    series: '2x30s',
+    frequencia: '3x/semana',
+    execucao: ['Manutenção — manter ganhos de mobilidade das semanas 1-2'],
+    progressao: 'Manter como aquecimento do treino',
     desvio_alvo: e.desvio,
-  });
+  }));
+
+  // Fortalecimento: exercícios com progressão real
+  const strengthWeek3 = strengthList.slice(0, 3).map((e) => toPlannedExercise(e, 3));
+  const strengthWeek4 = strengthList.slice(0, 3).map((e) => toPlannedExercise(e, 4));
+
+  // Exercício de integração na semana 4: padrão do exercício principal com carga leve
+  const integrationExercise: PlannedExercise = {
+    nome: `${exerciseType || 'Exercicio principal'} com carga leve`,
+    objetivo: 'Integrar correções ao padrão motor completo',
+    series: '3x5',
+    frequencia: '2x/semana',
+    execucao: [
+      'Carga leve (40-50% do habitual)',
+      'Foco total no padrão motor correto',
+      'Gravar para auto-avaliação se possível',
+    ],
+    progressao: 'Reteste com novo vídeo para comparar evolução',
+    desvio_alvo: 'Padrão motor geral',
+  };
+
+  week3Exercises.push(...maintenanceExercises, ...strengthWeek3);
+  week4Exercises.push(...maintenanceExercises, ...strengthWeek4, integrationExercise);
 
   const semanas: WeekPlan[] = [
     {
       semana: 1,
       foco: 'Mobilidade e Ativacao',
-      dias_treino: 4,
-      exercicios: (mobilityExercises.length > 0 ? mobilityExercises : allExercises)
-        .slice(0, 4).map((e) => toPlannedExercise(e, 1)),
-      objetivo_semanal: 'Melhorar mobilidade e ativar estabilizadores fracos',
+      dias_treino: 3,
+      exercicios: mobilityList.slice(0, 4).map((e) => toPlannedExercise(e, 1)),
+      objetivo_semanal: 'Melhorar mobilidade e ativar estabilizadores fracos com volume baixo',
     },
     {
       semana: 2,
       foco: 'Mobilidade e Ativacao (progressao)',
       dias_treino: 4,
-      exercicios: (mobilityExercises.length > 0 ? mobilityExercises : allExercises)
-        .slice(0, 4).map((e) => toPlannedExercise(e, 2)),
-      objetivo_semanal: 'Consolidar ganhos de mobilidade e melhorar controle motor',
+      exercicios: mobilityList.slice(0, 4).map((e) => toPlannedExercise(e, 2)),
+      objetivo_semanal: 'Aumentar volume e tempo sob tensão — consolidar ganhos de mobilidade',
     },
     {
       semana: 3,
       foco: 'Fortalecimento e Integracao',
-      dias_treino: 5,
-      exercicios: (strengthExercises.length > 0 ? strengthExercises : allExercises)
-        .slice(0, 4).map((e) => toPlannedExercise(e, 3)),
-      objetivo_semanal: 'Fortalecer estabilizadores e integrar ao exercício principal',
+      dias_treino: 4,
+      exercicios: week3Exercises,
+      objetivo_semanal: 'Manter mobilidade + iniciar fortalecimento com carga progressiva',
     },
     {
       semana: 4,
       foco: 'Fortalecimento e Integracao (progressao)',
       dias_treino: 5,
-      exercicios: (strengthExercises.length > 0 ? strengthExercises : allExercises)
-        .slice(0, 4).map((e) => toPlannedExercise(e, 4)),
-      objetivo_semanal: 'Maximizar adaptacoes e preparar para reavaliacao',
+      exercicios: week4Exercises,
+      objetivo_semanal: 'Maximizar adaptações — integrar ao exercício principal e preparar reteste',
     },
   ];
 

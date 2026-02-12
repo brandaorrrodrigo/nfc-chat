@@ -139,7 +139,7 @@ function ExerciseCard({ exercise }: { exercise: PlannedExercise }) {
 }
 
 function WeekSection({ week }: { week: WeekPlan }) {
-  const [open, setOpen] = useState(week.semana <= 2);
+  const [open, setOpen] = useState(week.exercicios.length > 0);
 
   const weekColor = week.semana <= 2
     ? 'border-blue-500/30 bg-blue-500/5'

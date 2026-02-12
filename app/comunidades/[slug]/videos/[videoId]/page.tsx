@@ -478,7 +478,7 @@ export default function VideoDetailPage() {
                           : typeof m.symmetry === 'number' ? m.symmetry
                           : typeof m.symmetry === 'object' && 'diff' in m.symmetry ? Number(m.symmetry.diff)
                           : null;
-                        if (symVal === null || isNaN(symVal)) return (
+                        if (symVal === null || isNaN(symVal) || symVal > 20) return (
                           <div className="text-[10px] mt-0.5 text-zinc-600">Vista lateral — simetria nao disponivel</div>
                         );
                         return (
