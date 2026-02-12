@@ -7,7 +7,8 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { AlertCircle, CheckCircle, AlertTriangle, Zap, Target, TrendingUp, Info, Trash2, ArrowLeft, X, Loader2 } from 'lucide-react';
+import { AlertCircle, CheckCircle, AlertTriangle, Zap, Target, TrendingUp, Info, Trash2, ArrowLeft, X, Loader2, RefreshCw } from 'lucide-react';
+import CorrectivePlanCard from '@/components/nfv/CorrectivePlanCard';
 
 interface Classification {
   criterion: string;
@@ -96,6 +97,9 @@ export default function BiomechanicsDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [correctivePlan, setCorrectivePlan] = useState<any>(null);
+  const [planLoading, setPlanLoading] = useState(false);
+  const [planError, setPlanError] = useState<string | null>(null);
 
   const CONSTRAINT_OPTIONS = [
     { value: 'none', label: 'Sem limitação' },
@@ -106,15 +110,104 @@ export default function BiomechanicsDashboard() {
     { value: 'rehab', label: 'Em reabilitação' },
   ];
 
-  // Auto-load quando videoId vem da URL
+  // Transforma ai_analysis salvo no banco para o formato AnalysisResult do dashboard
+  const transformDbToAnalysisResult = (videoId: string, dbRecord: any): AnalysisResult | null => {
+    let aiData = dbRecord.ai_analysis;
+
+    // Deep parse: ai_analysis pode estar serializado como string
+    for (let i = 0; i < 3; i++) {
+      if (typeof aiData === 'string') {
+        try { aiData = JSON.parse(aiData); } catch { break; }
+      } else { break; }
+    }
+
+    if (!aiData || typeof aiData !== 'object') return null;
+
+    const classifications = aiData.classifications_detail || [];
+    const summary = aiData.classification_summary || { excellent: 0, good: 0, acceptable: 0, warning: 0, danger: 0 };
+
+    // V2 pipeline pode ter summary.motor e summary.stabilizer ao inves do formato flat
+    const flatSummary = summary.excellent !== undefined ? summary : {
+      excellent: (summary.motor?.excellent || 0) + (summary.stabilizer?.excellent || 0),
+      good: (summary.motor?.good || 0) + (summary.stabilizer?.good || 0),
+      acceptable: (summary.motor?.acceptable || 0) + (summary.stabilizer?.acceptable || 0),
+      warning: (summary.motor?.warning || 0) + (summary.stabilizer?.warning || 0),
+      danger: (summary.motor?.danger || 0) + (summary.stabilizer?.danger || 0),
+    };
+
+    return {
+      success: true,
+      videoId,
+      analysis: {
+        overall_score: aiData.overall_score || 0,
+        exercise_type: aiData.exercise_type || dbRecord.movement_pattern || 'exercicio',
+        timestamp: aiData.timestamp || dbRecord.created_at || new Date().toISOString(),
+        equipment_constraint: aiData.equipment_constraint || null,
+        equipment_constraint_label: aiData.equipment_constraint_label || null,
+        classification_summary: flatSummary,
+        classifications_detail: classifications,
+        rag_topics_used: aiData.rag_topics_used || [],
+        frames_analyzed: aiData.frames_analyzed || 0,
+      },
+      diagnostic: {
+        score: aiData.overall_score || 0,
+        summary: flatSummary,
+        problems: classifications.filter((c: Classification) =>
+          ['warning', 'danger'].includes(c.classification) && !c.is_informative
+        ),
+        positive: classifications.filter((c: Classification) =>
+          ['excellent', 'good'].includes(c.classification)
+        ),
+      },
+      report: aiData.llm_report || null,
+    };
+  };
+
+  // Buscar análise existente do banco (sem re-executar pipeline)
+  const loadExistingAnalysis = async (id: string) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`/api/nfv/videos/${id}`);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || `Vídeo não encontrado (${response.status})`);
+      }
+
+      const dbRecord = data.analysis;
+
+      if (!dbRecord || !dbRecord.ai_analysis) {
+        setError('Vídeo encontrado mas ainda não foi analisado. Clique em "Re-analisar" para executar a análise.');
+        return;
+      }
+
+      const result = transformDbToAnalysisResult(id, dbRecord);
+      if (!result) {
+        setError('Dados de análise corrompidos. Clique em "Re-analisar" para gerar nova análise.');
+        return;
+      }
+
+      setAnalysis(result);
+    } catch (err) {
+      console.error('[Dashboard] Erro ao carregar análise:', err);
+      setError(err instanceof Error ? err.message : 'Erro ao carregar análise');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Auto-load quando videoId vem da URL — busca existente, NÃO re-analisa
   useEffect(() => {
     if (urlVideoId) {
       setVideoId(urlVideoId);
-      analyzeVideo(urlVideoId);
+      loadExistingAnalysis(urlVideoId);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlVideoId]);
 
+  // Re-analisar: executa pipeline completo (requer MediaPipe/Ollama no servidor)
   const analyzeVideo = async (id?: string) => {
     const idToAnalyze = id || videoId;
     if (!idToAnalyze.trim()) {
@@ -143,14 +236,84 @@ export default function BiomechanicsDashboard() {
 
       setAnalysis(data);
     } catch (err) {
-      console.error('[Dashboard] Erro na análise:', err);
-      setError(err instanceof Error ? err.message : 'Erro ao analisar vídeo');
+      console.error('[Dashboard] Erro na re-análise:', err);
+      setError(err instanceof Error ? err.message : 'Erro ao re-analisar vídeo');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAnalyzeClick = () => analyzeVideo(videoId);
+  // Buscar: primeiro tenta carregar existente, se não tiver, analisa
+  const handleAnalyzeClick = async () => {
+    const id = videoId.trim();
+    if (!id) {
+      setError('Por favor, insira um ID de vídeo');
+      return;
+    }
+    // Tenta carregar existente primeiro
+    await loadExistingAnalysis(id);
+  };
+
+  // Carregar/Gerar plano corretivo
+  const handleGeneratePlan = async () => {
+    const id = videoId.trim();
+    if (!id) return;
+
+    setPlanLoading(true);
+    setPlanError(null);
+
+    try {
+      // Primeiro tenta GET (plano existente)
+      const getRes = await fetch(`/api/nfv/corrective-plan?analysisId=${id}`);
+      if (getRes.ok) {
+        const getData = await getRes.json();
+        if (getData.plan?.semanas?.length > 0) {
+          setCorrectivePlan(getData.plan);
+          setPlanLoading(false);
+          return;
+        }
+      }
+
+      // Se não existe, gera via POST
+      const postRes = await fetch('/api/nfv/corrective-plan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ analysisId: id, force: true }),
+      });
+
+      const postData = await postRes.json();
+      if (!postRes.ok) {
+        throw new Error(postData.error || 'Erro ao gerar plano');
+      }
+
+      setCorrectivePlan(postData.plan);
+    } catch (err) {
+      console.error('[Dashboard] Erro no plano corretivo:', err);
+      setPlanError(err instanceof Error ? err.message : 'Erro ao gerar plano corretivo');
+    } finally {
+      setPlanLoading(false);
+    }
+  };
+
+  // Tentar carregar plano existente quando análise carrega
+  useEffect(() => {
+    if (analysis && videoId) {
+      // Verifica se tem problemas que justifiquem plano corretivo
+      const hasProblems = analysis.diagnostic.problems.length > 0;
+      if (hasProblems) {
+        // Tenta carregar plano existente (silencioso, sem loading)
+        fetch(`/api/nfv/corrective-plan?analysisId=${videoId}`)
+          .then(res => res.ok ? res.json() : null)
+          .then(data => {
+            if (data?.plan?.semanas?.length > 0) {
+              setCorrectivePlan(data.plan);
+            }
+          })
+          .catch(() => {}); // silencioso
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [analysis]);
 
   const handleDelete = async () => {
     const idToDelete = videoId.trim();
@@ -219,13 +382,23 @@ export default function BiomechanicsDashboard() {
             <p className="text-slate-400 ml-9">Análise avançada de movimento e técnica de exercício</p>
           </div>
           {analysis && (
-            <button
-              onClick={() => setShowDeleteConfirm(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600/10 border border-red-600/20 text-red-400 text-sm font-medium hover:bg-red-600/20 transition-colors"
-            >
-              <Trash2 className="w-4 h-4" />
-              Excluir Video
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => analyzeVideo(videoId)}
+                disabled={loading}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-600/10 border border-cyan-600/20 text-cyan-400 text-sm font-medium hover:bg-cyan-600/20 transition-colors disabled:opacity-50"
+              >
+                <RefreshCw className="w-4 h-4" />
+                Re-analisar
+              </button>
+              <button
+                onClick={() => setShowDeleteConfirm(true)}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-600/10 border border-red-600/20 text-red-400 text-sm font-medium hover:bg-red-600/20 transition-colors"
+              >
+                <Trash2 className="w-4 h-4" />
+                Excluir Video
+              </button>
+            </div>
           )}
         </div>
 
@@ -669,6 +842,18 @@ export default function BiomechanicsDashboard() {
                     </div>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {/* Corrective Plan Section */}
+            {(analysis.diagnostic.problems.length > 0 || correctivePlan) && (
+              <div className="mt-8">
+                <CorrectivePlanCard
+                  plan={correctivePlan}
+                  onGeneratePlan={handleGeneratePlan}
+                  loading={planLoading}
+                  error={planError}
+                />
               </div>
             )}
 
