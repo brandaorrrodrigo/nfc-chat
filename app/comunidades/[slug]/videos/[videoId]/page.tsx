@@ -12,6 +12,7 @@ import VideoPlayer from '@/components/nfv/VideoPlayer';
 import MovementPatternBadge from '@/components/nfv/MovementPatternBadge';
 import ShareModal from '@/components/nfv/ShareModal';
 import CorrectivePlanCard from '@/components/nfv/CorrectivePlanCard';
+import { safeRender } from '@/lib/utils/safe-render';
 
 interface AnalysisDetail {
   id: string;
@@ -199,17 +200,6 @@ export default function VideoDetailPage() {
   };
 
   const renderPublishedAnalysis = (data: Record<string, unknown>) => {
-    // Helper: converte qualquer item (string ou objeto desvio) para string segura
-    const safeString = (item: unknown): string => {
-      if (typeof item === 'string') return item;
-      if (item && typeof item === 'object') {
-        const obj = item as Record<string, unknown>;
-        const parts = [obj.criterio, obj.valor, obj.o_que_indica, obj.nome, obj.descricao, obj.item, obj.acao].filter(Boolean);
-        return parts.length > 0 ? parts.join(' — ') : JSON.stringify(item);
-      }
-      return String(item ?? '');
-    };
-
     // Verificar se é análise biomecânica estruturada (novo formato)
     const analysisType = data.analysis_type as string || '';
     const system = data.system as string || '';
@@ -392,9 +382,9 @@ export default function VideoDetailPage() {
               </div>
             )}
 
-            {(summary || String(report.resumo_executivo || report.resumo || '')) && (
+            {(summary || safeRender(report.resumo_executivo || report.resumo || '')) && (
               <p className="text-sm text-zinc-300 border-t border-zinc-800 pt-4">
-                {String(report.resumo_executivo || report.resumo || '') || summary}
+                {safeRender(report.resumo_executivo || report.resumo) || safeRender(summary)}
               </p>
             )}
 
@@ -417,11 +407,11 @@ export default function VideoDetailPage() {
           {(() => {
             const problems = stabilizerAnalysis
               .filter(s => s.variation.classification !== 'firme')
-              .map(s => s.instability_meaning || s.interpretation || `${s.label}: ${s.variation.classificationLabel}`);
+              .map(s => safeRender(s.instability_meaning || s.interpretation || `${safeRender(s.label)}: ${safeRender(s.variation.classificationLabel)}`));
             const positives = (report.pontos_positivos as string[]) || motorAnalysis
               .filter(m => ['excellent', 'good'].includes(m.rom.classification))
               .slice(0, 3)
-              .map(m => `${m.label}: ${m.rom.classificationLabel}`);
+              .map(m => `${safeRender(m.label)}: ${safeRender(m.rom.classificationLabel)}`);
             if (problems.length === 0 && positives.length === 0) return null;
             return (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -429,7 +419,7 @@ export default function VideoDetailPage() {
                   <div className="bg-red-500/5 rounded-xl p-4 border border-red-500/20">
                     <div className="text-[10px] text-red-400 uppercase tracking-wider font-semibold mb-2">Atencao</div>
                     {problems.slice(0, 3).map((p, i) => (
-                      <p key={i} className="text-xs text-red-300/80 mb-1">• {safeString(p)}</p>
+                      <p key={i} className="text-xs text-red-300/80 mb-1">• {safeRender(p)}</p>
                     ))}
                   </div>
                 )}
@@ -437,7 +427,7 @@ export default function VideoDetailPage() {
                   <div className="bg-green-500/5 rounded-xl p-4 border border-green-500/20">
                     <div className="text-[10px] text-green-400 uppercase tracking-wider font-semibold mb-2">Pontos Fortes</div>
                     {(positives as unknown[]).slice(0, 3).map((p, i) => (
-                      <p key={i} className="text-xs text-green-300/80 mb-1">+ {safeString(p)}</p>
+                      <p key={i} className="text-xs text-green-300/80 mb-1">+ {safeRender(p)}</p>
                     ))}
                   </div>
                 )}
@@ -469,20 +459,20 @@ export default function VideoDetailPage() {
                   return (
                     <div key={i} className={`bg-zinc-800/50 rounded-xl p-4 border-l-3 ${romBg}`}>
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-zinc-200 font-medium">{m.label || m.joint}</span>
+                        <span className="text-sm text-zinc-200 font-medium">{safeRender(m.label || m.joint)}</span>
                         <span className={`text-[10px] px-2 py-0.5 rounded border ${getClassBadge(romClass)}`}>
-                          {m.rom.classificationLabel || romClass}
+                          {safeRender(m.rom.classificationLabel || romClass)}
                         </span>
                       </div>
                       <div className="flex items-center gap-3 text-[10px] text-zinc-500">
-                        <span>Movimento: {m.movement}</span>
-                        <span>ROM: {m.rom.value}{m.rom.unit}</span>
+                        <span>Movimento: {safeRender(m.movement)}</span>
+                        <span>ROM: {safeRender(m.rom.value)}{safeRender(m.rom.unit)}</span>
                         {m.rom.min != null && m.rom.max != null && (
-                          <span>({Number(m.rom.min).toFixed(0)}-{Number(m.rom.max).toFixed(0)}{m.rom.unit})</span>
+                          <span>({Number(m.rom.min).toFixed(0)}-{Number(m.rom.max).toFixed(0)}{safeRender(m.rom.unit)})</span>
                         )}
                       </div>
                       {m.peak_contraction != null && (
-                        <div className="text-[10px] text-zinc-500 mt-0.5">Pico contracao: {Number(m.peak_contraction).toFixed(0)}{m.rom.unit}</div>
+                        <div className="text-[10px] text-zinc-500 mt-0.5">Pico contracao: {Number(m.peak_contraction).toFixed(0)}{safeRender(m.rom.unit)}</div>
                       )}
                       {(() => {
                         const symVal = m.symmetry == null ? null
@@ -526,25 +516,25 @@ export default function VideoDetailPage() {
                   return (
                     <div key={i} className={`bg-zinc-800/50 rounded-xl p-4 border-l-3 ${stabBorder}`}>
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-zinc-200 font-medium">{s.label || s.joint}</span>
+                        <span className="text-sm text-zinc-200 font-medium">{safeRender(s.label || s.joint)}</span>
                         <span className={`text-[10px] px-2 py-0.5 rounded border ${getClassBadge(stabClass)}`}>
-                          {s.variation.classificationLabel || s.variation.classification}
+                          {safeRender(s.variation.classificationLabel || s.variation.classification)}
                         </span>
                       </div>
                       <div className="text-[10px] mb-1">
                         {s.variation.classification === 'firme'
-                          ? <span className="text-green-400">✓ {s.expected_state}</span>
-                          : <span className="text-orange-400">⚠ {s.instability_meaning || s.interpretation}</span>
+                          ? <span className="text-green-400">{safeRender(s.expected_state)}</span>
+                          : <span className="text-orange-400">{safeRender(s.instability_meaning || s.interpretation)}</span>
                         }
                       </div>
                       <div className="text-[10px] text-zinc-500">
-                        Variacao: {Number(s.variation.value).toFixed(1)}{s.variation.unit}
+                        Variacao: {Number(s.variation.value).toFixed(1)}{safeRender(s.variation.unit)}
                       </div>
                       {Array.isArray(s.corrective_exercises) && s.corrective_exercises.length > 0 && (
                         <div className="mt-1.5 flex flex-wrap gap-1">
                           {s.corrective_exercises.map((ex, j) => (
                             <span key={j} className="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/15 text-purple-400 border border-purple-500/20">
-                              {safeString(ex)}
+                              {safeRender(ex)}
                             </span>
                           ))}
                         </div>
@@ -567,13 +557,13 @@ export default function VideoDetailPage() {
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {muscles.primary?.map((m, i) => (
-                  <span key={`p-${i}`} className="text-[10px] px-2 py-0.5 rounded bg-pink-500/20 text-pink-400 border border-pink-500/20">{m}</span>
+                  <span key={`p-${i}`} className="text-[10px] px-2 py-0.5 rounded bg-pink-500/20 text-pink-400 border border-pink-500/20">{safeRender(m)}</span>
                 ))}
                 {muscles.secondary?.map((m, i) => (
-                  <span key={`s-${i}`} className="text-[10px] px-2 py-0.5 rounded bg-zinc-700/50 text-zinc-400 border border-zinc-600/30">{m}</span>
+                  <span key={`s-${i}`} className="text-[10px] px-2 py-0.5 rounded bg-zinc-700/50 text-zinc-400 border border-zinc-600/30">{safeRender(m)}</span>
                 ))}
                 {muscles.stabilizers?.map((m, i) => (
-                  <span key={`st-${i}`} className="text-[10px] px-2 py-0.5 rounded bg-blue-500/15 text-blue-400 border border-blue-500/20">{m}</span>
+                  <span key={`st-${i}`} className="text-[10px] px-2 py-0.5 rounded bg-blue-500/15 text-blue-400 border border-blue-500/20">{safeRender(m)}</span>
                 ))}
               </div>
             </div>
@@ -659,7 +649,7 @@ export default function VideoDetailPage() {
                       {pontosPositivos.map((p, i) => (
                         <li key={i} className="flex items-start gap-2 text-xs text-zinc-300">
                           <span className="text-green-400 mt-0.5">+</span>
-                          {safeString(p)}
+                          {safeRender(p)}
                         </li>
                       ))}
                     </ul>
@@ -676,8 +666,8 @@ export default function VideoDetailPage() {
                     <div className="space-y-1.5">
                       {cadeiaMovimento.map((fase, i) => (
                         <div key={i} className="flex items-start gap-2 text-xs">
-                          <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${getFaseColor(fase.fase?.toLowerCase())}`}>{fase.fase}</span>
-                          <span className="text-zinc-400">{fase.descricao}</span>
+                          <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${getFaseColor(String(fase.fase || '').toLowerCase())}`}>{safeRender(fase.fase)}</span>
+                          <span className="text-zinc-400">{safeRender(fase.descricao)}</span>
                         </div>
                       ))}
                     </div>
@@ -695,10 +685,10 @@ export default function VideoDetailPage() {
                       {pontosAtencao.map((p, i) => (
                         <div key={i} className="bg-zinc-800/50 rounded-lg p-2.5 border-l-2 border-orange-500/50">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className={`text-[10px] font-semibold ${getSeveridadeColor(p.severidade)}`}>{p.severidade}</span>
-                            <span className="text-xs text-zinc-300">{p.item}</span>
+                            <span className={`text-[10px] font-semibold ${getSeveridadeColor(safeRender(p.severidade))}`}>{safeRender(p.severidade)}</span>
+                            <span className="text-xs text-zinc-300">{safeRender(p.item)}</span>
                           </div>
-                          <p className="text-[10px] text-zinc-500">{p.sugestao}</p>
+                          <p className="text-[10px] text-zinc-500">{safeRender(p.sugestao)}</p>
                         </div>
                       ))}
                     </div>
@@ -715,10 +705,10 @@ export default function VideoDetailPage() {
                     <div className="space-y-1.5">
                       {recsTop3.map((r, i) => (
                         <div key={i} className="flex items-start gap-2 text-xs">
-                          <span className="text-yellow-400 font-bold">#{r.prioridade}</span>
+                          <span className="text-yellow-400 font-bold">#{safeRender(r.prioridade)}</span>
                           <div>
-                            <span className="text-zinc-300">{r.acao}</span>
-                            <span className="text-zinc-500 ml-1">— {r.motivo}</span>
+                            <span className="text-zinc-300">{safeRender(r.acao)}</span>
+                            <span className="text-zinc-500 ml-1">— {safeRender(r.motivo)}</span>
                           </div>
                         </div>
                       ))}
@@ -729,7 +719,7 @@ export default function VideoDetailPage() {
                 {/* Conclusao */}
                 {conclusao && (
                   <div className="bg-zinc-800/30 rounded-lg p-3 border border-zinc-700/50">
-                    <p className="text-xs text-zinc-400 italic">{conclusao}</p>
+                    <p className="text-xs text-zinc-400 italic">{safeRender(conclusao)}</p>
                   </div>
                 )}
               </div>
@@ -797,15 +787,15 @@ export default function VideoDetailPage() {
                             }`}>{isStab ? 'EST' : 'MOT'}</span>
                           );
                         })()}
-                        <span className="text-xs text-zinc-300 truncate">{c.label || c.criterion}</span>
+                        <span className="text-xs text-zinc-300 truncate">{safeRender(c.label || c.criterion)}</span>
                         {c.is_safety_critical && (
                           <span className="text-[9px] px-1.5 py-0.5 rounded bg-red-500/20 text-red-400 flex-shrink-0">!</span>
                         )}
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-                        <span className="text-xs text-zinc-400 font-mono">{c.value}</span>
-                        <span className={`text-[10px] px-2 py-0.5 rounded border ${getClassBadge(c.classification)}`}>
-                          {c.classification_label || c.classification}
+                        <span className="text-xs text-zinc-400 font-mono">{safeRender(c.value)}</span>
+                        <span className={`text-[10px] px-2 py-0.5 rounded border ${getClassBadge(safeRender(c.classification))}`}>
+                          {safeRender(c.classification_label || c.classification)}
                         </span>
                       </div>
                     </div>
@@ -817,7 +807,7 @@ export default function VideoDetailPage() {
                       <p key={i} className={`text-[10px] ${
                         c.note?.startsWith('⚠') ? 'text-orange-400' : c.note?.startsWith('✓') ? 'text-green-400' : 'text-zinc-500'
                       }`}>
-                        <span className="text-zinc-400">{c.label || c.criterion}:</span> {c.note}
+                        <span className="text-zinc-400">{safeRender(c.label || c.criterion)}:</span> {safeRender(c.note)}
                       </p>
                     ))}
                   </div>
@@ -839,13 +829,13 @@ export default function VideoDetailPage() {
                 {pontosCriticosNovo.map((ponto, i) => (
                   <div key={i} className="bg-zinc-800/50 rounded-lg p-3 border-l-4 border-red-500/50">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className={`text-xs font-semibold px-2 py-0.5 rounded ${getSeveridadeColor(ponto.severidade)} bg-zinc-800`}>
-                        {ponto.severidade}
+                      <span className={`text-xs font-semibold px-2 py-0.5 rounded ${getSeveridadeColor(safeRender(ponto.severidade))} bg-zinc-800`}>
+                        {safeRender(ponto.severidade)}
                       </span>
-                      <span className="text-xs text-zinc-500">{ponto.frequencia}</span>
+                      <span className="text-xs text-zinc-500">{safeRender(ponto.frequencia)}</span>
                     </div>
-                    <p className="text-sm text-zinc-300 font-medium">{ponto.nome}</p>
-                    <p className="text-xs text-zinc-500 mt-1">Frames: {ponto.frames_afetados?.join(', ')}</p>
+                    <p className="text-sm text-zinc-300 font-medium">{safeRender(ponto.nome)}</p>
+                    <p className="text-xs text-zinc-500 mt-1">Frames: {Array.isArray(ponto.frames_afetados) ? ponto.frames_afetados.join(', ') : safeRender(ponto.frames_afetados)}</p>
                   </div>
                 ))}
               </div>
@@ -864,12 +854,12 @@ export default function VideoDetailPage() {
               <div className="space-y-2">
                 {pontosCriticosAntigo.map((ponto, i) => (
                   <div key={i} className="flex items-start gap-3 bg-zinc-800/50 rounded-lg p-3">
-                    <span className={`text-xs font-semibold px-2 py-0.5 rounded ${getSeveridadeColor(ponto.severidade)} bg-zinc-800`}>
-                      {ponto.severidade}
+                    <span className={`text-xs font-semibold px-2 py-0.5 rounded ${getSeveridadeColor(safeRender(ponto.severidade))} bg-zinc-800`}>
+                      {safeRender(ponto.severidade)}
                     </span>
                     <div>
-                      <span className="text-xs text-zinc-500">[{ponto.tipo}]</span>
-                      <p className="text-sm text-zinc-300">{ponto.descricao}</p>
+                      <span className="text-xs text-zinc-500">[{safeRender(ponto.tipo)}]</span>
+                      <p className="text-sm text-zinc-300">{safeRender(ponto.descricao)}</p>
                     </div>
                   </div>
                 ))}
@@ -888,25 +878,25 @@ export default function VideoDetailPage() {
                 {recomendacoesExercicios.map((rec, i) => (
                   <div key={i} className="bg-zinc-800/50 rounded-lg p-4 border-l-4 border-purple-500/50">
                     <div className="flex items-center justify-between mb-2">
-                      <span className={`text-xs font-semibold px-2 py-0.5 rounded ${getSeveridadeColor(rec.severidade)} bg-zinc-800`}>
-                        {rec.severidade}
+                      <span className={`text-xs font-semibold px-2 py-0.5 rounded ${getSeveridadeColor(safeRender(rec.severidade))} bg-zinc-800`}>
+                        {safeRender(rec.severidade)}
                       </span>
-                      <span className="text-xs text-purple-400">⏱️ {rec.tempo_correcao}</span>
+                      <span className="text-xs text-purple-400">{safeRender(rec.tempo_correcao)}</span>
                     </div>
-                    <p className="text-sm text-zinc-300 font-medium mb-3">Para: {rec.desvio}</p>
+                    <p className="text-sm text-zinc-300 font-medium mb-3">Para: {safeRender(rec.desvio)}</p>
 
                     {/* Exercícios */}
                     <div className="mb-3">
-                      <p className="text-xs text-zinc-500 mb-2">💪 Exercícios:</p>
+                      <p className="text-xs text-zinc-500 mb-2">Exercicios:</p>
                       <div className="space-y-1.5 ml-2">
                         {rec.exercicios?.map((ex, j) => (
                           <div key={j} className="text-xs text-zinc-300 flex items-center gap-2">
                             <span className="text-green-400">→</span>
-                            <span className="font-medium">{ex.nome}</span>
+                            <span className="font-medium">{safeRender(ex.nome)}</span>
                             <span className="text-zinc-500">|</span>
-                            <span>{ex.volume}</span>
+                            <span>{safeRender(ex.volume)}</span>
                             <span className="text-zinc-500">|</span>
-                            <span className="text-cyan-400">{ex.frequencia}</span>
+                            <span className="text-cyan-400">{safeRender(ex.frequencia)}</span>
                           </div>
                         ))}
                       </div>
@@ -920,7 +910,7 @@ export default function VideoDetailPage() {
                           {rec.ajustes_tecnicos.map((aj, j) => (
                             <li key={j} className="text-xs text-zinc-400 flex items-start gap-2">
                               <span className="text-yellow-400">•</span>
-                              <span>{safeString(aj)}</span>
+                              <span>{safeRender(aj)}</span>
                             </li>
                           ))}
                         </ul>
@@ -943,12 +933,12 @@ export default function VideoDetailPage() {
                 {recomendacoesCorretivas.map((rec, i) => (
                   <div key={i} className="bg-zinc-800/50 rounded-lg p-3">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs font-bold text-purple-400">#{rec.prioridade}</span>
-                      <span className="text-xs text-zinc-500">{rec.categoria}</span>
+                      <span className="text-xs font-bold text-purple-400">#{safeRender(rec.prioridade)}</span>
+                      <span className="text-xs text-zinc-500">{safeRender(rec.categoria)}</span>
                     </div>
-                    <p className="text-sm text-zinc-300">{rec.descricao}</p>
+                    <p className="text-sm text-zinc-300">{safeRender(rec.descricao)}</p>
                     {rec.exercicio_corretivo && (
-                      <p className="text-xs text-cyan-400 mt-1">→ {rec.exercicio_corretivo}</p>
+                      <p className="text-xs text-cyan-400 mt-1">→ {safeRender(rec.exercicio_corretivo)}</p>
                     )}
                   </div>
                 ))}
@@ -967,7 +957,7 @@ export default function VideoDetailPage() {
                 {recommendations.map((rec, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-zinc-300">
                     <Star className="w-4 h-4 text-yellow-400 flex-shrink-0 mt-0.5" />
-                    {safeString(rec)}
+                    {safeRender(rec)}
                   </li>
                 ))}
               </ul>
@@ -994,7 +984,7 @@ export default function VideoDetailPage() {
                   {mpFrames.map((mf, i) => (
                     <div key={i} className={`bg-zinc-800/50 rounded-lg p-2.5 ${mf.success ? '' : 'opacity-50'}`}>
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[10px] text-zinc-500">Frame {mf.frame}</span>
+                        <span className="text-[10px] text-zinc-500">Frame {safeRender(mf.frame)}</span>
                         <span className={`text-[9px] px-1.5 py-0.5 rounded ${mf.success ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
                           {mf.success ? 'OK' : 'FALHOU'}
                         </span>
@@ -1003,12 +993,12 @@ export default function VideoDetailPage() {
                         <div className="flex flex-wrap gap-1.5">
                           {Object.entries(mf.angles).slice(0, 8).map(([key, val]) => (
                             <span key={key} className="text-[9px] bg-zinc-900 px-1.5 py-0.5 rounded text-zinc-500">
-                              {key.replace(/_/g, ' ')}: {typeof val === 'number' ? val.toFixed(1) : val}
+                              {key.replace(/_/g, ' ')}: {typeof val === 'number' ? val.toFixed(1) : safeRender(val)}
                             </span>
                           ))}
                         </div>
                       )}
-                      {mf.error && <p className="text-[10px] text-red-400">{mf.error}</p>}
+                      {mf.error && <p className="text-[10px] text-red-400">{safeRender(mf.error)}</p>}
                     </div>
                   ))}
                 </div>
@@ -1028,15 +1018,15 @@ export default function VideoDetailPage() {
                   <div key={i} className="border-l-2 border-zinc-700 pl-4">
                     <div className="flex items-center gap-3 mb-2">
                       <span className="text-xs text-zinc-500">
-                        Frame {frame.frame_numero || frame.frame} ({frame.timestamp})
+                        Frame {safeRender(frame.frame_numero || frame.frame)} ({safeRender(frame.timestamp)})
                       </span>
                       {frame.fase && (
-                        <span className={`text-[10px] px-2 py-0.5 rounded ${getFaseColor(frame.fase)}`}>
-                          {frame.fase}
+                        <span className={`text-[10px] px-2 py-0.5 rounded ${getFaseColor(safeRender(frame.fase))}`}>
+                          {safeRender(frame.fase)}
                         </span>
                       )}
-                      <span className={`text-sm font-semibold ${getScoreColor(frame.score)}`}>
-                        {frame.score}/10
+                      <span className={`text-sm font-semibold ${getScoreColor(Number(frame.score) || 0)}`}>
+                        {safeRender(frame.score)}/10
                       </span>
                     </div>
 
@@ -1045,22 +1035,22 @@ export default function VideoDetailPage() {
                       <div className="flex flex-wrap gap-2 mb-2">
                         {(frame.angulos.joelho_esquerdo || frame.angulos.joelho_esq_graus) && (
                           <span className="text-[10px] bg-zinc-800 px-2 py-0.5 rounded text-zinc-400">
-                            Joelho E: {frame.angulos.joelho_esquerdo || frame.angulos.joelho_esq_graus}°
+                            Joelho E: {safeRender(frame.angulos.joelho_esquerdo || frame.angulos.joelho_esq_graus)}°
                           </span>
                         )}
                         {(frame.angulos.joelho_direito || frame.angulos.joelho_dir_graus) && (
                           <span className="text-[10px] bg-zinc-800 px-2 py-0.5 rounded text-zinc-400">
-                            Joelho D: {frame.angulos.joelho_direito || frame.angulos.joelho_dir_graus}°
+                            Joelho D: {safeRender(frame.angulos.joelho_direito || frame.angulos.joelho_dir_graus)}°
                           </span>
                         )}
                         {(frame.angulos.flexao_quadril || frame.angulos.flexao_quadril_graus) && (
                           <span className="text-[10px] bg-zinc-800 px-2 py-0.5 rounded text-zinc-400">
-                            Quadril: {frame.angulos.flexao_quadril || frame.angulos.flexao_quadril_graus}°
+                            Quadril: {safeRender(frame.angulos.flexao_quadril || frame.angulos.flexao_quadril_graus)}°
                           </span>
                         )}
                         {(frame.angulos.inclinacao_tronco || frame.angulos.inclinacao_tronco_graus) && (
                           <span className="text-[10px] bg-zinc-800 px-2 py-0.5 rounded text-zinc-400">
-                            Tronco: {frame.angulos.inclinacao_tronco || frame.angulos.inclinacao_tronco_graus}°
+                            Tronco: {safeRender(frame.angulos.inclinacao_tronco || frame.angulos.inclinacao_tronco_graus)}°
                           </span>
                         )}
                       </div>
@@ -1109,16 +1099,16 @@ export default function VideoDetailPage() {
                             if (desvio && typeof desvio === 'object') {
                               return (
                                 <div key={j} className="text-[10px] text-orange-400 bg-orange-500/10 rounded px-2 py-1">
-                                  <span className="font-medium">⚠ {desvio.criterio || 'Desvio'}</span>
-                                  {desvio.valor && <span className="text-zinc-400 ml-1">({desvio.valor})</span>}
+                                  <span className="font-medium">{safeRender(desvio.criterio || 'Desvio')}</span>
+                                  {desvio.valor && <span className="text-zinc-400 ml-1">({safeRender(desvio.valor)})</span>}
                                   {desvio.o_que_indica && (
-                                    <p className="text-zinc-400 mt-0.5">{desvio.o_que_indica}</p>
+                                    <p className="text-zinc-400 mt-0.5">{safeRender(desvio.o_que_indica)}</p>
                                   )}
                                   {desvio.possivel_causa && (
-                                    <p className="text-zinc-500 mt-0.5">Causa: {desvio.possivel_causa}</p>
+                                    <p className="text-zinc-500 mt-0.5">Causa: {safeRender(desvio.possivel_causa)}</p>
                                   )}
                                   {desvio.corretivo_sugerido && (
-                                    <p className="text-cyan-400/70 mt-0.5">Corretivo: {desvio.corretivo_sugerido}</p>
+                                    <p className="text-cyan-400/70 mt-0.5">Corretivo: {safeRender(desvio.corretivo_sugerido)}</p>
                                   )}
                                 </div>
                               );
@@ -1137,7 +1127,7 @@ export default function VideoDetailPage() {
                     )}
 
                     <p className="text-sm text-zinc-400">
-                      {frame.justificativa || frame.analysis}
+                      {safeRender(frame.justificativa || frame.analysis)}
                     </p>
 
                   </div>
@@ -1171,7 +1161,7 @@ export default function VideoDetailPage() {
                 {items.map((item, i) => (
                   <li key={i} className="flex items-start gap-2">
                     <CheckCircle className="w-3 h-3 text-purple-400 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm text-zinc-300">{String(item)}</span>
+                    <span className="text-sm text-zinc-300">{safeRender(item)}</span>
                   </li>
                 ))}
               </ul>
