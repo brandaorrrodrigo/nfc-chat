@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { AlertCircle, CheckCircle, AlertTriangle, Zap, Target, TrendingUp } from 'lucide-react';
+import { safeRender } from '@/lib/utils/safe-render';
 
 interface LLMProblem {
   nome: string;
@@ -229,7 +230,7 @@ export default function TestReportPage() {
                 {/* Executive Summary */}
                 <div className="bg-slate-700/50 rounded-lg p-4 mb-6 border border-cyan-600/30">
                   <h3 className="text-lg font-semibold text-cyan-300 mb-2">Resumo Executivo</h3>
-                  <p className="text-slate-300 leading-relaxed">{result.report.resumo_executivo}</p>
+                  <p className="text-slate-300 leading-relaxed">{safeRender(result.report.resumo_executivo)}</p>
                 </div>
 
                 {/* Score and Classification */}
@@ -243,7 +244,7 @@ export default function TestReportPage() {
                   <div className="bg-slate-700/50 rounded-lg p-4 border border-cyan-600/30">
                     <p className="text-slate-400 text-sm font-semibold mb-1">CLASSIFICAÇÃO</p>
                     <p className="text-2xl font-bold text-cyan-300">
-                      {result.report.classificacao.replace(/_/g, ' ')}
+                      {safeRender(result.report.classificacao).replace(/_/g, ' ')}
                     </p>
                   </div>
                 </div>
@@ -269,14 +270,14 @@ export default function TestReportPage() {
                                   ? 'bg-yellow-900/60 text-yellow-200'
                                   : 'bg-blue-900/60 text-blue-200'
                             }`}>
-                              {problema.severidade}
+                              {safeRender(problema.severidade)}
                             </span>
-                            <p className="font-semibold text-white">{problema.nome}</p>
+                            <p className="font-semibold text-white">{safeRender(problema.nome)}</p>
                           </div>
-                          <p className="text-red-300 text-sm mb-1">{problema.descricao}</p>
+                          <p className="text-red-300 text-sm mb-1">{safeRender(problema.descricao)}</p>
                           {problema.causa_provavel && (
                             <p className="text-red-300/70 text-xs italic">
-                              Causa provável: {problema.causa_provavel}
+                              Causa provável: {safeRender(problema.causa_provavel)}
                             </p>
                           )}
                         </div>
@@ -296,7 +297,7 @@ export default function TestReportPage() {
                       {result.report.pontos_positivos.map((ponto, idx) => (
                         <li key={idx} className="text-green-300 text-sm flex items-start gap-2">
                           <span className="text-green-400 mt-0.5">✓</span>
-                          <span>{ponto}</span>
+                          <span>{safeRender(ponto)}</span>
                         </li>
                       ))}
                     </ul>
@@ -318,14 +319,14 @@ export default function TestReportPage() {
                         >
                           <div className="flex items-start gap-2 mb-1">
                             <span className="px-2 py-0.5 rounded text-xs font-semibold bg-yellow-900/60 text-yellow-200 flex-shrink-0">
-                              P{rec.prioridade}
+                              P{safeRender(rec.prioridade)}
                             </span>
                             <div className="flex-1">
-                              <p className="font-semibold text-white text-sm">{rec.categoria}</p>
-                              <p className="text-yellow-300 text-sm">{rec.descricao}</p>
+                              <p className="font-semibold text-white text-sm">{safeRender(rec.categoria)}</p>
+                              <p className="text-yellow-300 text-sm">{safeRender(rec.descricao)}</p>
                               {rec.exercicio_corretivo && (
                                 <p className="text-yellow-300/80 text-xs mt-1">
-                                  Ex. corretivo: {rec.exercicio_corretivo}
+                                  Ex. corretivo: {safeRender(rec.exercicio_corretivo)}
                                 </p>
                               )}
                             </div>
@@ -347,7 +348,7 @@ export default function TestReportPage() {
                       {result.report.proximos_passos.map((passo, idx) => (
                         <li key={idx} className="text-blue-300 text-sm flex items-start gap-2">
                           <span className="font-semibold text-blue-400 flex-shrink-0">{idx + 1}.</span>
-                          <span>{passo}</span>
+                          <span>{safeRender(passo)}</span>
                         </li>
                       ))}
                     </ol>

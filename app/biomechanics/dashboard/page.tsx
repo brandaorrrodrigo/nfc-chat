@@ -9,6 +9,24 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { AlertCircle, CheckCircle, AlertTriangle, Zap, Target, TrendingUp, Info, Trash2, ArrowLeft, X, Loader2, RefreshCw } from 'lucide-react';
 import CorrectivePlanCard from '@/components/nfv/CorrectivePlanCard';
+import { safeRender } from '@/lib/utils/safe-render';
+
+/** Arredonda valores numéricos para evitar floating point noise (ex: 26.800000000000004 → 26.8) */
+const formatValue = (val: unknown, decimals = 1): string => {
+  if (val === null || val === undefined) return '';
+  const num = typeof val === 'string' ? parseFloat(val) : Number(val);
+  if (isNaN(num)) return String(val);
+  return num.toFixed(decimals);
+};
+
+/** Formata string com valor+unidade (ex: "26.800000000000004°" → "26.8°") */
+const formatValueStr = (val: string): string => {
+  const match = val.match(/^(-?\d+\.?\d*)(.*)/);
+  if (!match) return val;
+  const num = parseFloat(match[1]);
+  if (isNaN(num)) return val;
+  return formatValue(num) + match[2];
+};
 
 interface Classification {
   criterion: string;
@@ -608,15 +626,15 @@ export default function BiomechanicsDashboard() {
                       <div className="flex items-start gap-3">
                         {getClassificationIcon(problem.classification)}
                         <div className="flex-1">
-                          <p className="font-bold text-white">{problem.label || problem.criterion}</p>
+                          <p className="font-bold text-white">{safeRender(problem.label || problem.criterion)}</p>
                           <p className="text-red-300 text-sm">
-                            Valor: <span className="font-mono font-semibold">{problem.value}</span>
+                            Valor: <span className="font-mono font-semibold">{formatValueStr(safeRender(problem.value))}</span>
                           </p>
                           <p className="text-red-300 text-sm mt-1">
-                            Classificação: <span className="font-semibold">{problem.classification_label || problem.classification}</span>
+                            Classificação: <span className="font-semibold">{safeRender(problem.classification_label || problem.classification)}</span>
                           </p>
                           {problem.note && (
-                            <p className="text-red-300/70 text-xs mt-1 italic">{problem.note}</p>
+                            <p className="text-red-300/70 text-xs mt-1 italic">{safeRender(problem.note)}</p>
                           )}
                           {problem.rag_topics && problem.rag_topics.length > 0 && (
                             <div className="mt-2 flex flex-wrap gap-1">
@@ -625,7 +643,7 @@ export default function BiomechanicsDashboard() {
                                   key={i}
                                   className="bg-red-900/40 text-red-300 text-xs px-2 py-1 rounded"
                                 >
-                                  {topic}
+                                  {safeRender(topic)}
                                 </span>
                               ))}
                             </div>
@@ -654,15 +672,15 @@ export default function BiomechanicsDashboard() {
                       <div className="flex items-start gap-3">
                         {getClassificationIcon(positive.classification)}
                         <div className="flex-1">
-                          <p className="font-bold text-white">{positive.label || positive.criterion}</p>
+                          <p className="font-bold text-white">{safeRender(positive.label || positive.criterion)}</p>
                           <p className="text-green-300 text-sm">
-                            Valor: <span className="font-mono font-semibold">{positive.value}</span>
+                            Valor: <span className="font-mono font-semibold">{formatValueStr(safeRender(positive.value))}</span>
                           </p>
                           <p className="text-green-300 text-sm mt-1">
-                            Classificação: <span className="font-semibold">{positive.classification_label || positive.classification}</span>
+                            Classificação: <span className="font-semibold">{safeRender(positive.classification_label || positive.classification)}</span>
                           </p>
                           {positive.note && (
-                            <p className="text-green-300/70 text-xs mt-1 italic">{positive.note}</p>
+                            <p className="text-green-300/70 text-xs mt-1 italic">{safeRender(positive.note)}</p>
                           )}
                           {positive.rag_topics && positive.rag_topics.length > 0 && (
                             <div className="mt-2 flex flex-wrap gap-1">
@@ -671,7 +689,7 @@ export default function BiomechanicsDashboard() {
                                   key={i}
                                   className="bg-green-900/40 text-green-300 text-xs px-2 py-1 rounded"
                                 >
-                                  {topic}
+                                  {safeRender(topic)}
                                 </span>
                               ))}
                             </div>
@@ -714,18 +732,18 @@ export default function BiomechanicsDashboard() {
                         </div>
                         <div>
                           <p className="text-slate-500 text-xs">ROM</p>
-                          <p className="text-cyan-400 font-mono">{m.rom.value}{m.rom.unit}</p>
+                          <p className="text-cyan-400 font-mono">{formatValue(m.rom.value)}{m.rom.unit}</p>
                         </div>
                         {m.rom.min != null && m.rom.max != null && (
                           <div>
                             <p className="text-slate-500 text-xs">Range</p>
-                            <p className="text-slate-400 font-mono">{Number(m.rom.min).toFixed(0)} - {Number(m.rom.max).toFixed(0)}{m.rom.unit}</p>
+                            <p className="text-slate-400 font-mono">{formatValue(m.rom.min, 0)} - {formatValue(m.rom.max, 0)}{m.rom.unit}</p>
                           </div>
                         )}
-                        {m.peak_contraction != null && (
+                        {m.peak_contraction != null && !isNaN(Number(m.peak_contraction)) && (
                           <div>
                             <p className="text-slate-500 text-xs">Pico Contracao</p>
-                            <p className="text-slate-400 font-mono">{Number(m.peak_contraction).toFixed(0)}{m.rom.unit}</p>
+                            <p className="text-slate-400 font-mono">{formatValue(m.peak_contraction, 0)}{m.rom.unit}</p>
                           </div>
                         )}
                       </div>
@@ -739,7 +757,7 @@ export default function BiomechanicsDashboard() {
                         );
                         return (
                           <p className={`text-xs mt-2 ${symVal > 15 ? 'text-orange-400' : 'text-slate-500'}`}>
-                            Simetria bilateral: {symVal.toFixed(1)}° diferenca
+                            Simetria bilateral: {formatValue(symVal)}° diferenca
                           </p>
                         );
                       })()}
@@ -786,7 +804,7 @@ export default function BiomechanicsDashboard() {
                           </div>
                           <div>
                             <p className="text-slate-500 text-xs">Variacao</p>
-                            <p className="text-cyan-400 font-mono">{Number(s.variation.value).toFixed(1)}{s.variation.unit}</p>
+                            <p className="text-cyan-400 font-mono">{formatValue(s.variation.value)}{s.variation.unit}</p>
                           </div>
                         </div>
                         {Array.isArray(s.corrective_exercises) && s.corrective_exercises.length > 0 && (
@@ -884,9 +902,9 @@ export default function BiomechanicsDashboard() {
                           })()}
                         </td>
                         <td className="px-4 py-3 text-white font-semibold">
-                          {c.label || c.criterion}
+                          {safeRender(c.label || c.criterion)}
                         </td>
-                        <td className="px-4 py-3 text-cyan-400 font-mono">{c.value}</td>
+                        <td className="px-4 py-3 text-cyan-400 font-mono">{formatValueStr(safeRender(c.value))}</td>
                         <td className="px-4 py-3">
                           {c.is_informative ? (
                             <span className="px-3 py-1 rounded text-xs font-semibold bg-slate-600/50 text-slate-300">
@@ -906,7 +924,7 @@ export default function BiomechanicsDashboard() {
                                         : 'bg-blue-900/50 text-blue-300'
                               }`}
                             >
-                              {(c.classification_label || c.classification).toUpperCase()}
+                              {safeRender(c.classification_label || c.classification).toUpperCase()}
                             </span>
                           )}
                         </td>
@@ -945,7 +963,7 @@ export default function BiomechanicsDashboard() {
                 {/* Executive Summary */}
                 <div className="bg-slate-700/50 rounded-lg p-4 mb-6 border border-cyan-600/30">
                   <h3 className="text-lg font-semibold text-cyan-300 mb-2">Resumo Executivo</h3>
-                  <p className="text-slate-300 leading-relaxed">{analysis.report.resumo_executivo}</p>
+                  <p className="text-slate-300 leading-relaxed">{safeRender(analysis.report.resumo_executivo)}</p>
                 </div>
 
                 {/* Score and Classification */}
@@ -959,7 +977,7 @@ export default function BiomechanicsDashboard() {
                   <div className="bg-slate-700/50 rounded-lg p-4 border border-cyan-600/30">
                     <p className="text-slate-400 text-sm font-semibold mb-1">CLASSIFICAÇÃO</p>
                     <p className="text-2xl font-bold text-cyan-300">
-                      {analysis.report.classificacao.replace(/_/g, ' ')}
+                      {safeRender(analysis.report.classificacao).replace(/_/g, ' ')}
                     </p>
                   </div>
                 </div>
@@ -985,19 +1003,19 @@ export default function BiomechanicsDashboard() {
                                   ? 'bg-yellow-900/60 text-yellow-200'
                                   : 'bg-blue-900/60 text-blue-200'
                             }`}>
-                              {problema.severidade}
+                              {safeRender(problema.severidade)}
                             </span>
-                            <p className="font-semibold text-white">{problema.nome}</p>
+                            <p className="font-semibold text-white">{safeRender(problema.nome)}</p>
                           </div>
-                          <p className="text-red-300 text-sm mb-1">{problema.descricao}</p>
+                          <p className="text-red-300 text-sm mb-1">{safeRender(problema.descricao)}</p>
                           {problema.causa_provavel && (
                             <p className="text-red-300/70 text-xs italic">
-                              Causa provável: {problema.causa_provavel}
+                              Causa provável: {safeRender(problema.causa_provavel)}
                             </p>
                           )}
                           {problema.fundamentacao && (
                             <p className="text-red-300/70 text-xs mt-1 italic">
-                              {problema.fundamentacao}
+                              {safeRender(problema.fundamentacao)}
                             </p>
                           )}
                         </div>
@@ -1017,7 +1035,7 @@ export default function BiomechanicsDashboard() {
                       {analysis.report.pontos_positivos.map((ponto, idx) => (
                         <li key={idx} className="text-green-300 text-sm flex items-start gap-2">
                           <span className="text-green-400 mt-1">✓</span>
-                          <span>{ponto}</span>
+                          <span>{safeRender(ponto)}</span>
                         </li>
                       ))}
                     </ul>
@@ -1039,8 +1057,8 @@ export default function BiomechanicsDashboard() {
                             : fase.fase?.toLowerCase() === 'isometrica' ? 'bg-purple-900/50 text-purple-300'
                             : fase.fase?.toLowerCase() === 'concentrica' ? 'bg-green-900/50 text-green-300'
                             : 'bg-slate-600 text-slate-300'
-                          }`}>{fase.fase}</span>
-                          <p className="text-slate-300 text-sm">{fase.descricao}</p>
+                          }`}>{safeRender(fase.fase)}</span>
+                          <p className="text-slate-300 text-sm">{safeRender(fase.descricao)}</p>
                         </div>
                       ))}
                     </div>
@@ -1062,10 +1080,10 @@ export default function BiomechanicsDashboard() {
                               p.severidade?.toUpperCase() === 'CRITICA' ? 'bg-red-900/60 text-red-200'
                               : p.severidade?.toUpperCase() === 'MODERADA' ? 'bg-yellow-900/60 text-yellow-200'
                               : 'bg-blue-900/60 text-blue-200'
-                            }`}>{p.severidade}</span>
-                            <p className="font-semibold text-white text-sm">{p.item}</p>
+                            }`}>{safeRender(p.severidade)}</span>
+                            <p className="font-semibold text-white text-sm">{safeRender(p.item)}</p>
                           </div>
-                          <p className="text-orange-300/80 text-sm">{p.sugestao}</p>
+                          <p className="text-orange-300/80 text-sm">{safeRender(p.sugestao)}</p>
                         </div>
                       ))}
                     </div>
@@ -1073,29 +1091,33 @@ export default function BiomechanicsDashboard() {
                 )}
 
                 {/* V2: Recomendacoes Top 3 */}
-                {(analysis?.report?.recomendacoes_top3?.length ?? 0) > 0 && (
-                  <div className="mb-6">
-                    <h3 className="text-lg font-semibold text-yellow-300 mb-3 flex items-center gap-2">
-                      <Target className="w-5 h-5" />
-                      Recomendacoes Top 3
-                    </h3>
-                    <div className="space-y-3">
-                      {analysis.report!.recomendacoes_top3!.map((r, idx) => (
-                        <div key={idx} className="bg-yellow-900/15 border border-yellow-700/30 rounded p-3">
-                          <div className="flex items-start gap-2">
-                            <span className="px-2 py-0.5 rounded text-xs font-semibold bg-yellow-900/60 text-yellow-200">
-                              #{r.prioridade}
-                            </span>
-                            <div className="flex-1">
-                              <p className="font-semibold text-white text-sm">{r.acao}</p>
-                              <p className="text-yellow-300/80 text-xs mt-1">{r.motivo}</p>
+                {(() => {
+                  const validRecs = analysis?.report?.recomendacoes_top3?.filter(r => r.acao) || [];
+                  if (validRecs.length === 0) return null;
+                  return (
+                    <div className="mb-6">
+                      <h3 className="text-lg font-semibold text-yellow-300 mb-3 flex items-center gap-2">
+                        <Target className="w-5 h-5" />
+                        Recomendacoes Top 3
+                      </h3>
+                      <div className="space-y-3">
+                        {validRecs.map((r, idx) => (
+                          <div key={idx} className="bg-yellow-900/15 border border-yellow-700/30 rounded p-3">
+                            <div className="flex items-start gap-2">
+                              <span className="px-2 py-0.5 rounded text-xs font-semibold bg-yellow-900/60 text-yellow-200">
+                                #{safeRender(r.prioridade)}
+                              </span>
+                              <div className="flex-1">
+                                <p className="font-semibold text-white text-sm">{safeRender(r.acao)}</p>
+                                <p className="text-yellow-300/80 text-xs mt-1">{safeRender(r.motivo)}</p>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  );
+                })()}
 
                 {/* V1: Recommendations (fallback) */}
                 {(analysis?.report?.recomendacoes?.length ?? 0) > 0 && !(analysis?.report?.recomendacoes_top3?.length) && (
@@ -1112,14 +1134,14 @@ export default function BiomechanicsDashboard() {
                         >
                           <div className="flex items-start gap-2 mb-1">
                             <span className="px-2 py-0.5 rounded text-xs font-semibold bg-yellow-900/60 text-yellow-200">
-                              P{rec.prioridade}
+                              P{safeRender(rec.prioridade)}
                             </span>
                             <div className="flex-1">
-                              <p className="font-semibold text-white text-sm">{rec.categoria}</p>
-                              <p className="text-yellow-300 text-sm">{rec.descricao}</p>
+                              <p className="font-semibold text-white text-sm">{safeRender(rec.categoria)}</p>
+                              <p className="text-yellow-300 text-sm">{safeRender(rec.descricao)}</p>
                               {rec.exercicio_corretivo && (
                                 <p className="text-yellow-300/80 text-xs mt-1">
-                                  Ex. corretivo: {rec.exercicio_corretivo}
+                                  Ex. corretivo: {safeRender(rec.exercicio_corretivo)}
                                 </p>
                               )}
                             </div>
@@ -1134,7 +1156,7 @@ export default function BiomechanicsDashboard() {
                 {analysis?.report?.conclusao && (
                   <div className="mb-6 bg-slate-700/30 rounded-lg p-4 border border-cyan-600/20">
                     <h3 className="text-lg font-semibold text-cyan-300 mb-2">Conclusao</h3>
-                    <p className="text-slate-300 text-sm italic">{analysis.report.conclusao}</p>
+                    <p className="text-slate-300 text-sm italic">{safeRender(analysis.report.conclusao)}</p>
                   </div>
                 )}
 
@@ -1149,7 +1171,7 @@ export default function BiomechanicsDashboard() {
                       {analysis.report!.proximos_passos.map((passo, idx) => (
                         <li key={idx} className="text-blue-300 text-sm flex items-start gap-2">
                           <span className="font-semibold text-blue-400 flex-shrink-0">{idx + 1}.</span>
-                          <span>{passo}</span>
+                          <span>{safeRender(passo)}</span>
                         </li>
                       ))}
                     </ol>

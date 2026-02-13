@@ -14,6 +14,23 @@ import ShareModal from '@/components/nfv/ShareModal';
 import CorrectivePlanCard from '@/components/nfv/CorrectivePlanCard';
 import { safeRender } from '@/lib/utils/safe-render';
 
+/** Arredonda valores numéricos para evitar floating point noise */
+const formatValue = (val: unknown, decimals = 1): string => {
+  if (val === null || val === undefined) return '';
+  const num = typeof val === 'string' ? parseFloat(val) : Number(val);
+  if (isNaN(num)) return String(val);
+  return num.toFixed(decimals);
+};
+
+/** Formata string com valor+unidade (ex: "26.800000000000004°" → "26.8°") */
+const formatValueStr = (val: string): string => {
+  const match = val.match(/^(-?\d+\.?\d*)(.*)/);
+  if (!match) return val;
+  const num = parseFloat(match[1]);
+  if (isNaN(num)) return val;
+  return formatValue(num) + match[2];
+};
+
 interface AnalysisDetail {
   id: string;
   video_url: string;
@@ -466,13 +483,13 @@ export default function VideoDetailPage() {
                       </div>
                       <div className="flex items-center gap-3 text-[10px] text-zinc-500">
                         <span>Movimento: {safeRender(m.movement)}</span>
-                        <span>ROM: {safeRender(m.rom.value)}{safeRender(m.rom.unit)}</span>
+                        <span>ROM: {formatValue(m.rom.value)}{safeRender(m.rom.unit)}</span>
                         {m.rom.min != null && m.rom.max != null && (
-                          <span>({Number(m.rom.min).toFixed(0)}-{Number(m.rom.max).toFixed(0)}{safeRender(m.rom.unit)})</span>
+                          <span>({formatValue(m.rom.min, 0)}-{formatValue(m.rom.max, 0)}{safeRender(m.rom.unit)})</span>
                         )}
                       </div>
-                      {m.peak_contraction != null && (
-                        <div className="text-[10px] text-zinc-500 mt-0.5">Pico contracao: {Number(m.peak_contraction).toFixed(0)}{safeRender(m.rom.unit)}</div>
+                      {m.peak_contraction != null && !isNaN(Number(m.peak_contraction)) && (
+                        <div className="text-[10px] text-zinc-500 mt-0.5">Pico contracao: {formatValue(m.peak_contraction, 0)}{safeRender(m.rom.unit)}</div>
                       )}
                       {(() => {
                         const symVal = m.symmetry == null ? null
@@ -484,7 +501,7 @@ export default function VideoDetailPage() {
                         );
                         return (
                           <div className={`text-[10px] mt-0.5 ${symVal > 15 ? 'text-orange-400' : 'text-zinc-500'}`}>
-                            Simetria: {symVal.toFixed(1)}° diferenca
+                            Simetria: {formatValue(symVal)}° diferenca
                           </div>
                         );
                       })()}
@@ -528,7 +545,7 @@ export default function VideoDetailPage() {
                         }
                       </div>
                       <div className="text-[10px] text-zinc-500">
-                        Variacao: {Number(s.variation.value).toFixed(1)}{safeRender(s.variation.unit)}
+                        Variacao: {formatValue(s.variation.value)}{safeRender(s.variation.unit)}
                       </div>
                       {Array.isArray(s.corrective_exercises) && s.corrective_exercises.length > 0 && (
                         <div className="mt-1.5 flex flex-wrap gap-1">
@@ -793,7 +810,7 @@ export default function VideoDetailPage() {
                         )}
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-                        <span className="text-xs text-zinc-400 font-mono">{safeRender(c.value)}</span>
+                        <span className="text-xs text-zinc-400 font-mono">{formatValueStr(safeRender(c.value))}</span>
                         <span className={`text-[10px] px-2 py-0.5 rounded border ${getClassBadge(safeRender(c.classification))}`}>
                           {safeRender(c.classification_label || c.classification)}
                         </span>
@@ -993,7 +1010,7 @@ export default function VideoDetailPage() {
                         <div className="flex flex-wrap gap-1.5">
                           {Object.entries(mf.angles).slice(0, 8).map(([key, val]) => (
                             <span key={key} className="text-[9px] bg-zinc-900 px-1.5 py-0.5 rounded text-zinc-500">
-                              {key.replace(/_/g, ' ')}: {typeof val === 'number' ? val.toFixed(1) : safeRender(val)}
+                              {key.replace(/_/g, ' ')}: {typeof val === 'number' ? formatValue(val) : safeRender(val)}
                             </span>
                           ))}
                         </div>
@@ -1035,22 +1052,22 @@ export default function VideoDetailPage() {
                       <div className="flex flex-wrap gap-2 mb-2">
                         {(frame.angulos.joelho_esquerdo || frame.angulos.joelho_esq_graus) && (
                           <span className="text-[10px] bg-zinc-800 px-2 py-0.5 rounded text-zinc-400">
-                            Joelho E: {safeRender(frame.angulos.joelho_esquerdo || frame.angulos.joelho_esq_graus)}°
+                            Joelho E: {formatValue(frame.angulos.joelho_esquerdo || frame.angulos.joelho_esq_graus)}°
                           </span>
                         )}
                         {(frame.angulos.joelho_direito || frame.angulos.joelho_dir_graus) && (
                           <span className="text-[10px] bg-zinc-800 px-2 py-0.5 rounded text-zinc-400">
-                            Joelho D: {safeRender(frame.angulos.joelho_direito || frame.angulos.joelho_dir_graus)}°
+                            Joelho D: {formatValue(frame.angulos.joelho_direito || frame.angulos.joelho_dir_graus)}°
                           </span>
                         )}
                         {(frame.angulos.flexao_quadril || frame.angulos.flexao_quadril_graus) && (
                           <span className="text-[10px] bg-zinc-800 px-2 py-0.5 rounded text-zinc-400">
-                            Quadril: {safeRender(frame.angulos.flexao_quadril || frame.angulos.flexao_quadril_graus)}°
+                            Quadril: {formatValue(frame.angulos.flexao_quadril || frame.angulos.flexao_quadril_graus)}°
                           </span>
                         )}
                         {(frame.angulos.inclinacao_tronco || frame.angulos.inclinacao_tronco_graus) && (
                           <span className="text-[10px] bg-zinc-800 px-2 py-0.5 rounded text-zinc-400">
-                            Tronco: {safeRender(frame.angulos.inclinacao_tronco || frame.angulos.inclinacao_tronco_graus)}°
+                            Tronco: {formatValue(frame.angulos.inclinacao_tronco || frame.angulos.inclinacao_tronco_graus)}°
                           </span>
                         )}
                       </div>

@@ -36,6 +36,7 @@ export interface StabilizerJointResult {
   label: string;
   expectedState: string;
   instabilityMeaning: string;
+  stabilityMode: 'rigid' | 'controlled' | 'functional';
   variation: { value: number; unit: string; classification: StabilizerClassification; classificationLabel: string };
   interpretation: string;
   correctiveExercises: string[];
@@ -136,16 +137,61 @@ const STABILIZER_LABELS: Record<StabilizerClassification, string> = {
 };
 
 /**
+ * Multiplicadores de threshold por stabilityMode:
+ * - rigid (1.0x): variação mínima esperada (default)
+ * - controlled (1.8x): alguma variação é aceitável
+ * - functional (3.0x): variação é parte do movimento
+ */
+const STABILITY_MULTIPLIERS: Record<'rigid' | 'controlled' | 'functional', number> = {
+  rigid: 1.0,
+  controlled: 1.8,
+  functional: 3.0,
+};
+
+/**
  * Classifica variação de articulação ESTABILIZADORA
  * MENOS variação = MELHOR (lógica INVERTIDA vs motor)
+ * stabilityMode aplica multiplicador nos thresholds
  */
 export function classifyStabilizer(
   variation: number,
-  criteria: { acceptable: number; warning: number; danger: number }
+  criteria: { acceptable: number; warning: number; danger: number },
+  stabilityMode: 'rigid' | 'controlled' | 'functional' = 'rigid',
 ): StabilizerClassification {
-  if (variation <= criteria.acceptable) return 'firme';
-  if (variation <= criteria.warning) return 'alerta';
+  const mult = STABILITY_MULTIPLIERS[stabilityMode];
+  if (variation <= criteria.acceptable * mult) return 'firme';
+  if (variation <= criteria.warning * mult) return 'alerta';
   return 'compensação';
+}
+
+/**
+ * Gera interpretação contextual baseada no stabilityMode:
+ * - rigid: qualquer instabilidade é problema
+ * - controlled: alerta é aceitável, compensação = impulso
+ * - functional: alerta é esperado, compensação = momentum excessivo
+ */
+function getStabilizerInterpretation(
+  stabClass: StabilizerClassification,
+  stabilityMode: 'rigid' | 'controlled' | 'functional',
+  expectedState: string,
+  instabilityMeaning: string,
+): string {
+  if (stabClass === 'firme') return `${expectedState} ✓`;
+
+  if (stabilityMode === 'rigid') {
+    return `Instável — ${instabilityMeaning}`;
+  }
+
+  if (stabilityMode === 'controlled') {
+    return stabClass === 'alerta'
+      ? 'Movimento dentro do esperado'
+      : `Movimento excessivo — possível uso de impulso`;
+  }
+
+  // functional
+  return stabClass === 'alerta'
+    ? 'Movimento dentro do esperado'
+    : `Momentum excessivo — reduzir carga`;
 }
 
 // ============================
@@ -231,18 +277,18 @@ export function classifyExerciseV2(
     const input = stabilizerInputs.find(s => s.joint === sj.joint);
     if (!input) continue;
 
-    const stabClass = classifyStabilizer(input.variationValue, sj.criteria.maxVariation);
+    const mode = sj.stabilityMode || 'rigid';
+    const stabClass = classifyStabilizer(input.variationValue, sj.criteria.maxVariation, mode);
     stabilizerSummary[stabClass]++;
 
-    const interpretation = stabClass === 'firme'
-      ? `${sj.expectedState} ✓`
-      : `Instável — ${sj.instabilityMeaning}`;
+    const interpretation = getStabilizerInterpretation(stabClass, mode, sj.expectedState, sj.instabilityMeaning);
 
     stabilizerAnalysis.push({
       joint: sj.joint,
       label: sj.label,
       expectedState: sj.expectedState,
       instabilityMeaning: sj.instabilityMeaning,
+      stabilityMode: mode,
       variation: {
         value: input.variationValue,
         unit: input.unit || sj.criteria.maxVariation.unit,

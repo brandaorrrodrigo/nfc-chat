@@ -51,6 +51,7 @@ export interface StabilizerJoint {
   expectedState: string;
   side: 'bilateral' | 'midline';
   criteria: StabilizerCriteria;
+  stabilityMode?: 'rigid' | 'controlled' | 'functional';
   instabilityMeaning: string;
   correctiveExercises: string[];
   ragTopics: string[];
@@ -158,6 +159,7 @@ const BACK_SQUAT_TEMPLATE: ExerciseTemplate = {
       criteria: {
         maxVariation: { metric: 'lumbar_flexion_change', acceptable: 8, warning: 15, danger: 22, unit: '°' },
       },
+      stabilityMode: 'rigid',
       instabilityMeaning: 'Butt wink — retroversão pélvica. Risco de disco lombar.',
       correctiveExercises: ['90/90 hip stretch', 'dead bug', 'goblet squat com pausa'],
       ragTopics: ['butt wink', 'retroversão pélvica agachamento'],
@@ -170,6 +172,7 @@ const BACK_SQUAT_TEMPLATE: ExerciseTemplate = {
       criteria: {
         maxVariation: { metric: 'trunk_inclination', acceptable: 40, warning: 52, danger: 60, unit: '°' },
       },
+      stabilityMode: 'controlled',
       instabilityMeaning: 'Inclinação excessiva — fraqueza de extensores torácicos ou core',
       correctiveExercises: ['front squat', 'goblet squat', 'extensão torácica foam roller'],
       ragTopics: ['inclinação anterior tronco agachamento'],
@@ -182,6 +185,7 @@ const BACK_SQUAT_TEMPLATE: ExerciseTemplate = {
       criteria: {
         maxVariation: { metric: 'knee_medial_displacement', acceptable: 2, warning: 5, danger: 8, unit: 'cm' },
       },
+      stabilityMode: 'rigid',
       instabilityMeaning: 'Valgo dinâmico — fraqueza de glúteo médio e rotadores externos',
       correctiveExercises: ['clamshell', 'monster walk com mini band', 'single leg glute bridge'],
       ragTopics: ['valgo dinâmico agachamento', 'glúteo médio'],
@@ -266,6 +270,7 @@ const DEADLIFT_CONVENTIONAL_TEMPLATE: ExerciseTemplate = {
       criteria: {
         maxVariation: { metric: 'lumbar_flexion_variation', acceptable: 5, warning: 10, danger: 18, unit: '°' },
       },
+      stabilityMode: 'rigid',
       instabilityMeaning: 'Arredondamento lombar — RISCO ALTO de herniação discal. Critério mais importante do deadlift.',
       correctiveExercises: ['hip hinge com bastão', 'RDL leve', 'good morning com banda'],
       ragTopics: ['flexão lombar deadlift', 'neutro coluna', 'herniação discal'],
@@ -278,6 +283,7 @@ const DEADLIFT_CONVENTIONAL_TEMPLATE: ExerciseTemplate = {
       criteria: {
         maxVariation: { metric: 'thoracic_flexion_variation', acceptable: 8, warning: 15, danger: 25, unit: '°' },
       },
+      stabilityMode: 'controlled',
       instabilityMeaning: 'Cifose torácica — fraqueza de extensores ou carga excessiva',
       correctiveExercises: ['face pull', 'band pull-apart', 'extensão torácica foam roller'],
       ragTopics: ['cifose torácica deadlift', 'extensão torácica'],
@@ -290,6 +296,7 @@ const DEADLIFT_CONVENTIONAL_TEMPLATE: ExerciseTemplate = {
       criteria: {
         maxVariation: { metric: 'shoulder_bar_deviation', acceptable: 3, warning: 6, danger: 10, unit: 'cm' },
       },
+      stabilityMode: 'controlled',
       instabilityMeaning: 'Barra afastando do corpo — braço de momento aumentado',
       correctiveExercises: ['deadlift com pausa no joelho', 'block pulls'],
       ragTopics: ['trajetória barra deadlift', 'posição ombros deadlift'],
@@ -376,6 +383,7 @@ const CHEST_SUPPORTED_ROW_TEMPLATE: ExerciseTemplate = {
       criteria: {
         maxVariation: { metric: 'lumbar_angle_variation', acceptable: 3, warning: 7, danger: 12, unit: '°' },
       },
+      stabilityMode: 'rigid',
       instabilityMeaning: 'Perda de apoio no pad, possível uso de impulso',
       correctiveExercises: ['prancha', 'dead bug', 'bird dog'],
       ragTopics: ['estabilidade lombar remada'],
@@ -388,6 +396,7 @@ const CHEST_SUPPORTED_ROW_TEMPLATE: ExerciseTemplate = {
       criteria: {
         maxVariation: { metric: 'wrist_deviation', acceptable: 5, warning: 10, danger: 20, unit: '°' },
       },
+      stabilityMode: 'controlled',
       instabilityMeaning: 'Fraqueza de flexores/extensores de punho, grip inadequado',
       correctiveExercises: ['wrist curls', "farmer's walk", 'dead hang'],
       ragTopics: ['alinhamento punho remada'],
@@ -400,6 +409,7 @@ const CHEST_SUPPORTED_ROW_TEMPLATE: ExerciseTemplate = {
       criteria: {
         maxVariation: { metric: 'trunk_rotation_variation', acceptable: 3, warning: 8, danger: 15, unit: '°' },
       },
+      stabilityMode: 'rigid',
       instabilityMeaning: 'Uso de impulso rotacional, core fraco ou carga excessiva',
       correctiveExercises: ['pallof press', 'anti-rotação com cabo', 'prancha lateral'],
       ragTopics: ['estabilidade tronco remada', 'anti-rotação core'],
@@ -461,6 +471,7 @@ const LATERAL_RAISE_TEMPLATE: ExerciseTemplate = {
       criteria: {
         maxVariation: { metric: 'elbow_angle_variation', acceptable: 5, warning: 12, danger: 20, unit: '°' },
       },
+      stabilityMode: 'rigid',
       instabilityMeaning: 'Flexionar cotovelo = usar bíceps como compensação, reduz braço de momento no deltóide',
       correctiveExercises: ['elevação lateral com pausa isométrica', 'elevação lateral no cabo'],
       ragTopics: ['posição cotovelo elevação lateral'],
@@ -473,6 +484,7 @@ const LATERAL_RAISE_TEMPLATE: ExerciseTemplate = {
       criteria: {
         maxVariation: { metric: 'wrist_deviation', acceptable: 8, warning: 15, danger: 25, unit: '°' },
       },
+      stabilityMode: 'rigid',
       instabilityMeaning: 'Punho caído = perda de tensão no deltóide lateral',
       correctiveExercises: ['wrist curls', 'consciência proprioceptiva'],
       ragTopics: ['posição punho elevação lateral'],
@@ -485,6 +497,7 @@ const LATERAL_RAISE_TEMPLATE: ExerciseTemplate = {
       criteria: {
         maxVariation: { metric: 'trunk_lateral_sway', acceptable: 3, warning: 8, danger: 15, unit: '°' },
       },
+      stabilityMode: 'rigid',
       instabilityMeaning: 'Balanço = carga excessiva, usando impulso',
       correctiveExercises: ['elevação lateral sentado', 'elevação lateral unilateral no cabo', 'reduzir carga'],
       ragTopics: ['estabilidade tronco elevação lateral', 'cheating'],
@@ -497,6 +510,7 @@ const LATERAL_RAISE_TEMPLATE: ExerciseTemplate = {
       criteria: {
         maxVariation: { metric: 'shoulder_elevation_cm', acceptable: 1, warning: 3, danger: 5, unit: 'cm' },
       },
+      stabilityMode: 'rigid',
       instabilityMeaning: 'Encolher ombros = trapézio superior dominando sobre deltóide lateral',
       correctiveExercises: ['depressão escapular consciente', 'shrug reverso', 'elevação lateral com pausa'],
       ragTopics: ['trapézio superior elevação lateral', 'depressão escapular'],
@@ -581,6 +595,7 @@ const BENCH_PRESS_TEMPLATE: ExerciseTemplate = {
       criteria: {
         maxVariation: { metric: 'shoulder_blade_movement', acceptable: 3, warning: 8, danger: 15, unit: '°' },
       },
+      stabilityMode: 'rigid',
       instabilityMeaning: 'Protração escapular — perda de base estável, RISCO de impingement',
       correctiveExercises: ['face pull', 'band pull-apart', 'retração escapular no banco'],
       ragTopics: ['retração escapular supino', 'estabilidade escapular'],
@@ -593,6 +608,7 @@ const BENCH_PRESS_TEMPLATE: ExerciseTemplate = {
       criteria: {
         maxVariation: { metric: 'wrist_extension_angle', acceptable: 5, warning: 12, danger: 20, unit: '°' },
       },
+      stabilityMode: 'rigid',
       instabilityMeaning: 'Extensão excessiva do punho — risco de tendinite',
       correctiveExercises: ['wrist curls', 'grip mais largo'],
       ragTopics: ['posição punho supino', 'alinhamento antebraço'],
@@ -605,6 +621,7 @@ const BENCH_PRESS_TEMPLATE: ExerciseTemplate = {
       criteria: {
         maxVariation: { metric: 'elbow_abduction_angle', acceptable: 50, warning: 60, danger: 75, unit: '°' },
       },
+      stabilityMode: 'controlled',
       instabilityMeaning: 'Flare excessivo — estresse no manguito rotador',
       correctiveExercises: ['floor press', 'supino com pausa', 'consciência de tuck'],
       ragTopics: ['flare cotovelo supino', 'impingement ombro', 'ângulo cotovelo press'],
@@ -617,6 +634,7 @@ const BENCH_PRESS_TEMPLATE: ExerciseTemplate = {
       criteria: {
         maxVariation: { metric: 'thoracic_arch_change', acceptable: 3, warning: 8, danger: 15, unit: '°' },
       },
+      stabilityMode: 'rigid',
       instabilityMeaning: 'Perda do arco — base instável, transferência de força comprometida',
       correctiveExercises: ['extensão torácica foam roller', 'trabalho de setup'],
       ragTopics: ['arco torácico supino', 'setup bench press'],
@@ -629,6 +647,7 @@ const BENCH_PRESS_TEMPLATE: ExerciseTemplate = {
       criteria: {
         maxVariation: { metric: 'foot_position_shift', acceptable: 1, warning: 3, danger: 5, unit: 'cm' },
       },
+      stabilityMode: 'rigid',
       instabilityMeaning: 'Pés escorregando — perda de leg drive e base',
       correctiveExercises: ['treinar leg drive isolado', 'calçado adequado'],
       ragTopics: ['leg drive supino', 'posição pés bench press'],
@@ -698,6 +717,7 @@ const HIP_THRUST_TEMPLATE: ExerciseTemplate = {
       criteria: {
         maxVariation: { metric: 'lumbar_hyperextension_change', acceptable: 5, warning: 10, danger: 18, unit: '°' },
       },
+      stabilityMode: 'rigid',
       instabilityMeaning: 'Hiperextensão lombar — RISCO de compressão facetária',
       correctiveExercises: ['dead bug', 'prancha posterior', 'hip thrust com pausa'],
       ragTopics: ['hiperextensão lombar hip thrust', 'retroversão pélvica'],
@@ -710,6 +730,7 @@ const HIP_THRUST_TEMPLATE: ExerciseTemplate = {
       criteria: {
         maxVariation: { metric: 'rib_flare_angle', acceptable: 5, warning: 12, danger: 20, unit: '°' },
       },
+      stabilityMode: 'rigid',
       instabilityMeaning: 'Rib flare — compensação por falta de core, extensão lombar excessiva',
       correctiveExercises: ['dead bug com exalação', 'prancha', '90/90 breathing'],
       ragTopics: ['rib flare hip thrust', 'controle costal'],
@@ -722,6 +743,7 @@ const HIP_THRUST_TEMPLATE: ExerciseTemplate = {
       criteria: {
         maxVariation: { metric: 'knee_medial_displacement', acceptable: 2, warning: 5, danger: 8, unit: 'cm' },
       },
+      stabilityMode: 'rigid',
       instabilityMeaning: 'Valgo dinâmico — glúteo médio fraco',
       correctiveExercises: ['clamshell', 'monster walk', 'hip thrust com mini band'],
       ragTopics: ['valgo dinâmico hip thrust', 'glúteo médio'],
@@ -734,6 +756,7 @@ const HIP_THRUST_TEMPLATE: ExerciseTemplate = {
       criteria: {
         maxVariation: { metric: 'knee_angle_deviation', acceptable: 5, warning: 10, danger: 18, unit: '°' },
       },
+      stabilityMode: 'controlled',
       instabilityMeaning: 'Ângulo incorreto — transfere carga para quadríceps ou isquiotibiais',
       correctiveExercises: ['ajustar posição dos pés', 'hip thrust com pausa'],
       ragTopics: ['ângulo joelho hip thrust', 'posição pés hip thrust'],
@@ -746,6 +769,7 @@ const HIP_THRUST_TEMPLATE: ExerciseTemplate = {
       criteria: {
         maxVariation: { metric: 'cervical_extension_change', acceptable: 5, warning: 12, danger: 20, unit: '°' },
       },
+      stabilityMode: 'controlled',
       instabilityMeaning: 'Hiperextensão cervical — estresse na coluna cervical',
       correctiveExercises: ['chin tuck', 'consciência cervical'],
       ragTopics: ['posição cervical hip thrust', 'extensão cervical'],
@@ -767,6 +791,206 @@ const HIP_THRUST_TEMPLATE: ExerciseTemplate = {
 };
 
 // ============================
+// Template: Barbell Row (Remada com Barra)
+// ============================
+
+const BARBELL_ROW_TEMPLATE: ExerciseTemplate = {
+  exerciseId: 'barbell_row',
+  exerciseName: 'Remada Curvada com Barra',
+  category: 'pull',
+  type: 'compound',
+  articulationType: 'biarticular',
+
+  motorJoints: [
+    {
+      joint: 'shoulder',
+      label: 'Ombro (Retração)',
+      movement: 'Retração escapular + Extensão',
+      side: 'bilateral',
+      criteria: {
+        rom: {
+          metric: 'shoulder_extension_rom',
+          excellent: { min: 50 },
+          good: { min: 40, max: 50 },
+          acceptable: { min: 30, max: 40 },
+          warning: { min: 20, max: 30 },
+          danger: { max: 20 },
+        },
+        peakContraction: {
+          metric: 'scapular_retraction_cm',
+          excellent: { min: 4 },
+          good: { min: 3, max: 4 },
+          acceptable: { min: 2, max: 3 },
+          warning: { max: 2 },
+        },
+        symmetry: { maxAcceptableDiff: 5, unit: '°' },
+      },
+      ragTopics: ['retração escapular remada curvada', 'extensão ombro remada'],
+    },
+    {
+      joint: 'elbow',
+      label: 'Cotovelo (Flexão)',
+      movement: 'Flexão',
+      side: 'bilateral',
+      criteria: {
+        rom: {
+          metric: 'elbow_flexion_at_peak',
+          excellent: { max: 75 },
+          good: { min: 75, max: 90 },
+          acceptable: { min: 90, max: 110 },
+          warning: { min: 110, max: 130 },
+          danger: { min: 130 },
+        },
+        symmetry: { maxAcceptableDiff: 5, unit: '°' },
+      },
+      ragTopics: ['flexão cotovelo remada curvada', 'bíceps braquial'],
+    },
+  ],
+
+  stabilizerJoints: [
+    {
+      joint: 'lumbar',
+      label: 'Coluna Lombar',
+      expectedState: 'Lordose fisiológica mantida durante hip hinge',
+      side: 'midline',
+      criteria: {
+        maxVariation: { metric: 'lumbar_angle_variation', acceptable: 5, warning: 10, danger: 18, unit: '°' },
+      },
+      stabilityMode: 'controlled',
+      instabilityMeaning: 'Arredondamento lombar — risco de herniação discal com carga',
+      correctiveExercises: ['hip hinge com bastão', 'RDL leve', 'good morning com banda'],
+      ragTopics: ['flexão lombar remada curvada', 'neutro coluna remada'],
+    },
+    {
+      joint: 'trunk',
+      label: 'Tronco',
+      expectedState: 'Inclinação ~45° mantida durante toda a série',
+      side: 'midline',
+      criteria: {
+        maxVariation: { metric: 'trunk_inclination_variation', acceptable: 8, warning: 15, danger: 25, unit: '°' },
+      },
+      stabilityMode: 'controlled',
+      instabilityMeaning: 'Uso de impulso — levantar tronco para puxar a barra',
+      correctiveExercises: ['remada com apoio de peitoral', 'remada Pendlay com pausa', 'reduzir carga'],
+      ragTopics: ['estabilidade tronco remada curvada', 'impulso remada'],
+    },
+  ],
+
+  phases: [
+    { id: 'setup', label: 'Setup (Hip Hinge)', keyFrame: 'first', evaluateMotors: false, evaluateStabilizers: true },
+    { id: 'concentric', label: 'Concêntrica (Puxada)', keyFrame: 'custom', evaluateMotors: true, evaluateStabilizers: true },
+    { id: 'peak', label: 'Pico de Contração', keyFrame: 'min_angle', evaluateMotors: true, evaluateStabilizers: true },
+    { id: 'eccentric', label: 'Excêntrica (Retorno)', keyFrame: 'custom', evaluateMotors: true, evaluateStabilizers: true },
+  ],
+
+  muscles: {
+    primary: ['latíssimo do dorso', 'romboides', 'trapézio médio'],
+    secondary: ['bíceps braquial', 'braquiorradial', 'eretor da espinha'],
+    stabilizers: ['transverso abdominal', 'oblíquos', 'isquiotibiais', 'glúteo máximo'],
+  },
+};
+
+// ============================
+// Template: Cable Row (Remada no Cabo)
+// ============================
+
+const CABLE_ROW_TEMPLATE: ExerciseTemplate = {
+  exerciseId: 'cable_row',
+  exerciseName: 'Remada no Cabo Sentado',
+  category: 'pull',
+  type: 'compound',
+  articulationType: 'biarticular',
+
+  motorJoints: [
+    {
+      joint: 'shoulder',
+      label: 'Ombro (Retração)',
+      movement: 'Retração escapular + Extensão',
+      side: 'bilateral',
+      criteria: {
+        rom: {
+          metric: 'shoulder_extension_rom',
+          excellent: { min: 45 },
+          good: { min: 35, max: 45 },
+          acceptable: { min: 25, max: 35 },
+          warning: { min: 15, max: 25 },
+          danger: { max: 15 },
+        },
+        peakContraction: {
+          metric: 'scapular_retraction_cm',
+          excellent: { min: 4 },
+          good: { min: 3, max: 4 },
+          acceptable: { min: 2, max: 3 },
+          warning: { max: 2 },
+        },
+        symmetry: { maxAcceptableDiff: 5, unit: '°' },
+      },
+      ragTopics: ['retração escapular remada cabo', 'romboides trapézio médio'],
+    },
+    {
+      joint: 'elbow',
+      label: 'Cotovelo (Flexão)',
+      movement: 'Flexão',
+      side: 'bilateral',
+      criteria: {
+        rom: {
+          metric: 'elbow_flexion_at_peak',
+          excellent: { max: 80 },
+          good: { min: 80, max: 95 },
+          acceptable: { min: 95, max: 115 },
+          warning: { min: 115, max: 135 },
+          danger: { min: 135 },
+        },
+        symmetry: { maxAcceptableDiff: 5, unit: '°' },
+      },
+      ragTopics: ['flexão cotovelo remada cabo', 'bíceps braquial'],
+    },
+  ],
+
+  stabilizerJoints: [
+    {
+      joint: 'lumbar',
+      label: 'Coluna Lombar',
+      expectedState: 'Lordose fisiológica mantida, sem flexão durante puxada',
+      side: 'midline',
+      criteria: {
+        maxVariation: { metric: 'lumbar_angle_variation', acceptable: 5, warning: 10, danger: 18, unit: '°' },
+      },
+      stabilityMode: 'controlled',
+      instabilityMeaning: 'Flexão lombar durante puxada — risco com carga na coluna',
+      correctiveExercises: ['prancha', 'dead bug', 'bird dog'],
+      ragTopics: ['estabilidade lombar remada cabo'],
+    },
+    {
+      joint: 'trunk',
+      label: 'Tronco',
+      expectedState: 'Movimento oscilatório controlado (torso swing leve é normal)',
+      side: 'midline',
+      criteria: {
+        maxVariation: { metric: 'trunk_inclination_variation', acceptable: 10, warning: 20, danger: 30, unit: '°' },
+      },
+      stabilityMode: 'functional',
+      instabilityMeaning: 'Momentum excessivo — usando o corpo inteiro para puxar',
+      correctiveExercises: ['remada no cabo com pausa', 'reduzir carga', 'remada unilateral no cabo'],
+      ragTopics: ['estabilidade tronco remada cabo', 'momentum remada'],
+    },
+  ],
+
+  phases: [
+    { id: 'stretch', label: 'Alongamento', description: 'Braços estendidos, escápulas protraídas', keyFrame: 'first', evaluateMotors: false, evaluateStabilizers: true },
+    { id: 'concentric', label: 'Concêntrica', description: 'Puxada — retração + flexão cotovelo', keyFrame: 'custom', evaluateMotors: true, evaluateStabilizers: true },
+    { id: 'peak', label: 'Pico de Contração', description: 'Escápulas retraídas, squeeze', keyFrame: 'min_angle', evaluateMotors: true, evaluateStabilizers: true },
+    { id: 'eccentric', label: 'Excêntrica', description: 'Retorno controlado', keyFrame: 'custom', evaluateMotors: true, evaluateStabilizers: true },
+  ],
+
+  muscles: {
+    primary: ['latíssimo do dorso', 'romboides', 'trapézio médio'],
+    secondary: ['bíceps braquial', 'braquiorradial', 'trapézio inferior'],
+    stabilizers: ['eretor da espinha', 'transverso abdominal', 'oblíquos'],
+  },
+};
+
+// ============================
 // Registry + Lookup
 // ============================
 
@@ -777,6 +1001,8 @@ const V2_TEMPLATES: Record<string, ExerciseTemplate> = {
   lateral_raise: LATERAL_RAISE_TEMPLATE,
   bench_press: BENCH_PRESS_TEMPLATE,
   hip_thrust: HIP_THRUST_TEMPLATE,
+  barbell_row: BARBELL_ROW_TEMPLATE,
+  cable_row: CABLE_ROW_TEMPLATE,
 };
 
 /**
@@ -842,6 +1068,26 @@ const V2_EXERCISE_ALIASES: Record<string, string> = {
   'abdução ombro': 'lateral_raise',
   'abducao ombro': 'lateral_raise',
   'dumbbell lateral raise': 'lateral_raise',
+
+  // Barbell Row
+  'remada curvada': 'barbell_row',
+  'remada curvada com barra': 'barbell_row',
+  'remada com barra': 'barbell_row',
+  'barbell row': 'barbell_row',
+  'bent over row': 'barbell_row',
+  'bent over barbell row': 'barbell_row',
+  'pendlay row': 'barbell_row',
+  'remada pendlay': 'barbell_row',
+
+  // Cable Row
+  'remada no cabo': 'cable_row',
+  'remada cabo': 'cable_row',
+  'remada sentado': 'cable_row',
+  'remada no cabo sentado': 'cable_row',
+  'cable row': 'cable_row',
+  'seated cable row': 'cable_row',
+  'seated row': 'cable_row',
+  'low row': 'cable_row',
 };
 
 function normalizeExerciseName(name: string): string {
