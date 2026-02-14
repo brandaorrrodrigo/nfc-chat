@@ -288,16 +288,20 @@ export default function BiomechanicsDashboard() {
         }),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
+        if (response.status === 500) {
+          setError('Re-analise disponivel apenas no servidor local (requer MediaPipe + Ollama). Para re-analisar, rode o servidor localmente com npm run dev.');
+          return;
+        }
+        const data = await response.json().catch(() => ({}));
         throw new Error(data.error || data.details || `API error: ${response.status}`);
       }
 
+      const data = await response.json();
       setAnalysis(data);
     } catch (err) {
       console.error('[Dashboard] Erro na re-análise:', err);
-      setError(err instanceof Error ? err.message : 'Erro ao re-analisar vídeo');
+      setError(err instanceof Error ? err.message : 'Servidor de analise indisponivel');
     } finally {
       setLoading(false);
     }
