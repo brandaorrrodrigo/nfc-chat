@@ -381,7 +381,7 @@ const CHEST_SUPPORTED_ROW_TEMPLATE: ExerciseTemplate = {
       expectedState: 'Lordose fisiológica mantida pelo apoio peitoral',
       side: 'midline',
       criteria: {
-        maxVariation: { metric: 'lumbar_angle_variation', acceptable: 3, warning: 7, danger: 12, unit: '°' },
+        maxVariation: { metric: 'lumbar_angle_variation', acceptable: 5, warning: 10, danger: 15, unit: '°' },
       },
       stabilityMode: 'rigid',
       instabilityMeaning: 'Perda de apoio no pad, possível uso de impulso',
@@ -407,7 +407,7 @@ const CHEST_SUPPORTED_ROW_TEMPLATE: ExerciseTemplate = {
       expectedState: 'Firme no apoio peitoral, sem rotação',
       side: 'midline',
       criteria: {
-        maxVariation: { metric: 'trunk_rotation_variation', acceptable: 3, warning: 8, danger: 15, unit: '°' },
+        maxVariation: { metric: 'trunk_rotation_variation', acceptable: 5, warning: 10, danger: 18, unit: '°' },
       },
       stabilityMode: 'rigid',
       instabilityMeaning: 'Uso de impulso rotacional, core fraco ou carga excessiva',
