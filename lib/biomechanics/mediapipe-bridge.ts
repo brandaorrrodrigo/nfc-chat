@@ -360,7 +360,7 @@ export function mediapipeToMetricsV2(
   const stabilizerMetrics: StabilizerMetricInput[] = [];
 
   for (const mj of template.motorJoints) {
-    const input = mapMediaPipeMotor(mj.joint, mj.criteria.rom.metric, agg);
+    const input = mapMediaPipeMotor(mj.joint, mj.criteria.rom.metric, agg, template.category);
     if (input) motorMetrics.push(input);
   }
 
@@ -372,15 +372,21 @@ export function mediapipeToMetricsV2(
   return { motorMetrics, stabilizerMetrics };
 }
 
+/** Categorias onde o movimento vai de LOW → HIGH (start=min, peak=max) */
+const LOW_TO_HIGH_CATEGORIES = new Set(['hip_dominant', 'isolation_shoulder']);
+
 /**
  * Mapeia articulação motora do MediaPipe
+ * Inclui startAngle/peakAngle para análise em 3 pontos
  */
 function mapMediaPipeMotor(
   joint: string,
   metric: string,
   agg: AggregatedMediaPipeData,
+  category: string,
 ): MotorMetricInput | null {
   const { minAngles, maxAngles, avgAngles } = agg;
+  const lowToHigh = LOW_TO_HIGH_CATEGORIES.has(category);
 
   switch (joint) {
     case 'knee': {
@@ -394,12 +400,20 @@ function mapMediaPipeMotor(
           ? ((maxAngles.knee_left ?? 0) - (minAngles.knee_left ?? 0))
           : Math.min(leftMin ?? 999, rightMin ?? 999);
 
+      // 3 pontos: ângulos absolutos de start e peak
+      const kneeMax = Math.max(maxAngles.knee_left ?? 0, maxAngles.knee_right ?? 0);
+      const kneeMin = Math.min(leftMin ?? 999, rightMin ?? 999);
+      const startAngle = lowToHigh ? (kneeMin < 999 ? kneeMin : undefined) : (kneeMax || undefined);
+      const peakAngle = lowToHigh ? (kneeMax || undefined) : (kneeMin < 999 ? kneeMin : undefined);
+
       return {
         joint: 'knee',
         romValue: romValue < 999 ? romValue : 0,
         romUnit: '°',
         leftValue: leftMin,
         rightValue: rightMin,
+        startAngle,
+        peakAngle,
       };
     }
 
@@ -417,12 +431,18 @@ function mapMediaPipeMotor(
         romValue = avgAngles.hip_avg ?? hipMin;
       }
 
+      // 3 pontos
+      const startAngle = lowToHigh ? hipMin : hipMax;
+      const peakAngle = lowToHigh ? hipMax : hipMin;
+
       return {
         joint: 'hip',
         romValue,
         romUnit: '°',
         leftValue: minAngles.hip_left,
         rightValue: minAngles.hip_right,
+        startAngle,
+        peakAngle,
       };
     }
 
@@ -465,6 +485,12 @@ function mapMediaPipeMotor(
         ? Math.abs(elevLeft - elevRight)
         : undefined;
 
+      // 3 pontos
+      const sMin = Math.min(minAngles.shoulder_left ?? 999, minAngles.shoulder_right ?? 999);
+      const sMax = Math.max(leftMax ?? 0, rightMax ?? 0);
+      const shoulderStart = lowToHigh ? (sMin < 999 ? sMin : undefined) : (sMax || undefined);
+      const shoulderPeak = lowToHigh ? (sMax || undefined) : (sMin < 999 ? sMin : undefined);
+
       return {
         joint: 'shoulder',
         romValue,
@@ -473,6 +499,8 @@ function mapMediaPipeMotor(
         rightValue: rightMax,
         peakContractionValue,
         peakContractionUnit: peakContractionValue !== undefined ? 'cm' : undefined,
+        startAngle: shoulderStart,
+        peakAngle: shoulderPeak,
       };
     }
 
@@ -493,12 +521,27 @@ function mapMediaPipeMotor(
         if (romValue >= 999) romValue = 0;
       }
 
+      // 3 pontos — elbow em press: start=min(flexão), peak=max(extensão); em pull: start=max, peak=min
+      const elbowMax = Math.max(leftMax ?? 0, rightMax ?? 0);
+      const elbowMin = Math.min(leftMin ?? 999, rightMin ?? 999);
+      let elbowStart: number | undefined;
+      let elbowPeak: number | undefined;
+      if (metric.includes('extension_at_lockout')) {
+        elbowStart = elbowMin < 999 ? elbowMin : undefined;
+        elbowPeak = elbowMax || undefined;
+      } else {
+        elbowStart = elbowMax || undefined;
+        elbowPeak = elbowMin < 999 ? elbowMin : undefined;
+      }
+
       return {
         joint: 'elbow',
         romValue,
         romUnit: '°',
         leftValue: metric.includes('extension_at_lockout') ? leftMax : leftMin,
         rightValue: metric.includes('extension_at_lockout') ? rightMax : rightMin,
+        startAngle: elbowStart,
+        peakAngle: elbowPeak,
       };
     }
 

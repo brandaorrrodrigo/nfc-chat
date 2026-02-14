@@ -25,7 +25,7 @@ export interface MotorJointResult {
   joint: string;
   label: string;
   movement: string;
-  rom: { value: number; unit: string; classification: MotorClassification; classificationLabel: string };
+  rom: { value: number; unit: string; classification: MotorClassification; classificationLabel: string; startAngle?: number; peakAngle?: number };
   peakContraction?: { value: number; unit: string; classification: MotorClassification; classificationLabel: string };
   symmetry?: { diff: number; unit: string; classification: 'ok' | 'assimetria_leve' | 'assimetria_significativa' };
   ragTopics: string[];
@@ -84,6 +84,8 @@ export interface MotorMetricInput {
   peakContractionUnit?: string;
   leftValue?: number;
   rightValue?: number;
+  startAngle?: number;
+  peakAngle?: number;
 }
 
 export interface StabilizerMetricInput {
@@ -243,6 +245,8 @@ export function classifyExerciseV2(
         unit: input.romUnit || '°',
         classification: romClass,
         classificationLabel: MOTOR_LABELS[romClass],
+        startAngle: input.startAngle,
+        peakAngle: input.peakAngle,
       },
       ragTopics: mj.ragTopics,
     };

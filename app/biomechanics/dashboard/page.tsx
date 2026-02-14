@@ -78,7 +78,7 @@ interface MotorAnalysisItem {
   joint: string;
   label: string;
   movement: string;
-  rom: { value: number; unit: string; min?: number; max?: number; classification: string; classificationLabel: string };
+  rom: { value: number; unit: string; min?: number; max?: number; startAngle?: number; peakAngle?: number; classification: string; classificationLabel: string };
   peak_contraction?: number | null;
   symmetry?: { diff: number; unit: string; classification: string } | number | null;
 }
@@ -733,14 +733,15 @@ export default function BiomechanicsDashboard() {
                         </div>
                         <div>
                           <p className="text-slate-500 text-xs">ROM</p>
-                          <p className="text-cyan-400 font-mono">{formatValue(m.rom.value)}{m.rom.unit}</p>
+                          <p className="text-cyan-400 font-mono">
+                            {formatValue(m.rom.value)}{m.rom.unit}
+                            {m.rom.startAngle != null && m.rom.peakAngle != null && (
+                              <span className="text-slate-500 text-xs ml-1">
+                                (de {formatValue(m.rom.startAngle, 0)}{m.rom.unit} a {formatValue(m.rom.peakAngle, 0)}{m.rom.unit})
+                              </span>
+                            )}
+                          </p>
                         </div>
-                        {m.rom.min != null && m.rom.max != null && (
-                          <div>
-                            <p className="text-slate-500 text-xs">Range</p>
-                            <p className="text-slate-400 font-mono">{formatValue(m.rom.min, 0)} - {formatValue(m.rom.max, 0)}{m.rom.unit}</p>
-                          </div>
-                        )}
                         {m.peak_contraction != null && !isNaN(Number(m.peak_contraction)) && (
                           <div>
                             <p className="text-slate-500 text-xs">Pico Contracao</p>
