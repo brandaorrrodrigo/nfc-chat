@@ -176,22 +176,22 @@ function getStabilizerInterpretation(
   expectedState: string,
   instabilityMeaning: string,
 ): string {
-  if (stabClass === 'firme') return `${expectedState} ✓`;
-
   if (stabilityMode === 'rigid') {
-    return `Instável — ${instabilityMeaning}`;
+    if (stabClass === 'firme') return `${expectedState} ✓`;
+    if (stabClass === 'alerta') return `Instável — ${instabilityMeaning}`;
+    return `Compensação — ${instabilityMeaning}`;
   }
 
   if (stabilityMode === 'controlled') {
-    return stabClass === 'alerta'
-      ? 'Movimento dentro do esperado'
-      : `Movimento excessivo — possível uso de impulso`;
+    if (stabClass === 'firme') return `${expectedState} ✓`;
+    if (stabClass === 'alerta') return 'Movimento aceitável para este exercício';
+    return 'Movimento excessivo — possível uso de impulso';
   }
 
   // functional
-  return stabClass === 'alerta'
-    ? 'Movimento dentro do esperado'
-    : `Momentum excessivo — reduzir carga`;
+  if (stabClass === 'firme') return `${expectedState} ✓`;
+  if (stabClass === 'alerta') return 'Momentum normal da técnica';
+  return 'Momentum excessivo — reduzir carga';
 }
 
 // ============================

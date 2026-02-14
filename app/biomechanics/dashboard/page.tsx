@@ -88,6 +88,7 @@ interface StabilizerAnalysisItem {
   label: string;
   expected_state: string;
   instability_meaning?: string;
+  stability_mode?: 'rigid' | 'controlled' | 'functional';
   variation: { value: number; unit: string; classification: string; classificationLabel: string };
   interpretation: string;
   corrective_exercises: string[];
@@ -777,17 +778,48 @@ export default function BiomechanicsDashboard() {
                 </h2>
                 <div className="space-y-3">
                   {analysis.stabilizerAnalysis!.map((s, idx) => {
-                    const stabLevel = s.variation.classification === 'firme' ? 'excellent'
-                      : s.variation.classification === 'alerta' ? 'warning' : 'danger';
+                    const mode = s.stability_mode || 'rigid';
+                    const cls = s.variation.classification;
+                    // Contextual display based on stabilityMode
+                    const stabLevel = cls === 'firme' ? 'excellent'
+                      : (mode !== 'rigid' && cls === 'alerta') ? 'info'
+                      : cls === 'alerta' ? 'warning' : 'danger';
+                    const stateMsg = (() => {
+                      if (mode === 'rigid') {
+                        if (cls === 'firme') return { text: `Estavel`, color: 'text-green-300', icon: '✓' };
+                        if (cls === 'alerta') return { text: `Instavel — atencao`, color: 'text-yellow-300', icon: '⚠' };
+                        return { text: `Compensacao — corrigir`, color: 'text-red-300', icon: '✗' };
+                      }
+                      if (mode === 'controlled') {
+                        if (cls === 'firme') return { text: `Estavel`, color: 'text-green-300', icon: '✓' };
+                        if (cls === 'alerta') return { text: 'Movimento aceitavel para este exercicio', color: 'text-blue-300', icon: '~' };
+                        return { text: 'Movimento excessivo — possivel impulso', color: 'text-orange-300', icon: '⚠' };
+                      }
+                      // functional
+                      if (cls === 'firme') return { text: 'Controle excelente', color: 'text-green-300', icon: '✓' };
+                      if (cls === 'alerta') return { text: 'Momentum normal da tecnica', color: 'text-blue-300', icon: '~' };
+                      return { text: 'Momentum excessivo — reduzir carga', color: 'text-orange-300', icon: '⚠' };
+                    })();
                     return (
                       <div key={idx} className={`bg-slate-700/30 border rounded-lg p-4 ${
                         stabLevel === 'excellent' ? 'border-green-700/30'
+                        : stabLevel === 'info' ? 'border-blue-700/30'
                         : stabLevel === 'warning' ? 'border-yellow-700/30' : 'border-red-700/30'
                       }`}>
                         <div className="flex items-center justify-between mb-2">
-                          <p className="font-semibold text-white">{s.label || s.joint}</p>
+                          <div className="flex items-center gap-2">
+                            <p className="font-semibold text-white">{s.label || s.joint}</p>
+                            {mode !== 'rigid' && (
+                              <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
+                                mode === 'functional' ? 'bg-purple-900/40 text-purple-300' : 'bg-blue-900/40 text-blue-300'
+                              }`}>
+                                {mode === 'functional' ? 'FUNCIONAL' : 'CONTROLADO'}
+                              </span>
+                            )}
+                          </div>
                           <span className={`px-3 py-1 rounded text-xs font-semibold ${
                             stabLevel === 'excellent' ? 'bg-green-900/50 text-green-300'
+                            : stabLevel === 'info' ? 'bg-blue-900/50 text-blue-300'
                             : stabLevel === 'warning' ? 'bg-yellow-900/50 text-yellow-300'
                             : 'bg-red-900/50 text-red-300'
                           }`}>
@@ -797,10 +829,7 @@ export default function BiomechanicsDashboard() {
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm mb-2">
                           <div className="col-span-2">
                             <p className="text-slate-500 text-xs">Estado</p>
-                            {s.variation.classification === 'firme'
-                              ? <p className="text-green-300">✓ {s.expected_state}</p>
-                              : <p className="text-orange-300">⚠ {s.instability_meaning || s.interpretation}</p>
-                            }
+                            <p className={stateMsg.color}>{stateMsg.icon} {stateMsg.text}</p>
                           </div>
                           <div>
                             <p className="text-slate-500 text-xs">Variacao</p>

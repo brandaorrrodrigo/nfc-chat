@@ -526,23 +526,50 @@ export default function VideoDetailPage() {
               </div>
               <div className="space-y-3">
                 {stabilizerAnalysis.map((s, i) => {
-                  const stabClass = s.variation.classification === 'firme' ? 'excellent'
-                    : s.variation.classification === 'alerta' ? 'warning' : 'danger';
+                  const mode = s.stability_mode || 'rigid';
+                  const cls = s.variation.classification;
+                  const stabClass = cls === 'firme' ? 'excellent'
+                    : (mode !== 'rigid' && cls === 'alerta') ? 'info'
+                    : cls === 'alerta' ? 'warning' : 'danger';
                   const stabBorder = stabClass === 'excellent' ? 'border-green-500/50'
+                    : stabClass === 'info' ? 'border-blue-500/50'
                     : stabClass === 'warning' ? 'border-orange-500/50' : 'border-red-500/50';
+                  const stateMsg = (() => {
+                    if (mode === 'rigid') {
+                      if (cls === 'firme') return { text: 'Estavel', color: 'text-green-400', icon: '✓' };
+                      if (cls === 'alerta') return { text: 'Instavel — atencao', color: 'text-yellow-400', icon: '⚠' };
+                      return { text: 'Compensacao — corrigir', color: 'text-red-400', icon: '✗' };
+                    }
+                    if (mode === 'controlled') {
+                      if (cls === 'firme') return { text: 'Estavel', color: 'text-green-400', icon: '✓' };
+                      if (cls === 'alerta') return { text: 'Movimento aceitavel para este exercicio', color: 'text-blue-400', icon: '~' };
+                      return { text: 'Movimento excessivo — possivel impulso', color: 'text-orange-400', icon: '⚠' };
+                    }
+                    if (cls === 'firme') return { text: 'Controle excelente', color: 'text-green-400', icon: '✓' };
+                    if (cls === 'alerta') return { text: 'Momentum normal da tecnica', color: 'text-blue-400', icon: '~' };
+                    return { text: 'Momentum excessivo — reduzir carga', color: 'text-orange-400', icon: '⚠' };
+                  })();
                   return (
                     <div key={i} className={`bg-zinc-800/50 rounded-xl p-4 border-l-3 ${stabBorder}`}>
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-zinc-200 font-medium">{safeRender(s.label || s.joint)}</span>
-                        <span className={`text-[10px] px-2 py-0.5 rounded border ${getClassBadge(stabClass)}`}>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-sm text-zinc-200 font-medium">{safeRender(s.label || s.joint)}</span>
+                          {mode !== 'rigid' && (
+                            <span className={`text-[9px] px-1 py-0.5 rounded ${
+                              mode === 'functional' ? 'bg-purple-500/20 text-purple-400' : 'bg-blue-500/20 text-blue-400'
+                            }`}>
+                              {mode === 'functional' ? 'FUNC' : 'CTRL'}
+                            </span>
+                          )}
+                        </div>
+                        <span className={`text-[10px] px-2 py-0.5 rounded border ${
+                          stabClass === 'info' ? 'bg-blue-500/10 text-blue-400 border-blue-500/30' : getClassBadge(stabClass)
+                        }`}>
                           {safeRender(s.variation.classificationLabel || s.variation.classification)}
                         </span>
                       </div>
                       <div className="text-[10px] mb-1">
-                        {s.variation.classification === 'firme'
-                          ? <span className="text-green-400">{safeRender(s.expected_state)}</span>
-                          : <span className="text-orange-400">{safeRender(s.instability_meaning || s.interpretation)}</span>
-                        }
+                        <span className={stateMsg.color}>{stateMsg.icon} {stateMsg.text}</span>
                       </div>
                       <div className="text-[10px] text-zinc-500">
                         Variacao: {formatValue(s.variation.value)}{safeRender(s.variation.unit)}
