@@ -392,23 +392,24 @@ function mapMediaPipeMotor(
     case 'knee': {
       const leftMin = minAngles.knee_left;
       const rightMin = minAngles.knee_right;
+      const leftMax = maxAngles.knee_left;
+      const rightMax = maxAngles.knee_right;
       if (leftMin === undefined && rightMin === undefined) return null;
 
-      const romValue = metric.includes('flexion_at_bottom')
-        ? Math.min(leftMin ?? 999, rightMin ?? 999)
-        : metric.includes('extension_range')
-          ? ((maxAngles.knee_left ?? 0) - (minAngles.knee_left ?? 0))
-          : Math.min(leftMin ?? 999, rightMin ?? 999);
+      // ROM = range de movimento (max - min), SEMPRE diferença
+      const leftRange = (leftMax ?? 0) - (leftMin ?? 0);
+      const rightRange = (rightMax ?? 0) - (rightMin ?? 0);
+      const romValue = Math.max(leftRange, rightRange);
 
-      // 3 pontos: ângulos absolutos de start e peak
-      const kneeMax = Math.max(maxAngles.knee_left ?? 0, maxAngles.knee_right ?? 0);
+      // 3 pontos: ângulos absolutos
+      const kneeMax = Math.max(leftMax ?? 0, rightMax ?? 0);
       const kneeMin = Math.min(leftMin ?? 999, rightMin ?? 999);
       const startAngle = lowToHigh ? (kneeMin < 999 ? kneeMin : undefined) : (kneeMax || undefined);
       const peakAngle = lowToHigh ? (kneeMax || undefined) : (kneeMin < 999 ? kneeMin : undefined);
 
       return {
         joint: 'knee',
-        romValue: romValue < 999 ? romValue : 0,
+        romValue: Math.round(romValue * 10) / 10,
         romUnit: '°',
         leftValue: leftMin,
         rightValue: rightMin,
@@ -422,25 +423,24 @@ function mapMediaPipeMotor(
       const hipMax = maxAngles.hip_avg ?? maxAngles.hip_left;
       if (hipMin === undefined) return null;
 
-      let romValue: number;
-      if (metric.includes('flexion_at_bottom')) {
-        romValue = hipMin;
-      } else if (metric.includes('extension_range') || metric.includes('extension_rom')) {
-        romValue = (hipMax ?? hipMin) - hipMin;
-      } else {
-        romValue = avgAngles.hip_avg ?? hipMin;
-      }
+      // ROM = range SEMPRE (max - min)
+      const romValue = (hipMax ?? hipMin) - hipMin;
 
       // 3 pontos
       const startAngle = lowToHigh ? hipMin : hipMax;
       const peakAngle = lowToHigh ? hipMax : hipMin;
 
+      // peakContraction para deadlift/hip_thrust: ângulo no lockout (max)
+      const peakContractionValue = hipMax;
+
       return {
         joint: 'hip',
-        romValue,
+        romValue: Math.round(romValue * 10) / 10,
         romUnit: '°',
         leftValue: minAngles.hip_left,
         rightValue: minAngles.hip_right,
+        peakContractionValue,
+        peakContractionUnit: '°',
         startAngle,
         peakAngle,
       };
@@ -466,18 +466,16 @@ function mapMediaPipeMotor(
     }
 
     case 'shoulder': {
+      const leftMin = minAngles.shoulder_left;
+      const rightMin = minAngles.shoulder_right;
       const leftMax = maxAngles.shoulder_left;
       const rightMax = maxAngles.shoulder_right;
       if (leftMax === undefined && rightMax === undefined) return null;
 
-      let romValue: number;
-      if (metric.includes('extension_rom') || metric.includes('abduction') || metric.includes('horizontal_adduction_rom')) {
-        const leftRange = (maxAngles.shoulder_left ?? 0) - (minAngles.shoulder_left ?? 0);
-        const rightRange = (maxAngles.shoulder_right ?? 0) - (minAngles.shoulder_right ?? 0);
-        romValue = Math.max(leftRange, rightRange);
-      } else {
-        romValue = Math.max(leftMax ?? 0, rightMax ?? 0);
-      }
+      // ROM = range SEMPRE (max - min)
+      const leftRange = (leftMax ?? 0) - (leftMin ?? 0);
+      const rightRange = (rightMax ?? 0) - (rightMin ?? 0);
+      const romValue = Math.max(leftRange, rightRange);
 
       const elevLeft = avgAngles.shoulder_elevation_left;
       const elevRight = avgAngles.shoulder_elevation_right;
@@ -486,14 +484,14 @@ function mapMediaPipeMotor(
         : undefined;
 
       // 3 pontos
-      const sMin = Math.min(minAngles.shoulder_left ?? 999, minAngles.shoulder_right ?? 999);
+      const sMin = Math.min(leftMin ?? 999, rightMin ?? 999);
       const sMax = Math.max(leftMax ?? 0, rightMax ?? 0);
       const shoulderStart = lowToHigh ? (sMin < 999 ? sMin : undefined) : (sMax || undefined);
       const shoulderPeak = lowToHigh ? (sMax || undefined) : (sMin < 999 ? sMin : undefined);
 
       return {
         joint: 'shoulder',
-        romValue,
+        romValue: Math.round(romValue * 10) / 10,
         romUnit: '°',
         leftValue: leftMax,
         rightValue: rightMax,
@@ -511,22 +509,19 @@ function mapMediaPipeMotor(
       const rightMax = maxAngles.elbow_right;
       if (leftMin === undefined && rightMin === undefined) return null;
 
-      let romValue: number;
-      if (metric.includes('extension_at_lockout')) {
-        // Para bench press: ângulo MÁXIMO = extensão máxima no lockout
-        romValue = Math.max(leftMax ?? 0, rightMax ?? 0);
-      } else {
-        // Para pull/curl: ângulo mínimo = máxima contração
-        romValue = Math.min(leftMin ?? 999, rightMin ?? 999);
-        if (romValue >= 999) romValue = 0;
-      }
+      // ROM = range SEMPRE (max - min)
+      const leftRange = (leftMax ?? 0) - (leftMin ?? 0);
+      const rightRange = (rightMax ?? 0) - (rightMin ?? 0);
+      const romValue = Math.max(leftRange, rightRange);
 
-      // 3 pontos — elbow em press: start=min(flexão), peak=max(extensão); em pull: start=max, peak=min
+      // 3 pontos — em press: start=min(peito), peak=max(lockout)
+      //            em pull: start=max(estendido), peak=min(contração)
+      const isPress = category === 'horizontal_press' || category === 'vertical_press';
       const elbowMax = Math.max(leftMax ?? 0, rightMax ?? 0);
       const elbowMin = Math.min(leftMin ?? 999, rightMin ?? 999);
       let elbowStart: number | undefined;
       let elbowPeak: number | undefined;
-      if (metric.includes('extension_at_lockout')) {
+      if (isPress) {
         elbowStart = elbowMin < 999 ? elbowMin : undefined;
         elbowPeak = elbowMax || undefined;
       } else {
@@ -536,10 +531,10 @@ function mapMediaPipeMotor(
 
       return {
         joint: 'elbow',
-        romValue,
+        romValue: Math.round(romValue * 10) / 10,
         romUnit: '°',
-        leftValue: metric.includes('extension_at_lockout') ? leftMax : leftMin,
-        rightValue: metric.includes('extension_at_lockout') ? rightMax : rightMin,
+        leftValue: isPress ? leftMax : leftMin,
+        rightValue: isPress ? rightMax : rightMin,
         startAngle: elbowStart,
         peakAngle: elbowPeak,
       };
