@@ -45,6 +45,28 @@ export async function POST(request: NextRequest) {
   let tempDir: string | null = null;
 
   try {
+    // Verificar se está na Vercel (ambiente serverless sem suporte)
+    if (process.env.VERCEL) {
+      return NextResponse.json({
+        error: 'Análise biomecânica indisponível na Vercel',
+        reason: 'serverless_limitation',
+        message: 'A análise de vídeo requer FFmpeg, Python e MediaPipe que não estão disponíveis em ambientes serverless como a Vercel.',
+        solution: 'Para análise automática funcional, rode o sistema localmente com Docker ou deploy em servidor próprio (AWS, GCP, DigitalOcean).',
+        localSetup: [
+          '1. Clone o repositório',
+          '2. cd docker && make start',
+          '3. Acesse http://localhost:3000',
+          '4. Análise funcionará automaticamente'
+        ],
+        productionOptions: [
+          'AWS EC2 + Docker',
+          'Google Cloud Run',
+          'DigitalOcean Droplet + Docker',
+          'VPS próprio com Docker Compose'
+        ]
+      }, { status: 503 });
+    }
+
     const body = await request.json();
     const { videoId, equipmentConstraint } = body;
 

@@ -288,16 +288,29 @@ export default function BiomechanicsDashboard() {
         }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        if (response.status === 500) {
-          setError('Re-analise disponivel apenas no servidor local (requer MediaPipe + Ollama). Para re-analisar, rode o servidor localmente com npm run dev.');
+        // Erro 503: Vercel (serverless) não suporta análise
+        if (response.status === 503 && data.reason === 'serverless_limitation') {
+          setError(
+            `🚫 ${data.message}\n\n` +
+            `💡 Solução: ${data.solution}\n\n` +
+            `📦 Setup Local:\n${data.localSetup?.join('\n') || 'Ver documentação'}\n\n` +
+            `☁️ Produção: ${data.productionOptions?.join(', ') || 'Servidor próprio com Docker'}`
+          );
           return;
         }
-        const data = await response.json().catch(() => ({}));
+
+        // Erro 500: Servidor local sem dependências
+        if (response.status === 500) {
+          setError('Re-analise disponivel apenas no servidor local (requer FFmpeg + Python + MediaPipe + Ollama). Para re-analisar, rode o servidor localmente ou use Docker.');
+          return;
+        }
+
         throw new Error(data.error || data.details || `API error: ${response.status}`);
       }
 
-      const data = await response.json();
       setAnalysis(data);
     } catch (err) {
       console.error('[Dashboard] Erro na re-análise:', err);
