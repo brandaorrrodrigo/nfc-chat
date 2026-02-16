@@ -367,7 +367,175 @@ async function main() {
 
   console.log(`✅ ${spamFilters.length} filtros de spam criados`)
 
-  console.log('🎉 Seed completed!')
+  // ========================================
+  // EXERCÍCIOS (CATÁLOGO BIOMECÂNICO)
+  // ========================================
+  console.log('\n💪 Creating exercise catalog...')
+
+  const exercises = [
+    // LOWER BODY
+    {
+      name: 'Agachamento Livre (Back Squat)',
+      slug: 'back-squat',
+      category: 'LOWER_BODY' as const,
+      movementPattern: 'squat',
+      description: 'Agachamento com barra nas costas, movimento fundamental de membros inferiores.',
+      instructions: '1. Barra apoiada no trapézio\n2. Descer controladamente até quadril abaixo da linha do joelho\n3. Subir mantendo torso estável',
+      primaryMuscles: ['quadriceps', 'glutes', 'hamstrings'],
+      secondaryMuscles: ['core', 'spinal_erectors'],
+      equipment: ['barbell', 'squat_rack'],
+      isActive: true,
+      isPremium: false,
+    },
+    {
+      name: 'Levantamento Terra Convencional',
+      slug: 'deadlift-conventional',
+      category: 'LOWER_BODY' as const,
+      movementPattern: 'hinge',
+      description: 'Levantamento terra com pegada convencional, padrão de dobradiça de quadril.',
+      instructions: '1. Pés afastados na largura do quadril\n2. Barra próxima às canelas\n3. Extensão de quadril e joelhos simultânea',
+      primaryMuscles: ['hamstrings', 'glutes', 'spinal_erectors'],
+      secondaryMuscles: ['quadriceps', 'traps', 'forearms'],
+      equipment: ['barbell'],
+      isActive: true,
+      isPremium: false,
+    },
+    {
+      name: 'Hip Thrust',
+      slug: 'hip-thrust',
+      category: 'LOWER_BODY' as const,
+      movementPattern: 'hip_extension',
+      description: 'Extensão de quadril com costas apoiadas em banco.',
+      instructions: '1. Apoiar escápulas no banco\n2. Barra sobre o quadril\n3. Extensão completa até alinhamento torso-coxa',
+      primaryMuscles: ['glutes'],
+      secondaryMuscles: ['hamstrings', 'core'],
+      equipment: ['barbell', 'bench'],
+      isActive: true,
+      isPremium: false,
+    },
+    // UPPER BODY - PUSH
+    {
+      name: 'Supino Reto (Bench Press)',
+      slug: 'bench-press',
+      category: 'UPPER_BODY_PUSH' as const,
+      movementPattern: 'horizontal_push',
+      description: 'Empurrão horizontal deitado no banco.',
+      instructions: '1. Deitado no banco, pés firmes no chão\n2. Descer barra até peito\n3. Empurrar até extensão completa',
+      primaryMuscles: ['pectorals', 'triceps'],
+      secondaryMuscles: ['anterior_deltoids', 'serratus'],
+      equipment: ['barbell', 'bench'],
+      isActive: true,
+      isPremium: false,
+    },
+    // UPPER BODY - PULL
+    {
+      name: 'Remada com Apoio no Peito',
+      slug: 'chest-supported-row',
+      category: 'UPPER_BODY_PULL' as const,
+      movementPattern: 'horizontal_pull',
+      description: 'Puxada horizontal com peito apoiado em banco inclinado.',
+      instructions: '1. Peito apoiado no banco inclinado\n2. Puxar halteres até cotovelos ultrapassarem torso\n3. Controlar descida',
+      primaryMuscles: ['lats', 'rhomboids', 'traps'],
+      secondaryMuscles: ['biceps', 'rear_deltoids'],
+      equipment: ['dumbbells', 'incline_bench'],
+      isActive: true,
+      isPremium: false,
+    },
+    {
+      name: 'Remada Curvada com Barra',
+      slug: 'barbell-row',
+      category: 'UPPER_BODY_PULL' as const,
+      movementPattern: 'horizontal_pull',
+      description: 'Puxada horizontal em pé com torso inclinado.',
+      instructions: '1. Torso inclinado 45°\n2. Puxar barra até abdômen\n3. Controlar descida',
+      primaryMuscles: ['lats', 'rhomboids', 'traps'],
+      secondaryMuscles: ['biceps', 'spinal_erectors'],
+      equipment: ['barbell'],
+      isActive: true,
+      isPremium: false,
+    },
+    {
+      name: 'Remada no Cabo Sentado',
+      slug: 'cable-row',
+      category: 'UPPER_BODY_PULL' as const,
+      movementPattern: 'horizontal_pull',
+      description: 'Puxada horizontal sentado com cabo.',
+      instructions: '1. Sentado com torso ereto\n2. Puxar cabo até abdômen\n3. Manter controle total',
+      primaryMuscles: ['lats', 'rhomboids', 'traps'],
+      secondaryMuscles: ['biceps', 'rear_deltoids'],
+      equipment: ['cable_machine'],
+      isActive: true,
+      isPremium: false,
+    },
+    {
+      name: 'Elevação Lateral',
+      slug: 'lateral-raise',
+      category: 'UPPER_BODY_PULL' as const,
+      movementPattern: 'shoulder_abduction',
+      description: 'Abdução de ombro com halteres.',
+      instructions: '1. Em pé, halteres ao lado do corpo\n2. Elevar lateralmente até altura dos ombros\n3. Controlar descida',
+      primaryMuscles: ['lateral_deltoids'],
+      secondaryMuscles: ['traps', 'supraspinatus'],
+      equipment: ['dumbbells'],
+      isActive: true,
+      isPremium: false,
+    },
+  ]
+
+  for (const exercise of exercises) {
+    const created = await prisma.exercise.upsert({
+      where: { slug: exercise.slug },
+      update: {},
+      create: exercise
+    })
+    console.log(`✅ Exercício criado: ${created.name}`)
+  }
+
+  // ========================================
+  // BIOMETRIC PRICING
+  // ========================================
+  console.log('\n💵 Creating biometric pricing...')
+
+  const pricing = [
+    {
+      item_type: 'baseline',
+      fps_cost: 0,
+      premium_free: true,
+      first_free: true,
+      is_active: true,
+    },
+    {
+      item_type: 'comparison',
+      fps_cost: 25,
+      premium_free: true,
+      first_free: false,
+      is_active: true,
+    },
+    {
+      item_type: 'export_pdf',
+      fps_cost: 10,
+      premium_free: false,
+      first_free: false,
+      is_active: true,
+    },
+  ]
+
+  for (const p of pricing) {
+    const created = await prisma.biometricPricing.upsert({
+      where: { item_type: p.item_type },
+      update: {},
+      create: p
+    })
+    console.log(`✅ Pricing criado: ${created.item_type} (${created.fps_cost} FPs)`)
+  }
+
+  console.log('\n🎉 Seed completed!')
+  console.log('📊 Summary:')
+  console.log(`   - Arenas: ${arenas.length}`)
+  console.log(`   - Exercises: ${exercises.length}`)
+  console.log(`   - FP Rules: ${fpRules.length}`)
+  console.log(`   - Spam Filters: ${spamFilters.length}`)
+  console.log(`   - Pricing: ${pricing.length}`)
 }
 
 main()

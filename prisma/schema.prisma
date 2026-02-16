@@ -2,8 +2,9 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../lib/generated/prisma"
+  provider      = "prisma-client-js"
+  output        = "../lib/generated/prisma"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -66,6 +67,7 @@ model User {
   biometricBaselines BiometricBaseline[]
   biometricComparisons BiometricComparison[]
   arenaActivity     UserArenaActivity[]
+  userExercises     UserExercise[]
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
@@ -480,11 +482,15 @@ model AuditLog {
 
 // ============================================
 // NFV - ANÁLISE BIOMECÂNICA (VIDEO)
+// Consolidated model - merges Arena NFV + Queue system
 // ============================================
 
 model VideoAnalysis {
   id                     String          @id @default(cuid())
-  arenaId                String
+  videoId                String          @unique
+
+  // Relações
+  arenaId                String?         // Opcional - pode ser análise standalone
   userId                 String
 
   // Video
@@ -493,21 +499,34 @@ model VideoAnalysis {
   thumbnailUrl           String?
   durationSeconds        Int?
 
-  // Movimento
-  movementPattern        String
+  // Movimento/Exercício
+  exerciseName           String          // Nome do exercício (ex: "Agachamento Livre")
+  movementPattern        String?         // Padrão de movimento (ex: "squat", "hinge")
+  captureMode            String          // 'ESSENTIAL' | 'ADVANCED' | 'PRO'
   userDescription        String?         @db.Text
 
-  // Gating
+  // Gating/Monetização
   fpCost                 Int             @default(0)
   paidWithSubscription   Boolean         @default(false)
 
-  // Pipeline
-  status                 AnalysisStatus  @default(PENDING_AI)
+  // Pipeline de Processamento
+  status                 String          @default("queued")  // 'queued' | 'processing' | 'completed' | 'failed'
+  progress               Int             @default(0)
+  currentStage           String?         // 'extraction' | 'detection' | 'analysis'
 
-  // IA Pré-Análise
+  // Job Queue
+  jobId                  String?         @unique
+  queuedAt               DateTime        @default(now())
+  startedAt              DateTime?
+  completedAt            DateTime?
+  failedAt               DateTime?
+  errorMessage           String?
+
+  // IA Pré-Análise (Shadow Mode)
   aiAnalysis             Json?
   aiAnalyzedAt           DateTime?
   aiConfidence           Float?
+  aiStatus               AnalysisStatus  @default(PENDING_AI)
 
   // Revisão Admin
   adminReviewerId        String?
@@ -520,21 +539,36 @@ model VideoAnalysis {
   publishedAt            DateTime?
   rejectionReason        String?
 
+  // Webhook
+  webhookUrl             String?
+  webhookSentAt          DateTime?
+
   // Métricas
   viewCount              Int             @default(0)
   helpfulVotes           Int             @default(0)
 
+  // Metadata
+  metadata               Json?
+
   // Relações
-  arena                  Arena           @relation(fields: [arenaId], references: [id])
-  user                   User            @relation(fields: [userId], references: [id])
+  arena                  Arena?          @relation(fields: [arenaId], references: [id])
+  user                   User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  result                 BiomechanicalResult?
+  tags                   VideoAnalysisTag[]
+  baselineComparisons    AnalysisComparison[] @relation("BaselineComparison")
+  currentComparisons     AnalysisComparison[] @relation("CurrentComparison")
 
   createdAt              DateTime        @default(now())
   updatedAt              DateTime        @updatedAt
 
   @@index([arenaId])
-  @@index([userId])
-  @@index([status])
+  @@index([userId, status])
+  @@index([videoId])
+  @@index([jobId])
+  @@index([aiStatus])
   @@index([movementPattern])
+  @@index([createdAt])
+  @@map("video_analyses")
 }
 
 // ============================================
@@ -712,4 +746,367 @@ model AnonymousVisitor {
   lastSeenAt DateTime @default(now())
 
   @@index([lastSeenAt])
+}
+
+// ============================================
+// RESULTADOS BIOMECÂNICOS
+// ============================================
+
+model BiomechanicalResult {
+  id                String   @id @default(cuid())
+  videoAnalysisId   String   @unique
+
+  // Scores principais
+  motorScore        Float
+  stabilizerScore   Float
+  symmetryScore     Float
+  compensationScore Float
+  igpbScore         Float
+
+  // Confiabilidade
+  confidenceScore   Float
+  confidenceLevel   String   // 'baixa' | 'moderada' | 'alta' | 'muito_alta'
+  riskLevel         String   // 'LOW' | 'MODERATE' | 'HIGH' | 'CRITICAL'
+
+  // Análise detalhada (JSON)
+  fullAnalysis      Json
+
+  // Processamento
+  totalFrames       Int
+  processedFrames   Int
+  successRate       Float
+  processingTimeMs  Int
+  fps               Float
+
+  // Relação
+  videoAnalysis     VideoAnalysis @relation(fields: [videoAnalysisId], references: [id], onDelete: Cascade)
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([videoAnalysisId])
+  @@map("biomechanical_results")
+}
+
+// ============================================
+// CATÁLOGO DE EXERCÍCIOS
+// ============================================
+
+model Exercise {
+  id                String   @id @default(cuid())
+  name              String   @unique
+  slug              String   @unique
+  category          ExerciseCategory
+  movementPattern   String   // 'squat', 'hinge', 'push', 'pull', etc
+
+  // Descrição
+  description       String?  @db.Text
+  instructions      String?  @db.Text
+  thumbnailUrl      String?
+
+  // Biomecânica
+  primaryMuscles    String[] // ['quadriceps', 'glutes', ...]
+  secondaryMuscles  String[] // ['hamstrings', 'calves', ...]
+  equipment         String[] // ['barbell', 'dumbbells', ...]
+
+  // MediaPipe Landmarks esperados
+  requiredLandmarks Json?    // Lista de landmarks necessários para análise
+
+  // Template de análise
+  analysisTemplate  Json?    // Template específico para esse exercício
+
+  // Status
+  isActive          Boolean  @default(true)
+  isPremium         Boolean  @default(false)
+
+  // Relações
+  userExercises     UserExercise[]
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([category])
+  @@index([movementPattern])
+  @@index([isActive])
+  @@map("exercises")
+}
+
+enum ExerciseCategory {
+  LOWER_BODY        // Membros inferiores
+  UPPER_BODY_PUSH   // Empurrão superior
+  UPPER_BODY_PULL   // Puxada superior
+  CORE              // Core/abdômen
+  FULL_BODY         // Corpo todo
+  MOBILITY          // Mobilidade
+  CARDIO            // Cardiovascular
+}
+
+// ============================================
+// HISTÓRICO DE EXERCÍCIOS DO USUÁRIO
+// ============================================
+
+model UserExercise {
+  id                String   @id @default(cuid())
+  userId            String
+  exerciseId        String
+
+  // Execução
+  performedAt       DateTime @default(now())
+  sets              Int?
+  reps              Int?
+  weight            Float?   // kg
+  notes             String?  @db.Text
+
+  // Relação com análise
+  videoAnalysisId   String?  @unique
+
+  // Relações
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercise          Exercise @relation(fields: [exerciseId], references: [id])
+
+  createdAt         DateTime @default(now())
+
+  @@index([userId, performedAt])
+  @@index([exerciseId])
+  @@map("user_exercises")
+}
+
+// ============================================
+// PLANOS CORRETIVOS
+// ============================================
+
+model CorrectivePlan {
+  id                String   @id @default(cuid())
+  userId            String
+  videoAnalysisId   String
+
+  // Plano
+  title             String
+  description       String   @db.Text
+  goals             String[] // Objetivos do plano
+  duration          Int      // Duração em semanas
+
+  // Protocolo
+  protocol          Json     // Exercícios, séries, reps, progressão
+
+  // Status
+  status            PlanStatus @default(ACTIVE)
+  startedAt         DateTime?
+  completedAt       DateTime?
+  cancelledAt       DateTime?
+
+  // Relações
+  sessions          CorrectiveSession[]
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([userId, status])
+  @@index([videoAnalysisId])
+  @@map("corrective_plans")
+}
+
+enum PlanStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  PAUSED
+}
+
+// ============================================
+// SESSÕES DE EXECUÇÃO DO PLANO
+// ============================================
+
+model CorrectiveSession {
+  id                String   @id @default(cuid())
+  planId            String
+  userId            String
+
+  // Sessão
+  sessionNumber     Int      // 1, 2, 3...
+  scheduledFor      DateTime?
+  performedAt       DateTime?
+
+  // Execução
+  exercisesCompleted Json?   // Lista de exercícios realizados
+  notes             String?  @db.Text
+  userFeedback      String?  // 'easy' | 'moderate' | 'hard'
+  painLevel         Int?     // 0-10
+
+  // Status
+  status            SessionStatus @default(PENDING)
+
+  // Relação
+  plan              CorrectivePlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([planId, sessionNumber])
+  @@index([userId, performedAt])
+  @@map("corrective_sessions")
+}
+
+enum SessionStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  SKIPPED
+}
+
+// ============================================
+// COMPARAÇÃO ENTRE ANÁLISES
+// ============================================
+
+model AnalysisComparison {
+  id                String   @id @default(cuid())
+  userId            String
+  baselineId        String   // ID da análise de referência
+  comparisonId      String   // ID da análise atual
+
+  // Diferenças calculadas
+  motorDelta        Float
+  stabilizerDelta   Float
+  symmetryDelta     Float
+  igpbDelta         Float
+
+  // Evolução
+  improvementPercent Float
+  regressionPercent  Float
+
+  // Análise textual
+  summary           String   @db.Text
+  recommendations   String?  @db.Text
+
+  // Relações
+  baseline          VideoAnalysis @relation("BaselineComparison", fields: [baselineId], references: [id])
+  comparison        VideoAnalysis @relation("CurrentComparison", fields: [comparisonId], references: [id])
+
+  createdAt         DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([baselineId])
+  @@index([comparisonId])
+  @@map("analysis_comparisons")
+}
+
+// ============================================
+// TAGS PARA ANÁLISES
+// ============================================
+
+model VideoAnalysisTag {
+  id                String   @id @default(cuid())
+  videoAnalysisId   String
+  tag               String
+
+  // Relação
+  videoAnalysis     VideoAnalysis @relation(fields: [videoAnalysisId], references: [id], onDelete: Cascade)
+
+  createdAt         DateTime @default(now())
+
+  @@unique([videoAnalysisId, tag])
+  @@index([tag])
+  @@map("video_analysis_tags")
+}
+
+// ============================================
+// API KEYS (para integrações externas)
+// ============================================
+
+model ApiKey {
+  id                String   @id @default(cuid())
+  userId            String
+  name              String
+  key               String   @unique
+  hashedKey         String   @unique
+
+  // Permissões
+  permissions       String[] // ['read:analyses', 'write:analyses', etc]
+  rateLimit         Int      @default(100) // Requests por hora
+
+  // Status
+  isActive          Boolean  @default(true)
+  lastUsedAt        DateTime?
+  expiresAt         DateTime?
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([userId])
+  @@index([key])
+  @@map("api_keys")
+}
+
+// ============================================
+// WEBHOOKS
+// ============================================
+
+model Webhook {
+  id                String   @id @default(cuid())
+  userId            String
+  url               String
+  secret            String?  // Para validação HMAC
+
+  // Eventos
+  events            String[] // ['analysis.completed', 'analysis.failed', etc]
+
+  // Status
+  isActive          Boolean  @default(true)
+  failureCount      Int      @default(0)
+  lastFailedAt      DateTime?
+
+  // Relações
+  deliveries        WebhookDelivery[]
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([userId])
+  @@index([isActive])
+  @@map("webhooks")
+}
+
+// ============================================
+// ENTREGAS DE WEBHOOK
+// ============================================
+
+model WebhookDelivery {
+  id                String   @id @default(cuid())
+  webhookId         String
+  event             String   // 'analysis.completed'
+  payload           Json
+
+  // Delivery
+  status            DeliveryStatus @default(PENDING)
+  httpStatus        Int?
+  responseBody      String?  @db.Text
+  attempts          Int      @default(0)
+  maxAttempts       Int      @default(3)
+
+  // Timing
+  sentAt            DateTime?
+  deliveredAt       DateTime?
+  failedAt          DateTime?
+  nextRetryAt       DateTime?
+
+  // Error
+  errorMessage      String?
+
+  // Relação
+  webhook           Webhook  @relation(fields: [webhookId], references: [id], onDelete: Cascade)
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([webhookId, status])
+  @@index([status, nextRetryAt])
+  @@map("webhook_deliveries")
+}
+
+enum DeliveryStatus {
+  PENDING
+  SENT
+  DELIVERED
+  FAILED
+  RETRYING
 }

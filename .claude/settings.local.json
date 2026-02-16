@@ -111,7 +111,19 @@
       "Bash(timeout:*)",
       "Bash(pip show:*)",
       "Bash(python:*)",
-      "Bash(ffmpeg:*)"
+      "Bash(ffmpeg:*)",
+      "Bash(start http://localhost:3333/comunidades/analise-agachamento/videos/va_1770900484924_czy13ayfq)",
+      "Bash(start:*)",
+      "Bash(while read:*)",
+      "Bash(do date -d @$ts)",
+      "Bash(NEXT_PRIVATE_STANDALONE=false npx next build:*)",
+      "Bash(npm config:*)",
+      "Bash(npm root:*)",
+      "Bash(1 echo \"Exit code: $?\" cat /d/NUTRIFITCOACH_MASTER/nfc-comunidades/temp/puxadas_v46.json)",
+      "Bash(tee:*)",
+      "Bash(/d/NUTRIFITCOACH_MASTER/nfc-comunidades/prisma/schema.prisma:*)",
+      "Bash(chmod:*)",
+      "Bash(wc:*)"
     ]
   }
 }
