@@ -1,0 +1,6 @@
+   ▲ Next.js 15.5.12
+   - Local:        http://localhost:7777
+   - Network:      http://192.168.1.123:7777
+   - Environments: .env.local, .env
+
+ ✓ Starting...

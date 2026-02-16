@@ -1,0 +1,309 @@
+   ▲ Next.js 15.5.12
+   - Local:        http://localhost:3333
+   - Network:      http://192.168.1.123:3333
+   - Environments: .env.local, .env
+
+ ✓ Starting...
+ ✓ Ready in 1474ms
+ ○ Compiling /comunidades/[slug]/videos/[videoId] ...
+ ✓ Compiled /comunidades/[slug]/videos/[videoId] in 4.4s (856 modules)
+ GET /comunidades/analise-agachamento/videos/va_1770900484924_czy13ayfq 200 in 5397ms
+ GET /comunidades/analise-puxadas/videos/va_1770817621743_j5dzbciws 200 in 113ms
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k 200 in 75ms
+ ⚠ Found a change in next.config.js. Restarting the server to apply the changes...
+   ▲ Next.js 15.5.12
+   - Local:        http://localhost:3333
+   - Network:      http://192.168.1.123:3333
+   - Environments: .env.local, .env
+
+ ✓ Starting...
+ ✓ Ready in 1563ms
+ ○ Compiling /comunidades/[slug]/videos/[videoId] ...
+ ✓ Compiled /comunidades/[slug]/videos/[videoId] in 6.1s (856 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 7013ms
+ ○ Compiling /api/nfv/videos/[id] ...
+ ✓ Compiled /api/nfv/videos/[id] in 2.5s (1150 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 385ms
+[next-auth][warn][DEBUG_ENABLED] 
+https://next-auth.js.org/warnings#debug_enabled
+ GET /api/auth/session 200 in 3200ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 4062ms
+ GET /api/nfv/videos/va_1770900484924_czy13ayfq 200 in 756ms
+ GET /api/nfv/videos/va_1770900484924_czy13ayfq 200 in 466ms
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 288ms
+ GET /api/auth/session 200 in 111ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 369ms
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 138ms
+ GET /api/auth/session 200 in 65ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 278ms
+ GET /api/nfv/videos/va_1770817621743_j5dzbciws 200 in 546ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k 200 in 455ms
+ ✓ Compiled in 1064ms (856 modules)
+ ✓ Compiled in 497ms (333 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 709ms
+ ✓ Compiled /api/nfv/videos/[id] in 181ms (579 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 559ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 1669ms
+ ✓ Compiled in 773ms (912 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 251ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 599ms
+ ✓ Compiled in 715ms (914 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 197ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 274ms
+ ✓ Compiled in 863ms (914 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 253ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 584ms
+ ✓ Compiled in 779ms (914 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 217ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 355ms
+ ✓ Compiled in 712ms (914 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 198ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 322ms
+ ✓ Compiled in 733ms (914 modules)
+ ✓ Compiled in 1ms (580 modules)
+ ✓ Compiled in 0ms (580 modules)
+ ✓ Compiled in 0ms (580 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 627ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 801ms
+ ✓ Compiled in 886ms (914 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 214ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 271ms
+ ✓ Compiled in 687ms (914 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 197ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 316ms
+ ✓ Compiled in 698ms (914 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 192ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 268ms
+ ✓ Compiled in 623ms (914 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 138ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 295ms
+ ✓ Compiled in 845ms (914 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 207ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 273ms
+ ✓ Compiled in 917ms (858 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 241ms
+ ✓ Compiled /api/nfv/videos/[id] in 148ms (580 modules)
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 839ms
+ ✓ Compiled in 779ms (914 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 255ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 309ms
+ ✓ Compiled in 719ms (914 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 243ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 246ms
+ ✓ Compiled in 661ms (914 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 281ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 422ms
+ ✓ Compiled in 693ms (914 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 208ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 379ms
+ ✓ Compiled in 695ms (914 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 198ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 323ms
+ ✓ Compiled in 704ms (914 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 203ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 321ms
+ ✓ Compiled in 672ms (914 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 202ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 239ms
+ ✓ Compiled in 679ms (914 modules)
+ ✓ Compiled in 1ms (580 modules)
+ ✓ Compiled in 0ms (580 modules)
+ ✓ Compiled in 1ms (580 modules)
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 762ms
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 667ms
+ ✓ Compiled in 894ms (914 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 202ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 226ms
+ ✓ Compiled in 668ms (914 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 199ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 261ms
+ ✓ Compiled in 884ms (914 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 207ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 295ms
+ ✓ Compiled in 725ms (914 modules)
+ ✓ Compiled in 0ms (580 modules)
+ ✓ Compiled in 0ms (580 modules)
+ ✓ Compiled in 0ms (580 modules)
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 862ms
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 710ms
+ ✓ Compiled in 840ms (914 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 198ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 383ms
+ ✓ Compiled in 732ms (914 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 210ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 273ms
+ GET /api/nfv/videos/va_1770900484924_czy13ayfq 200 in 1080ms
+ GET /api/nfv/videos/va_1770900484924_czy13ayfq 200 in 661ms
+ GET /api/nfv/videos/va_1770900484924_czy13ayfq 200 in 665ms
+ GET /comunidades/analise-agachamento/videos/va_1770900484924_czy13ayfq 200 in 195ms
+ GET /comunidades/analise-puxadas/videos/va_1770817621743_j5dzbciws 200 in 82ms
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k 200 in 89ms
+ ✓ Compiled in 935ms (858 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 258ms
+ ✓ Compiled /api/nfv/videos/[id] in 141ms (580 modules)
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 1061ms
+ ✓ Compiled in 719ms (914 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 258ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 358ms
+ ✓ Compiled in 750ms (914 modules)
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 226ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 347ms
+ GET /comunidades/analise-agachamento/videos/va_1770900484924_czy13ayfq 200 in 237ms
+ GET /comunidades/analise-puxadas/videos/va_1770817621743_j5dzbciws 200 in 115ms
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k 200 in 116ms
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 180ms
+ ○ Compiling /api/nfv/videos/[id] ...
+ ✓ Compiled /api/nfv/videos/[id] in 679ms (779 modules)
+ ✓ Compiled (832 modules)
+[next-auth][warn][DEBUG_ENABLED] 
+https://next-auth.js.org/warnings#debug_enabled
+ GET /api/auth/session 200 in 1164ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 2808ms
+ GET /api/nfv/videos/va_1770900484924_czy13ayfq 200 in 761ms
+ GET /api/nfv/videos/va_1770817621743_j5dzbciws 200 in 744ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k 200 in 411ms
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 540ms
+ GET /api/auth/session 200 in 70ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 1560ms
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 200 in 147ms
+ GET /api/auth/session 200 in 83ms
+ GET /api/nfv/videos/va_1770817584163_afof17p9k) 404 in 326ms
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\NUTRIFITCOACH_MASTER\nfc-comunidades\.next\server\app-paths-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\NUTRIFITCOACH_MASTER\\nfc-comunidades\\.next\\server\\app-paths-manifest.json',
+  page: '/comunidades/analise-terra/videos/va_1770817584163_afof17p9k)'
+}
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 3.2s (1204 modules)
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\NUTRIFITCOACH_MASTER\nfc-comunidades\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\NUTRIFITCOACH_MASTER\\nfc-comunidades\\.next\\routes-manifest.json',
+  page: '/comunidades/analise-terra/videos/va_1770817584163_afof17p9k)'
+}
+ ⨯ Failed to generate static paths for /comunidades/[slug]/videos/[videoId]:
+[Error: Cannot find module './vendor-chunks/@opentelemetry.js'
+Require stack:
+- D:\NUTRIFITCOACH_MASTER\nfc-comunidades\.next\server\webpack-runtime.js
+- D:\NUTRIFITCOACH_MASTER\nfc-comunidades\.next\server\app\comunidades\[slug]\videos\[videoId]\page.js
+- D:\NUTRIFITCOACH_MASTER\nfc-comunidades\node_modules\next\dist\server\require.js
+- D:\NUTRIFITCOACH_MASTER\nfc-comunidades\node_modules\next\dist\server\load-components.js
+- D:\NUTRIFITCOACH_MASTER\nfc-comunidades\node_modules\next\dist\build\utils.js
+- D:\NUTRIFITCOACH_MASTER\nfc-comunidades\node_modules\next\dist\server\dev\static-paths-worker.js
+- D:\NUTRIFITCOACH_MASTER\nfc-comunidades\node_modules\next\dist\compiled\jest-worker\processChild.js] {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\NUTRIFITCOACH_MASTER\nfc-comunidades\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\NUTRIFITCOACH_MASTER\\nfc-comunidades\\.next\\routes-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\NUTRIFITCOACH_MASTER\nfc-comunidades\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\NUTRIFITCOACH_MASTER\\nfc-comunidades\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\NUTRIFITCOACH_MASTER\nfc-comunidades\.next\server\app-paths-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\NUTRIFITCOACH_MASTER\\nfc-comunidades\\.next\\server\\app-paths-manifest.json',
+  page: '/comunidades/analise-terra/videos/va_1770817584163_afof17p9k)'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\NUTRIFITCOACH_MASTER\nfc-comunidades\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\NUTRIFITCOACH_MASTER\\nfc-comunidades\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\NUTRIFITCOACH_MASTER\nfc-comunidades\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\NUTRIFITCOACH_MASTER\\nfc-comunidades\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\NUTRIFITCOACH_MASTER\nfc-comunidades\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\NUTRIFITCOACH_MASTER\\nfc-comunidades\\.next\\routes-manifest.json',
+  page: '/comunidades/analise-terra/videos/va_1770817584163_afof17p9k)'
+}
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 500 in 8592ms
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 500 in 855ms
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 500 in 6619ms
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 500 in 6ms
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\NUTRIFITCOACH_MASTER\nfc-comunidades\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\NUTRIFITCOACH_MASTER\\nfc-comunidades\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\NUTRIFITCOACH_MASTER\nfc-comunidades\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\NUTRIFITCOACH_MASTER\\nfc-comunidades\\.next\\routes-manifest.json'
+}
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'D:\NUTRIFITCOACH_MASTER\nfc-comunidades\.next\cache\webpack\client-development-fallback\0.pack.gz_' -> 'D:\NUTRIFITCOACH_MASTER\nfc-comunidades\.next\cache\webpack\client-development-fallback\0.pack.gz'
+ ✓ Compiled in 370ms (484 modules)
+ ✓ Compiled in 292ms (484 modules)
+ ✓ Compiled in 229ms (484 modules)
+ ✓ Compiled in 235ms (484 modules)
+ ✓ Compiled in 437ms (484 modules)
+ ✓ Compiled in 437ms (484 modules)
+ ✓ Compiled in 468ms (484 modules)
+ ✓ Compiled in 471ms (484 modules)
+ ✓ Compiled in 480ms (484 modules)
+ ✓ Compiled in 532ms (484 modules)
+ ✓ Compiled in 487ms (484 modules)
+ ✓ Compiled in 450ms (484 modules)
+ ✓ Compiled in 472ms (484 modules)
+ ✓ Compiled in 430ms (484 modules)
+ ✓ Compiled in 279ms (484 modules)
+ ✓ Compiled in 284ms (484 modules)
+ ✓ Compiled in 245ms (484 modules)
+ ✓ Compiled in 553ms (484 modules)
+ ✓ Compiled in 490ms (484 modules)
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\NUTRIFITCOACH_MASTER\nfc-comunidades\.next\server\next-font-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\NUTRIFITCOACH_MASTER\\nfc-comunidades\\.next\\server\\next-font-manifest.json',
+  page: '/comunidades/analise-terra/videos/va_1770817584163_afof17p9k)'
+}
+ ✓ Compiled /_error in 494ms (1190 modules)
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\NUTRIFITCOACH_MASTER\nfc-comunidades\.next\server\pages\_document.js'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\NUTRIFITCOACH_MASTER\\nfc-comunidades\\.next\\server\\pages\\_document.js'
+}
+[Error: ENOENT: no such file or directory, open 'D:\NUTRIFITCOACH_MASTER\nfc-comunidades\.next\server\next-font-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\NUTRIFITCOACH_MASTER\\nfc-comunidades\\.next\\server\\next-font-manifest.json',
+  page: '/comunidades/analise-terra/videos/va_1770817584163_afof17p9k)'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\NUTRIFITCOACH_MASTER\nfc-comunidades\.next\server\pages\_document.js'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\NUTRIFITCOACH_MASTER\\nfc-comunidades\\.next\\server\\pages\\_document.js'
+}
+[Error: ENOENT: no such file or directory, open 'D:\NUTRIFITCOACH_MASTER\nfc-comunidades\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\NUTRIFITCOACH_MASTER\\nfc-comunidades\\.next\\routes-manifest.json'
+}
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 500 in 693ms
+ GET /comunidades/analise-terra/videos/va_1770817584163_afof17p9k) 500 in 41ms

@@ -1,0 +1,16 @@
+services:
+  seed:
+    image: node:20-alpine
+    working_dir: /app
+    environment:
+      DATABASE_URL: postgresql://nfc:nfc_password_change_me@postgres:5432/nfc_admin
+      DIRECT_URL: postgresql://nfc:nfc_password_change_me@postgres:5432/nfc_admin
+    volumes:
+      - .:/app
+    networks:
+      - nfc-comunidades_nfc-network
+    command: sh -c "npx ts-node --project tsconfig.scripts.json scripts/seed-hgh-fragment.ts && npx ts-node --project tsconfig.scripts.json scripts/seed-trenbolona.ts"
+
+networks:
+  nfc-comunidades_nfc-network:
+    external: true

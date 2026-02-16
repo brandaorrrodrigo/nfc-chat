@@ -34,7 +34,8 @@ export async function GET(
         content,
         "createdAt",
         "isPublished",
-        "totalPosts",
+        "viewCount",
+        "likeCount",
         user:userId (
           name,
           id

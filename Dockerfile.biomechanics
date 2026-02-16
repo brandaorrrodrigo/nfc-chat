@@ -1,0 +1,86 @@
+# ==================================
+# Dockerfile - NFC/NFV Biomechanics
+# Sistema de análise biomecânica
+# ==================================
+
+# Stage 1: Builder
+FROM node:20-slim AS builder
+
+WORKDIR /app
+
+# Instalar dependências do sistema
+RUN apt-get update && apt-get install -y \
+    python3 \
+    make \
+    g++ \
+    ffmpeg \
+    libcairo2-dev \
+    libpango1.0-dev \
+    libjpeg-dev \
+    libgif-dev \
+    librsvg2-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copiar package files
+COPY package*.json ./
+COPY tsconfig*.json ./
+
+# Instalar dependências
+RUN npm ci --only=production \
+    && npm cache clean --force
+
+# Copiar código fonte
+COPY src ./src
+COPY prisma ./prisma
+
+# Gerar Prisma Client
+RUN npx prisma generate
+
+# Stage 2: Production
+FROM node:20-slim
+
+WORKDIR /app
+
+# Instalar apenas runtime dependencies
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    libcairo2 \
+    libpango-1.0-0 \
+    libjpeg62-turbo \
+    libgif7 \
+    librsvg2-2 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copiar do builder
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/src ./src
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/tsconfig*.json ./
+
+# Criar diretórios necessários
+RUN mkdir -p /app/data/videos/uploads \
+    /app/data/frames \
+    /app/data/temp \
+    /app/models
+
+# Baixar modelo MediaPipe (opcional - pode ser montado via volume)
+# RUN wget -O /app/models/pose_landmarker_heavy.task \
+#     https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_heavy/float16/1/pose_landmarker_heavy.task
+
+# Variáveis de ambiente
+ENV NODE_ENV=production \
+    PORT=3000 \
+    TF_BACKEND=cpu \
+    MAX_FPS=30 \
+    BATCH_SIZE=10 \
+    MAX_CONCURRENT_VIDEOS=2
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD node -e "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+
+# Expor porta
+EXPOSE 3000
+
+# Comando de inicialização
+CMD ["node", "src/server.js"]

@@ -1,0 +1,14 @@
+   ▲ Next.js 15.5.12
+   - Local:        http://localhost:7777
+   - Network:      http://192.168.1.123:7777
+   - Environments: .env.local, .env
+
+ ✓ Starting...
+ ✓ Ready in 863s
+ ○ Compiling / ...
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'D:\NUTRIFITCOACH_MASTER\nfc-comunidades\.next\cache\webpack\server-development\0.pack.gz_' -> 'D:\NUTRIFITCOACH_MASTER\nfc-comunidades\.next\cache\webpack\server-development\0.pack.gz'
+ ✓ Compiled / in 10.1s (828 modules)
+ GET / 200 in 10733ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'D:\NUTRIFITCOACH_MASTER\nfc-comunidades\.next\cache\webpack\client-development\0.pack.gz_' -> 'D:\NUTRIFITCOACH_MASTER\nfc-comunidades\.next\cache\webpack\client-development\0.pack.gz'
+ ⚠ Found a change in next.config.js. Restarting the server to apply the changes...
+[?25h
