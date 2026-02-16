@@ -1,0 +1,81 @@
+FROM node:20-alpine AS base
+
+# Instalar dependências do sistema
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    cairo-dev \
+    jpeg-dev \
+    pango-dev \
+    giflib-dev \
+    ffmpeg \
+    dumb-init
+
+WORKDIR /app
+
+# ============================================================================
+# DEPENDENCIES
+# ============================================================================
+FROM base AS dependencies
+
+COPY package*.json ./
+COPY prisma ./prisma/
+
+# Instalar apenas dependências de produção
+RUN npm ci --only=production && npm cache clean --force
+
+# Gerar Prisma Client
+RUN npx prisma generate
+
+# ============================================================================
+# BUILD
+# ============================================================================
+FROM base AS build
+
+COPY package*.json ./
+COPY tsconfig*.json ./
+COPY prisma ./prisma/
+
+# Instalar todas as dependências (dev + prod)
+RUN npm ci
+
+# Copiar source code
+COPY src ./src
+
+# Build da aplicação
+RUN npm run build
+
+# ============================================================================
+# PRODUCTION
+# ============================================================================
+FROM base AS production
+
+# Criar usuário não-root
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+
+# Copiar dependências de produção
+COPY --from=dependencies --chown=nodejs:nodejs /app/node_modules ./node_modules
+COPY --from=dependencies --chown=nodejs:nodejs /app/prisma ./prisma
+
+# Copiar build
+COPY --from=build --chown=nodejs:nodejs /app/dist ./dist
+COPY --from=build --chown=nodejs:nodejs /app/package*.json ./
+
+# Criar diretórios necessários
+RUN mkdir -p data/uploads data/frames data/results logs && \
+    chown -R nodejs:nodejs data logs
+
+# Mudar para usuário não-root
+USER nodejs
+
+# Expor porta
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3000/health', (r) => { process.exit(r.statusCode === 200 ? 0 : 1); });"
+
+# Start com dumb-init (proper signal handling)
+CMD ["dumb-init", "node", "dist/main"]

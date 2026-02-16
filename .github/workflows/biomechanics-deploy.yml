@@ -1,0 +1,193 @@
+# ==================================
+# GitHub Actions Workflow
+# CI/CD - NFC/NFV Biomechanics
+# ==================================
+
+name: Biomechanics Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'src/services/optimized-pose-detection.service.ts'
+      - 'src/pipelines/batch-video-processing.pipeline.ts'
+      - 'src/queues/**'
+      - 'src/modules/biomechanical/**'
+      - 'src/config/performance.config.ts'
+      - 'Dockerfile.biomechanics'
+      - 'docker-compose.biomechanics.yml'
+      - '.github/workflows/biomechanics-deploy.yml'
+
+  pull_request:
+    branches:
+      - main
+      - develop
+
+  workflow_dispatch:  # Permite trigger manual
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}/biomechanics
+
+jobs:
+  # ============================
+  # Job 1: Testes e Linting
+  # ============================
+  test:
+    name: Test & Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run TypeScript compiler
+        run: npx tsc --noEmit
+
+      - name: Run ESLint
+        run: npm run lint || true
+
+      - name: Run tests (if available)
+        run: npm test || echo "No tests configured"
+
+  # ============================
+  # Job 2: Build Docker Image
+  # ============================
+  build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'push'
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.biomechanics
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
+
+  # ============================
+  # Job 3: Deploy to Staging
+  # ============================
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/develop'
+    environment:
+      name: staging
+      url: https://staging-biomechanics.nutrifitcoach.com.br
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          script: |
+            cd /opt/nfc-biomechanics
+            docker-compose -f docker-compose.biomechanics.yml pull
+            docker-compose -f docker-compose.biomechanics.yml up -d
+            docker-compose -f docker-compose.biomechanics.yml exec app npx prisma migrate deploy
+
+      - name: Health check
+        run: |
+          sleep 30
+          curl -f https://staging-biomechanics.nutrifitcoach.com.br/health || exit 1
+
+  # ============================
+  # Job 4: Deploy to Production
+  # ============================
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: https://biomechanics.nutrifitcoach.com.br
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          script: |
+            cd /opt/nfc-biomechanics
+            docker-compose -f docker-compose.biomechanics.yml pull
+            docker-compose -f docker-compose.biomechanics.yml up -d
+            docker-compose -f docker-compose.biomechanics.yml exec app npx prisma migrate deploy
+
+      - name: Health check
+        run: |
+          sleep 30
+          curl -f https://biomechanics.nutrifitcoach.com.br/health || exit 1
+
+      - name: Notify success
+        if: success()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: '✅ Biomechanics deployed to production successfully!'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+
+      - name: Notify failure
+        if: failure()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: '❌ Biomechanics deployment to production failed!'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}

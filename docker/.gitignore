@@ -1,0 +1,39 @@
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Secrets
+secrets/
+*.pem
+*.key
+*.crt
+
+# Backups
+backups/
+*.sql
+*.sql.gz
+*.rdb
+*.tar.gz
+
+# Logs
+logs/
+*.log
+
+# SSL Certificates
+nginx/ssl/*.pem
+nginx/ssl/*.key
+nginx/ssl/*.crt
+
+# Volumes (caso estejam no repo)
+volumes/
+
+# Temporários
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Docker
+.docker/
+docker-compose.override.yml
