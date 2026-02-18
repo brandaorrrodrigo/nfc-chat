@@ -123,7 +123,11 @@
       "Bash(tee:*)",
       "Bash(/d/NUTRIFITCOACH_MASTER/nfc-comunidades/prisma/schema.prisma:*)",
       "Bash(chmod:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(make start:*)",
+      "Bash(cmd /c:*)",
+      "Bash(wmic process where \"commandline like ''%next%''\" get processid,commandline)",
+      "Bash(\"C:/ProgramData/chocolatey/bin/ffmpeg.exe\" -i \"D:/NUTRIFITCOACH_MASTER/nfc-comunidades/public/references/ouro/agachamento-perfeito.mp4\" -vf fps=3 -frames:v 36 \"D:/NUTRIFITCOACH_MASTER/nfc-comunidades/tmp/test_frames/frame_%03d.jpg\" -y)"
     ]
   }
 }

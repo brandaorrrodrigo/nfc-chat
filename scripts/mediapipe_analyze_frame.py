@@ -2,6 +2,9 @@
 MediaPipe Pose Landmarker: Analisa frame(s) e retorna angulos articulares.
 Usa a API Tasks (mediapipe >= 0.10.x) com PoseLandmarker.
 
+GPU: tenta Delegate.GPU primeiro (NVIDIA via CUDA/OpenCL), fallback para CPU.
+Paralelismo: CPU usa ProcessPoolExecutor com N_CPU//2 workers.
+
 Uso:
   python scripts/mediapipe_analyze_frame.py <frame1.jpg> [frame2.jpg ...]
   python scripts/mediapipe_analyze_frame.py --dir <frames_dir>
@@ -18,6 +21,8 @@ import numpy as np
 import cv2
 import mediapipe as mp
 from mediapipe.tasks.python import BaseOptions, vision
+from concurrent.futures import ProcessPoolExecutor, as_completed
+import multiprocessing
 
 # ============================
 # Paths
@@ -214,20 +219,23 @@ def calculate_angles(landmarks):
 # Processar Frame
 # ============================
 
-def create_landmarker():
-    """Cria PoseLandmarker com o modelo disponivel."""
-    model_path = MODEL_PATH
-    if not os.path.exists(model_path):
-        for fp in FALLBACK_PATHS:
-            if os.path.exists(fp):
-                model_path = fp
-                break
-        else:
-            print(json.dumps({'error': f'Model not found. Expected: {MODEL_PATH}'}), file=sys.stderr)
-            sys.exit(1)
+def resolve_model_path():
+    """Retorna o caminho do modelo disponivel ou encerra com erro."""
+    if os.path.exists(MODEL_PATH):
+        return MODEL_PATH
+    for fp in FALLBACK_PATHS:
+        if os.path.exists(fp):
+            return fp
+    print(json.dumps({'error': f'Model not found. Expected: {MODEL_PATH}'}), file=sys.stderr)
+    sys.exit(1)
 
+
+def create_landmarker(delegate=None):
+    """Cria PoseLandmarker com o modelo disponivel e delegate especificado."""
+    model_path = resolve_model_path()
+    base_opts = BaseOptions(model_asset_path=model_path, delegate=delegate)
     options = vision.PoseLandmarkerOptions(
-        base_options=BaseOptions(model_asset_path=model_path),
+        base_options=base_opts,
         num_poses=1,
         min_pose_detection_confidence=0.5,
         min_pose_presence_confidence=0.5,
@@ -273,6 +281,39 @@ def process_frame(frame_path, landmarker):
 
 
 # ============================
+# Workers para CPU paralelo
+# (ProcessPoolExecutor requer funcoes picklable no nivel de modulo)
+# ============================
+
+_worker_landmarker = None
+_worker_model_path = None
+
+
+def _worker_init(model_path):
+    """Inicializa landmarker CPU em cada worker process."""
+    global _worker_landmarker, _worker_model_path
+    _worker_model_path = model_path
+    base_opts = BaseOptions(
+        model_asset_path=model_path,
+        delegate=BaseOptions.Delegate.CPU,
+    )
+    options = vision.PoseLandmarkerOptions(
+        base_options=base_opts,
+        num_poses=1,
+        min_pose_detection_confidence=0.5,
+        min_pose_presence_confidence=0.5,
+        min_tracking_confidence=0.5,
+    )
+    _worker_landmarker = vision.PoseLandmarker.create_from_options(options)
+
+
+def _worker_process_frame(frame_path):
+    """Processa um frame no worker process usando o landmarker local."""
+    global _worker_landmarker
+    return process_frame(frame_path, _worker_landmarker)
+
+
+# ============================
 # Main
 # ============================
 
@@ -303,18 +344,59 @@ def main():
         print(json.dumps({'error': 'No frames to process'}))
         sys.exit(1)
 
-    # Inicializar PoseLandmarker
-    landmarker = create_landmarker()
-
+    model_path = resolve_model_path()
+    device_used = 'cpu'
     results = []
-    for fp in frame_paths:
-        result = process_frame(fp, landmarker)
-        results.append(result)
 
-    landmarker.close()
+    # --- Tentar GPU primeiro ---
+    gpu_ok = False
+    try:
+        landmarker = create_landmarker(delegate=BaseOptions.Delegate.GPU)
+        # Teste rapido com o primeiro frame para confirmar GPU funciona
+        test_result = process_frame(frame_paths[0], landmarker)
+        gpu_ok = True
+        device_used = 'gpu'
+        print(f'[mediapipe] Usando GPU (CUDA/OpenCL)', file=sys.stderr)
+
+        # GPU: processar sequencialmente (contexto unico)
+        results.append(test_result)
+        for fp in frame_paths[1:]:
+            results.append(process_frame(fp, landmarker))
+
+        landmarker.close()
+
+    except Exception as gpu_err:
+        print(f'[mediapipe] GPU indisponivel ({gpu_err}), usando CPU paralelo', file=sys.stderr)
+
+    # --- Fallback CPU paralelo ---
+    if not gpu_ok:
+        n_workers = max(1, multiprocessing.cpu_count() // 2)
+        print(f'[mediapipe] CPU paralelo com {n_workers} workers', file=sys.stderr)
+
+        results_map = {}
+        with ProcessPoolExecutor(
+            max_workers=n_workers,
+            initializer=_worker_init,
+            initargs=(model_path,),
+        ) as executor:
+            futures = {executor.submit(_worker_process_frame, fp): fp for fp in frame_paths}
+            for future in as_completed(futures):
+                fp = futures[future]
+                try:
+                    results_map[fp] = future.result()
+                except Exception as e:
+                    results_map[fp] = {
+                        'success': False,
+                        'error': str(e),
+                        'frame': os.path.basename(fp),
+                    }
+
+        # Reordenar para manter ordem original dos frames
+        results = [results_map[fp] for fp in frame_paths]
 
     output = {
         'success': True,
+        'device': device_used,
         'frames_total': len(frame_paths),
         'frames_processed': sum(1 for r in results if r.get('success')),
         'frames': results,

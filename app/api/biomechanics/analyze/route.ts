@@ -45,25 +45,38 @@ export async function POST(request: NextRequest) {
   let tempDir: string | null = null;
 
   try {
-    // Verificar se está na Vercel (ambiente serverless sem suporte)
+    // Proxy para servidor de análise externo (seu PC com i9/3090 via Cloudflare Tunnel)
+    // Configurar: ANALYSIS_SERVER_URL=https://analysis.nutrifitcoach.com.br na Vercel
+    const externalServer = process.env.ANALYSIS_SERVER_URL;
+    if (externalServer) {
+      console.log(`[Biomechanics] Proxying to external server: ${externalServer}`);
+      const body = await request.json();
+      try {
+        const res = await fetch(`${externalServer}/api/biomechanics/analyze`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+          // Timeout generoso: 36 frames + MediaPipe + Ollama pode levar ~3min
+          signal: AbortSignal.timeout(300_000),
+        });
+        const data = await res.json();
+        return NextResponse.json(data, { status: res.status });
+      } catch (proxyErr: any) {
+        console.error('[Biomechanics] Proxy error:', proxyErr.message);
+        return NextResponse.json({
+          error: 'Servidor de análise indisponível',
+          details: proxyErr.message,
+        }, { status: 503 });
+      }
+    }
+
+    // Vercel sem servidor externo configurado → instrução clara
     if (process.env.VERCEL) {
       return NextResponse.json({
         error: 'Análise biomecânica indisponível na Vercel',
         reason: 'serverless_limitation',
-        message: 'A análise de vídeo requer FFmpeg, Python e MediaPipe que não estão disponíveis em ambientes serverless como a Vercel.',
-        solution: 'Para análise automática funcional, rode o sistema localmente com Docker ou deploy em servidor próprio (AWS, GCP, DigitalOcean).',
-        localSetup: [
-          '1. Clone o repositório',
-          '2. cd docker && make start',
-          '3. Acesse http://localhost:3000',
-          '4. Análise funcionará automaticamente'
-        ],
-        productionOptions: [
-          'AWS EC2 + Docker',
-          'Google Cloud Run',
-          'DigitalOcean Droplet + Docker',
-          'VPS próprio com Docker Compose'
-        ]
+        message: 'A análise requer FFmpeg + Python + MediaPipe que não rodam em serverless.',
+        solution: 'Configure ANALYSIS_SERVER_URL na Vercel apontando para seu servidor local via Cloudflare Tunnel.',
       }, { status: 503 });
     }
 
@@ -115,8 +128,9 @@ export async function POST(request: NextRequest) {
 
     console.log(`[Biomechanics] Video downloaded: ${localVideoPath}`);
 
-    // 3. Extrair frames
-    const frameCount = 6;
+    // 3. Extrair frames — 36 frames para capturar pico real de contração
+    // Com 36 frames em 10s → frame a cada ~0.28s → ~96% chance de pegar o pico
+    const frameCount = 36;
     const framesDir = path.join(tempDir, 'frames');
     fs.mkdirSync(framesDir, { recursive: true });
     const framePaths = await extractFrames(localVideoPath, framesDir, frameCount);
@@ -141,6 +155,7 @@ export async function POST(request: NextRequest) {
     const aggregated = aggregateMediaPipeFrames(mediapipeResult);
 
     console.log(`[Biomechanics] Aggregated: confidence=${aggregated.avgConfidence}, frames_used=${aggregated.framesProcessed} (filtered_out=${aggregated.framesFiltered}), hip_avg_min=${aggregated.minAngles.hip_avg}°, knee_L_min=${aggregated.minAngles.knee_left}°, trunk=${aggregated.avgAngles.trunk_inclination}°`);
+    console.log(`[Biomechanics] Motor joints - elbow_L: min=${aggregated.minAngles.elbow_left}° max=${aggregated.maxAngles.elbow_left}°, elbow_R: min=${aggregated.minAngles.elbow_right}° max=${aggregated.maxAngles.elbow_right}°, shoulder_L: min=${aggregated.minAngles.shoulder_left}° max=${aggregated.maxAngles.shoulder_left}°, shoulder_R: min=${aggregated.minAngles.shoulder_right}° max=${aggregated.maxAngles.shoulder_right}°`);
     if (aggregated.videoQualityWarning) {
       console.log(`[Biomechanics] ⚠ Video quality warning: ${aggregated.videoQualityWarning}`);
     }
@@ -150,7 +165,7 @@ export async function POST(request: NextRequest) {
       const f = mediapipeResult.frames[i];
       if (f.success) {
         const a = f.world_angles || f.angles;
-        console.log(`[Biomechanics] Frame ${i + 1}: knee_L=${a.knee_left}° knee_R=${a.knee_right}° hip=${a.hip_avg}° trunk=${a.trunk_inclination}° valgus_L=${a.knee_valgus_left_cm}cm conf=${a.confidence}`);
+        console.log(`[Biomechanics] Frame ${i + 1}: knee_L=${a.knee_left}° knee_R=${a.knee_right}° hip=${a.hip_avg}° elbow_L=${a.elbow_left}° elbow_R=${a.elbow_right}° shoulder_L=${a.shoulder_left}° shoulder_R=${a.shoulder_right}° trunk=${a.trunk_inclination}° valgus_L=${a.knee_valgus_left_cm}cm conf=${a.confidence}`);
       } else {
         console.log(`[Biomechanics] Frame ${i + 1}: FAILED - ${f.error}`);
       }

@@ -193,6 +193,8 @@ export interface AggregatedMediaPipeData {
   /** Min/max calculados com MOTOR threshold (conf >= 0.3) — captura extremos */
   minAngles: MediaPipeAngles;
   maxAngles: MediaPipeAngles;
+  /** Frames em ordem temporal com MOTOR threshold (conf >= 0.3) — para análise de 3 pontos */
+  motorFrameAngles: MediaPipeAngles[];
   /** Ângulos de cada frame com STABILIZER threshold (conf >= 0.5) — para variação */
   allFrameAngles: MediaPipeAngles[];
   /** Confidence de cada frame filtrado (mesmo índice que allFrameAngles) */
@@ -221,6 +223,7 @@ export function aggregateMediaPipeFrames(result: MediaPipeResult): AggregatedMed
   if (successFrames.length === 0) {
     return {
       avgAngles: {}, minAngles: {}, maxAngles: {},
+      motorFrameAngles: [],
       allFrameAngles: [], frameConfidences: [],
       framesProcessed: 0, framesFiltered: 0,
       avgConfidence: 0, videoQualityWarning: 'Nenhuma pose detectada nos frames.',
@@ -336,6 +339,7 @@ export function aggregateMediaPipeFrames(result: MediaPipeResult): AggregatedMed
     avgAngles: avg,
     minAngles: min,
     maxAngles: max,
+    motorFrameAngles: motorAngles,
     allFrameAngles: stabAngles,
     frameConfidences: stabConfs,
     framesProcessed: useMotorFrames.length,
@@ -372,12 +376,80 @@ export function mediapipeToMetricsV2(
   return { motorMetrics, stabilizerMetrics };
 }
 
+// ============================
+// Análise Temporal em 3 Pontos
+// ============================
+
+export type EccentricControl = 'controlled' | 'dropped' | 'unknown';
+
+export interface ThreePointAnalysis {
+  startAngle: number | undefined;
+  peakAngle: number | undefined;
+  returnAngle: number | undefined;
+  eccentricControl: EccentricControl;
+}
+
+/**
+ * Analisa a curva temporal de uma articulação e identifica os 3 pontos do movimento:
+ *   - startAngle: posição inicial (ponto A — extremo oposto ao pico)
+ *   - peakAngle:  posição de pico/contração máxima (ponto B)
+ *   - returnAngle: posição de retorno no último frame (ponto C)
+ *
+ * direction:
+ *   'lower_is_peak' → pull, squat, hinge (pico = menor ângulo)
+ *   'higher_is_peak' → press (pico = maior ângulo)
+ *
+ * eccentricControl:
+ *   'controlled' → retorno gradual (diferença entre frames < 30° por 0.28s)
+ *   'dropped'    → retorno abrupto (≥1 salto > 30° no excêntrico)
+ *   'unknown'    → frames insuficientes para avaliar
+ */
+function analyze3Points(
+  frames: MediaPipeAngles[],
+  key: string,
+  direction: 'lower_is_peak' | 'higher_is_peak',
+): ThreePointAnalysis {
+  const values: number[] = [];
+  for (const f of frames) {
+    const v = (f as Record<string, number | undefined>)[key];
+    if (v !== undefined && v >= 0) values.push(v);
+  }
+
+  if (values.length < 3) {
+    return { startAngle: undefined, peakAngle: undefined, returnAngle: undefined, eccentricControl: 'unknown' };
+  }
+
+  // Pico: menor ou maior ângulo dependendo da direção
+  const peakAngle = direction === 'lower_is_peak' ? Math.min(...values) : Math.max(...values);
+  const peakIdx = values.indexOf(peakAngle);
+
+  // startAngle: valor mais distante do pico ANTES dele na sequência temporal
+  const beforePeak = values.slice(0, peakIdx + 1);
+  const startAngle = direction === 'lower_is_peak'
+    ? Math.max(...beforePeak)  // maior antes do mínimo
+    : Math.min(...beforePeak); // menor antes do máximo
+
+  // returnAngle: ângulo no último frame (representa a posição de retorno)
+  const returnAngle = values[values.length - 1];
+
+  // Controle excêntrico: taxa de mudança após o pico
+  // Com 36 frames em 10s → 0.28s/frame. Salto > 30°/frame = soltou o peso.
+  let eccentricControl: EccentricControl = 'unknown';
+  const afterPeak = values.slice(peakIdx);
+  if (afterPeak.length >= 2) {
+    const maxJump = Math.max(...afterPeak.slice(0, -1).map((v, i) => Math.abs(afterPeak[i + 1] - v)));
+    eccentricControl = maxJump > 30 ? 'dropped' : 'controlled';
+  }
+
+  return { startAngle, peakAngle, returnAngle, eccentricControl };
+}
+
 /** Categorias onde o movimento vai de LOW → HIGH (start=min, peak=max) */
 const LOW_TO_HIGH_CATEGORIES = new Set(['hip_dominant', 'isolation_shoulder']);
 
 /**
  * Mapeia articulação motora do MediaPipe
- * Inclui startAngle/peakAngle para análise em 3 pontos
+ * Usa análise temporal em 3 pontos (início → pico → retorno) para cada frame
  */
 function mapMediaPipeMotor(
   joint: string,
@@ -385,8 +457,9 @@ function mapMediaPipeMotor(
   agg: AggregatedMediaPipeData,
   category: string,
 ): MotorMetricInput | null {
-  const { minAngles, maxAngles, avgAngles } = agg;
+  const { minAngles, maxAngles, avgAngles, motorFrameAngles } = agg;
   const lowToHigh = LOW_TO_HIGH_CATEGORIES.has(category);
+  const isPress = category === 'horizontal_press' || category === 'vertical_press';
 
   switch (joint) {
     case 'knee': {
@@ -396,16 +469,17 @@ function mapMediaPipeMotor(
       const rightMax = maxAngles.knee_right;
       if (leftMin === undefined && rightMin === undefined) return null;
 
-      // ROM = range de movimento (max - min), SEMPRE diferença
+      // ROM = range de movimento (max - min)
       const leftRange = (leftMax ?? 0) - (leftMin ?? 0);
       const rightRange = (rightMax ?? 0) - (rightMin ?? 0);
       const romValue = Math.max(leftRange, rightRange);
 
-      // 3 pontos: ângulos absolutos
-      const kneeMax = Math.max(leftMax ?? 0, rightMax ?? 0);
-      const kneeMin = Math.min(leftMin ?? 999, rightMin ?? 999);
-      const startAngle = lowToHigh ? (kneeMin < 999 ? kneeMin : undefined) : (kneeMax || undefined);
-      const peakAngle = lowToHigh ? (kneeMax || undefined) : (kneeMin < 999 ? kneeMin : undefined);
+      // 3 pontos temporais — squat/hinge: pico = menor ângulo
+      const dir = lowToHigh ? 'higher_is_peak' : 'lower_is_peak';
+      const keyL = analyze3Points(motorFrameAngles, 'knee_left', dir);
+      const keyR = analyze3Points(motorFrameAngles, 'knee_right', dir);
+      // Usar o lado com maior ROM
+      const threePoint = leftRange >= rightRange ? keyL : keyR;
 
       return {
         joint: 'knee',
@@ -413,8 +487,10 @@ function mapMediaPipeMotor(
         romUnit: '°',
         leftValue: leftMin,
         rightValue: rightMin,
-        startAngle,
-        peakAngle,
+        startAngle: threePoint.startAngle,
+        peakAngle: threePoint.peakAngle,
+        returnAngle: threePoint.returnAngle,
+        eccentricControl: threePoint.eccentricControl,
       };
     }
 
@@ -423,14 +499,10 @@ function mapMediaPipeMotor(
       const hipMax = maxAngles.hip_avg ?? maxAngles.hip_left;
       if (hipMin === undefined) return null;
 
-      // ROM = range SEMPRE (max - min)
       const romValue = (hipMax ?? hipMin) - hipMin;
 
-      // 3 pontos
-      const startAngle = lowToHigh ? hipMin : hipMax;
-      const peakAngle = lowToHigh ? hipMax : hipMin;
-
-      // peakContraction para deadlift/hip_thrust: ângulo no lockout (max)
+      const dir = lowToHigh ? 'higher_is_peak' : 'lower_is_peak';
+      const threePoint = analyze3Points(motorFrameAngles, 'hip_avg', dir);
       const peakContractionValue = hipMax;
 
       return {
@@ -441,8 +513,10 @@ function mapMediaPipeMotor(
         rightValue: minAngles.hip_right,
         peakContractionValue,
         peakContractionUnit: '°',
-        startAngle,
-        peakAngle,
+        startAngle: threePoint.startAngle,
+        peakAngle: threePoint.peakAngle,
+        returnAngle: threePoint.returnAngle,
+        eccentricControl: threePoint.eccentricControl,
       };
     }
 
@@ -472,7 +546,6 @@ function mapMediaPipeMotor(
       const rightMax = maxAngles.shoulder_right;
       if (leftMax === undefined && rightMax === undefined) return null;
 
-      // ROM = range SEMPRE (max - min)
       const leftRange = (leftMax ?? 0) - (leftMin ?? 0);
       const rightRange = (rightMax ?? 0) - (rightMin ?? 0);
       const romValue = Math.max(leftRange, rightRange);
@@ -483,11 +556,12 @@ function mapMediaPipeMotor(
         ? Math.abs(elevLeft - elevRight)
         : undefined;
 
-      // 3 pontos
-      const sMin = Math.min(leftMin ?? 999, rightMin ?? 999);
-      const sMax = Math.max(leftMax ?? 0, rightMax ?? 0);
-      const shoulderStart = lowToHigh ? (sMin < 999 ? sMin : undefined) : (sMax || undefined);
-      const shoulderPeak = lowToHigh ? (sMax || undefined) : (sMin < 999 ? sMin : undefined);
+      // pull/press: começa estendido (maior ângulo) → pico = menor ângulo
+      // Exceção: isolation_shoulder (lateral raise) vai de baixo (menor) para cima (maior)
+      const dir = lowToHigh ? 'higher_is_peak' : 'lower_is_peak';
+      const keyL = analyze3Points(motorFrameAngles, 'shoulder_left', dir);
+      const keyR = analyze3Points(motorFrameAngles, 'shoulder_right', dir);
+      const threePoint = leftRange >= rightRange ? keyL : keyR;
 
       return {
         joint: 'shoulder',
@@ -497,8 +571,10 @@ function mapMediaPipeMotor(
         rightValue: rightMax,
         peakContractionValue,
         peakContractionUnit: peakContractionValue !== undefined ? 'cm' : undefined,
-        startAngle: shoulderStart,
-        peakAngle: shoulderPeak,
+        startAngle: threePoint.startAngle,
+        peakAngle: threePoint.peakAngle,
+        returnAngle: threePoint.returnAngle,
+        eccentricControl: threePoint.eccentricControl,
       };
     }
 
@@ -509,34 +585,28 @@ function mapMediaPipeMotor(
       const rightMax = maxAngles.elbow_right;
       if (leftMin === undefined && rightMin === undefined) return null;
 
-      // ROM = range SEMPRE (max - min)
       const leftRange = (leftMax ?? 0) - (leftMin ?? 0);
       const rightRange = (rightMax ?? 0) - (rightMin ?? 0);
       const romValue = Math.max(leftRange, rightRange);
 
-      // 3 pontos — em press: start=min(peito), peak=max(lockout)
-      //            em pull: start=max(estendido), peak=min(contração)
-      const isPress = category === 'horizontal_press' || category === 'vertical_press';
-      const elbowMax = Math.max(leftMax ?? 0, rightMax ?? 0);
-      const elbowMin = Math.min(leftMin ?? 999, rightMin ?? 999);
-      let elbowStart: number | undefined;
-      let elbowPeak: number | undefined;
-      if (isPress) {
-        elbowStart = elbowMin < 999 ? elbowMin : undefined;
-        elbowPeak = elbowMax || undefined;
-      } else {
-        elbowStart = elbowMax || undefined;
-        elbowPeak = elbowMin < 999 ? elbowMin : undefined;
-      }
+      // press/pull: começa estendido (maior ângulo) → pico = menor ângulo
+      // - Pull: pico = contração máxima (cotovelo mais fechado)
+      // - Press: pico = fundo (barra no peito = cotovelo mais fechado)
+      const dir = 'lower_is_peak' as const;
+      const keyL = analyze3Points(motorFrameAngles, 'elbow_left', dir);
+      const keyR = analyze3Points(motorFrameAngles, 'elbow_right', dir);
+      const threePoint = leftRange >= rightRange ? keyL : keyR;
 
       return {
         joint: 'elbow',
         romValue: Math.round(romValue * 10) / 10,
         romUnit: '°',
-        leftValue: isPress ? leftMax : leftMin,
-        rightValue: isPress ? rightMax : rightMin,
-        startAngle: elbowStart,
-        peakAngle: elbowPeak,
+        leftValue: leftMin,   // valor no pico (mínimo) — usado para simetria
+        rightValue: rightMin,
+        startAngle: threePoint.startAngle,
+        peakAngle: threePoint.peakAngle,
+        returnAngle: threePoint.returnAngle,
+        eccentricControl: threePoint.eccentricControl,
       };
     }
 

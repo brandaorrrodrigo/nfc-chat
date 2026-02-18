@@ -40,6 +40,7 @@ interface Classification {
   is_safety_critical: boolean;
   is_informative?: boolean;
   note?: string;
+  type?: string;
   rag_topics: string[];
 }
 
@@ -78,7 +79,19 @@ interface MotorAnalysisItem {
   joint: string;
   label: string;
   movement: string;
-  rom: { value: number; unit: string; min?: number; max?: number; startAngle?: number; peakAngle?: number; classification: string; classificationLabel: string };
+  rom: {
+    value: number;
+    unit: string;
+    min?: number;
+    max?: number;
+    startAngle?: number;
+    peakAngle?: number;
+    returnAngle?: number;
+    eccentricControl?: 'controlled' | 'dropped' | 'unknown';
+    note?: string;
+    classification: string;
+    classificationLabel: string;
+  };
   peak_contraction?: number | null;
   symmetry?: { diff: number; unit: string; classification: string } | number | null;
 }
@@ -291,20 +304,32 @@ export default function BiomechanicsDashboard() {
       const data = await response.json();
 
       if (!response.ok) {
-        // Erro 503: Vercel (serverless) não suporta análise
-        if (response.status === 503 && data.reason === 'serverless_limitation') {
+        // Erro 503: Vercel sem ANALYSIS_SERVER_URL configurado
+        if (response.status === 503) {
           setError(
-            `🚫 ${data.message}\n\n` +
-            `💡 Solução: ${data.solution}\n\n` +
-            `📦 Setup Local:\n${data.localSetup?.join('\n') || 'Ver documentação'}\n\n` +
-            `☁️ Produção: ${data.productionOptions?.join(', ') || 'Servidor próprio com Docker'}`
+            '🚫 A análise de vídeo requer FFmpeg, Python e MediaPipe que não estão disponíveis em ambientes serverless como a Vercel.\n\n' +
+            '💡 Solução: Configure ANALYSIS_SERVER_URL na Vercel apontando para seu servidor local via Cloudflare Tunnel.\n\n' +
+            '📦 Setup Local:\n' +
+            '1. Inicie o servidor: npm run dev\n' +
+            '2. Instale o túnel: winget install Cloudflare.cloudflared\n' +
+            '3. Crie o túnel: cloudflared tunnel --url http://localhost:3000\n' +
+            '4. Adicione ANALYSIS_SERVER_URL=<url-do-tunel> nas env vars da Vercel\n\n' +
+            '☁️ Produção: AWS EC2 + Docker, Google Cloud Run, DigitalOcean Droplet + Docker, VPS próprio com Docker Compose'
           );
           return;
         }
 
-        // Erro 500: Servidor local sem dependências
+        // Erro 500: Servidor local sem dependências (MediaPipe, FFmpeg, Ollama)
         if (response.status === 500) {
-          setError('Re-analise disponivel apenas no servidor local (requer FFmpeg + Python + MediaPipe + Ollama). Para re-analisar, rode o servidor localmente ou use Docker.');
+          setError(
+            '🚫 A análise de vídeo requer FFmpeg, Python e MediaPipe que não estão disponíveis em ambientes serverless como a Vercel.\n\n' +
+            '📦 Setup Local:\n' +
+            '1. Clone o repositório\n' +
+            '2. pip install mediapipe==0.10.31 opencv-python numpy\n' +
+            '3. Acesse http://localhost:3000\n' +
+            '4. Análise funcionará automaticamente\n\n' +
+            '☁️ Produção: AWS EC2 + Docker, Google Cloud Run, DigitalOcean Droplet + Docker, VPS próprio com Docker Compose'
+          );
           return;
         }
 
@@ -522,7 +547,7 @@ export default function BiomechanicsDashboard() {
         {/* Error Message */}
         {error && (
           <div className="bg-red-900/50 border border-red-700 rounded-lg p-4 mb-6 text-red-200">
-            <p className="font-semibold">Erro: {error}</p>
+            <p className="font-semibold whitespace-pre-line">Erro: {error}</p>
           </div>
         )}
 
@@ -758,7 +783,26 @@ export default function BiomechanicsDashboard() {
                               </span>
                             )}
                           </p>
+                          {/* Retorno ao início */}
+                          {m.rom.returnAngle != null && m.rom.startAngle != null && (
+                            <p className="text-slate-600 text-xs mt-0.5">
+                              retorno: {formatValue(m.rom.returnAngle, 0)}{m.rom.unit}
+                              {Math.abs(m.rom.returnAngle - m.rom.startAngle) <= 15
+                                ? <span className="text-green-600 ml-1">≈ início ✓</span>
+                                : <span className="text-yellow-600 ml-1">≠ início</span>
+                              }
+                            </p>
+                          )}
                         </div>
+                        {/* Controle excêntrico */}
+                        {m.rom.eccentricControl && m.rom.eccentricControl !== 'unknown' && (
+                          <div>
+                            <p className="text-slate-500 text-xs">Excentrica</p>
+                            <p className={`text-xs font-medium ${m.rom.eccentricControl === 'controlled' ? 'text-green-400' : 'text-orange-400'}`}>
+                              {m.rom.eccentricControl === 'controlled' ? '✓ Controlada' : '⚠ Soltou peso'}
+                            </p>
+                          </div>
+                        )}
                         {m.peak_contraction != null && !isNaN(Number(m.peak_contraction)) && (
                           <div>
                             <p className="text-slate-500 text-xs">Pico Contracao</p>
@@ -766,6 +810,12 @@ export default function BiomechanicsDashboard() {
                           </div>
                         )}
                       </div>
+                      {/* Alerta contextual específico do exercício */}
+                      {m.rom.note && (
+                        <p className={`text-xs mt-1.5 ${m.rom.note.startsWith('⚠') ? 'text-orange-400' : 'text-slate-500'}`}>
+                          {m.rom.note}
+                        </p>
+                      )}
                       {(() => {
                         const symVal = m.symmetry == null ? null
                           : typeof m.symmetry === 'number' ? m.symmetry

@@ -165,8 +165,9 @@ export async function extractFrames(
     const duration = parseFloat(durationOutput.trim());
     console.log(`  Video duration: ${duration.toFixed(2)}s`);
 
-    // Calcular intervalo entre frames
-    const interval = duration / (framesCount + 1);
+    // Calcular intervalo entre frames — divide o vídeo em N segmentos iguais
+    // Exemplo: 6 frames em 10s → interval=1.67s → frames aos 1.67, 3.33, 5, 6.67, 8.33, 10s
+    const interval = duration / framesCount;
 
     const framePaths: string[] = [];
 

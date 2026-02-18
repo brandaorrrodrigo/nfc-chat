@@ -309,7 +309,7 @@ export default function VideoDetailPage() {
         joint: string;
         label: string;
         movement: string;
-        rom: { value: number; unit: string; min?: number; max?: number; startAngle?: number; peakAngle?: number; classification: string; classificationLabel: string };
+        rom: { value: number; unit: string; min?: number; max?: number; startAngle?: number; peakAngle?: number; returnAngle?: number; eccentricControl?: 'controlled' | 'dropped' | 'unknown'; note?: string; classification: string; classificationLabel: string };
         peak_contraction?: number | null;
         symmetry?: { diff: number; unit: string; classification: string } | number | null;
       }> || [];
@@ -484,9 +484,20 @@ export default function VideoDetailPage() {
                       <div className="flex items-center gap-3 text-[10px] text-zinc-500">
                         <span>Movimento: {safeRender(m.movement)}</span>
                         <span>ROM: {formatValue(m.rom.value)}{safeRender(m.rom.unit)}{m.rom.startAngle != null && m.rom.peakAngle != null && ` (de ${formatValue(m.rom.startAngle, 0)}${m.rom.unit} a ${formatValue(m.rom.peakAngle, 0)}${m.rom.unit})`}</span>
+                        {m.rom.returnAngle != null && (
+                          <span>retorno: {formatValue(m.rom.returnAngle, 0)}{safeRender(m.rom.unit)}</span>
+                        )}
+                        {m.rom.eccentricControl && m.rom.eccentricControl !== 'unknown' && (
+                          <span className={m.rom.eccentricControl === 'controlled' ? 'text-green-600' : 'text-orange-500'}>
+                            {m.rom.eccentricControl === 'controlled' ? '✓ exc. controlada' : '⚠ soltou peso'}
+                          </span>
+                        )}
                       </div>
                       {m.peak_contraction != null && !isNaN(Number(m.peak_contraction)) && (
                         <div className="text-[10px] text-zinc-500 mt-0.5">Pico contracao: {formatValue(m.peak_contraction, 0)}{safeRender(m.rom.unit)}</div>
+                      )}
+                      {m.rom.note && (
+                        <div className={`text-[10px] mt-0.5 ${m.rom.note.startsWith('⚠') ? 'text-orange-400' : 'text-zinc-500'}`}>{m.rom.note}</div>
                       )}
                       {(() => {
                         const symVal = m.symmetry == null ? null

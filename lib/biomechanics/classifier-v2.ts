@@ -25,7 +25,18 @@ export interface MotorJointResult {
   joint: string;
   label: string;
   movement: string;
-  rom: { value: number; unit: string; classification: MotorClassification; classificationLabel: string; startAngle?: number; peakAngle?: number };
+  rom: {
+    value: number;
+    unit: string;
+    classification: MotorClassification;
+    classificationLabel: string;
+    startAngle?: number;
+    peakAngle?: number;
+    returnAngle?: number;
+    eccentricControl?: 'controlled' | 'dropped' | 'unknown';
+    /** Alerta contextual específico do exercício (ex: hiperextensão, trapézio dominante) */
+    note?: string;
+  };
   peakContraction?: { value: number; unit: string; classification: MotorClassification; classificationLabel: string };
   symmetry?: { diff: number; unit: string; classification: 'ok' | 'assimetria_leve' | 'assimetria_significativa' };
   ragTopics: string[];
@@ -86,6 +97,8 @@ export interface MotorMetricInput {
   rightValue?: number;
   startAngle?: number;
   peakAngle?: number;
+  returnAngle?: number;
+  eccentricControl?: 'controlled' | 'dropped' | 'unknown';
 }
 
 export interface StabilizerMetricInput {
@@ -214,6 +227,55 @@ function classifySymmetry(
 // ============================
 
 /**
+ * Gera alertas contextuais específicos por exercício/articulação
+ * Exemplos: hiperextensão lombar no hip thrust, trapézio dominante no lateral raise,
+ * hip-to-knee ratio no deadlift
+ */
+function buildContextualNote(
+  joint: string,
+  input: MotorMetricInput,
+  category: string,
+  allMotorInputs: MotorMetricInput[],
+): string | undefined {
+  // Hip thrust: peakAngle de quadril > 185° → hiperextensão lombar
+  if (category === 'hip_dominant' && joint === 'hip') {
+    if (input.peakAngle !== undefined && input.peakAngle > 185) {
+      return `⚠ Ângulo de ${input.peakAngle.toFixed(0)}° sugere hiperextensão lombar compensatória (quadril não passa de 180°)`;
+    }
+  }
+
+  // Lateral raise: peakAngle de ombro > 95° → trapézio dominante
+  if (category === 'isolation_shoulder' && joint === 'shoulder') {
+    if (input.peakAngle !== undefined && input.peakAngle > 95) {
+      return `⚠ Elevação acima de 95° (${input.peakAngle.toFixed(0)}°) — possível dominância do trapézio`;
+    }
+  }
+
+  // Hinge (deadlift): hip-to-knee ratio — quadril deve dominar sobre joelho
+  if (category === 'hinge' && joint === 'hip') {
+    const hipInput = input;
+    const kneeInput = allMotorInputs.find(m => m.joint === 'knee');
+    if (kneeInput && kneeInput.romValue > 0) {
+      const ratio = Math.round((hipInput.romValue / kneeInput.romValue) * 10) / 10;
+      if (ratio < 1.5) {
+        return `⚠ Hip/Knee ratio ${ratio}:1 (ideal >1.5) — joelho dominando sobre quadril (técnica de squat)`;
+      } else {
+        return `Hip/Knee ratio ${ratio}:1 ✓`;
+      }
+    }
+  }
+
+  // Press: peakAngle de cotovelo > 90° no fundo → profundidade insuficiente
+  if ((category === 'horizontal_press' || category === 'vertical_press') && joint === 'elbow') {
+    if (input.peakAngle !== undefined && input.peakAngle > 90) {
+      return `⚠ Cotovelo ${input.peakAngle.toFixed(0)}° no fundo — barra não desceu ao peito (ideal <90°)`;
+    }
+  }
+
+  return undefined;
+}
+
+/**
  * Classifica um exercício completo usando o paradigma Motor vs Estabilizador
  */
 export function classifyExerciseV2(
@@ -247,6 +309,8 @@ export function classifyExerciseV2(
         classificationLabel: MOTOR_LABELS[romClass],
         startAngle: input.startAngle,
         peakAngle: input.peakAngle,
+        returnAngle: input.returnAngle,
+        eccentricControl: input.eccentricControl,
       },
       ragTopics: mj.ragTopics,
     };
@@ -272,6 +336,10 @@ export function classifyExerciseV2(
         classification: symClass,
       };
     }
+
+    // Alertas contextuais por categoria/joint
+    const note = buildContextualNote(mj.joint, input, template.category, motorInputs);
+    if (note) result.rom.note = note;
 
     motorAnalysis.push(result);
   }
