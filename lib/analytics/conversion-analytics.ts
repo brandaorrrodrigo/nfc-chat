@@ -46,12 +46,13 @@ export async function getConversionFunnel(): Promise<ConversionFunnelData> {
   // Total de usuários ativos (com FP > 0)
   const totalUsers = await prisma.user.count({
     where: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       fitnessPointLog: {
         some: {
           createdAt: { gte: thirtyDaysAgo },
         },
       },
-    },
+    } as any,
   });
 
   // Usuários com FP >= 100 (elegíveis)

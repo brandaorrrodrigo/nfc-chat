@@ -31,7 +31,7 @@ export async function detectConversionOpportunities(): Promise<ConversionTrigger
     console.log('🎯 Detecting conversion opportunities...');
 
     // Buscar usuários com FP >= 100 (tier mínimo)
-    const { data: users, error } = await supabase
+    const { data: users, error } = await supabase!!
       .from('User')
       .select('id, name, fpAvailable')
       .gte('fpAvailable', 100)
@@ -51,7 +51,7 @@ export async function detectConversionOpportunities(): Promise<ConversionTrigger
       const dayAgo = new Date();
       dayAgo.setDate(dayAgo.getDate() - 1);
 
-      const { data: recentCoupons } = await supabase
+      const { data: recentCoupons } = await supabase!!
         .from('Coupon')
         .select('id')
         .eq('userId', user.id)
@@ -139,7 +139,7 @@ export async function sendConversionMessage(
     console.log(`📧 Sending conversion message to ${trigger.userName}...`);
 
     // Criar notificação no banco
-    const { error } = await supabase.from('Notification').insert({
+    const { error } = await supabase!!.from('Notification').insert({
       userId: trigger.userId,
       type: 'CONVERSION_OPPORTUNITY',
       title: message.title,
@@ -237,7 +237,7 @@ export async function shouldTriggerConversion(userId: string): Promise<{
 }> {
   try {
     // Buscar saldo de FP
-    const { data: user } = await supabase
+    const { data: user } = await supabase!!
       .from('User')
       .select('fpAvailable')
       .eq('id', userId)
@@ -260,7 +260,7 @@ export async function shouldTriggerConversion(userId: string): Promise<{
     const hourAgo = new Date();
     hourAgo.setHours(hourAgo.getHours() - 24);
 
-    const { data: recentNotification } = await supabase
+    const { data: recentNotification } = await supabase!!
       .from('Notification')
       .select('id')
       .eq('userId', userId)

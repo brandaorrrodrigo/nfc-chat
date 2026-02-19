@@ -69,7 +69,7 @@ export const NFV_CONFIG = {
  * Verifica se um slug pertence ao sistema NFV
  */
 export function isNFVArena(slug: string): boolean {
-  return NFV_CONFIG.NFV_ARENA_SLUGS.includes(slug);
+  return (NFV_CONFIG.NFV_ARENA_SLUGS as unknown as string[]).includes(slug);
 }
 
 /**

@@ -191,7 +191,7 @@ export async function getMilestones(
       ...def,
       isCompleted,
       isPending,
-      completedAt,
+      completedAt: completedAt as Date | undefined,
     };
   });
 }

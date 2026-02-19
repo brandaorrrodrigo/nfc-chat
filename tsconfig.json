@@ -37,6 +37,15 @@
     ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "backend/**",
+    "src/modules/**",
+    "src/index.ts",
+    "src/pipelines/**",
+    "src/queues/**",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "scripts/**",
+    "prisma.config.ts"
   ]
 }

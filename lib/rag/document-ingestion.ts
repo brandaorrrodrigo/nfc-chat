@@ -161,7 +161,6 @@ export async function ingestMarkdown(
     content: plainText,
     metadata: {
       ...metadata,
-      format: 'markdown',
     },
   });
 }

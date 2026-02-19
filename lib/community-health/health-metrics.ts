@@ -253,7 +253,7 @@ export async function calculateHealthMetrics(
       neutral: neutralCount,
       negative: negativeCount,
       averageScore: avgSentiment,
-      trend: avgSentiment >= previousSentiment ? 'stable' : 'declining' as const,
+      trend: (avgSentiment >= previousSentiment ? 'stable' : 'declining') as 'stable' | 'improving' | 'declining',
     };
 
     // Montar crescimento

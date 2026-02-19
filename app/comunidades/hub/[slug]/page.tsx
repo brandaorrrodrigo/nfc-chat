@@ -162,7 +162,7 @@ function SkeletonCard() {
 
 export default function HubPage() {
   const params = useParams();
-  const slug = params.slug as string;
+  const slug = (params?.slug ?? "") as string;
 
   const [data, setData] = useState<HubResponse | null>(null);
   const [loading, setLoading] = useState(true);

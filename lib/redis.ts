@@ -12,9 +12,6 @@ export const redis = createClient({
     // ✅ FIX: Timeout de conexão - 5 segundos
     connectTimeout: 5000,
 
-    // ✅ FIX: Timeout para comandos - 3 segundos
-    commandTimeout: 3000,
-
     // ✅ FIX: Retry strategy com limite baixo
     reconnectStrategy: (retries) => {
       // Durante build, desiste imediatamente

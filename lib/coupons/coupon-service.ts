@@ -59,7 +59,7 @@ export async function redeemCoupon(
     }
 
     // 2. Verificar saldo de FP
-    const { data: user } = await supabase
+    const { data: user } = await supabase!!
       .from('User')
       .select('fpAvailable')
       .eq('id', userId)
@@ -103,7 +103,7 @@ export async function redeemCoupon(
     const expiresAt = calculateExpirationDate();
 
     // 5. Criar cupom no banco
-    const { data: coupon, error: insertError } = await supabase
+    const { data: coupon, error: insertError } = await supabase!!
       .from('Coupon')
       .insert({
         userId,
@@ -159,7 +159,7 @@ export async function getUserCoupons(
   try {
     const { status, limit = 50 } = options;
 
-    let query = supabase
+    let query = supabase!
       .from('Coupon')
       .select('*')
       .eq('userId', userId)
@@ -194,7 +194,7 @@ export async function validateCoupon(code: string): Promise<{
 }> {
   try {
     // Buscar cupom
-    const { data: coupon, error } = await supabase
+    const { data: coupon, error } = await supabase!!
       .from('Coupon')
       .select('*')
       .eq('code', code)
@@ -220,7 +220,7 @@ export async function validateCoupon(code: string): Promise<{
     const expiresAt = new Date(coupon.expiresAt);
     if (expiresAt < new Date()) {
       // Atualizar status para EXPIRED
-      await supabase
+      await supabase!!
         .from('Coupon')
         .update({ status: 'EXPIRED' })
         .eq('id', coupon.id);
@@ -258,7 +258,7 @@ export async function useCoupon(code: string): Promise<boolean> {
     }
 
     // Marcar como usado
-    const { error } = await supabase
+    const { error } = await supabase!!
       .from('Coupon')
       .update({
         status: 'USED',
@@ -286,7 +286,7 @@ export async function expireOldCoupons(): Promise<number> {
   try {
     const now = new Date().toISOString();
 
-    const { data, error } = await supabase
+    const { data, error } = await supabase!!
       .from('Coupon')
       .update({ status: 'EXPIRED' })
       .eq('status', 'ACTIVE')
@@ -337,7 +337,7 @@ export async function getConversionStats(period: 'day' | 'week' | 'month' = 'wee
     }
 
     // Buscar cupons do período
-    const { data: coupons } = await supabase
+    const { data: coupons } = await supabase!!
       .from('Coupon')
       .select('*')
       .gte('createdAt', startDate.toISOString());

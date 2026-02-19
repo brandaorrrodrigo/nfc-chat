@@ -475,7 +475,7 @@ function PerguntaDoDia({ comunidadeSlug }: { comunidadeSlug?: string }) {
     const comunidadeIndex = hoje % comunidades.length;
     const comunidadeEscolhida = comunidadeSlug || comunidades[comunidadeIndex].slug;
 
-    const pergunta = getPerguntaDoDia(comunidadeEscolhida);
+    const pergunta = getPerguntaDoDia();
     setPerguntaAtual(pergunta);
 
     // Encontrar nome da comunidade
@@ -545,7 +545,7 @@ interface PainelVivoProps {
 }
 
 export default function PainelVivo({ comunidadeSlug, layout = 'hub' }: PainelVivoProps) {
-  const fase = getFaseAtual(diasDesdelancamento());
+  const fase = getFaseAtual();
 
   if (layout === 'comunidade') {
     // Layout simplificado para páginas de comunidade

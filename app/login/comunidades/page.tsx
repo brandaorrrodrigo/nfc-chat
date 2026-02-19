@@ -15,8 +15,8 @@ import { Users, Mail, Lock, ArrowLeft, Loader2, Eye, EyeOff, Zap, User } from 'l
 
 export default function LoginComunidadesPage() {
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/';
-  const initialMode = searchParams.get('mode') === 'register' ? 'register' : 'login';
+  const callbackUrl = searchParams?.get('callbackUrl') || '/';
+  const initialMode = searchParams?.get('mode') === 'register' ? 'register' : 'login';
 
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);

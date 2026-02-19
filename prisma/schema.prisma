@@ -77,6 +77,14 @@ model User {
   disciplinaEntries DisciplinaProgressiva[]
   inactivityLogs    InactivityLog[]
 
+  // Features Imbatíveis
+  padroesUsuario    PadroesUsuario?
+  adaptacoes        AdaptacaoRecomendada[]
+  analisesProgresso AnaliseProgressoIA[]
+  microhabitoLogs   MicrohabitoLog[]
+  intervencoes      IntervencaoCoach[]
+  transformacoes    TransformacaoSocialProof[]
+
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
@@ -1185,4 +1193,197 @@ model InactivityLog {
   @@index([userId])
   @@index([createdAt])
   @@map("inactivity_logs")
+}
+
+// ============================================
+// FEATURE 1: MOTOR DE ADAPTAÇÃO INTELIGENTE
+// ============================================
+
+model PadroesUsuario {
+  id                     String   @id @default(cuid())
+  userId                 String   @unique
+  user                   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Padrões de Treino
+  horarioPreferidoTreino String[]
+  diasPreferidosTreino   Int[]
+  intensidadeMedia       Float    @default(0)
+  duracaoMediaTreino     Int      @default(0)
+
+  // Padrões de Alimentação
+  alimentosFrequentes    Json?
+  refeicoesHorarios      Json?
+  macrosMedias           Json?
+
+  // Padrões de Aderência
+  diasMaisAderentes      Int[]
+  diasMenosAderentes     Int[]
+  horariosAlerta         String[]
+
+  // Padrões Biológicos (Mulheres)
+  cicloMenstrualDias     Int?
+  faseAtual              String?
+  sintomas               Json?
+
+  // Padrões de Resultado
+  velocidadePerdaPeso    Float?
+  velocidadeGanhoMassa   Float?
+  respondeMelhorA        String?
+
+  confiabilidade         Float    @default(0)
+  ultimaAtualizacao      DateTime @default(now())
+
+  @@index([userId])
+  @@map("padroes_usuario")
+}
+
+model AdaptacaoRecomendada {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  tipo            String
+  conteudo        Json
+  motivo          String
+  confianca       Float     @default(0)
+  aplicada        Boolean   @default(false)
+  dataAplicacao   DateTime?
+  feedback        String?
+
+  createdAt       DateTime  @default(now())
+
+  @@index([userId])
+  @@index([aplicada])
+  @@map("adaptacao_recomendada")
+}
+
+// ============================================
+// FEATURE 2: ANÁLISE DE PROGRESSO POR IA
+// ============================================
+
+model AnaliseProgressoIA {
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  fotoUrl           String
+  dataFoto          DateTime
+
+  // Detecções de IA (Ollama/Llama Vision)
+  percentualGordura Float?
+  massaMuscular     String?
+  postura           Json?
+  medidasEstimadas  Json?
+
+  // Comparação com foto anterior
+  evolucaoPeso      Float?
+  evolucaoMuscular  Float?
+  evolucaoGordura   Float?
+
+  resumoIA          String?  @db.Text
+  modeloUsado       String   @default("llava")
+
+  confianca         Float    @default(0)
+  analisadoEm       DateTime @default(now())
+
+  @@index([userId])
+  @@index([dataFoto])
+  @@map("analise_progresso_ia")
+}
+
+// ============================================
+// FEATURE 3: SISTEMA DE MICROHÁBITOS
+// ============================================
+
+model Microhabito {
+  id          String   @id @default(cuid())
+  nome        String
+  descricao   String
+  categoria   String
+  fpReward    Int      @default(2)
+  icon        String
+  cor         String
+  ativo       Boolean  @default(true)
+
+  logs        MicrohabitoLog[]
+
+  createdAt   DateTime @default(now())
+
+  @@map("microhabitos")
+}
+
+model MicrohabitoLog {
+  id            String      @id @default(cuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  microhabitoId String
+  microhabito   Microhabito @relation(fields: [microhabitoId], references: [id])
+
+  completado    Boolean     @default(true)
+  notas         String?
+  timestamp     DateTime    @default(now())
+
+  @@index([userId])
+  @@index([timestamp])
+  @@index([userId, microhabitoId, timestamp])
+  @@map("microhabito_logs")
+}
+
+// ============================================
+// FEATURE 4: COACH VIRTUAL (INTERVENÇÕES)
+// ============================================
+
+model IntervencaoCoach {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  tipo            String
+  severidade      String    @default("media")
+  mensagem        String    @db.Text
+  acaoSugerida    String
+  conteudoAcao    Json?
+
+  visualizada     Boolean   @default(false)
+  aceita          Boolean?
+  feedback        String?
+
+  createdAt       DateTime  @default(now())
+  visualizadaEm   DateTime?
+
+  @@index([userId])
+  @@index([visualizada])
+  @@index([createdAt])
+  @@map("intervencoes_coach")
+}
+
+// ============================================
+// FEATURE 5: SOCIAL PROOF AUTOMÁTICO
+// ============================================
+
+model TransformacaoSocialProof {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  fotoAntesUrl    String
+  fotoDepoisUrl   String
+  imagemGerada    String?
+  dataInicio      DateTime
+  dataFim         DateTime
+
+  diasTransformacao Int
+  pesoInicial     Float?
+  pesoFinal       Float?
+  deltaKg         Float?
+
+  compartilhada   Boolean  @default(false)
+  visualizacoes   Int      @default(0)
+  curtidas        Int      @default(0)
+
+  createdAt       DateTime @default(now())
+
+  @@index([userId])
+  @@index([compartilhada])
+  @@map("transformacoes_social_proof")
 }

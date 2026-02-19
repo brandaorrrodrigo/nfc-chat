@@ -101,7 +101,7 @@ export function ImageUploader({ onImagesChange, disabled = false }: ImageUploade
       [position]: undefined,
     })
     if (fileInputRefs[position].current) {
-      fileInputRefs[position].current.value = ''
+      fileInputRefs[position].current!.value = ''
     }
   }
 

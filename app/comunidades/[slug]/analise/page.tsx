@@ -15,7 +15,7 @@ import { CHAT_ROUTES } from '@/lib/navigation';
 export default function AnalisePage() {
   const params = useParams();
   const router = useRouter();
-  const slug = params.slug as string;
+  const slug = (params?.slug ?? "") as string;
 
   const arenaConfig = getPremiumArenaConfig(slug);
 

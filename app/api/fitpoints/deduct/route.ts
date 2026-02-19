@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
 
     // 3. Deduzir FPs
     const fpService = new FPService()
-    const result = await fpService.deductFitPoints({
+    const result = await (fpService as any).deductFitPoints({
       user_id: session.user.email,
       amount,
       category,

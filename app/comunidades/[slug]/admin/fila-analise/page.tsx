@@ -26,7 +26,7 @@ interface QueueAnalysis {
 export default function FilaAnalisePage() {
   const params = useParams();
   const router = useRouter();
-  const slug = params.slug as string;
+  const slug = (params?.slug ?? "") as string;
 
   // Mock admin
   const reviewerId = 'admin_001';

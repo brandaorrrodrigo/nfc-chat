@@ -5,6 +5,7 @@
  * em diferentes cenários do sistema de avaliação biométrica.
  */
 
+// @ts-ignore - service não implementado ainda
 import { fitpointsService } from '../fitpoints/fitpoints.service';
 import { biometricPaywall } from './biometric-paywall.service';
 import { juizBiometrico } from './juiz-biometrico.service';

@@ -15,7 +15,7 @@ import VideoGallery from '@/components/nfv/VideoGallery';
 export default function VideosPage() {
   const params = useParams();
   const router = useRouter();
-  const slug = params.slug as string;
+  const slug = (params?.slug ?? "") as string;
 
   const isPremium = isPremiumNFVArena(slug);
   const arenaConfig = getPremiumArenaConfig(slug);

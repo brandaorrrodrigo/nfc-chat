@@ -50,7 +50,7 @@ interface AnalysisDetail {
 export default function VideoDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const videoId = params.videoId as string;
+  const videoId = (params?.videoId ?? "") as string;
 
   const [analysis, setAnalysis] = useState<AnalysisDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -534,7 +534,7 @@ export default function VideoDetailPage() {
               </div>
               <div className="space-y-3">
                 {stabilizerAnalysis.map((s, i) => {
-                  const mode = s.stability_mode || 'rigid';
+                  const mode = (s as any).stability_mode || 'rigid';
                   const cls = s.variation.classification;
                   const stabClass = cls === 'firme' ? 'excellent'
                     : (mode !== 'rigid' && cls === 'alerta') ? 'info'

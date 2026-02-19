@@ -460,7 +460,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     // 3. VERIFICAR STREAK (se solicitado)
-    let streakCelebration = null;
+    let streakCelebration: any = null;
     if (body.checkStreak) {
       const stats = result.userStats || await getUserStats(body.userId);
       if (stats.streakDays > 0) {
@@ -474,7 +474,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     // 4. VERIFICAR FP MILESTONE (se solicitado)
-    let fpMilestoneResult = null;
+    let fpMilestoneResult: any = null;
     if (body.checkFPMilestone) {
       const stats = result.userStats || await getUserStats(body.userId);
       fpMilestoneResult = celebrateFPMilestone(body.userName, stats.fpTotal);

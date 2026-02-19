@@ -41,7 +41,7 @@ export function TopBar() {
         <div className="flex items-center gap-3 pl-3 border-l border-slate-700">
           <div className="text-right">
             <p className="text-sm font-medium text-white">{session?.user?.name}</p>
-            <p className="text-xs text-gray-400">{session?.user?.role}</p>
+            <p className="text-xs text-gray-400">{(session?.user as any)?.role}</p>
           </div>
 
           <button

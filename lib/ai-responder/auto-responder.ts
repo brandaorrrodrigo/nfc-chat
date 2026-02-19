@@ -38,7 +38,7 @@ export async function findUnansweredQuestions(
     const minTime = new Date(Date.now() - minMinutesSincePost * 60 * 1000);
 
     // Buscar mensagens com ponto de interrogação e sem respostas
-    const { data: messages, error } = await supabase
+    const { data: messages, error } = await supabase!!
       .from('nfc_chat_messages')
       .select('*')
       .ilike('content', '%?%') // Contém '?'
@@ -63,7 +63,7 @@ export async function findUnansweredQuestions(
 
     for (const msg of messages) {
       // Verificar se tem respostas
-      const { data: replies } = await supabase
+      const { data: replies } = await supabase!!
         .from('nfc_chat_messages')
         .select('id')
         .eq('parent_id', msg.id)
@@ -148,7 +148,7 @@ export async function postAIResponse(
     const responseId = `msg_ai_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
     // Inserir resposta no banco
-    const { error } = await supabase.from('nfc_chat_messages').insert({
+    const { error } = await supabase!!.from('nfc_chat_messages').insert({
       id: responseId,
       comunidade_slug: arenaSlug,
       user_id: 'ai_assistant',

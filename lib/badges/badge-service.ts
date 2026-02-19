@@ -159,7 +159,7 @@ async function getUserStats(userId: string): Promise<Record<string, number>> {
       .from('PostLike')
       .select('postId', { count: 'exact', head: true })
       .in('postId',
-        supabase.from('Post').select('id').eq('authorId', userId)
+        supabase.from('Post').select('id').eq('authorId', userId) as any
       );
 
     // Contar best answers

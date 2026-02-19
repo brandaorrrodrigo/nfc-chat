@@ -97,7 +97,7 @@ export async function updateStreakOnLogin(
         const result = await onStreakMilestone(userId, milestone);
         if (result.success) {
           bonusesClaimed.push(milestone);
-          bonusAwarded = result.amount;
+          bonusAwarded = (result as any).amount;
         }
       }
     }

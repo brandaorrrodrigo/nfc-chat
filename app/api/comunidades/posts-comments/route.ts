@@ -81,7 +81,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 5. Montar resposta com nomes reais
-    const commentsByPost: Record<string, typeof allComments> = {}
+    const commentsByPost: Record<string, any[]> = {}
     ;(allComments || []).forEach((c) => {
       if (!commentsByPost[c.postId]) commentsByPost[c.postId] = []
       commentsByPost[c.postId].push(c)

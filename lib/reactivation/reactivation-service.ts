@@ -56,7 +56,7 @@ export async function reactivateCoupon(
 
   // Criar novo cupom
   const { generateCouponCode } = await import('@/lib/coupons/coupon-tiers');
-  const newCode = generateCouponCode();
+  const newCode = generateCouponCode(coupon as any, userId);
 
   const newCoupon = await prisma.coupon.create({
     data: {

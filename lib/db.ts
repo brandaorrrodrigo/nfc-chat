@@ -78,7 +78,7 @@ export const db = {
     const client = getPool();
 
     try {
-      const result: PgQueryResult<T> = await client.query(text, params);
+      const result = await client.query(text, params);
 
       return {
         rows: result.rows,

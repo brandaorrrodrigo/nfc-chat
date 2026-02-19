@@ -154,7 +154,7 @@ interface AnalysisResult {
 export default function BiomechanicsDashboard() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const urlVideoId = searchParams.get('videoId');
+  const urlVideoId = searchParams?.get('videoId');
 
   const [videoId, setVideoId] = useState(urlVideoId || '');
   const [equipmentConstraint, setEquipmentConstraint] = useState('none');

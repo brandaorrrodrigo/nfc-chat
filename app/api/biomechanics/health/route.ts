@@ -68,17 +68,19 @@ export async function GET() {
   });
 
   // 4. MediaPipe (verificar se instalado)
-  let mediapipeCheck = { available: false, version: undefined, error: 'Not checked' };
+  let mediapipeCheck: { available: boolean; version: string | undefined; error: string | undefined } = { available: false, version: undefined, error: 'Not checked' };
   if (pythonCheck.available) {
     try {
       const { stdout } = await execAsync('python -c "import mediapipe; print(mediapipe.__version__)"', { timeout: 5000 });
       mediapipeCheck = {
         available: true,
         version: `mediapipe ${stdout.trim()}`,
+        error: undefined,
       };
     } catch (error: any) {
       mediapipeCheck = {
         available: false,
+        version: undefined,
         error: 'MediaPipe not installed or import failed',
       };
     }
@@ -92,7 +94,7 @@ export async function GET() {
   });
 
   // 5. Ollama (geração de relatório)
-  let ollamaCheck = { available: false, version: undefined, error: 'Not checked' };
+  let ollamaCheck: { available: boolean; version: string | undefined; error: string | undefined } = { available: false, version: undefined, error: 'Not checked' };
   try {
     const response = await fetch('http://localhost:11434/api/version', {
       signal: AbortSignal.timeout(5000)
@@ -102,16 +104,19 @@ export async function GET() {
       ollamaCheck = {
         available: true,
         version: `Ollama ${data.version || 'unknown'}`,
+        error: undefined,
       };
     } else {
       ollamaCheck = {
         available: false,
+        version: undefined,
         error: `HTTP ${response.status}`,
       };
     }
   } catch (error: any) {
     ollamaCheck = {
       available: false,
+      version: undefined,
       error: error.message?.substring(0, 100) || 'Connection failed',
     };
   }

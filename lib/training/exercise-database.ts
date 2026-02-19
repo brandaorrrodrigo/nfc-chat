@@ -690,7 +690,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'Schoenfeld & Contreras (2014)',
   },
 
-  'leg press': {
+  'leg press_2': {
     name: 'Leg Press',
     aliases: ['leg press 45', 'legpress', 'prensa de pernas', 'press de perna'],
     primaryMuscles: ['quadríceps', 'glúteo'],
@@ -766,7 +766,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'McCurdy et al. (2010)',
   },
 
-  'pistol squat': {
+  'pistol squat_2': {
     name: 'Pistol Squat (Agachamento Pistola)',
     aliases: ['pistol', 'agachamento pistola', 'agachamento uma perna'],
     primaryMuscles: ['quadríceps', 'glúteo'],
@@ -979,7 +979,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'Swinton et al. (2011)',
   },
 
-  'glute ham raise': {
+  'glute ham raise_2': {
     name: 'Glute Ham Raise (GHR)',
     aliases: ['ghr', 'glute ham developer', 'ghd raise'],
     primaryMuscles: ['isquiotibiais', 'glúteo'],
@@ -1211,7 +1211,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'Lehman et al. (2004)',
   },
 
-  'pullover': {
+  'pullover_2': {
     name: 'Pullover',
     aliases: ['pullover com halter', 'dumbbell pullover', 'pullover no banco'],
     primaryMuscles: ['latíssimo do dorso', 'peitoral'],
@@ -1287,7 +1287,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'NSCA (2015)',
   },
 
-  'face pull': {
+  'face pull_2': {
     name: 'Face Pull',
     aliases: ['puxada para o rosto', 'face pulls'],
     primaryMuscles: ['deltóide posterior', 'trapézio médio', 'romboides'],
@@ -1656,7 +1656,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'Saeterbakken & Fimland (2013)',
   },
 
-  'arnold press': {
+  'arnold press_2': {
     name: 'Arnold Press',
     aliases: ['arnold', 'desenvolvimento arnold', 'rotacao arnold'],
     primaryMuscles: ['deltóide anterior', 'deltóide lateral'],
@@ -2371,7 +2371,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'Escamilla et al. (2006)',
   },
 
-  'dead bug': {
+  'dead bug_2': {
     name: 'Dead Bug',
     aliases: ['bicho morto', 'besouro morto'],
     primaryMuscles: ['transverso do abdômen', 'reto abdominal'],
@@ -2390,7 +2390,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'McGill (2010)',
   },
 
-  'bird dog': {
+  'bird dog_2': {
     name: 'Bird Dog (Cachorro Pássaro)',
     aliases: ['quadruped', 'cachorro passaro', 'extensao alternada'],
     primaryMuscles: ['lombar', 'glúteo'],
@@ -2409,7 +2409,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'McGill (2010)',
   },
 
-  'pallof press': {
+  'pallof press_2': {
     name: 'Pallof Press',
     aliases: ['anti-rotation press', 'press anti-rotacao'],
     primaryMuscles: ['oblíquos', 'transverso'],
@@ -2607,7 +2607,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'Marcolin et al. (2018)',
   },
 
-  'farmer walk': {
+  'farmer walk_2': {
     name: 'Farmer Walk (Caminhada do Fazendeiro)',
     aliases: ['farmers carry', 'caminhada com peso', 'carregamento'],
     primaryMuscles: ['antebraços', 'trapézio'],
@@ -2626,7 +2626,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'McGill (2010)',
   },
 
-  'dead hang': {
+  'dead hang_2': {
     name: 'Dead Hang (Pendurado)',
     aliases: ['hang', 'pendurar na barra', 'passive hang'],
     primaryMuscles: ['antebraços'],
@@ -2725,7 +2725,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'USAW (2020)',
   },
 
-  'thruster': {
+  'thruster_2': {
     name: 'Thruster',
     aliases: ['squat to press', 'agachamento com desenvolvimento'],
     primaryMuscles: ['quadríceps', 'glúteo', 'ombros'],
@@ -2763,7 +2763,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'CrossFit (2015)',
   },
 
-  'turkish get up': {
+  'turkish get up_2': {
     name: 'Turkish Get Up',
     aliases: ['tgu', 'levantamento turco'],
     primaryMuscles: ['core', 'ombros'],
@@ -2801,7 +2801,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'CrossFit (2015)',
   },
 
-  'sled push': {
+  'sled push_2': {
     name: 'Sled Push (Empurrar Trenó)',
     aliases: ['prowler push', 'empurrar treno'],
     primaryMuscles: ['quadríceps', 'glúteo'],
@@ -2839,7 +2839,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'Winwood et al. (2016)',
   },
 
-  'battle ropes': {
+  'battle ropes_2': {
     name: 'Battle Ropes (Cordas de Batalha)',
     aliases: ['cordas', 'rope slams', 'cordas navais'],
     primaryMuscles: ['ombros', 'core'],
@@ -2863,7 +2863,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
   // ============================================================
 
   // DAN JOHN - Goblet Squat, Loaded Carries, Swings
-  'goblet squat': {
+  'goblet squat_2': {
     name: 'Agachamento Goblet',
     aliases: ['goblet squat', 'agachamento com kettlebell', 'agachamento copa', 'goblet', 'squat goblet'],
     primaryMuscles: ['quadríceps', 'glúteo'],
@@ -2920,7 +2920,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'Dan John - T-Nation',
   },
 
-  'kettlebell swing': {
+  'kettlebell swing_2': {
     name: 'Balanço com Kettlebell (Swing)',
     aliases: ['kb swing', 'swing', 'kettlebell swing', 'balanco kettlebell', 'russian swing'],
     primaryMuscles: ['glúteo', 'isquiotibiais'],
@@ -2939,7 +2939,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'Dan John - T-Nation "Master the Kettlebell Swing"',
   },
 
-  'turkish get up': {
+  'turkish get up_3': {
     name: 'Levantamento Turco (Turkish Get-Up)',
     aliases: ['tgu', 'turkish getup', 'get up turco', 'getup'],
     primaryMuscles: ['core', 'ombros'],
@@ -2959,7 +2959,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
   },
 
   // JOHN MEADOWS - Mountain Dog Training
-  'meadows row': {
+  'meadows row_2': {
     name: 'Remada Meadows',
     aliases: ['meadows row', 'landmine row', 'remada na barra T inclinada', 'john meadows row'],
     primaryMuscles: ['latíssimo do dorso', 'romboides'],
@@ -3017,7 +3017,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
   },
 
   // BEN BRUNO - Single Leg Training Specialist
-  'pistol squat': {
+  'pistol squat_3': {
     name: 'Agachamento Pistol (Uma Perna)',
     aliases: ['pistol', 'single leg squat', 'agachamento unilateral', 'one leg squat'],
     primaryMuscles: ['quadríceps', 'glúteo'],
@@ -3055,7 +3055,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'Ben Bruno - T-Nation',
   },
 
-  'single leg rdl': {
+  'single leg rdl_2': {
     name: 'Stiff Unilateral (Single Leg RDL)',
     aliases: ['single leg romanian deadlift', 'stiff uma perna', 'single leg rdl', 'sldl'],
     primaryMuscles: ['isquiotibiais', 'glúteo'],
@@ -3210,7 +3210,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'Eric Cressey - T-Nation "Shoulder Savers"',
   },
 
-  'face pull': {
+  'face pull_3': {
     name: 'Face Pull (Puxada para Rosto)',
     aliases: ['face pull', 'puxada facial', 'rope face pull', 'puxada alta'],
     primaryMuscles: ['deltóide posterior', 'trapézio médio'],
@@ -3229,7 +3229,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'Eric Cressey - T-Nation "Shoulder Savers"',
   },
 
-  'band pull apart': {
+  'band pull apart_2': {
     name: 'Puxada de Elástico (Pull Apart)',
     aliases: ['band pull apart', 'puxada elastico', 'elastic pull apart', 'band spread'],
     primaryMuscles: ['deltóide posterior', 'romboides'],
@@ -3307,7 +3307,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'Dani Shugart - T-Nation "Delts on Fire"',
   },
 
-  'straight arm pulldown': {
+  'straight arm pulldown_2': {
     name: 'Pulldown de Braços Estendidos',
     aliases: ['straight arm pulldown', 'pulldown braco reto', 'lat pulldown bracos retos', 'stiff arm pulldown'],
     primaryMuscles: ['latíssimo do dorso'],
@@ -3369,7 +3369,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
   // CHARLES POLIQUIN - Olympic Coach Legend
   // ============================================================
 
-  'one arm barbell shrug': {
+  'one arm barbell shrug_2': {
     name: 'Encolhimento Unilateral com Barra',
     aliases: ['one arm shrug', 'poliquin shrug', 'encolhimento uma mao'],
     primaryMuscles: ['trapézio superior'],
@@ -3670,7 +3670,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'T-Nation',
   },
 
-  'zercher squat': {
+  'zercher squat_2': {
     name: 'Agachamento Zercher',
     aliases: ['zercher squat', 'agachamento zercher', 'zercher'],
     primaryMuscles: ['quadríceps', 'glúteo'],
@@ -3689,7 +3689,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'T-Nation',
   },
 
-  'trap bar deadlift': {
+  'trap bar deadlift_2': {
     name: 'Levantamento Terra na Trap Bar',
     aliases: ['trap bar deadlift', 'hex bar deadlift', 'terra hexagonal'],
     primaryMuscles: ['quadríceps', 'isquiotibiais', 'glúteo'],
@@ -3746,7 +3746,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'T-Nation',
   },
 
-  'floor press': {
+  'floor press_2': {
     name: 'Supino no Chão',
     aliases: ['floor press', 'supino no chao', 'press no chao'],
     primaryMuscles: ['peitoral maior', 'tríceps'],
@@ -3765,7 +3765,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'T-Nation - Westside Barbell',
   },
 
-  'deficit deadlift': {
+  'deficit deadlift_2': {
     name: 'Levantamento Terra em Déficit',
     aliases: ['deficit deadlift', 'terra deficit', 'deadlift elevado'],
     primaryMuscles: ['isquiotibiais', 'glúteo', 'lombar'],
@@ -3864,7 +3864,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'T-Nation - Functional Training',
   },
 
-  'decline bench press': {
+  'decline bench press_2': {
     name: 'Supino Declinado',
     aliases: ['decline bench', 'supino declinado', 'decline press', 'bench declinado'],
     primaryMuscles: ['peitoral maior inferior'],
@@ -4062,7 +4062,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'T-Nation "Tip: For Big Traps, Do the Deadlift-Shrug"',
   },
 
-  'power clean': {
+  'power clean_2': {
     name: 'Power Clean (Arremesso)',
     aliases: ['power clean', 'clean', 'arremesso', 'arranque'],
     primaryMuscles: ['trapézio', 'quadríceps', 'glúteo'],
@@ -4081,7 +4081,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'T-Nation "Total Trap Training" - 4-5 sets trabalhando até 3RM',
   },
 
-  'snatch grip deadlift': {
+  'snatch grip deadlift_2': {
     name: 'Levantamento Terra Pegada Snatch',
     aliases: ['snatch grip deadlift', 'terra snatch', 'wide grip deadlift'],
     primaryMuscles: ['trapézio superior', 'isquiotibiais', 'glúteo'],
@@ -4123,7 +4123,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
   // CORE - T-NATION (Pallof Press, Ab Rollout, Anti-Rotation)
   // ============================================================
 
-  'pallof press': {
+  'pallof press_3': {
     name: 'Pallof Press',
     aliases: ['pallof', 'anti rotation press', 'press anti rotacao', 'cable anti rotation'],
     primaryMuscles: ['oblíquos', 'transverso abdominal'],
@@ -4180,7 +4180,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'T-Nation "Adamantium Abs: 6 Core Exercises You Need"',
   },
 
-  'dead bug': {
+  'dead bug_3': {
     name: 'Dead Bug (Inseto Morto)',
     aliases: ['dead bug', 'inseto morto', 'bicho morto'],
     primaryMuscles: ['reto abdominal', 'transverso abdominal'],
@@ -4199,7 +4199,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'T-Nation - Core Training for Lifters',
   },
 
-  'side plank': {
+  'side plank_2': {
     name: 'Prancha Lateral',
     aliases: ['side plank', 'prancha lateral', 'plank lateral'],
     primaryMuscles: ['oblíquos', 'quadrado lombar'],
@@ -4279,7 +4279,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'T-Nation "4 Hamstring Exercises for Athletic Performance"',
   },
 
-  'romanian deadlift': {
+  'romanian deadlift_2': {
     name: 'Levantamento Terra Romeno',
     aliases: ['rdl', 'romanian deadlift', 'stiff leg deadlift', 'terra romeno'],
     primaryMuscles: ['isquiotibiais'],
@@ -4298,7 +4298,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'T-Nation + PubMed "Hamstring Activation During Various Exercises"',
   },
 
-  'single leg rdl': {
+  'single leg rdl_3': {
     name: 'Levantamento Terra Romeno Unilateral',
     aliases: ['single leg rdl', 'one leg rdl', 'rdl unilateral', 'terra romeno uma perna'],
     primaryMuscles: ['isquiotibiais', 'glúteo'],
@@ -4515,7 +4515,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'T-Nation "The 10 Best Biceps Training Tips"',
   },
 
-  'concentration curl': {
+  'concentration curl_2': {
     name: 'Rosca Concentrada',
     aliases: ['concentration curl', 'rosca concentrada', 'curl concentrado'],
     primaryMuscles: ['bíceps braquial'],
@@ -4572,7 +4572,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'T-Nation - Biceps Training',
   },
 
-  'spider curl': {
+  'spider curl_2': {
     name: 'Rosca Spider',
     aliases: ['spider curl', 'rosca spider', 'rosca aranha'],
     primaryMuscles: ['bíceps braquial'],
@@ -4690,7 +4690,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'T-Nation - Triceps Training',
   },
 
-  'close grip bench press': {
+  'close grip bench press_2': {
     name: 'Supino Pegada Fechada',
     aliases: ['close grip bench', 'supino fechado', 'cgbp', 'close grip press'],
     primaryMuscles: ['tríceps'],
@@ -4808,7 +4808,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'T-Nation - Complete Calf Development',
   },
 
-  'donkey calf raise': {
+  'donkey calf raise_2': {
     name: 'Elevação de Panturrilha Burro',
     aliases: ['donkey calf', 'panturrilha burro', 'donkey raise'],
     primaryMuscles: ['gastrocnêmio'],
@@ -4831,7 +4831,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
   // ANTEBRAÇO - T-NATION
   // ============================================================
 
-  'wrist curl': {
+  'wrist curl_2': {
     name: 'Rosca de Punho',
     aliases: ['wrist curl', 'rosca de punho', 'flexao de punho', 'forearm curl'],
     primaryMuscles: ['flexores do antebraço'],
@@ -4850,7 +4850,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'T-Nation - Forearm Training',
   },
 
-  'reverse wrist curl': {
+  'reverse wrist curl_2': {
     name: 'Rosca de Punho Reversa',
     aliases: ['reverse wrist curl', 'rosca de punho reversa', 'extensao de punho'],
     primaryMuscles: ['extensores do antebraço'],
@@ -5086,7 +5086,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
   // DELTÓIDE POSTERIOR - T-NATION
   // ============================================================
 
-  'face pull': {
+  'face pull_4': {
     name: 'Face Pull',
     aliases: ['face pull', 'puxada facial', 'cable face pull'],
     primaryMuscles: ['deltóide posterior', 'trapézio médio'],
@@ -5185,7 +5185,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'T-Nation - Total Body Training',
   },
 
-  'hang clean': {
+  'hang clean_2': {
     name: 'Hang Clean (Arremesso Suspenso)',
     aliases: ['hang clean', 'arremesso suspenso', 'clean do hang'],
     primaryMuscles: ['trapézio', 'quadríceps', 'glúteo'],
@@ -5223,7 +5223,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'T-Nation - CrossFit Exercises',
   },
 
-  'push press': {
+  'push press_2': {
     name: 'Push Press',
     aliases: ['push press', 'press com impulso', 'power press'],
     primaryMuscles: ['deltóides', 'quadríceps'],
@@ -5261,7 +5261,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'T-Nation - Deadlift Variations',
   },
 
-  'jefferson deadlift': {
+  'jefferson deadlift_2': {
     name: 'Levantamento Terra Jefferson',
     aliases: ['jefferson deadlift', 'terra jefferson', 'jefferson lift'],
     primaryMuscles: ['quadríceps', 'glúteo', 'adutores'],
@@ -5676,7 +5676,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'T-Nation - Glute Activation Series',
   },
 
-  'bird dog': {
+  'bird dog_3': {
     name: 'Bird Dog',
     aliases: ['bird dog', 'cachorro passaro', 'extensao cruzada'],
     primaryMuscles: ['core', 'glúteo'],
@@ -5775,7 +5775,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
   // EXERCÍCIOS COM KETTLEBELL - T-NATION / DAN JOHN
   // ============================================================
 
-  'kettlebell swing': {
+  'kettlebell swing_3': {
     name: 'Kettlebell Swing',
     aliases: ['kb swing', 'swing', 'russian swing', 'balanço com kettlebell'],
     primaryMuscles: ['glúteo máximo', 'isquiotibiais'],
@@ -5813,7 +5813,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'Dan John - "15-25 goblet squats per day"',
   },
 
-  'turkish get up': {
+  'turkish get up_4': {
     name: 'Turkish Get Up (Levantamento Turco)',
     aliases: ['tgu', 'get up', 'levantamento turco', 'turkish getup'],
     primaryMuscles: ['core', 'ombros', 'glúteo'],
@@ -5893,7 +5893,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
   // RACK PULLS E BLOCK PULLS - T-NATION POWERLIFTING
   // ============================================================
 
-  'rack pull': {
+  'rack pull_2': {
     name: 'Rack Pull (Puxada do Rack)',
     aliases: ['rack pull', 'pin pull', 'puxada do rack', 'deadlift parcial'],
     primaryMuscles: ['trapézio', 'lombar', 'glúteo'],
@@ -5954,7 +5954,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
     scientificSource: 'T-Nation Archive - "The Romanian Deadlift, Improved"',
   },
 
-  'single leg rdl': {
+  'single leg rdl_4': {
     name: 'Levantamento Terra Romeno Unilateral',
     aliases: ['single leg rdl', 'one leg rdl', 'rdl unilateral', 'terra romeno uma perna'],
     primaryMuscles: ['isquiotibiais', 'glúteo'],
@@ -6133,7 +6133,7 @@ export const EXERCISE_DATABASE: Record<string, ExerciseData> = {
   // EXERCÍCIOS AVANÇADOS DE COSTAS - T-NATION
   // ============================================================
 
-  'meadows row': {
+  'meadows row_3': {
     name: 'Remada Meadows',
     aliases: ['meadows row', 'landmine row unilateral', 'john meadows row'],
     primaryMuscles: ['latíssimo do dorso'],

@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
 
     // Recompensar autor do video com FP quando voto e helpful
     if (voteType === 'helpful' && analysis) {
-      await awardFP(analysis.user_id, FP_CONFIG.ACTIONS.HELPFUL_VOTE, {
+      await awardFP(analysis.user_id, FP_CONFIG.ACTIONS.HELPFUL_VOTE, undefined, {
         analysis_id: analysisId,
         voter_id: userId,
       });

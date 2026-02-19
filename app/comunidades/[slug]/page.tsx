@@ -2601,7 +2601,7 @@ export default function PainelVivoPage() {
         isAuthenticated={isAuthenticated}
         isPremium={user?.is_premium || false}
         userId={user?.id}
-        userName={user?.nome || user?.name}
+        userName={user?.nome || (user as any)?.name}
         lastEarned={lastEarned}
         clearLastEarned={clearLastEarned}
       />

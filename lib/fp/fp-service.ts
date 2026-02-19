@@ -369,7 +369,7 @@ export async function spendFPForVideo(
   const result = await spendFP(userId, fpCost, {
     action: 'VIDEO_ANALYSIS_SUBMITTED',
     relatedEntityType: 'VIDEO_ANALYSIS',
-    relatedEntityId: null,
+    relatedEntityId: undefined,
     description: `Análise de vídeo: ${videoData.movement_pattern}`,
   });
 

@@ -61,7 +61,7 @@ export default function CriarTopicoPage({ params }: Props) {
 
       // Upload das imagens (se houver)
       if (images.length > 0) {
-        const uploadedFiles = await uploadAll('topico', tempTopicoId);
+        const uploadedFiles = await uploadAll('foto-comunidade', tempTopicoId);
         console.log('Imagens enviadas:', uploadedFiles);
       }
 

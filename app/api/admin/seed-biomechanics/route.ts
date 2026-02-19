@@ -201,7 +201,7 @@ const arenas = [
 
 export async function POST(request: NextRequest) {
   try {
-    const results = [];
+    const results: any[] = [];
 
     for (const { tags, ...arenaData } of arenas) {
       // Criar ou atualizar arena

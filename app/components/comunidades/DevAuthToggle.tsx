@@ -104,7 +104,7 @@ export default function DevAuthToggle() {
 
             <button
               onClick={() => {
-                login('free');
+                login();
                 setIsOpen(false);
               }}
               className={`
@@ -122,7 +122,7 @@ export default function DevAuthToggle() {
 
             <button
               onClick={() => {
-                login('premium');
+                login();
                 setIsOpen(false);
               }}
               className={`
@@ -140,7 +140,7 @@ export default function DevAuthToggle() {
 
             <button
               onClick={() => {
-                login('founder');
+                login();
                 setIsOpen(false);
               }}
               className={`

@@ -8,6 +8,9 @@
 // import { ChromaClient, Collection } from 'chromadb';
 // import { generateEmbedding } from './embeddings';
 
+// Stub desabilitado junto com ChromaDB
+const generateEmbedding = async (_text: string) => ({ embedding: [] as number[] });
+
 // Tipos stub para evitar erros de compilação
 type ChromaClient = any;
 type Collection = any;
@@ -155,7 +158,7 @@ export async function searchSimilar(
     });
 
     // Processar resultados
-    const documents = [];
+    const documents: Array<{ id: string; text: string; metadata: any; score: number }> = [];
 
     if (results.ids && results.ids[0]) {
       for (let i = 0; i < results.ids[0].length; i++) {

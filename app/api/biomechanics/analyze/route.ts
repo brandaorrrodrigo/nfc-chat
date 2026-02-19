@@ -35,6 +35,7 @@ import { queryRAG } from '@/lib/biomechanics/biomechanics-rag';
 import { getExerciseTemplateV2 } from '@/lib/biomechanics/exercise-templates-v2';
 import { classifyExerciseV2, extractV2RAGTopics } from '@/lib/biomechanics/classifier-v2';
 import { buildPromptV2 } from '@/lib/biomechanics/prompt-builder';
+import { convertToBiomechanicalAnalysis } from '@/lib/biomechanics/mediapipe-to-biomechanical-bridge';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
@@ -352,6 +353,15 @@ export async function POST(request: NextRequest) {
         llm_report: llmReport || null,
       };
 
+      // Gerar BiomechanicalAnalysis tipado via engines src/
+      const biomechanicalAnalysis = convertToBiomechanicalAnalysis({
+        exerciseName,
+        mediapipeResult,
+        v2Result: resultV2,
+        aggregated,
+        fps: 30,
+      });
+
       responsePayload = {
         success: true,
         videoId,
@@ -359,6 +369,7 @@ export async function POST(request: NextRequest) {
         angle_source: 'mediapipe',
         video_quality_warning: aggregated.videoQualityWarning,
         analysis: biomechanicsResult,
+        biomechanical_analysis: biomechanicalAnalysis,
         diagnostic: {
           score: resultV2.overallScore,
           motor_score: resultV2.motorScore,
@@ -467,6 +478,14 @@ export async function POST(request: NextRequest) {
         llm_report: llmReport || null,
       };
 
+      // Gerar BiomechanicalAnalysis tipado via engines src/ (fallback V1)
+      const biomechanicalAnalysisV1 = convertToBiomechanicalAnalysis({
+        exerciseName,
+        mediapipeResult,
+        aggregated,
+        fps: 30,
+      });
+
       responsePayload = {
         success: true,
         videoId,
@@ -474,6 +493,7 @@ export async function POST(request: NextRequest) {
         angle_source: 'mediapipe',
         video_quality_warning: aggregated.videoQualityWarning,
         analysis: biomechanicsResult,
+        biomechanical_analysis: biomechanicalAnalysisV1,
         diagnostic: {
           score: classification.overallScore,
           summary: classification.summary,

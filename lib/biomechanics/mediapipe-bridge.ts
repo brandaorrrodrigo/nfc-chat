@@ -56,11 +56,22 @@ export interface MediaPipeAngles {
   confidence?: number;
 }
 
+export interface MediaPipeLandmark {
+  x: number;
+  y: number;
+  z: number;
+  visibility: number;
+}
+
 export interface MediaPipeFrameResult {
   success: boolean;
   frame: string;
   angles: MediaPipeAngles;
   world_angles: MediaPipeAngles;
+  /** Landmarks normalizados 0-1 por nome de joint (novo: v4.2) */
+  landmarks?: Record<string, MediaPipeLandmark>;
+  /** World landmarks em metros por nome de joint (novo: v4.2) */
+  world_landmarks?: Record<string, MediaPipeLandmark>;
   error?: string;
 }
 

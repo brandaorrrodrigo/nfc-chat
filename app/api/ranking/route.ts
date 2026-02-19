@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
 
     const ranking = await getRanking(type, limit);
 
-    let userRank = null;
+    let userRank: number | null = null;
     if (userId) {
       userRank = await getUserRank(userId, type);
     }

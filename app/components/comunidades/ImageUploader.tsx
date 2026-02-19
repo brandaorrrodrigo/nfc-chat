@@ -315,7 +315,7 @@ export default function ImageUploader({
               {isDragging ? 'Solte para adicionar' : 'Adicionar imagens'}
             </p>
             <p className="text-xs text-zinc-500">
-              Arraste ou clique • Máx {UPLOAD_CONFIG.maxFileSize / (1024 * 1024)}MB •{' '}
+              Arraste ou clique • Máx {UPLOAD_CONFIG.maxSize / (1024 * 1024)}MB •{' '}
               {remainingSlots} restante{remainingSlots !== 1 ? 's' : ''}
             </p>
           </div>

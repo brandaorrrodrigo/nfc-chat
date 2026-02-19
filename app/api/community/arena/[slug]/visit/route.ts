@@ -14,7 +14,7 @@ const supabase = createClient(
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  context: { params: Promise<{ slug: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -26,7 +26,7 @@ export async function POST(
       )
     }
 
-    const { slug } = params
+    const { slug } = await context.params
 
     // Buscar arena
     const { data: arena, error: arenaError } = await supabase

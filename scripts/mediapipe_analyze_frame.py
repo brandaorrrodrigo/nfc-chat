@@ -268,15 +268,40 @@ def process_frame(frame_path, landmarker):
 
     # Tambem incluir world landmarks se disponiveis (coordenadas metricas)
     world_angles = {}
+    world_landmarks_raw = {}
     if result.pose_world_landmarks and len(result.pose_world_landmarks) > 0:
         world_lm = result.pose_world_landmarks[0]
         world_angles = calculate_angles(world_lm)
+        # Exportar coordenadas brutas dos world landmarks (metros) para engines TypeScript
+        for name, idx in LM.items():
+            if idx < len(world_lm):
+                l = world_lm[idx]
+                world_landmarks_raw[name] = {
+                    'x': round(l.x, 6),
+                    'y': round(l.y, 6),
+                    'z': round(l.z, 6),
+                    'visibility': round(getattr(l, 'visibility', 0.0), 3),
+                }
+
+    # Exportar coordenadas brutas dos landmarks normalizados (0-1) para engines TypeScript
+    landmarks_raw = {}
+    for name, idx in LM.items():
+        if idx < len(landmarks):
+            l = landmarks[idx]
+            landmarks_raw[name] = {
+                'x': round(l.x, 6),
+                'y': round(l.y, 6),
+                'z': round(l.z, 6),
+                'visibility': round(getattr(l, 'visibility', 0.0), 3),
+            }
 
     return {
         'success': True,
         'frame': os.path.basename(frame_path),
         'angles': angles,
         'world_angles': world_angles,
+        'landmarks': landmarks_raw,
+        'world_landmarks': world_landmarks_raw,
     }
 
 

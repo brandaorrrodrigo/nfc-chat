@@ -42,7 +42,7 @@ export async function POST(
           const { getAnalysis } = await import('@/lib/biomechanics/video-analysis-service');
           const { data: analysis } = await getAnalysis(id);
           if (analysis) {
-            await awardFP(analysis.user_id, FP_CONFIG.ACTIONS.VIDEO_PUBLISHED, {
+            await awardFP(analysis.user_id, FP_CONFIG.ACTIONS.VIDEO_PUBLISHED, undefined, {
               analysis_id: id,
               arena_slug: analysis.arena_slug,
             });

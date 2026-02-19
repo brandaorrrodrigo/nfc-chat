@@ -131,15 +131,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     // Testar webhook se solicitado
-    let testResult = null;
+    let testResult: any = null;
     if (body.testWebhook) {
       testResult = await sendWebhook(webhook, {
         event: 'health_status_changed',
         timestamp: new Date().toISOString(),
         communitySlug: body.communitySlug,
         data: {
-          previousStatus: 'test',
-          currentStatus: 'test',
+          previousStatus: 'test' as any,
+          currentStatus: 'test' as any,
           score: 100,
           message: 'Este é um teste de webhook',
         },

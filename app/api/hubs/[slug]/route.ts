@@ -19,10 +19,10 @@ const prisma = new PrismaClient();
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { slug: string } }
+  context: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const slug = params.slug;
+    const { slug } = await context.params;
 
     // 1. Buscar o HUB
     const hub = await prisma.arena.findUnique({

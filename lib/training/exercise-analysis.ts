@@ -37,10 +37,7 @@ export function generateExerciseAnalysis(
     return generateGenericAnalysis(userName, exercise);
   }
 
-  const siblings = findSiblingExercises(
-    exerciseData.primaryMuscles[0],
-    exercise.name
-  ).map(e => e.name);
+  const siblings = findSiblingExercises(exerciseData).map(e => e.name);
 
   const response = formatFullAnalysis(userName, exercise, exerciseData, siblings);
   const fpAwarded = calculateExerciseFP(exercise, exerciseData);
