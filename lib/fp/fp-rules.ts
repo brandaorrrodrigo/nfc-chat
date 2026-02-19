@@ -154,8 +154,8 @@ export const FP_RULES: Record<FPAction, FPRuleConfig> = {
 
   DAILY_LOGIN: {
     action: 'DAILY_LOGIN',
-    fpValue: 2,
-    dailyCap: 2,            // Apenas 1x por dia
+    fpValue: 1,             // v2.1 -50%
+    dailyCap: 1,            // Apenas 1x por dia
     description: 'Login diário',
   },
 
@@ -168,28 +168,28 @@ export const FP_RULES: Record<FPAction, FPRuleConfig> = {
 
   STREAK_BONUS_7: {
     action: 'STREAK_BONUS_7',
-    fpValue: 20,
+    fpValue: 8,             // v2.1 explícito
     minStreak: 7,
     description: 'Bônus de 7 dias de streak',
   },
 
   STREAK_BONUS_30: {
     action: 'STREAK_BONUS_30',
-    fpValue: 50,
+    fpValue: 30,            // v2.1 explícito
     minStreak: 30,
     description: 'Bônus de 30 dias de streak',
   },
 
   STREAK_BONUS_90: {
     action: 'STREAK_BONUS_90',
-    fpValue: 100,
+    fpValue: 75,            // v2.1 explícito
     minStreak: 90,
     description: 'Bônus de 90 dias de streak',
   },
 
   STREAK_BONUS_365: {
     action: 'STREAK_BONUS_365',
-    fpValue: 500,
+    fpValue: 250,           // v2.1 -50%
     minStreak: 365,
     description: 'Bônus de 1 ano de streak',
   },
