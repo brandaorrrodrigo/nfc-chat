@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body: AnalyzeRequest = await request.json();
-    const { analysisId, framesCount = 6, useRAG = true } = body;
+    const { analysisId, framesCount = 48, useRAG = true } = body;
 
     if (!analysisId) {
       return NextResponse.json({ error: 'analysisId é obrigatório' }, { status: 400 });

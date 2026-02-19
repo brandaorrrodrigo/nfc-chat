@@ -1,175 +1,78 @@
-/**
- * Engine de Geração de Relatórios Corretivos
- *
- * Gera relatórios completos com ações corretivas, prompts de upgrade
- * e recomendações de reteste baseados na análise biomecânica.
- */
-
-import type {
+import {
   BiomechanicalAnalysis,
+  CaptureMode,
+  RiskLevel,
   CorrectiveAction,
   UpgradePrompt,
-  RetestRecommendation
-} from '../types/biomechanical-analysis.types';
-import {
-  RiskLevel,
+  RetestRecommendation,
+  RotationType,
   RotationOrigin,
-  CaptureMode,
-  BIOMECHANICAL_THRESHOLDS,
-  TECHNICAL_MESSAGES
+  TECHNICAL_MESSAGES,
+  BIOMECHANICAL_THRESHOLDS
 } from '../types/biomechanical-analysis.types';
 
 /**
- * Engine singleton para geração de relatórios
+ * Engine de Geração de Relatórios Biomecânicos
+ *
+ * Gera relatórios técnicos completos com:
+ * - Classificação de risco
+ * - Ações corretivas
+ * - Prompts de upgrade
+ * - Recomendações de reteste
  */
-class ReportGeneratorEngine {
+
+export class ReportGeneratorEngine {
+
   /**
-   * Classifica nível de risco baseado no score de compensação
-   * @param compensationScore - Score de compensação (0-100)
-   * @returns Nível de risco
+   * Classifica nível de risco baseado em scores
    */
   private classifyRisk(compensationScore: number): RiskLevel {
-    if (compensationScore < 20) {
-      return 'LOW' as RiskLevel;
-    }
-    if (compensationScore < 40) {
-      return 'MODERATE' as RiskLevel;
-    }
-    return 'HIGH' as RiskLevel;
+    if (compensationScore < 20) return RiskLevel.LOW;
+    if (compensationScore < 40) return RiskLevel.MODERATE;
+    return RiskLevel.HIGH;
   }
 
   /**
-   * Identifica fatores de risco na análise
-   * @param analysis - Análise biomecânica
-   * @returns Array de fatores de risco identificados
+   * Identifica fatores de risco
    */
   private identifyRiskFactors(analysis: BiomechanicalAnalysis): string[] {
-    const riskFactors: string[] = [];
+    const factors: string[] = [];
+    const { scores, rotationAnalysis } = analysis;
 
-    if (analysis.scores.motor < 70) {
-      riskFactors.push('Padrão motor primário abaixo do ideal');
+    if (scores.motor < 70) {
+      factors.push('Padrão motor primário abaixo do ideal');
     }
-
-    if (analysis.scores.stabilizer < 70) {
-      riskFactors.push('Ativação insuficiente de musculatura estabilizadora');
+    if (scores.stabilizer < 70) {
+      factors.push('Ativação insuficiente de musculatura estabilizadora');
     }
-
-    if (analysis.scores.symmetry < 80) {
-      riskFactors.push('Assimetria bilateral significativa detectada');
+    if (scores.symmetry < 80) {
+      factors.push('Assimetria bilateral significativa detectada');
     }
-
-    if (
-      analysis.rotationAnalysis.detected &&
-      analysis.rotationAnalysis.magnitude > BIOMECHANICAL_THRESHOLDS.rotation.moderate
-    ) {
-      riskFactors.push('Compensação rotacional moderada a severa');
+    if (rotationAnalysis.detected && rotationAnalysis.magnitude > 15) {
+      factors.push('Compensação rotacional moderada a severa');
     }
-
-    if (analysis.rotationAnalysis.type === 'PATHOLOGICAL') {
-      riskFactors.push(
-        'Padrão compensatório sugestivo de restrição articular ou estratégia antálgica'
-      );
+    if (rotationAnalysis.type === RotationType.PATHOLOGICAL) {
+      factors.push('Padrão compensatório sugestivo de restrição articular ou estratégia antálgica');
     }
-
     if (analysis.confidenceScore < 75) {
-      riskFactors.push('Confiabilidade da análise limitada pelo setup de captura');
+      factors.push('Confiabilidade da análise limitada por qualidade de captura');
     }
 
-    return riskFactors;
+    return factors;
   }
 
   /**
-   * Obtém área de foco para mobilidade baseada na origem da rotação
-   * @param origin - Origem anatômica da rotação
-   * @returns Descrição da área de foco
+   * Gera ações corretivas baseadas em análise
    */
-  private getMobilityFocusArea(origin: RotationOrigin): string {
-    switch (origin) {
-      case 'SCAPULAR':
-        return 'complexo escapular e musculatura periescapular';
-      case 'THORACIC':
-        return 'coluna torácica e musculatura paravertebral';
-      case 'LUMBAR':
-        return 'região lombopélvica e flexores de quadril';
-      case 'PELVIC':
-        return 'cintura pélvica e rotadores externos de quadril';
-      case 'FEMORAL':
-        return 'articulação coxofemoral e adutores';
-      case 'MULTI_SEGMENTAL':
-        return 'cadeia posterior completa';
-      default:
-        return 'musculatura axial e apendicular';
-    }
-  }
-
-  /**
-   * Obtém exercícios de mobilidade baseados na origem da rotação
-   * @param origin - Origem anatômica da rotação
-   * @returns Array de exercícios recomendados
-   */
-  private getMobilityExercises(origin: RotationOrigin): string[] {
-    switch (origin) {
-      case 'SCAPULAR':
-        return [
-          'Thread the needle torácico',
-          'Wall slides com rotação externa',
-          'Liberação miofascial de peitoral menor'
-        ];
-      case 'THORACIC':
-        return [
-          'Open book torácico',
-          'Extensão torácica em foam roller',
-          'Quadruped rotation'
-        ];
-      case 'LUMBAR':
-        return [
-          'Rotação lombar controlada em decúbito',
-          '90/90 hip stretch',
-          'Liberação de psoas'
-        ];
-      case 'PELVIC':
-        return [
-          'Pigeon pose dinâmico',
-          'Clamshell com rotação',
-          'Hip CARs (Controlled Articular Rotations)'
-        ];
-      case 'FEMORAL':
-        return [
-          'Cossack squat',
-          'Adductor rockback',
-          'Liberação de TFL (tensor da fáscia lata)'
-        ];
-      case 'MULTI_SEGMENTAL':
-        return [
-          "World's greatest stretch",
-          'Flow de mobilidade global',
-          'Yoga cat-cow com rotação'
-        ];
-      default:
-        return [
-          'Mobilidade geral de cadeia posterior',
-          'Alongamento dinâmico multiplanar'
-        ];
-    }
-  }
-
-  /**
-   * Gera ações corretivas baseadas na análise
-   * @param analysis - Análise biomecânica
-   * @returns Array de ações corretivas ordenadas por prioridade
-   */
-  private generateCorrectiveActions(
-    analysis: BiomechanicalAnalysis
-  ): CorrectiveAction[] {
+  private generateCorrectiveActions(analysis: BiomechanicalAnalysis): CorrectiveAction[] {
     const actions: CorrectiveAction[] = [];
+    const { scores, rotationAnalysis } = analysis;
 
-    // Ação 1: Estabilidade (se stabilizer < 70)
-    if (analysis.scores.stabilizer < 70) {
+    if (scores.stabilizer < 70) {
       actions.push({
         priority: 'alta',
         category: 'estabilidade',
-        description:
-          'Fortalecimento da musculatura estabilizadora central e cintura escapular',
+        description: 'Fortalecimento da musculatura estabilizadora central e cintura escapular',
         exercises: [
           'Prancha frontal com variações',
           'Dead bug progressivo',
@@ -180,13 +83,11 @@ class ReportGeneratorEngine {
       });
     }
 
-    // Ação 2: Força/Simetria (se symmetry < 80)
-    if (analysis.scores.symmetry < 80) {
+    if (scores.symmetry < 80) {
       actions.push({
         priority: 'alta',
         category: 'força',
-        description:
-          'Correção de assimetrias de força através de trabalho unilateral',
+        description: 'Correção de assimetrias de força através de trabalho unilateral',
         exercises: [
           'Bulgarian split squat',
           'Remada unilateral com halteres',
@@ -197,32 +98,22 @@ class ReportGeneratorEngine {
       });
     }
 
-    // Ação 3: Mobilidade (se rotação detectada)
-    if (
-      analysis.rotationAnalysis.detected &&
-      analysis.rotationAnalysis.magnitude > BIOMECHANICAL_THRESHOLDS.rotation.minor
-    ) {
-      const magnitude = analysis.rotationAnalysis.magnitude;
-      const origin = analysis.rotationAnalysis.origin;
-
+    if (rotationAnalysis.detected && rotationAnalysis.magnitude > 10) {
+      const mobilityOrigin = this.getMobilityFocusArea(rotationAnalysis.origin);
       actions.push({
-        priority: magnitude > BIOMECHANICAL_THRESHOLDS.rotation.moderate ? 'alta' : 'média',
+        priority: rotationAnalysis.magnitude > 20 ? 'alta' : 'média',
         category: 'mobilidade',
-        description: `Mobilização e liberação miofascial de ${this.getMobilityFocusArea(
-          origin
-        )}`,
-        exercises: this.getMobilityExercises(origin),
+        description: `Mobilização e liberação miofascial de ${mobilityOrigin}`,
+        exercises: this.getMobilityExercises(rotationAnalysis.origin),
         duration: '2-3 semanas, diariamente'
       });
     }
 
-    // Ação 4: Técnica (se motor < 70)
-    if (analysis.scores.motor < 70) {
+    if (scores.motor < 70) {
       actions.push({
         priority: 'média',
         category: 'técnica',
-        description:
-          'Refinamento do padrão motor através de regressões e feedback tátil',
+        description: 'Refinamento do padrão motor através de regressões e feedback tátil',
         exercises: [
           'Execução assistida com elástico',
           'Tempo reduzido sob tensão',
@@ -233,51 +124,90 @@ class ReportGeneratorEngine {
       });
     }
 
-    // Ordenar por prioridade: alta → média → baixa
-    const priorityOrder = { alta: 1, média: 2, baixa: 3 };
-    actions.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
-
-    return actions;
+    return actions.sort((a, b) => {
+      const priorityOrder: Record<string, number> = { alta: 0, média: 1, baixa: 2 };
+      return priorityOrder[a.priority] - priorityOrder[b.priority];
+    });
   }
 
-  /**
-   * Gera prompt para upgrade de modo de captura (se aplicável)
-   * @param analysis - Análise biomecânica
-   * @returns Prompt de upgrade ou undefined
-   */
-  private generateUpgradePrompt(
-    analysis: BiomechanicalAnalysis
-  ): UpgradePrompt | undefined {
-    const mode = analysis.captureSetup.mode;
-    const rotationDetected = analysis.rotationAnalysis.detected;
-    const shoulderAsym = analysis.rotationAnalysis.bilateralDifference.shoulder;
+  private getMobilityFocusArea(origin: RotationOrigin): string {
+    const areas: Record<RotationOrigin, string> = {
+      [RotationOrigin.SCAPULAR]: 'complexo escapular e musculatura periescapular',
+      [RotationOrigin.THORACIC]: 'coluna torácica e musculatura paravertebral',
+      [RotationOrigin.LUMBAR]: 'região lombopélvica e flexores de quadril',
+      [RotationOrigin.PELVIC]: 'cintura pélvica e rotadores externos de quadril',
+      [RotationOrigin.FEMORAL]: 'articulação coxofemoral e adutores',
+      [RotationOrigin.MULTI_SEGMENTAL]: 'cadeia posterior completa'
+    };
+    return areas[origin];
+  }
 
-    // Upgrade ESSENTIAL → ADVANCED (se rotação detectada)
-    if (mode === 'ESSENTIAL' && rotationDetected) {
+  private getMobilityExercises(origin: RotationOrigin): string[] {
+    const exercises: Record<RotationOrigin, string[]> = {
+      [RotationOrigin.SCAPULAR]: [
+        'Thread the needle torácico',
+        'Wall slides com rotação externa',
+        'Liberação miofascial de peitoral menor'
+      ],
+      [RotationOrigin.THORACIC]: [
+        'Open book torácico',
+        'Extensão torácica em foam roller',
+        'Quadruped rotation'
+      ],
+      [RotationOrigin.LUMBAR]: [
+        'Rotação lombar controlada em decúbito',
+        '90/90 hip stretch',
+        'Liberação de psoas'
+      ],
+      [RotationOrigin.PELVIC]: [
+        'Pigeon pose dinâmico',
+        'Clamshell com rotação',
+        'Hip CARs (Controlled Articular Rotations)'
+      ],
+      [RotationOrigin.FEMORAL]: [
+        'Cossack squat',
+        'Adductor rockback',
+        'Liberação de TFL'
+      ],
+      [RotationOrigin.MULTI_SEGMENTAL]: [
+        "World's greatest stretch",
+        'Flow de mobilidade global',
+        'Yoga cat-cow com rotação'
+      ]
+    };
+    return exercises[origin];
+  }
+
+  private generateUpgradePrompt(analysis: BiomechanicalAnalysis): UpgradePrompt | undefined {
+    const { captureSetup, rotationAnalysis } = analysis;
+
+    if (captureSetup.mode === CaptureMode.ESSENTIAL && rotationAnalysis.detected) {
       return {
-        currentMode: 'ESSENTIAL' as CaptureMode,
-        recommendedMode: 'ADVANCED' as CaptureMode,
+        currentMode: CaptureMode.ESSENTIAL,
+        recommendedMode: CaptureMode.ADVANCED,
         reason: TECHNICAL_MESSAGES.upgradePrompts.essentialToAdvanced,
         benefits: [
           'Confirmação biplanar de compensações rotacionais',
-          'Quantificação precisa de assimetrias através de planos ortogonais',
-          'Identificação de origem anatômica da compensação',
-          'Aumento de confiabilidade para 75-85%'
+          'Quantificação precisa de assimetrias',
+          'Identificação de origem anatômica',
+          'Aumento de confiabilidade para 80-90%'
         ]
       };
     }
 
-    // Upgrade ADVANCED → PRO (se assimetria de ombro > 12°)
-    if (mode === 'ADVANCED' && shoulderAsym > BIOMECHANICAL_THRESHOLDS.asymmetry.moderate) {
+    if (
+      captureSetup.mode === CaptureMode.ADVANCED &&
+      rotationAnalysis.bilateralDifference.shoulder > BIOMECHANICAL_THRESHOLDS.asymmetry.moderate
+    ) {
       return {
-        currentMode: 'ADVANCED' as CaptureMode,
-        recommendedMode: 'PRO' as CaptureMode,
+        currentMode: CaptureMode.ADVANCED,
+        recommendedMode: CaptureMode.PRO,
         reason: TECHNICAL_MESSAGES.upgradePrompts.advancedToPro,
         benefits: [
           'Reconstrução vetorial 3D completa',
-          'Análise de rotação axial confirmada através de plano transversal',
+          'Análise de rotação axial confirmada',
           'Confiabilidade superior a 90%',
-          'Rastreamento temporal de progressão com precisão submilimétrica'
+          'Rastreamento temporal de progressão'
         ]
       };
     }
@@ -285,17 +215,10 @@ class ReportGeneratorEngine {
     return undefined;
   }
 
-  /**
-   * Gera recomendação de reteste
-   * @param analysis - Análise biomecânica
-   * @returns Recomendação de reteste
-   */
-  private generateRetestRecommendation(
-    analysis: BiomechanicalAnalysis
-  ): RetestRecommendation {
-    const hasCorrectiveActions = analysis.correctiveActions.length > 0;
+  private generateRetestRecommendation(analysis: BiomechanicalAnalysis): RetestRecommendation {
+    const { riskLevel } = analysis;
+    const hasCorrectiveActions = analysis.correctiveActions && analysis.correctiveActions.length > 0;
 
-    // Sem ações corretivas = sem necessidade de reteste
     if (!hasCorrectiveActions) {
       return {
         recommended: false,
@@ -305,84 +228,48 @@ class ReportGeneratorEngine {
       };
     }
 
-    // Determinar timeframe baseado no riskLevel
     const timeframes: Record<RiskLevel, string> = {
-      HIGH: '2-3 semanas',
-      MODERATE: '4-6 semanas',
-      LOW: '6-8 semanas'
+      [RiskLevel.LOW]: '6-8 semanas',
+      [RiskLevel.MODERATE]: '4-6 semanas',
+      [RiskLevel.HIGH]: '2-3 semanas'
     };
 
-    const timeframe = timeframes[analysis.riskLevel];
-
-    // Focar em ações de alta prioridade
-    const highPriorityActions = analysis.correctiveActions
-      .filter((action) => action.priority === 'alta')
-      .map((action) => action.description);
+    const focusAreas = analysis.correctiveActions
+      .filter(a => a.priority === 'alta')
+      .map(a => a.description);
 
     return {
       recommended: true,
-      timeframe,
-      reason:
-        'Validar efetividade do protocolo corretivo e progressão de parâmetros biomecânicos',
-      focusAreas: highPriorityActions
+      timeframe: timeframes[riskLevel],
+      reason: 'Validar efetividade do protocolo corretivo e progressão de parâmetros biomecânicos',
+      focusAreas
     };
   }
 
   /**
-   * Gera relatório completo a partir de análise parcial
-   * @param analysis - Análise biomecânica parcial
-   * @returns Análise biomecânica completa com relatório
+   * Gera relatório completo
    */
-  public generateReport(
-    analysis: Partial<BiomechanicalAnalysis>
-  ): BiomechanicalAnalysis {
-    // Garantir que campos obrigatórios estão presentes
-    if (
-      !analysis.analysisId ||
-      !analysis.exerciseName ||
-      !analysis.captureSetup ||
-      !analysis.scores ||
-      !analysis.rotationAnalysis
-    ) {
-      throw new Error(
-        'Análise incompleta: campos obrigatórios ausentes para geração de relatório'
-      );
-    }
-
-    const fullAnalysis = analysis as BiomechanicalAnalysis;
-
-    // Calcular riskLevel
-    const riskLevel = this.classifyRisk(fullAnalysis.scores.compensation);
-
-    // Identificar riskFactors
-    const riskFactors = this.identifyRiskFactors(fullAnalysis);
-
-    // Gerar correctiveActions
-    const correctiveActions = this.generateCorrectiveActions(fullAnalysis);
-
-    // Gerar upgradePrompt (se aplicável)
-    const upgradePrompt = this.generateUpgradePrompt(fullAnalysis);
-
-    // Gerar retestRecommendation
+  public generateReport(analysis: Partial<BiomechanicalAnalysis>): BiomechanicalAnalysis {
+    const riskLevel = this.classifyRisk(analysis.scores!.compensation);
+    const riskFactors = this.identifyRiskFactors(analysis as BiomechanicalAnalysis);
+    const correctiveActions = this.generateCorrectiveActions(analysis as BiomechanicalAnalysis);
+    const upgradePrompt = this.generateUpgradePrompt(analysis as BiomechanicalAnalysis);
     const retestRecommendation = this.generateRetestRecommendation({
-      ...fullAnalysis,
+      ...analysis,
       riskLevel,
       correctiveActions
-    });
+    } as BiomechanicalAnalysis);
 
-    // Retornar análise completa
     return {
-      ...fullAnalysis,
+      ...analysis,
       riskLevel,
       riskFactors,
       correctiveActions,
       upgradePrompt,
       retestRecommendation
-    };
+    } as BiomechanicalAnalysis;
   }
 }
 
-/**
- * Instância singleton do engine de geração de relatórios
- */
+// Exporta instância singleton
 export const reportGenerator = new ReportGeneratorEngine();

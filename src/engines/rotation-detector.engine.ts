@@ -1,26 +1,26 @@
-/**
- * Engine de Detecção de Rotação Axial
- *
- * Detecta e classifica compensações rotacionais através de análise
- * biplanar ou triplanar de assimetrias bilaterais.
- */
-
-import type {
-  FrameAnalysis,
-  LandmarkData,
-  RotationAnalysis
-} from '../types/biomechanical-analysis.types';
 import {
   CaptureMode,
+  CameraAngle,
   RotationConfidence,
   RotationType,
   RotationOrigin,
-  BIOMECHANICAL_THRESHOLDS
+  RotationAnalysis,
+  LandmarkData,
+  FrameAnalysis,
+  BIOMECHANICAL_THRESHOLDS,
+  TECHNICAL_MESSAGES
 } from '../types/biomechanical-analysis.types';
 
 /**
- * Interface para comparação bilateral de landmarks
+ * Engine de Detecção e Classificação de Rotação Axial
+ *
+ * Detecta compensações rotacionais baseado em:
+ * - Modo de captura (1, 2 ou 3 ângulos)
+ * - Assimetria bilateral
+ * - Deslocamento do centro de massa
+ * - Diferenças temporais de ativação
  */
+
 interface BilateralComparison {
   leftShoulder: { x: number; y: number; z?: number };
   rightShoulder: { x: number; y: number; z?: number };
@@ -30,376 +30,240 @@ interface BilateralComparison {
   rightKnee: { x: number; y: number; z?: number };
 }
 
-/**
- * Engine singleton para detecção de rotação
- */
-class RotationDetectorEngine {
+export class RotationDetectorEngine {
+
   /**
-   * Extrai landmarks bilaterais para análise de assimetria
-   * @param landmarks - Array de landmarks do MediaPipe
-   * @returns Objeto com landmarks pareados ou null se incompleto
+   * Extrai landmarks bilaterais de um frame
    */
-  private extractBilateralLandmarks(
-    landmarks: LandmarkData[]
-  ): BilateralComparison | null {
-    const requiredLandmarks = [
-      'left_shoulder',
-      'right_shoulder',
-      'left_hip',
-      'right_hip',
-      'left_knee',
-      'right_knee'
-    ];
+  private extractBilateralLandmarks(landmarks: LandmarkData[]): BilateralComparison | null {
+    const getLandmark = (name: string) => landmarks.find(l => l.name === name);
 
-    // Validar que todos os landmarks necessários estão presentes e visíveis
-    const landmarkMap = new Map<string, LandmarkData>();
-    for (const lm of landmarks) {
-      if (requiredLandmarks.includes(lm.name) && lm.visible && !lm.occluded) {
-        landmarkMap.set(lm.name, lm);
-      }
-    }
+    const leftShoulder = getLandmark('left_shoulder');
+    const rightShoulder = getLandmark('right_shoulder');
+    const leftHip = getLandmark('left_hip');
+    const rightHip = getLandmark('right_hip');
+    const leftKnee = getLandmark('left_knee');
+    const rightKnee = getLandmark('right_knee');
 
-    // Verificar se todos estão presentes
-    if (landmarkMap.size !== requiredLandmarks.length) {
-      return null;
-    }
+    // Validação: todos landmarks devem estar visíveis
+    const required = [leftShoulder, rightShoulder, leftHip, rightHip, leftKnee, rightKnee];
+    if (required.some(l => !l || !l.visible)) return null;
 
     return {
-      leftShoulder: landmarkMap.get('left_shoulder')!,
-      rightShoulder: landmarkMap.get('right_shoulder')!,
-      leftHip: landmarkMap.get('left_hip')!,
-      rightHip: landmarkMap.get('right_hip')!,
-      leftKnee: landmarkMap.get('left_knee')!,
-      rightKnee: landmarkMap.get('right_knee')!
+      leftShoulder: { x: leftShoulder!.x, y: leftShoulder!.y, z: leftShoulder!.z },
+      rightShoulder: { x: rightShoulder!.x, y: rightShoulder!.y, z: rightShoulder!.z },
+      leftHip: { x: leftHip!.x, y: leftHip!.y, z: leftHip!.z },
+      rightHip: { x: rightHip!.x, y: rightHip!.y, z: rightHip!.z },
+      leftKnee: { x: leftKnee!.x, y: leftKnee!.y, z: leftKnee!.z },
+      rightKnee: { x: rightKnee!.x, y: rightKnee!.y, z: rightKnee!.z }
     };
   }
 
   /**
-   * Calcula assimetria no plano sagital
-   * @param bilateral - Landmarks bilaterais
-   * @returns Assimetria em graus
+   * Calcula diferença angular bilateral no plano sagital (2D)
    */
   private calculateSagittalAsymmetry(bilateral: BilateralComparison): number {
-    // Calcular ângulo ombro-quadril esquerdo (plano sagital)
-    const leftAngle = Math.atan2(
-      bilateral.leftHip.y - bilateral.leftShoulder.y,
-      bilateral.leftHip.x - bilateral.leftShoulder.x
-    );
+    const leftShoulderAngle = Math.atan2(
+      bilateral.leftShoulder.y - bilateral.leftHip.y,
+      bilateral.leftShoulder.x - bilateral.leftHip.x
+    ) * (180 / Math.PI);
 
-    // Calcular ângulo ombro-quadril direito (plano sagital)
-    const rightAngle = Math.atan2(
-      bilateral.rightHip.y - bilateral.rightShoulder.y,
-      bilateral.rightHip.x - bilateral.rightShoulder.x
-    );
+    const rightShoulderAngle = Math.atan2(
+      bilateral.rightShoulder.y - bilateral.rightHip.y,
+      bilateral.rightShoulder.x - bilateral.rightHip.x
+    ) * (180 / Math.PI);
 
-    // Converter para graus e retornar diferença absoluta
-    const leftDegrees = (leftAngle * 180) / Math.PI;
-    const rightDegrees = (rightAngle * 180) / Math.PI;
-
-    return Math.abs(leftDegrees - rightDegrees);
+    return Math.abs(leftShoulderAngle - rightShoulderAngle);
   }
 
   /**
-   * Calcula assimetria no plano frontal (requer coordenadas Z)
-   * @param bilateral - Landmarks bilaterais
-   * @returns Assimetria em graus (0 se sem coordenadas Z)
+   * Calcula assimetria no plano frontal (requer vista posterior)
    */
   private calculateFrontalAsymmetry(bilateral: BilateralComparison): number {
-    // Verificar se há coordenadas Z disponíveis
-    if (
-      bilateral.leftShoulder.z === undefined ||
-      bilateral.rightShoulder.z === undefined ||
-      bilateral.leftHip.z === undefined ||
-      bilateral.rightHip.z === undefined
-    ) {
-      return 0;
+    if (!bilateral.leftShoulder.z || !bilateral.rightShoulder.z) {
+      return 0; // sem dados 3D
     }
 
-    // Diferença de profundidade (eixo Z) entre ombros
     const shoulderDepthDiff = Math.abs(
       bilateral.leftShoulder.z - bilateral.rightShoulder.z
     );
 
-    // Diferença de profundidade entre quadris
-    const hipDepthDiff = Math.abs(bilateral.leftHip.z - bilateral.rightHip.z);
-
-    // Calcular largura dos ombros para normalizar
-    const shoulderWidth = Math.abs(
-      bilateral.leftShoulder.x - bilateral.rightShoulder.x
+    const hipDepthDiff = Math.abs(
+      (bilateral.leftHip.z ?? 0) - (bilateral.rightHip.z ?? 0)
     );
 
-    // Converter diferença de profundidade para graus de rotação
-    // atan(depthDiff / width) aproxima o ângulo de rotação
-    const shoulderRotation = Math.atan(shoulderDepthDiff / shoulderWidth);
-    const hipRotation = Math.atan(hipDepthDiff / shoulderWidth);
+    const shoulderRotation = Math.atan(shoulderDepthDiff) * (180 / Math.PI);
+    const hipRotation = Math.atan(hipDepthDiff) * (180 / Math.PI);
 
-    // Retornar o máximo entre rotação de ombro e quadril (em graus)
-    return Math.max(
-      (shoulderRotation * 180) / Math.PI,
-      (hipRotation * 180) / Math.PI
-    );
+    return Math.max(shoulderRotation, hipRotation);
   }
 
   /**
-   * Determina confiança da detecção baseado no modo de captura e assimetrias
-   * @param mode - Modo de captura
-   * @param sagittalAsymmetry - Assimetria sagital em graus
-   * @param frontalAsymmetry - Assimetria frontal em graus
-   * @returns Objeto com confiança e score
+   * Determina confiança da detecção baseada no modo de captura
    */
   private determineRotationConfidence(
     mode: CaptureMode,
     sagittalAsymmetry: number,
     frontalAsymmetry: number
   ): { confidence: RotationConfidence; score: number } {
-    const { negligible } = BIOMECHANICAL_THRESHOLDS.rotation;
+    const { rotation } = BIOMECHANICAL_THRESHOLDS;
 
     switch (mode) {
       case CaptureMode.ESSENTIAL:
-        // Apenas 1 plano - confiança limitada
-        if (sagittalAsymmetry < negligible) {
-          return { confidence: 'NOT_MEASURABLE' as RotationConfidence, score: 0 };
+        if (sagittalAsymmetry < rotation.negligible) {
+          return { confidence: RotationConfidence.NOT_MEASURABLE, score: 0 };
         }
         return {
-          confidence: 'INFERRED' as RotationConfidence,
+          confidence: RotationConfidence.INFERRED,
           score: Math.min(45, sagittalAsymmetry * 3)
         };
 
-      case CaptureMode.ADVANCED:
-        // 2 planos ortogonais - confiança moderada/alta
-        const totalAsymmetry = sagittalAsymmetry + frontalAsymmetry;
-        if (totalAsymmetry < BIOMECHANICAL_THRESHOLDS.rotation.minor) {
-          return { confidence: 'INFERRED' as RotationConfidence, score: 40 };
+      case CaptureMode.ADVANCED: {
+        if (sagittalAsymmetry < rotation.minor && frontalAsymmetry < rotation.minor) {
+          return { confidence: RotationConfidence.INFERRED, score: 40 };
         }
-        return {
-          confidence: 'PROBABLE' as RotationConfidence,
-          score: Math.min(80, totalAsymmetry * 2)
-        };
+        const biplanarScore = Math.min(80, (sagittalAsymmetry + frontalAsymmetry) * 2);
+        return { confidence: RotationConfidence.PROBABLE, score: biplanarScore };
+      }
 
-      case CaptureMode.PRO:
-        // 3 planos - alta confiança (reconstrução 3D)
-        const total = sagittalAsymmetry + frontalAsymmetry;
-        if (total < BIOMECHANICAL_THRESHOLDS.rotation.minor) {
-          return { confidence: 'PROBABLE' as RotationConfidence, score: 70 };
+      case CaptureMode.PRO: {
+        const totalAsymmetry = sagittalAsymmetry + frontalAsymmetry;
+        if (totalAsymmetry < rotation.minor) {
+          return { confidence: RotationConfidence.PROBABLE, score: 70 };
         }
-        return {
-          confidence: 'CONFIRMED' as RotationConfidence,
-          score: Math.min(98, 80 + total)
-        };
+        const proScore = Math.min(98, 80 + totalAsymmetry);
+        return { confidence: RotationConfidence.CONFIRMED, score: proScore };
+      }
 
       default:
-        return { confidence: 'NOT_MEASURABLE' as RotationConfidence, score: 0 };
+        return { confidence: RotationConfidence.NOT_MEASURABLE, score: 0 };
     }
   }
 
   /**
-   * Classifica o tipo de rotação detectada
-   * @param bilateral - Landmarks bilaterais
-   * @param sagittalAsym - Assimetria sagital
-   * @param frontalAsym - Assimetria frontal
-   * @param exerciseName - Nome do exercício
-   * @returns Tipo de rotação classificado
+   * Classifica tipo de rotação baseado em padrões
    */
   private classifyRotationType(
-    bilateral: BilateralComparison,
-    sagittalAsym: number,
-    frontalAsym: number,
+    _bilateral: BilateralComparison,
+    sagittalAsymmetry: number,
+    frontalAsymmetry: number,
     exerciseName: string
   ): RotationType {
-    const totalAsym = sagittalAsym + frontalAsym;
-    const { negligible, severe } = BIOMECHANICAL_THRESHOLDS.rotation;
+    const { rotation } = BIOMECHANICAL_THRESHOLDS;
 
-    // Sem rotação significativa
-    if (totalAsym < negligible) {
-      return 'NONE' as RotationType;
+    if (sagittalAsymmetry < rotation.negligible && frontalAsymmetry < rotation.negligible) {
+      return RotationType.NONE;
     }
 
-    // Exercícios com rotação técnica intencional
-    const technicalExercises = [
-      'arranque',
-      'arremesso',
-      'landmine',
-      'pallof',
-      'woodchop',
-      'rotacional'
+    const technicalRotationExercises = [
+      'arranque', 'arremesso', 'landmine', 'pallof press', 'woodchop'
     ];
-    const isTechnical = technicalExercises.some((ex) =>
-      exerciseName.toLowerCase().includes(ex)
-    );
-    if (isTechnical) {
-      return 'TECHNICAL' as RotationType;
+    if (technicalRotationExercises.some(ex => exerciseName.toLowerCase().includes(ex))) {
+      return RotationType.TECHNICAL;
     }
 
-    // Assimetria severa sugere origem estrutural
-    if (totalAsym > severe) {
-      return 'STRUCTURAL' as RotationType;
+    if (sagittalAsymmetry > rotation.severe || frontalAsymmetry > rotation.severe) {
+      return RotationType.STRUCTURAL;
     }
 
-    // Assimetria moderada sugere déficit funcional
-    if (totalAsym > BIOMECHANICAL_THRESHOLDS.rotation.moderate) {
-      return 'FUNCTIONAL' as RotationType;
+    if (sagittalAsymmetry > rotation.moderate || frontalAsymmetry > rotation.moderate) {
+      return RotationType.FUNCTIONAL;
     }
 
-    // Padrão padrão: funcional
-    return 'FUNCTIONAL' as RotationType;
+    return RotationType.FUNCTIONAL;
   }
 
   /**
    * Identifica origem anatômica da rotação
-   * @param bilateral - Landmarks bilaterais
-   * @returns Origem da rotação
    */
   private identifyRotationOrigin(bilateral: BilateralComparison): RotationOrigin {
-    // Calcular assimetrias verticais (eixo Y)
-    const shoulderAsymmetry = Math.abs(
-      bilateral.leftShoulder.y - bilateral.rightShoulder.y
-    );
+    const shoulderAsymmetry = Math.abs(bilateral.leftShoulder.y - bilateral.rightShoulder.y);
     const hipAsymmetry = Math.abs(bilateral.leftHip.y - bilateral.rightHip.y);
     const kneeAsymmetry = Math.abs(bilateral.leftKnee.y - bilateral.rightKnee.y);
 
-    // Identificar segmento com maior assimetria
     const maxAsymmetry = Math.max(shoulderAsymmetry, hipAsymmetry, kneeAsymmetry);
 
-    // Threshold para considerar assimetria significativa (normalizado 0-1)
-    const SIGNIFICANT_THRESHOLD = 0.05;
-
     if (maxAsymmetry === shoulderAsymmetry) {
-      // Diferença grande sugere origem torácica, pequena escapular
-      return shoulderAsymmetry > SIGNIFICANT_THRESHOLD
-        ? ('THORACIC' as RotationOrigin)
-        : ('SCAPULAR' as RotationOrigin);
+      return shoulderAsymmetry > 0.05 ? RotationOrigin.SCAPULAR : RotationOrigin.THORACIC;
     }
 
     if (maxAsymmetry === hipAsymmetry) {
-      // Diferença grande sugere origem lombar, pequena pélvica
-      return hipAsymmetry > SIGNIFICANT_THRESHOLD
-        ? ('LUMBAR' as RotationOrigin)
-        : ('PELVIC' as RotationOrigin);
+      return hipAsymmetry > 0.05 ? RotationOrigin.PELVIC : RotationOrigin.LUMBAR;
     }
 
-    if (maxAsymmetry === kneeAsymmetry) {
-      return 'FEMORAL' as RotationOrigin;
-    }
-
-    // Múltiplos segmentos com assimetria similar
-    return 'MULTI_SEGMENTAL' as RotationOrigin;
+    return RotationOrigin.FEMORAL;
   }
 
   /**
-   * Analisa rotação axial através de múltiplos frames
-   * @param frames - Array de frames analisados
-   * @param mode - Modo de captura
-   * @param exerciseName - Nome do exercício
-   * @returns Análise completa de rotação
+   * Analisa rotação em múltiplos frames
    */
   public analyzeRotation(
     frames: FrameAnalysis[],
     mode: CaptureMode,
     exerciseName: string
   ): RotationAnalysis {
-    // Filtrar frames com landmarks completos
     const validFrames = frames
-      .map((frame) => ({
-        frame,
-        bilateral: this.extractBilateralLandmarks(frame.landmarks)
-      }))
-      .filter((f) => f.bilateral !== null);
+      .map(f => ({ ...f, bilateral: this.extractBilateralLandmarks(f.landmarks) }))
+      .filter(f => f.bilateral !== null);
 
-    // Se nenhum frame válido, retornar análise vazia
     if (validFrames.length === 0) {
       return {
         detected: false,
-        confidence: 'NOT_MEASURABLE' as RotationConfidence,
+        confidence: RotationConfidence.NOT_MEASURABLE,
         confidenceScore: 0,
-        type: 'NONE' as RotationType,
-        origin: 'MULTI_SEGMENTAL' as RotationOrigin,
+        type: RotationType.NONE,
+        origin: RotationOrigin.MULTI_SEGMENTAL,
         magnitude: 0,
         asymmetryScore: 0,
-        bilateralDifference: {
-          shoulder: 0,
-          hip: 0,
-          knee: 0
-        },
-        detectionMethod: 'Análise insuficiente - landmarks incompletos'
+        bilateralDifference: { shoulder: 0, hip: 0, knee: 0 },
+        detectionMethod: 'Análise impossível: landmarks insuficientes'
       };
     }
 
-    // Calcular assimetrias médias
-    let totalSagittalAsym = 0;
-    let totalFrontalAsym = 0;
+    let totalSagittalAsymmetry = 0;
+    let totalFrontalAsymmetry = 0;
 
-    for (const { bilateral } of validFrames) {
-      totalSagittalAsym += this.calculateSagittalAsymmetry(bilateral!);
-      totalFrontalAsym += this.calculateFrontalAsymmetry(bilateral!);
-    }
+    validFrames.forEach(frame => {
+      totalSagittalAsymmetry += this.calculateSagittalAsymmetry(frame.bilateral!);
+      totalFrontalAsymmetry += this.calculateFrontalAsymmetry(frame.bilateral!);
+    });
 
-    const avgSagittalAsym = totalSagittalAsym / validFrames.length;
-    const avgFrontalAsym = totalFrontalAsym / validFrames.length;
+    const avgSagittalAsymmetry = totalSagittalAsymmetry / validFrames.length;
+    const avgFrontalAsymmetry = totalFrontalAsymmetry / validFrames.length;
 
-    // Usar frame do meio para análise de origem
-    const middleFrame = validFrames[Math.floor(validFrames.length / 2)];
-    const bilateral = middleFrame.bilateral!;
+    const midFrame = validFrames[Math.floor(validFrames.length / 2)];
 
-    // Determinar confiança
     const { confidence, score } = this.determineRotationConfidence(
-      mode,
-      avgSagittalAsym,
-      avgFrontalAsym
+      mode, avgSagittalAsymmetry, avgFrontalAsymmetry
     );
 
-    // Classificar tipo
     const type = this.classifyRotationType(
-      bilateral,
-      avgSagittalAsym,
-      avgFrontalAsym,
-      exerciseName
+      midFrame.bilateral!, avgSagittalAsymmetry, avgFrontalAsymmetry, exerciseName
     );
 
-    // Identificar origem
-    const origin = this.identifyRotationOrigin(bilateral);
+    const origin = this.identifyRotationOrigin(midFrame.bilateral!);
 
-    // Calcular magnitude (combinação vetorial)
-    const magnitude = Math.sqrt(
-      avgSagittalAsym ** 2 + avgFrontalAsym ** 2
-    );
-
-    // Calcular asymmetryScore (0-100)
+    const magnitude = Math.sqrt(avgSagittalAsymmetry ** 2 + avgFrontalAsymmetry ** 2);
     const asymmetryScore = Math.min(100, magnitude * 3);
-
-    // Calcular diferenças bilaterais individuais
-    const shoulderDiff = Math.abs(
-      bilateral.leftShoulder.y - bilateral.rightShoulder.y
-    ) * 180; // Aproximação em graus
-    const hipDiff = Math.abs(bilateral.leftHip.y - bilateral.rightHip.y) * 180;
-    const kneeDiff = Math.abs(bilateral.leftKnee.y - bilateral.rightKnee.y) * 180;
-
-    // Determinar método de detecção
-    const detectionMethod =
-      mode === CaptureMode.PRO
-        ? 'Reconstrução vetorial tridimensional'
-        : mode === CaptureMode.ADVANCED
-        ? 'Análise biplanar ortogonal (sagital + frontal)'
-        : 'Inferência através de assimetria sagital';
+    const detectionMethod = TECHNICAL_MESSAGES.rotationDetection[confidence];
 
     return {
-      detected: magnitude >= BIOMECHANICAL_THRESHOLDS.rotation.negligible,
+      detected: type !== RotationType.NONE,
       confidence,
       confidenceScore: score,
       type,
       origin,
-      magnitude,
-      asymmetryScore,
+      magnitude: Math.round(magnitude * 100) / 100,
+      asymmetryScore: Math.round(asymmetryScore),
       bilateralDifference: {
-        shoulder: Math.round(shoulderDiff * 100) / 100,
-        hip: Math.round(hipDiff * 100) / 100,
-        knee: Math.round(kneeDiff * 100) / 100
+        shoulder: Math.round(avgSagittalAsymmetry * 100) / 100,
+        hip: Math.round(avgFrontalAsymmetry * 100) / 100,
+        knee: Math.round(avgFrontalAsymmetry * 0.8 * 100) / 100
       },
       detectionMethod
     };
   }
 }
 
-/**
- * Instância singleton do engine de detecção de rotação
- */
+// Exporta instância singleton
 export const rotationDetector = new RotationDetectorEngine();

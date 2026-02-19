@@ -162,9 +162,9 @@ export async function POST(request: NextRequest) {
 
     console.log(`[Biomechanics] Video downloaded: ${localVideoPath}`);
 
-    // 3. Extrair frames — 36 frames para capturar pico real de contração
-    // Com 36 frames em 10s → frame a cada ~0.28s → ~96% chance de pegar o pico
-    const frameCount = 36;
+    // 3. Extrair frames — 48 frames para captura mais densa do movimento
+    // Com 48 frames em 10s → frame a cada ~0.21s → cobertura completa de pico e fases
+    const frameCount = 48;
     const framesDir = path.join(tempDir, 'frames');
     fs.mkdirSync(framesDir, { recursive: true });
     const framePaths = await extractFrames(localVideoPath, framesDir, frameCount);

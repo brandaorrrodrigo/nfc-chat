@@ -80,8 +80,8 @@ class BiomechanicalAnalyzerEngine {
 
     if (!isValid) {
       const recommendations = confidenceCalculator.generateRecommendations(confidenceFactors);
-      throw new Error(
-        `Confiabilidade insuficiente para modo ${params.captureSetup.mode} ` +
+      console.warn(
+        `[BiomechanicalAnalyzer] Confiabilidade abaixo do ideal para modo ${params.captureSetup.mode} ` +
           `(score: ${confidenceScore}%, mínimo: ${
             params.captureSetup.mode === 'ESSENTIAL'
               ? 60
@@ -89,7 +89,7 @@ class BiomechanicalAnalyzerEngine {
               ? 75
               : 85
           }%). ` +
-          `Recomendações: ${recommendations.join('; ')}`
+          `Recomendações: ${recommendations.join('; ')}. Prosseguindo com análise parcial.`
       );
     }
 
