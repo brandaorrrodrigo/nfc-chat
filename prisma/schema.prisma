@@ -52,6 +52,13 @@ model User {
   dp_streak_days    Int       @default(0)    // Dias consecutivos >=70%
   dp_last_updated   DateTime?                // Ultima atualizacao DP
 
+  // Metricas Oficiais (Game76)
+  performance_score Float     @default(0)    // PS - media movel 30d
+
+  // Anti-Estagnacao (Game78)
+  teto_dias_consecutivos Int  @default(0)    // Dias consecutivos no teto
+  teto_ultima_data  DateTime?                // Ultima data no teto
+
   // Flags de moderação
   isMuted           Boolean   @default(false)
   mutedUntil        DateTime?
@@ -84,6 +91,11 @@ model User {
   microhabitoLogs   MicrohabitoLog[]
   intervencoes      IntervencaoCoach[]
   transformacoes    TransformacaoSocialProof[]
+
+  // Complemento Estrutural (Game78-80)
+  desafiosAvancados DesafioAvancado[]
+  compartilhamentos CompartilhamentoLog[]
+  psHistorico       PerformanceScoreLog[]
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
@@ -1386,4 +1398,69 @@ model TransformacaoSocialProof {
   @@index([userId])
   @@index([compartilhada])
   @@map("transformacoes_social_proof")
+}
+
+// ============================================
+// DESAFIO AVANCADO - ANTI-ESTAGNACAO (Game78)
+// ============================================
+
+model DesafioAvancado {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  dataInicio      DateTime
+  dataFim         DateTime
+  bonusExtraDia   Int       @default(15)
+  concluido       Boolean   @default(false)
+  sucesso         Boolean   @default(false)
+  badgeEspecial   String    @default("desafio_teto_concluido")
+  progressoDias   Int       @default(0)
+
+  createdAt       DateTime  @default(now())
+
+  @@index([userId])
+  @@index([concluido])
+  @@map("desafios_avancados")
+}
+
+// ============================================
+// COMPARTILHAMENTO LOG (Game79)
+// ============================================
+
+model CompartilhamentoLog {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  tipo            String    // 'reavaliacao' | 'meta_concluida' | 'badge_rara'
+  conteudoId      String
+  recompensado    Boolean   @default(false)
+  fpBonus         Int       @default(0)
+
+  createdAt       DateTime  @default(now())
+
+  @@index([userId])
+  @@index([userId, createdAt])
+  @@map("compartilhamento_logs")
+}
+
+// ============================================
+// PERFORMANCE SCORE LOG (Game76)
+// ============================================
+
+model PerformanceScoreLog {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  score           Float
+  data            DateTime  @db.Date
+
+  createdAt       DateTime  @default(now())
+
+  @@unique([userId, data])
+  @@index([userId])
+  @@index([data])
+  @@map("performance_score_logs")
 }
