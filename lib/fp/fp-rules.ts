@@ -41,7 +41,16 @@ export type FPAction =
 
   // Conversão
   | 'FP_TO_DISCOUNT'
-  | 'FP_MANUAL_ADJUSTMENT';
+  | 'FP_MANUAL_ADJUSTMENT'
+
+  // Reavaliacao Premium (Game73)
+  | 'REAVALIACAO_PREMIUM'
+
+  // Penalidade Inatividade (Game75)
+  | 'INACTIVITY_PENALTY'
+
+  // Disciplina Progressiva (Game74)
+  | 'DP_DAILY_CHECK';
 
 /**
  * Configuração de regras de FP
@@ -255,6 +264,37 @@ export const FP_RULES: Record<FPAction, FPRuleConfig> = {
     fpValue: 0,             // Ajuste manual por admin
     requiresApproval: true,
     description: 'Ajuste manual de FP por administrador',
+  },
+
+  // ========================================
+  // REAVALIACAO PREMIUM (Game73)
+  // ========================================
+
+  REAVALIACAO_PREMIUM: {
+    action: 'REAVALIACAO_PREMIUM',
+    fpValue: -120,          // Custo de 120 FP
+    description: 'Reavaliacao biomecanica premium (cooldown 45 dias)',
+  },
+
+  // ========================================
+  // PENALIDADE INATIVIDADE (Game75)
+  // ========================================
+
+  INACTIVITY_PENALTY: {
+    action: 'INACTIVITY_PENALTY',
+    fpValue: 0,             // Variavel baseado no tier de inatividade
+    description: 'Penalidade automatica por inatividade prolongada',
+  },
+
+  // ========================================
+  // DISCIPLINA PROGRESSIVA (Game74)
+  // ========================================
+
+  DP_DAILY_CHECK: {
+    action: 'DP_DAILY_CHECK',
+    fpValue: 0,             // Nao gera FP diretamente, atualiza score DP
+    dailyCap: 1,            // Apenas 1x por dia
+    description: 'Check-in diario de disciplina progressiva',
   },
 };
 

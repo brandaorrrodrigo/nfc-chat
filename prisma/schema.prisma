@@ -47,6 +47,11 @@ model User {
   // Biometric quota
   free_baseline_used    Boolean  @default(false)  // Já usou baseline grátis?
 
+  // Disciplina Progressiva (Game74)
+  dp_score          Float     @default(0)    // Score DP acumulado (0-1000)
+  dp_streak_days    Int       @default(0)    // Dias consecutivos >=70%
+  dp_last_updated   DateTime?                // Ultima atualizacao DP
+
   // Flags de moderação
   isMuted           Boolean   @default(false)
   mutedUntil        DateTime?
@@ -68,6 +73,9 @@ model User {
   biometricComparisons BiometricComparison[]
   arenaActivity     UserArenaActivity[]
   userExercises     UserExercise[]
+  reavaliacoes      Reavaliacao[]
+  disciplinaEntries DisciplinaProgressiva[]
+  inactivityLogs    InactivityLog[]
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
@@ -1109,4 +1117,72 @@ enum DeliveryStatus {
   DELIVERED
   FAILED
   RETRYING
+}
+
+// ============================================
+// REAVALIACAO PREMIUM (Game73)
+// ============================================
+
+model Reavaliacao {
+  id              String   @id @default(cuid())
+  userId          String
+  fpCost          Int      @default(120)
+  status          String   @default("completed")  // 'completed' | 'cancelled' | 'refunded'
+  transactionId   String?  // Referencia para FPTransaction
+
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt       DateTime @default(now())
+
+  @@index([userId])
+  @@index([userId, createdAt])
+  @@map("reavaliacoes")
+}
+
+// ============================================
+// DISCIPLINA PROGRESSIVA (Game74)
+// ============================================
+
+model DisciplinaProgressiva {
+  id                String   @id @default(cuid())
+  userId            String
+  date              DateTime @db.Date
+  mealsCompleted    Int      @default(0)
+  mealsTarget       Int      @default(6)
+  trainingDone      Boolean  @default(false)
+  hydrationMet      Boolean  @default(false)
+  sleepMet          Boolean  @default(false)
+  emotionalCheckin  Boolean  @default(false)
+  dailyScore        Float    @default(0)  // 0-100
+
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt         DateTime @default(now())
+
+  @@unique([userId, date])
+  @@index([userId])
+  @@index([date])
+  @@map("disciplina_progressiva")
+}
+
+// ============================================
+// PENALIDADE INATIVIDADE (Game75)
+// ============================================
+
+model InactivityLog {
+  id              String   @id @default(cuid())
+  userId          String
+  daysInactive    Int
+  penaltyFP       Int      @default(0)
+  tier            String    // 'warning' | 'light' | 'moderate' | 'severe' | 'maximum'
+  warningSent     Boolean  @default(false)
+  penaltyApplied  Boolean  @default(false)
+
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt       DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("inactivity_logs")
 }
