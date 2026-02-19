@@ -45,6 +45,10 @@ export default function VideoGallery({ arenaSlug, onSelectAnalysis }: VideoGalle
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ analysisId: video.id }),
+      }).then(res => {
+        if (res.status === 503) {
+          console.log(`[NFV Gallery] Servidor local indisponivel para ${video.id} — mantendo PENDING`);
+        }
       }).catch(() => {/* background retry */});
     });
 

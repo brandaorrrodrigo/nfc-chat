@@ -18,6 +18,11 @@ import { runComparativeAnalysis } from '@/lib/biomechanics/comparative-analyzer'
 
 const execAsync = promisify(exec)
 
+const isWindows = process.platform === 'win32'
+const FFMPEG_BIN = isWindows ? (process.env.FFMPEG_PATH || 'C:\\ProgramData\\chocolatey\\bin\\ffmpeg.exe') : 'ffmpeg'
+const FFPROBE_BIN = isWindows ? (process.env.FFPROBE_PATH || 'C:\\ProgramData\\chocolatey\\bin\\ffprobe.exe') : 'ffprobe'
+const EXEC_OPTIONS = isWindows ? { shell: 'cmd.exe' } : {}
+
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434'
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -41,6 +46,16 @@ export async function POST(request: NextRequest) {
 
     if (!analysisId) {
       return NextResponse.json({ error: 'analysisId é obrigatório' }, { status: 400 })
+    }
+
+    const isVercel = process.env.VERCEL === '1' || process.env.VERCEL_ENV !== undefined
+    if (isVercel) {
+      return NextResponse.json({
+        error: 'Análise biomecânica requer servidor local',
+        message: 'O processamento de vídeo (MediaPipe + FFmpeg + Ollama) não está disponível na Vercel. O vídeo foi salvo com status PENDING e será processado quando o servidor local estiver rodando.',
+        status: 'PENDING',
+        analysisId,
+      }, { status: 503 })
     }
 
     console.log(`🎥 Análise COMPARATIVA: ${analysisId}`)
@@ -102,7 +117,8 @@ export async function POST(request: NextRequest) {
       let duration = 3
       try {
         const { stdout } = await execAsync(
-          `ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${videoPath}"`
+          `"${FFPROBE_BIN}" -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${videoPath}"`,
+          EXEC_OPTIONS
         )
         duration = parseFloat(stdout.trim()) || 3
       } catch {
@@ -119,7 +135,8 @@ export async function POST(request: NextRequest) {
         const framePath = path.join(tempDir, `frame_${i}.jpg`)
 
         await execAsync(
-          `ffmpeg -y -ss ${timestamp} -i "${videoPath}" -frames:v 1 -q:v 2 "${framePath}"`
+          `"${FFMPEG_BIN}" -y -ss ${timestamp} -i "${videoPath}" -frames:v 1 -q:v 2 "${framePath}"`,
+          EXEC_OPTIONS
         )
 
         const imageBuffer = await fs.readFile(framePath)

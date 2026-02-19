@@ -58,6 +58,7 @@ export default function VideoDetailPage() {
   const [voted, setVoted] = useState<string | null>(null);
   const [voting, setVoting] = useState(false);
   const [retrying, setRetrying] = useState(false);
+  const [pendingLocal, setPendingLocal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
@@ -107,11 +108,14 @@ export default function VideoDetailPage() {
     const autoRetryTimer = setTimeout(async () => {
       console.log(`[NFV] Auto-retry: re-triggering analysis for ${videoId}`);
       try {
-        await fetch('/api/nfv/analysis', {
+        const res = await fetch('/api/nfv/analysis', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ analysisId: videoId }),
         });
+        if (res.status === 503) {
+          setPendingLocal(true); // Vercel: sem servidor local, manter como pendente
+        }
       } catch {
         // polling vai detectar mudancas
       }
@@ -123,12 +127,17 @@ export default function VideoDetailPage() {
   const handleRetryAnalysis = async () => {
     setRetrying(true);
     try {
-      await fetch('/api/nfv/analysis', {
+      const res = await fetch('/api/nfv/analysis', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ analysisId: videoId }),
       });
-      await fetchAnalysis();
+      if (res.status === 503) {
+        setPendingLocal(true); // Vercel: sem servidor local disponível
+      } else {
+        setPendingLocal(false);
+        await fetchAnalysis();
+      }
     } catch {
       // polling vai pegar as mudancas
     } finally {
@@ -1366,11 +1375,23 @@ export default function VideoDetailPage() {
         {/* Analysis Content */}
         {analysis.status === 'PENDING_AI' || analysis.status === 'PROCESSING' ? (
           <div className="bg-zinc-900 rounded-xl p-5 border border-zinc-800 text-center">
-            <Loader2 className="w-8 h-8 text-purple-400 animate-spin mx-auto mb-3" />
-            <p className="text-sm text-zinc-300 font-medium">
-              {analysis.status === 'PROCESSING' ? 'Analisando video...' : 'Na fila de analise...'}
-            </p>
-            <p className="text-xs text-zinc-500 mt-1">Atualizando automaticamente</p>
+            {pendingLocal ? (
+              <>
+                <Clock className="w-8 h-8 text-yellow-400 mx-auto mb-3" />
+                <p className="text-sm text-zinc-300 font-medium">Aguardando servidor local</p>
+                <p className="text-xs text-zinc-500 mt-1">
+                  O video foi salvo. A analise sera processada quando o servidor local estiver ativo.
+                </p>
+              </>
+            ) : (
+              <>
+                <Loader2 className="w-8 h-8 text-purple-400 animate-spin mx-auto mb-3" />
+                <p className="text-sm text-zinc-300 font-medium">
+                  {analysis.status === 'PROCESSING' ? 'Analisando video...' : 'Na fila de analise...'}
+                </p>
+                <p className="text-xs text-zinc-500 mt-1">Atualizando automaticamente</p>
+              </>
+            )}
           </div>
         ) : analysis.status === 'ERROR' ? (
           <div className="bg-zinc-900 rounded-xl p-5 border border-red-800/50">
@@ -1387,7 +1408,7 @@ export default function VideoDetailPage() {
               className="px-4 py-2 rounded-lg bg-purple-600/20 border border-purple-600/30 text-purple-300 text-sm hover:bg-purple-600/30 transition-colors disabled:opacity-50 flex items-center gap-2"
             >
               {retrying ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
-              Tentar novamente
+              {pendingLocal ? 'Verificar novamente' : 'Tentar novamente'}
             </button>
           </div>
         ) : displayAnalysis ? (

@@ -32,6 +32,11 @@ import { queryRAG, getTopicsByCategory } from '@/lib/biomechanics/biomechanics-r
 
 const execAsync = promisify(exec);
 
+const isWindows = process.platform === 'win32';
+const FFMPEG_BIN = isWindows ? (process.env.FFMPEG_PATH || 'C:\\ProgramData\\chocolatey\\bin\\ffmpeg.exe') : 'ffmpeg';
+const FFPROBE_BIN = isWindows ? (process.env.FFPROBE_PATH || 'C:\\ProgramData\\chocolatey\\bin\\ffprobe.exe') : 'ffprobe';
+const EXEC_OPTIONS = isWindows ? { shell: 'cmd.exe' } : {};
+
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -53,6 +58,16 @@ export async function POST(request: NextRequest) {
 
     if (!analysisId) {
       return NextResponse.json({ error: 'analysisId é obrigatório' }, { status: 400 });
+    }
+
+    const isVercel = process.env.VERCEL === '1' || process.env.VERCEL_ENV !== undefined;
+    if (isVercel) {
+      return NextResponse.json({
+        error: 'Análise biomecânica requer servidor local',
+        message: 'O processamento de vídeo (MediaPipe + FFmpeg + Ollama) não está disponível na Vercel. O vídeo foi salvo com status PENDING e será processado quando o servidor local estiver rodando.',
+        status: 'PENDING',
+        analysisId,
+      }, { status: 503 });
     }
 
     console.log(`🎥 Iniciando análise biomecânica: ${analysisId}`);
@@ -119,7 +134,7 @@ export async function POST(request: NextRequest) {
 
       // 5. Verificar ffmpeg
       try {
-        await execAsync('ffmpeg -version');
+        await execAsync(`"${FFMPEG_BIN}" -version`, EXEC_OPTIONS);
       } catch {
         await updateAnalysisError(analysisId, 'ffmpeg não instalado');
         return NextResponse.json(
@@ -130,7 +145,8 @@ export async function POST(request: NextRequest) {
 
       // 6. Obter duração do vídeo
       const { stdout: durationOut } = await execAsync(
-        `ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${videoPath}"`
+        `"${FFPROBE_BIN}" -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${videoPath}"`,
+        EXEC_OPTIONS
       );
       const duration = parseFloat(durationOut.trim()) || 10;
       console.log(`   Duração: ${duration.toFixed(1)}s`);
@@ -145,7 +161,8 @@ export async function POST(request: NextRequest) {
         const framePath = path.join(tempDir, `frame_${i}.jpg`);
 
         await execAsync(
-          `ffmpeg -ss ${timestamp} -i "${videoPath}" -vframes 1 -q:v 2 "${framePath}" -y`
+          `"${FFMPEG_BIN}" -ss ${timestamp} -i "${videoPath}" -vframes 1 -q:v 2 "${framePath}" -y`,
+          EXEC_OPTIONS
         );
 
         const imageBuffer = await fs.readFile(framePath);

@@ -20,13 +20,21 @@ const VISION_MODEL_FALLBACK = 'llava:latest'; // Fallback se llama3.2-vision nã
 // Detectar sistema operacional
 const isWindows = process.platform === 'win32';
 
+// Caminhos absolutos para ffmpeg/ffprobe no Windows (evita problema com /bin/sh no PATH)
+const FFMPEG_BIN = isWindows
+  ? (process.env.FFMPEG_PATH || 'C:\\ProgramData\\chocolatey\\bin\\ffmpeg.exe')
+  : 'ffmpeg';
+const FFPROBE_BIN = isWindows
+  ? (process.env.FFPROBE_PATH || 'C:\\ProgramData\\chocolatey\\bin\\ffprobe.exe')
+  : 'ffprobe';
+const EXEC_OPTIONS = isWindows ? { shell: 'cmd.exe' } : {};
+
 /**
  * Verifica se ffmpeg está instalado
  */
 export async function checkFfmpegAvailable(): Promise<boolean> {
   try {
-    const cmd = isWindows ? 'where ffmpeg' : 'which ffmpeg';
-    await execAsync(cmd);
+    await execAsync(`"${FFMPEG_BIN}" -version`, EXEC_OPTIONS);
     return true;
   } catch {
     console.warn('⚠️ ffmpeg não encontrado. Instale com: choco install ffmpeg (Windows) ou brew install ffmpeg (Mac)');
@@ -131,7 +139,8 @@ export async function extractSingleFrame(
 
     // Tentar extrair frame no segundo 1
     await execAsync(
-      `ffmpeg -ss 1 -i "${videoPath}" -vframes 1 -q:v 2 "${framePath}" -y`
+      `"${FFMPEG_BIN}" -ss 1 -i "${videoPath}" -vframes 1 -q:v 2 "${framePath}" -y`,
+      EXEC_OPTIONS
     );
 
     // Verificar se arquivo foi criado
@@ -159,7 +168,8 @@ export async function extractFrames(
 
     // Obter duração do vídeo
     const { stdout: durationOutput } = await execAsync(
-      `ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${videoPath}"`
+      `"${FFPROBE_BIN}" -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "${videoPath}"`,
+      EXEC_OPTIONS
     );
 
     const duration = parseFloat(durationOutput.trim());
@@ -178,7 +188,8 @@ export async function extractFrames(
       const framePath = path.join(outputDir, `frame_${i.toString().padStart(3, '0')}.jpg`);
 
       await execAsync(
-        `ffmpeg -ss ${timestamp} -i "${videoPath}" -vframes 1 -q:v 2 "${framePath}" -y`
+        `"${FFMPEG_BIN}" -ss ${timestamp} -i "${videoPath}" -vframes 1 -q:v 2 "${framePath}" -y`,
+        EXEC_OPTIONS
       );
 
       framePaths.push(framePath);

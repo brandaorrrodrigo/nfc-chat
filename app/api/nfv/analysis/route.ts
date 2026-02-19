@@ -68,6 +68,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'analysisId obrigatorio' }, { status: 400 });
     }
 
+    // Detectar ambiente Vercel — sem MediaPipe/FFmpeg/Ollama disponíveis
+    const isVercel = process.env.VERCEL === '1' || process.env.VERCEL_ENV !== undefined;
+    if (isVercel) {
+      // Manter status PENDING_AI no banco para o servidor local processar depois
+      return NextResponse.json({
+        error: 'Análise biomecânica requer servidor local',
+        message: 'O processamento de vídeo (MediaPipe + FFmpeg + Ollama) não está disponível na Vercel. O vídeo foi salvo com status PENDING e será processado quando o servidor local estiver rodando.',
+        status: 'PENDING',
+        analysisId,
+      }, { status: 503 });
+    }
+
     const supabase = getSupabase();
 
     // 1. Buscar análise
