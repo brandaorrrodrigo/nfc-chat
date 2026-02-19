@@ -1,201 +1,154 @@
-/**
- * Engine de Cálculo de Confiabilidade Técnica
- *
- * Calcula o índice de confiabilidade da análise biomecânica baseado em 6 fatores:
- * 1. Calibração espacial (distância, resolução)
- * 2. Resolução temporal (fps)
- * 3. Visibilidade de landmarks
- * 4. Estabilidade de tracking
- * 5. Cobertura de planos (view coverage)
- * 6. Qualidade de iluminação
- */
-
-import type {
-  CameraSetup,
-  LandmarkData,
-  ConfidenceFactors
-} from '../types/biomechanical-analysis.types';
 import {
   CaptureMode,
+  CameraSetup,
+  ConfidenceFactors,
+  LandmarkData,
   BIOMECHANICAL_THRESHOLDS,
   CONFIDENCE_LEVEL_MAP
 } from '../types/biomechanical-analysis.types';
 
 /**
- * Engine singleton para cálculo de confiabilidade
+ * Engine de Cálculo de Confiabilidade da Análise Biomecânica
+ *
+ * Calcula índice de confiabilidade baseado em:
+ * - Calibração espacial
+ * - Resolução temporal
+ * - Visibilidade de landmarks
+ * - Estabilidade de tracking
+ * - Cobertura de ângulos
+ * - Qualidade de iluminação
  */
-class ConfidenceCalculatorEngine {
+
+export class ConfidenceCalculatorEngine {
+
   /**
-   * Calcula score de calibração espacial baseado em distância e resolução
-   * @param setup - Configuração da câmera
-   * @returns Score 0-100
+   * Calcula score de calibração espacial
    */
   private calculateSpatialCalibration(setup: CameraSetup): number {
-    const IDEAL_DISTANCE = 3.0; // metros
-    const MIN_RESOLUTION = 1280 * 720;
+    const idealDistance = 3.0; // metros
+    const distance = setup.distanceToSubject;
 
-    // Penalizar desvios da distância ideal
-    const distanceDeviation = Math.abs(setup.distanceToSubject - IDEAL_DISTANCE);
-    const distanceScore = Math.max(0, 100 - distanceDeviation * 20);
+    // Penaliza distâncias muito próximas ou muito distantes
+    const distanceScore = Math.max(0, 100 - Math.abs(distance - idealDistance) * 20);
 
-    // Score de resolução
-    const totalPixels = setup.resolution.width * setup.resolution.height;
-    const resolutionScore = Math.min(100, (totalPixels / MIN_RESOLUTION) * 100);
+    // Penaliza resoluções baixas
+    const minResolution = 1280 * 720;
+    const currentResolution = setup.resolution.width * setup.resolution.height;
+    const resolutionScore = Math.min(100, (currentResolution / minResolution) * 100);
 
-    // Ponderação: 60% distância, 40% resolução
-    return distanceScore * 0.6 + resolutionScore * 0.4;
+    return (distanceScore * 0.6 + resolutionScore * 0.4);
   }
 
   /**
-   * Calcula score de resolução temporal (fps normalizado)
-   * @param fps - Frames por segundo
-   * @returns Score 0-100
+   * Calcula score de resolução temporal
    */
   private calculateTemporalResolution(fps: number): number {
-    const { minimum, optimal } = BIOMECHANICAL_THRESHOLDS.fps;
+    const { minimum, recommended, optimal } = BIOMECHANICAL_THRESHOLDS.fps;
 
-    if (fps < minimum) {
-      return 0;
-    }
-
-    if (fps >= optimal) {
-      return 100;
-    }
+    if (fps < minimum) return 0;
+    if (fps >= optimal) return 100;
 
     // Normalização linear entre minimum e optimal
-    return ((fps - minimum) / (optimal - minimum)) * 100;
+    const range = optimal - minimum;
+    const value = fps - minimum;
+
+    return (value / range) * 100;
   }
 
   /**
    * Calcula score de visibilidade de landmarks
-   * @param landmarks - Landmarks detectados
-   * @returns Score 0-100
    */
   private calculateLandmarkVisibility(landmarks: LandmarkData[]): number {
-    if (landmarks.length === 0) {
-      return 0;
-    }
+    if (landmarks.length === 0) return 0;
 
-    // Contar landmarks visíveis e não oclusos
-    const visibleLandmarks = landmarks.filter(
-      (lm) => lm.visible && !lm.occluded
-    );
-    const visibilityPercentage = (visibleLandmarks.length / landmarks.length) * 100;
+    const visibleCount = landmarks.filter(l => l.visible && !l.occluded).length;
+    const visibilityPercentage = (visibleCount / landmarks.length) * 100;
 
-    // Calcular confiança média dos landmarks visíveis
-    const avgConfidence =
-      visibleLandmarks.reduce((sum, lm) => sum + lm.confidence, 0) /
-      visibleLandmarks.length;
+    // Aplica peso à confiança média dos landmarks
+    const avgConfidence = landmarks
+      .filter(l => l.visible)
+      .reduce((sum, l) => sum + l.confidence, 0) / visibleCount;
 
-    // Ponderação: 70% visibilidade, 30% confiança
-    return visibilityPercentage * 0.7 + avgConfidence * 100 * 0.3;
+    const confidenceScore = avgConfidence * 100;
+
+    return (visibilityPercentage * 0.7 + confidenceScore * 0.3);
   }
 
   /**
-   * Calcula score de estabilidade de tracking frame-to-frame
-   * @param current - Landmarks do frame atual
-   * @param previous - Landmarks do frame anterior
-   * @returns Score 0-100
+   * Calcula estabilidade de tracking frame-to-frame
    */
   private calculateTrackingStability(
-    current: LandmarkData[],
-    previous: LandmarkData[]
+    currentFrame: LandmarkData[],
+    previousFrame: LandmarkData[]
   ): number {
-    // Primeiro frame não tem previous
-    if (previous.length === 0) {
-      return 100;
-    }
+    if (previousFrame.length === 0) return 100; // primeiro frame
 
-    const variances: number[] = [];
+    let totalVariance = 0;
+    let comparedLandmarks = 0;
 
-    // Calcular variância para cada landmark correspondente
-    for (const currLm of current) {
-      const prevLm = previous.find((lm) => lm.name === currLm.name);
-      if (!prevLm || !currLm.visible || !prevLm.visible) {
-        continue;
-      }
+    currentFrame.forEach(current => {
+      const previous = previousFrame.find(p => p.name === current.name);
+      if (!previous || !current.visible || !previous.visible) return;
 
-      // Distância euclidiana 2D
-      const dx = currLm.x - prevLm.x;
-      const dy = currLm.y - prevLm.y;
+      const dx = current.x - previous.x;
+      const dy = current.y - previous.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
-      variances.push(distance);
-    }
+      totalVariance += distance;
+      comparedLandmarks++;
+    });
 
-    if (variances.length === 0) {
-      return 0;
-    }
+    if (comparedLandmarks === 0) return 0;
 
-    // Média das variâncias
-    const avgVariance = variances.reduce((sum, v) => sum + v, 0) / variances.length;
+    const avgVariance = totalVariance / comparedLandmarks;
 
-    // Score: 100 - (variância * fator de penalização)
-    // Variância típica em coordenadas normalizadas é ~0.01-0.02
-    const score = 100 - avgVariance * 5000;
+    // Threshold: variância < 0.02 = estável
+    const stabilityScore = Math.max(0, 100 - (avgVariance * 5000));
 
-    return Math.max(0, Math.min(100, score));
+    return stabilityScore;
   }
 
   /**
-   * Calcula score de cobertura de planos (view coverage)
-   * @param mode - Modo de captura
-   * @returns Score 0-100
+   * Calcula cobertura espacial baseada nos ângulos capturados
    */
   private calculateViewCoverage(mode: CaptureMode): number {
-    switch (mode) {
-      case CaptureMode.ESSENTIAL:
-        return 33; // 1 plano
-      case CaptureMode.ADVANCED:
-        return 66; // 2 planos ortogonais
-      case CaptureMode.PRO:
-        return 100; // 3 planos (reconstrução 3D completa)
-      default:
-        return 0;
-    }
+    const coverage = {
+      [CaptureMode.ESSENTIAL]: 33,  // 1 plano = 33%
+      [CaptureMode.ADVANCED]: 66,   // 2 planos = 66%
+      [CaptureMode.PRO]: 100        // 3 planos = 100%
+    };
+
+    return coverage[mode];
   }
 
   /**
-   * Calcula score de qualidade de iluminação baseado em uniformidade de confiança
-   * @param landmarks - Landmarks detectados
-   * @returns Score 0-100
+   * Calcula qualidade de iluminação baseada na variância de confiança
    */
   private calculateLightingQuality(landmarks: LandmarkData[]): number {
-    if (landmarks.length === 0) {
-      return 0;
-    }
+    if (landmarks.length === 0) return 0;
 
-    const visibleLandmarks = landmarks.filter((lm) => lm.visible);
-    if (visibleLandmarks.length === 0) {
-      return 0;
-    }
+    const confidences = landmarks
+      .filter(l => l.visible)
+      .map(l => l.confidence);
 
-    // Confiança média (brightness)
-    const avgConfidence =
-      visibleLandmarks.reduce((sum, lm) => sum + lm.confidence, 0) /
-      visibleLandmarks.length;
+    if (confidences.length === 0) return 0;
 
-    // Variância das confianças (uniformidade)
-    const variance =
-      visibleLandmarks.reduce(
-        (sum, lm) => sum + Math.pow(lm.confidence - avgConfidence, 2),
-        0
-      ) / visibleLandmarks.length;
+    // Alta confiança média = boa iluminação
+    const avgConfidence = confidences.reduce((a, b) => a + b, 0) / confidences.length;
 
-    // Scores individuais
-    const uniformityScore = Math.max(0, 100 - variance * 1000);
+    // Baixa variância = iluminação uniforme
+    const variance = confidences.reduce((sum, c) => {
+      return sum + Math.pow(c - avgConfidence, 2);
+    }, 0) / confidences.length;
+
+    const uniformityScore = Math.max(0, 100 - (variance * 1000));
     const brightnessScore = avgConfidence * 100;
 
-    // Ponderação: 40% uniformidade, 60% brilho
-    return uniformityScore * 0.4 + brightnessScore * 0.6;
+    return (uniformityScore * 0.4 + brightnessScore * 0.6);
   }
 
   /**
    * Calcula todos os fatores de confiabilidade
-   * @param setup - Setup da câmera
-   * @param currentLandmarks - Landmarks do frame atual
-   * @param previousLandmarks - Landmarks do frame anterior (opcional)
-   * @returns Objeto com todos os fatores
    */
   public calculateConfidenceFactors(
     setup: CameraSetup,
@@ -206,19 +159,14 @@ class ConfidenceCalculatorEngine {
       spatialCalibration: this.calculateSpatialCalibration(setup),
       temporalResolution: this.calculateTemporalResolution(setup.fps),
       landmarkVisibility: this.calculateLandmarkVisibility(currentLandmarks),
-      trackingStability: this.calculateTrackingStability(
-        currentLandmarks,
-        previousLandmarks
-      ),
+      trackingStability: this.calculateTrackingStability(currentLandmarks, previousLandmarks),
       viewCoverage: this.calculateViewCoverage(setup.mode),
       lightingQuality: this.calculateLightingQuality(currentLandmarks)
     };
   }
 
   /**
-   * Calcula score geral de confiabilidade (média ponderada dos fatores)
-   * @param factors - Fatores de confiabilidade
-   * @returns Score 0-100 (arredondado para 2 casas decimais)
+   * Calcula score final de confiabilidade (média ponderada)
    */
   public calculateOverallConfidence(factors: ConfidenceFactors): number {
     const weights = {
@@ -238,34 +186,23 @@ class ConfidenceCalculatorEngine {
       factors.viewCoverage * weights.viewCoverage +
       factors.lightingQuality * weights.lightingQuality;
 
-    return Math.round(score * 100) / 100;
+    return Math.round(score * 100) / 100; // 2 casas decimais
   }
 
   /**
-   * Classifica nível qualitativo de confiabilidade
-   * @param score - Score de confiabilidade (0-100)
-   * @returns Nível qualitativo
+   * Classifica nível de confiabilidade
    */
-  public getConfidenceLevel(
-    score: number
-  ): 'baixa' | 'moderada' | 'alta' | 'excelente' {
-    if (score >= CONFIDENCE_LEVEL_MAP.excelente.min) {
-      return 'excelente';
-    }
-    if (score >= CONFIDENCE_LEVEL_MAP.alta.min) {
-      return 'alta';
-    }
-    if (score >= CONFIDENCE_LEVEL_MAP.moderada.min) {
-      return 'moderada';
+  public getConfidenceLevel(score: number): 'baixa' | 'moderada' | 'alta' | 'excelente' {
+    for (const [level, range] of Object.entries(CONFIDENCE_LEVEL_MAP)) {
+      if (score >= range.min && score <= range.max) {
+        return level as 'baixa' | 'moderada' | 'alta' | 'excelente';
+      }
     }
     return 'baixa';
   }
 
   /**
-   * Valida se a confiabilidade é adequada para o modo de captura
-   * @param score - Score de confiabilidade
-   * @param mode - Modo de captura
-   * @returns true se confiabilidade é válida
+   * Valida se confiabilidade está acima do mínimo para o modo
    */
   public isConfidenceValid(score: number, mode: CaptureMode): boolean {
     const minRequired = BIOMECHANICAL_THRESHOLDS.minConfidence[mode];
@@ -273,46 +210,44 @@ class ConfidenceCalculatorEngine {
   }
 
   /**
-   * Gera recomendações para melhorar a confiabilidade
-   * @param factors - Fatores de confiabilidade
-   * @returns Array de recomendações textuais
+   * Gera recomendações baseadas em fatores baixos
    */
   public generateRecommendations(factors: ConfidenceFactors): string[] {
     const recommendations: string[] = [];
 
     if (factors.spatialCalibration < 70) {
       recommendations.push(
-        'Ajustar distância da câmera para aproximadamente 3 metros do sujeito'
+        'Ajustar distância da câmera para aproximadamente 3 metros do executante'
       );
     }
 
     if (factors.temporalResolution < 70) {
       recommendations.push(
-        'Aumentar taxa de frames para no mínimo 60 fps (ideal: 120 fps)'
+        'Aumentar taxa de captura para mínimo de 60 fps para melhor resolução temporal'
       );
     }
 
-    if (factors.landmarkVisibility < 70) {
+    if (factors.landmarkVisibility < BIOMECHANICAL_THRESHOLDS.landmarkVisibility.minimum) {
       recommendations.push(
-        'Melhorar enquadramento para garantir visibilidade de todos os landmarks críticos'
+        'Melhorar visibilidade de landmarks críticos (verificar oclusões e enquadramento)'
       );
     }
 
     if (factors.trackingStability < 70) {
       recommendations.push(
-        'Estabilizar câmera usando tripé ou suporte fixo para reduzir variações de tracking'
+        'Reduzir movimentos bruscos da câmera e estabilizar posicionamento'
       );
     }
 
     if (factors.viewCoverage < 66) {
       recommendations.push(
-        'Adicionar ângulos de câmera ortogonais para análise multiplanar (upgrade para modo Avançado ou Pro)'
+        'Adicionar ângulos de captura para análise tridimensional completa'
       );
     }
 
     if (factors.lightingQuality < 70) {
       recommendations.push(
-        'Melhorar iluminação para obter detecção mais uniforme dos landmarks'
+        'Melhorar iluminação do ambiente para distribuição uniforme e redução de sombras'
       );
     }
 
@@ -320,7 +255,5 @@ class ConfidenceCalculatorEngine {
   }
 }
 
-/**
- * Instância singleton do engine de confiabilidade
- */
+// Exporta instância singleton
 export const confidenceCalculator = new ConfidenceCalculatorEngine();
