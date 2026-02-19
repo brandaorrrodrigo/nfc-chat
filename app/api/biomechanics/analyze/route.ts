@@ -70,12 +70,45 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Vercel sem servidor externo configurado → instrução clara
+    // Vercel sem servidor externo configurado → tenta retornar análise cacheada do banco
     if (process.env.VERCEL) {
+      let vercelBody: { videoId?: string; equipmentConstraint?: string } = {};
+      try { vercelBody = await request.json(); } catch { /* body vazio */ }
+
+      if (vercelBody.videoId) {
+        try {
+          const supabase = getSupabase();
+          const { data: cached } = await supabase
+            .from(TABLE)
+            .select('id, ai_analysis, status, movement_pattern, created_at')
+            .eq('id', vercelBody.videoId)
+            .single();
+
+          if (cached?.ai_analysis) {
+            let analysis = cached.ai_analysis;
+            // Desserialização defensiva (até 3 níveis de string)
+            for (let i = 0; i < 3; i++) {
+              if (typeof analysis === 'string') {
+                try { analysis = JSON.parse(analysis); } catch { break; }
+              } else { break; }
+            }
+            return NextResponse.json({
+              success: true,
+              videoId: vercelBody.videoId,
+              cached: true,
+              pipeline: (analysis as Record<string, unknown>)?.pipeline || 'v2',
+              analysis,
+            });
+          }
+        } catch {
+          // Falhou ao buscar cache — cai no 503 abaixo
+        }
+      }
+
       return NextResponse.json({
         error: 'Análise biomecânica indisponível na Vercel',
         reason: 'serverless_limitation',
-        message: 'A análise requer FFmpeg + Python + MediaPipe que não rodam em serverless.',
+        message: 'A análise requer FFmpeg + Python + MediaPipe que não rodam em serverless. Para nova análise, configure ANALYSIS_SERVER_URL.',
         solution: 'Configure ANALYSIS_SERVER_URL na Vercel apontando para seu servidor local via Cloudflare Tunnel.',
       }, { status: 503 });
     }

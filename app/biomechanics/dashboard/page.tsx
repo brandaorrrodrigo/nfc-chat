@@ -7,7 +7,8 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { AlertCircle, CheckCircle, AlertTriangle, Zap, Target, TrendingUp, Info, Trash2, ArrowLeft, X, Loader2, RefreshCw } from 'lucide-react';
+import { AlertCircle, CheckCircle, AlertTriangle, Zap, Target, TrendingUp, Info, Trash2, ArrowLeft, X, Loader2, RefreshCw, Video, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 import CorrectivePlanCard from '@/components/nfv/CorrectivePlanCard';
 import { safeRender } from '@/lib/utils/safe-render';
 
@@ -1317,9 +1318,26 @@ export default function BiomechanicsDashboard() {
 
         {/* Empty State */}
         {!analysis && !loading && (
-          <div className="text-center py-12">
+          <div className="text-center py-16">
             <Zap className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-            <p className="text-slate-400 text-lg">Insira um ID de vídeo e clique em &quot;Analisar&quot; para começar</p>
+            <h3 className="text-xl font-bold text-white mb-2">Nenhuma análise carregada</h3>
+            <p className="text-slate-400 mb-2">
+              Insira um ID de vídeo no campo acima e clique em &quot;Analisar&quot; para visualizar
+            </p>
+            <p className="text-slate-500 text-sm mb-8">
+              ou escolha um vídeo já analisado na lista abaixo
+            </p>
+            <Link
+              href="/biomechanics/videos"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-slate-800 border border-slate-700 hover:border-cyan-500/50 rounded-lg text-white font-semibold transition"
+            >
+              <Video className="w-4 h-4 text-cyan-400" />
+              Ver vídeos analisados
+              <ArrowRight className="w-4 h-4 text-slate-500" />
+            </Link>
+            <p className="text-slate-600 text-xs mt-8">
+              Para nova análise, configure <code className="text-slate-500">ANALYSIS_SERVER_URL</code> na Vercel
+            </p>
           </div>
         )}
       </div>

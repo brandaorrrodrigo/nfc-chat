@@ -22,8 +22,14 @@ export default function BiomechanicsLayout({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-8">
               <Link
-                href="/biomechanics/dashboard"
+                href="/biomechanics"
                 className="text-white font-semibold hover:text-cyan-400 transition"
+              >
+                Início
+              </Link>
+              <Link
+                href="/biomechanics/dashboard"
+                className="text-slate-400 hover:text-white transition"
               >
                 Dashboard
               </Link>
