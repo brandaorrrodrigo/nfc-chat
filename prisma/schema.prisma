@@ -97,6 +97,9 @@ model User {
   compartilhamentos CompartilhamentoLog[]
   psHistorico       PerformanceScoreLog[]
 
+  // Padrao Persistente
+  padroesPersistentes PadraoPersistente[]
+
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
@@ -1463,4 +1466,60 @@ model PerformanceScoreLog {
   @@index([userId])
   @@index([data])
   @@map("performance_score_logs")
+}
+
+// ============================================
+// PADRAO PERSISTENTE
+// ============================================
+
+model PadraoPersistente {
+  id                    String    @id @default(cuid())
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  tipoDesvio            String    // TipoDesvio: 'valgo_dinamico', 'cifose_toracica', etc.
+  status                String    @default("detectado")  // 'detectado' | 'aguardando_escolha' | 'em_intervencao' | 'resolvido' | 'expirado'
+  focoAtual             String?   // 'correcao' | 'performance' | null
+  duracao               String?   // '2_semanas' | '4_semanas' | 'ate_proxima_avaliacao'
+
+  gravidadeInicial      Float     @default(0)
+  gravidadeAtual        Float     @default(0)
+
+  dataInicioIntervencao DateTime?
+  dataFimIntervencao    DateTime?
+
+  // Deteccao
+  condicaoA             Boolean   @default(false)  // 3 avaliacoes consecutivas
+  condicaoB             Boolean   @default(false)  // 12 semanas sem melhora
+  avaliacoesConsecutivas Int      @default(0)
+  semanasDesdePrimeira  Int       @default(0)
+
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  // Historico de focos
+  historicoFocos        HistoricoFocoPadrao[]
+
+  @@index([userId])
+  @@index([userId, status])
+  @@index([tipoDesvio])
+  @@map("padroes_persistentes")
+}
+
+model HistoricoFocoPadrao {
+  id                    String    @id @default(cuid())
+  padraoId              String
+  padrao                PadraoPersistente @relation(fields: [padraoId], references: [id], onDelete: Cascade)
+
+  foco                  String    // 'correcao' | 'performance'
+  dataInicio            DateTime
+  dataFim               DateTime?
+  efetividade           Float?    // 0-100 apos conclusao
+  gravidadeInicio       Float
+  gravidadeFim          Float?
+
+  createdAt             DateTime  @default(now())
+
+  @@index([padraoId])
+  @@map("historico_foco_padrao")
 }
