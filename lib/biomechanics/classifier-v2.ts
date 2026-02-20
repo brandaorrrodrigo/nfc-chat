@@ -276,6 +276,45 @@ function buildContextualNote(
 }
 
 /**
+ * Ajusta os thresholds da lombar proporcionalmente à profundidade do agachamento.
+ *
+ * Racional: butt wink é anatomicamente esperado em ATG (<70°). O threshold fixo
+ * de 22° danger penaliza atletas que fazem ATG corretamente.
+ *
+ * kneeMinAngle = ângulo no fundo (peakAngle do joelho):
+ *   > 90°: agachamento raso → threshold BASE (mais estrito, nenhuma tolerância)
+ *   70–90°: paralelo → threshold × 1.8 (relaxado)
+ *   < 70°: ATG → threshold × 2.8 (muito relaxado — retroversão esperada)
+ */
+function getAdjustedLumbarThresholds(
+  kneeMinAngle: number,
+  base: { metric: string; acceptable: number; warning: number; danger: number; unit: string },
+): { metric: string; acceptable: number; warning: number; danger: number; unit: string } {
+  if (kneeMinAngle > 90) return base; // agachamento raso: threshold original
+  const depthFactor = kneeMinAngle < 70 ? 2.8 : 1.8;
+  return {
+    metric: base.metric,
+    unit: base.unit,
+    acceptable: base.acceptable * depthFactor,
+    warning: base.warning * depthFactor,
+    danger: base.danger * depthFactor,
+  };
+}
+
+/**
+ * Retorna mensagem contextual para butt wink baseada na profundidade do agachamento.
+ */
+function getLumbarInstabilityMeaning(kneeMinAngle: number): string {
+  if (kneeMinAngle < 70) {
+    return 'Retroversão pélvica proporcional à profundidade ATG — anatomicamente esperado. Foco em mobilidade de tornozelo e quadril.';
+  }
+  if (kneeMinAngle > 90) {
+    return 'Butt wink precoce — fraqueza de estabilizadores ou falta de mobilidade. Trabalhe mobilidade de tornozelo e hip flexor.';
+  }
+  return 'Butt wink — retroversão pélvica. Risco de disco lombar.';
+}
+
+/**
  * Classifica um exercício completo usando o paradigma Motor vs Estabilizador
  */
 export function classifyExerciseV2(
@@ -350,16 +389,29 @@ export function classifyExerciseV2(
     if (!input) continue;
 
     const mode = sj.stabilityMode || 'rigid';
-    const stabClass = classifyStabilizer(input.variationValue, sj.criteria.maxVariation, mode);
+
+    // Threshold proporcional à profundidade para lombar em squat
+    let effectiveMaxVariation = sj.criteria.maxVariation;
+    let effectiveInstabilityMeaning = sj.instabilityMeaning;
+    if (sj.joint === 'lumbar' && template.category === 'squat') {
+      const kneeInput = motorInputs.find(m => m.joint === 'knee');
+      const kneeMinAngle = kneeInput?.peakAngle;
+      if (kneeMinAngle !== undefined) {
+        effectiveMaxVariation = getAdjustedLumbarThresholds(kneeMinAngle, sj.criteria.maxVariation);
+        effectiveInstabilityMeaning = getLumbarInstabilityMeaning(kneeMinAngle);
+      }
+    }
+
+    const stabClass = classifyStabilizer(input.variationValue, effectiveMaxVariation, mode);
     stabilizerSummary[stabClass]++;
 
-    const interpretation = getStabilizerInterpretation(stabClass, mode, sj.expectedState, sj.instabilityMeaning);
+    const interpretation = getStabilizerInterpretation(stabClass, mode, sj.expectedState, effectiveInstabilityMeaning);
 
     stabilizerAnalysis.push({
       joint: sj.joint,
       label: sj.label,
       expectedState: sj.expectedState,
-      instabilityMeaning: sj.instabilityMeaning,
+      instabilityMeaning: effectiveInstabilityMeaning,
       stabilityMode: mode,
       variation: {
         value: input.variationValue,

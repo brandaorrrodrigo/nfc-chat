@@ -3,6 +3,7 @@
  */
 
 import Link from 'next/link';
+import { FontScaler } from '@/components/biomechanics/FontScaler';
 
 export const metadata = {
   title: 'Dashboard Biomecânico - NutriFitCoach',
@@ -16,6 +17,7 @@ export default function BiomechanicsLayout({
 }) {
   return (
     <div>
+      <FontScaler scale={1.2} />
       {/* Navigation */}
       <nav className="bg-slate-900 border-b border-slate-700 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4">

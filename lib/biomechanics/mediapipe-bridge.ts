@@ -443,13 +443,24 @@ function analyze3Points(
   // returnAngle: ângulo no último frame (representa a posição de retorno)
   const returnAngle = values[values.length - 1];
 
-  // Controle excêntrico: taxa de mudança após o pico
-  // Com 36 frames em 10s → 0.28s/frame. Salto > 30°/frame = soltou o peso.
+  // Controle excêntrico: lógica diferente por direção
   let eccentricControl: EccentricControl = 'unknown';
   const afterPeak = values.slice(peakIdx);
   if (afterPeak.length >= 2) {
-    const maxJump = Math.max(...afterPeak.slice(0, -1).map((v, i) => Math.abs(afterPeak[i + 1] - v)));
-    eccentricControl = maxJump > 30 ? 'dropped' : 'controlled';
+    if (direction === 'lower_is_peak') {
+      // Squat, deadlift, pull, press: pico = menor ângulo, retorno = maior ângulo
+      // "Soltou o peso" = NUNCA voltou a ≥150° após o fundo (incompleto ou caiu sem controle)
+      // Se voltou a ≥150°, completou a rep — mesmo que rápido, não é "dropped"
+      // Isso evita falso positivo em múltiplas reps: 35°→88°→próxima descida não é "dropped"
+      const returnedToStanding = afterPeak.some(v => v >= 150);
+      eccentricControl = returnedToStanding ? 'controlled' : 'dropped';
+    } else {
+      // higher_is_peak (hip thrust, lateral raise): pico = maior ângulo, descida = excêntrica
+      // Verificar velocidade de descida após o pico (salto frame-a-frame)
+      // Com 48 frames em ~10s → ~0.21s/frame. Salto > 30°/frame = desceu sem controle.
+      const maxJump = Math.max(...afterPeak.slice(0, -1).map((v, i) => Math.abs(afterPeak[i + 1] - v)));
+      eccentricControl = maxJump > 30 ? 'dropped' : 'controlled';
+    }
   }
 
   return { startAngle, peakAngle, returnAngle, eccentricControl };

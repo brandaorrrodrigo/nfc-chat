@@ -101,31 +101,9 @@ export default function VideoDetailPage() {
     return () => clearInterval(intervalId);
   }, [analysis?.status, fetchAnalysis, pendingLocal]);
 
-  // Auto-retry: se video fica stuck em PENDING_AI ou ERROR por >30s, re-trigger analise automaticamente
-  // Para completamente quando pendingLocal=true (servidor local indisponível)
-  useEffect(() => {
-    if (!analysis) return;
-    if (pendingLocal) return; // Já recebeu 503 — não tentar mais automaticamente
-    if (!['PENDING_AI', 'ERROR'].includes(analysis.status)) return;
-
-    const autoRetryTimer = setTimeout(async () => {
-      console.log(`[NFV] Auto-retry: re-triggering analysis for ${videoId}`);
-      try {
-        const res = await fetch('/api/nfv/analysis', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ analysisId: videoId }),
-        });
-        if (res.status === 503) {
-          setPendingLocal(true); // Vercel: sem servidor local — para todos os retries
-        }
-      } catch {
-        // polling vai detectar mudancas
-      }
-    }, 30000); // 30 segundos
-
-    return () => clearTimeout(autoRetryTimer);
-  }, [analysis?.status, videoId, pendingLocal]); // pendingLocal nas deps para parar o efeito
+  // Auto-retry removido: causava loop infinito de re-renders ao chamar setPendingLocal(true)
+  // dentro de um setTimeout callback. O vídeo fica com status PENDING_AI no banco e o
+  // servidor local o processa quando voltar online. O polling de 10s detecta quando completa.
 
   const handleRetryAnalysis = async () => {
     setRetrying(true);
