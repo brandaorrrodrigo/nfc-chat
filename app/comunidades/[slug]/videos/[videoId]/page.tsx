@@ -88,9 +88,10 @@ export default function VideoDetailPage() {
   }, [fetchAnalysis]);
 
   // Polling: re-fetch a cada 10s quando status e PENDING_AI ou PROCESSING
+  // Para quando pendingLocal=true (servidor local indisponível — status não vai mudar)
   useEffect(() => {
     if (!analysis) return;
-    const shouldPoll = ['PENDING_AI', 'PROCESSING'].includes(analysis.status);
+    const shouldPoll = !pendingLocal && ['PENDING_AI', 'PROCESSING'].includes(analysis.status);
     if (!shouldPoll) return;
 
     const intervalId = setInterval(() => {
@@ -98,11 +99,13 @@ export default function VideoDetailPage() {
     }, 10000);
 
     return () => clearInterval(intervalId);
-  }, [analysis?.status, fetchAnalysis]);
+  }, [analysis?.status, fetchAnalysis, pendingLocal]);
 
   // Auto-retry: se video fica stuck em PENDING_AI ou ERROR por >30s, re-trigger analise automaticamente
+  // Para completamente quando pendingLocal=true (servidor local indisponível)
   useEffect(() => {
     if (!analysis) return;
+    if (pendingLocal) return; // Já recebeu 503 — não tentar mais automaticamente
     if (!['PENDING_AI', 'ERROR'].includes(analysis.status)) return;
 
     const autoRetryTimer = setTimeout(async () => {
@@ -114,7 +117,7 @@ export default function VideoDetailPage() {
           body: JSON.stringify({ analysisId: videoId }),
         });
         if (res.status === 503) {
-          setPendingLocal(true); // Vercel: sem servidor local, manter como pendente
+          setPendingLocal(true); // Vercel: sem servidor local — para todos os retries
         }
       } catch {
         // polling vai detectar mudancas
@@ -122,7 +125,7 @@ export default function VideoDetailPage() {
     }, 30000); // 30 segundos
 
     return () => clearTimeout(autoRetryTimer);
-  }, [analysis?.status, videoId]);
+  }, [analysis?.status, videoId, pendingLocal]); // pendingLocal nas deps para parar o efeito
 
   const handleRetryAnalysis = async () => {
     setRetrying(true);

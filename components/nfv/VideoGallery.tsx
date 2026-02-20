@@ -19,6 +19,7 @@ export default function VideoGallery({ arenaSlug, onSelectAnalysis }: VideoGalle
   const [selectedPattern, setSelectedPattern] = useState<string | undefined>();
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [noLocalServer, setNoLocalServer] = useState(false);
 
   const { analyses, loading, error, hasMore, fetchAnalyses, loadMore, deleteAnalysis } = useVideoAnalysis({
     arenaSlug,
@@ -32,7 +33,9 @@ export default function VideoGallery({ arenaSlug, onSelectAnalysis }: VideoGalle
   }, [fetchAnalyses]);
 
   // Auto-retry: quando galeria carrega, detecta videos stuck e re-trigga analise
+  // Para completamente se servidor local não estiver disponível (503)
   useEffect(() => {
+    if (noLocalServer) return; // Servidor local indisponível — não tentar mais
     if (analyses.length === 0) return;
     const stuckVideos = analyses.filter(a =>
       ['PENDING_AI', 'ERROR'].includes(a.status)
@@ -40,26 +43,31 @@ export default function VideoGallery({ arenaSlug, onSelectAnalysis }: VideoGalle
     if (stuckVideos.length === 0) return;
 
     console.log(`[NFV Gallery] Found ${stuckVideos.length} stuck videos, triggering auto-retry...`);
-    stuckVideos.forEach(video => {
-      fetch('/api/nfv/analysis', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ analysisId: video.id }),
-      }).then(res => {
-        if (res.status === 503) {
-          console.log(`[NFV Gallery] Servidor local indisponivel para ${video.id} — mantendo PENDING`);
-        }
-      }).catch(() => {/* background retry */});
+
+    let refreshTimer: ReturnType<typeof setTimeout>;
+
+    Promise.all(
+      stuckVideos.map(video =>
+        fetch('/api/nfv/analysis', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ analysisId: video.id }),
+        }).then(res => res.status).catch(() => 0)
+      )
+    ).then(statuses => {
+      if (statuses.some(s => s === 503)) {
+        // Vercel sem servidor local — parar todos os retries
+        console.log('[NFV Gallery] Servidor local indisponivel — parando auto-retry');
+        setNoLocalServer(true);
+        return;
+      }
+      // Servidor respondeu — re-fetch apos 15s para pegar resultados
+      refreshTimer = setTimeout(() => fetchAnalyses(0), 15000);
     });
 
-    // Re-fetch apos 15s para pegar resultados
-    const refreshTimer = setTimeout(() => {
-      fetchAnalyses(0);
-    }, 15000);
-
-    return () => clearTimeout(refreshTimer);
+    return () => clearTimeout(refreshTimer!);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [analyses.length]); // Roda quando lista carrega
+  }, [analyses.length, noLocalServer]); // Para quando noLocalServer=true
 
   const patterns = arenaSlug
     ? NFV_CONFIG.PREMIUM_ARENAS.filter(a => a.slug === arenaSlug).map(a => a.pattern)
