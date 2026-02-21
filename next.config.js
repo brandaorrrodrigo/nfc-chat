@@ -57,6 +57,9 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
 
+  // Prisma client: tratar como externo para evitar bundling (92k linhas de tipos → OOM)
+  serverExternalPackages: ['@prisma/client', 'prisma'],
+
   // ✅ FIX: Excluir pastas de rede do Windows do build
   webpack: (config, { isServer }) => {
     if (isServer) {

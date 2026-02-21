@@ -10,6 +10,7 @@ const pathMod = require('path');
 const USER_HOME = (process.env.USERPROFILE || '').replace(/\\/g, '/');
 function shouldBlock(p) {
   if (!p || !USER_HOME) return false;
+  if (typeof p !== 'string') return false;
   const normalized = p.replace(/\\/g, '/');
   // Bloquear qualquer path sob C:/Users/NFC que NÃO seja AppData
   if (normalized.startsWith(USER_HOME + '/') && !normalized.startsWith(USER_HOME + '/AppData')) {

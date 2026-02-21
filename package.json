@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "next dev -p 3000",
-    "build": "prisma generate && next build",
+    "build": "prisma generate && node -r ./scripts/fix-eperm.js ./node_modules/next/dist/bin/next build --turbopack",
     "start": "next start -p 3001",
     "lint": "next lint",
     "avatar:analyze": "ts-node --project tsconfig.scripts.json scripts/analyze-avatar-distribution.ts",
