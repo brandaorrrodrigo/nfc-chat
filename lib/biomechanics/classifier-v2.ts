@@ -292,13 +292,24 @@ function buildContextualNote(
   }
 
   // Hinge (deadlift): hip-to-knee ratio — quadril deve dominar sobre joelho
+  // Com amplitude extrema (hipMinAngle < 45°: anilhas pequenas / deficit), joelho flexiona
+  // mais naturalmente → threshold proporcional à profundidade
   if (category === 'hinge' && joint === 'hip') {
     const hipInput = input;
     const kneeInput = allMotorInputs.find(m => m.joint === 'knee');
     if (kneeInput && kneeInput.romValue > 0) {
       const ratio = Math.round((hipInput.romValue / kneeInput.romValue) * 10) / 10;
-      if (ratio < 1.5) {
-        return `⚠ Hip/Knee ratio ${ratio}:1 (ideal >1.5) — joelho dominando sobre quadril (técnica de squat)`;
+      const hipMinAngle = hipInput.peakAngle;
+      const ratioThreshold = hipMinAngle !== undefined && hipMinAngle < 45 ? 1.0
+        : hipMinAngle !== undefined && hipMinAngle < 70 ? 1.2
+        : 1.5;
+      if (ratio < ratioThreshold) {
+        const depthNote = hipMinAngle !== undefined && hipMinAngle < 45
+          ? ' (amplitude extrema: threshold ajustado para 1.0)'
+          : hipMinAngle !== undefined && hipMinAngle < 70
+          ? ' (amplitude profunda: threshold ajustado para 1.2)'
+          : '';
+        return `⚠ Hip/Knee ratio ${ratio}:1 (ideal >${ratioThreshold})${depthNote} — joelho dominando sobre quadril`;
       } else {
         return `Hip/Knee ratio ${ratio}:1 ✓`;
       }

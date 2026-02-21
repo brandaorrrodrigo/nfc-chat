@@ -18,6 +18,13 @@ const config: Config = {
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  // Safelist: garante que classes de tamanho de fonte estejam sempre no bundle CSS
+  safelist: [
+    'text-9xl', 'text-8xl', 'text-7xl', 'text-6xl', 'text-5xl',
+    'text-4xl', 'text-3xl', 'text-2xl', 'text-xl', 'text-lg',
+    'text-base', 'text-sm', 'text-xs',
+    'text-[10px]', 'text-[9px]', 'text-[11px]',
+  ],
   theme: {
     extend: {
       colors: {
