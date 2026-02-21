@@ -166,7 +166,10 @@
       "Bash(Start-Process -FilePath \"npm\" -ArgumentList \"run\",\"dev\",\"--\",\"--port\",\"3001\" -WindowStyle Minimized)",
       "Bash(wmic process where \"ProcessId=16152\" get CommandLine)",
       "Bash(wmic process where \"ProcessId=18896\" get CommandLine)",
-      "Bash(npm uninstall:*)"
+      "Bash(npm uninstall:*)",
+      "Bash($env:NODE_OPTIONS=\"--max-old-space-size=4096\")",
+      "Bash(NODE_OPTIONS=\"--max-old-space-size=6144\" node:*)",
+      "Bash(NODE_OPTIONS=\"--max-old-space-size=4096\" node:*)"
     ]
   }
 }
