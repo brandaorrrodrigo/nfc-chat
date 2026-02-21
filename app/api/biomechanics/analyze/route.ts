@@ -362,6 +362,7 @@ export async function POST(request: NextRequest) {
           expected_state: s.expectedState,
           instability_meaning: s.instabilityMeaning,
           stability_mode: s.stabilityMode,
+          state_messages: s.stateMessages,
           variation: s.variation,
           interpretation: s.interpretation,
           corrective_exercises: s.correctiveExercises,

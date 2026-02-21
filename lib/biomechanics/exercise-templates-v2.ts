@@ -53,6 +53,7 @@ export interface StabilizerJoint {
   criteria: StabilizerCriteria;
   stabilityMode?: 'rigid' | 'controlled' | 'functional';
   instabilityMeaning: string;
+  stateMessages?: { firme?: string; alerta?: string; compensacao?: string };
   correctiveExercises: string[];
   ragTopics: string[];
 }
@@ -381,7 +382,7 @@ const CHEST_SUPPORTED_ROW_TEMPLATE: ExerciseTemplate = {
       expectedState: 'Lordose fisiológica mantida pelo apoio peitoral',
       side: 'midline',
       criteria: {
-        maxVariation: { metric: 'lumbar_angle_variation', acceptable: 5, warning: 10, danger: 15, unit: '°' },
+        maxVariation: { metric: 'lumbar_angle_variation', acceptable: 8, warning: 15, danger: 22, unit: '°' },
       },
       stabilityMode: 'rigid',
       instabilityMeaning: 'Perda de apoio no pad, possível uso de impulso',
@@ -394,23 +395,33 @@ const CHEST_SUPPORTED_ROW_TEMPLATE: ExerciseTemplate = {
       expectedState: 'Neutro ou leve flexão, sem desvio ulnar/radial',
       side: 'bilateral',
       criteria: {
-        maxVariation: { metric: 'wrist_deviation', acceptable: 5, warning: 10, danger: 20, unit: '°' },
+        maxVariation: { metric: 'wrist_deviation', acceptable: 15, warning: 25, danger: 35, unit: '°' },
       },
-      stabilityMode: 'controlled',
+      stabilityMode: 'functional',
       instabilityMeaning: 'Fraqueza de flexores/extensores de punho, grip inadequado',
+      stateMessages: {
+        firme: 'Grip estável',
+        alerta: 'Rotação natural do punho',
+        compensacao: 'Grip instável — verificar pegada',
+      },
       correctiveExercises: ['wrist curls', "farmer's walk", 'dead hang'],
       ragTopics: ['alinhamento punho remada'],
     },
     {
       joint: 'trunk',
       label: 'Tronco',
-      expectedState: 'Firme no apoio peitoral, sem rotação',
+      expectedState: 'Firme no apoio peitoral, sem rotação excessiva',
       side: 'midline',
       criteria: {
-        maxVariation: { metric: 'trunk_rotation_variation', acceptable: 5, warning: 10, danger: 18, unit: '°' },
+        maxVariation: { metric: 'trunk_rotation_variation', acceptable: 12, warning: 20, danger: 30, unit: '°' },
       },
-      stabilityMode: 'rigid',
+      stabilityMode: 'controlled',
       instabilityMeaning: 'Uso de impulso rotacional, core fraco ou carga excessiva',
+      stateMessages: {
+        firme: 'Movimento escapular normal',
+        alerta: 'Possível perda de contato com o pad',
+        compensacao: 'Saiu do pad — usando impulso',
+      },
       correctiveExercises: ['pallof press', 'anti-rotação com cabo', 'prancha lateral'],
       ragTopics: ['estabilidade tronco remada', 'anti-rotação core'],
     },

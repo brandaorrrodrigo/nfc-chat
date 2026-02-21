@@ -365,6 +365,7 @@ export default function BiomechanicsAnalysisView({
               const stabBorder = stabClass === 'excellent' ? 'border-green-500/50'
                 : stabClass === 'info' ? 'border-blue-500/50'
                 : stabClass === 'warning' ? 'border-orange-500/50' : 'border-red-500/50';
+              const stateMsgs = (s as { state_messages?: { firme?: string; alerta?: string; compensacao?: string } }).state_messages;
               const stateMsg = (() => {
                 if (mode === 'rigid') {
                   if (cls === 'firme') return { text: 'Estavel', color: 'text-green-400', icon: '✓' };
@@ -372,13 +373,14 @@ export default function BiomechanicsAnalysisView({
                   return { text: 'Compensacao — corrigir', color: 'text-red-400', icon: '✗' };
                 }
                 if (mode === 'controlled') {
-                  if (cls === 'firme') return { text: 'Estavel', color: 'text-green-400', icon: '✓' };
-                  if (cls === 'alerta') return { text: 'Movimento aceitavel para este exercicio', color: 'text-blue-400', icon: '~' };
-                  return { text: 'Movimento excessivo — possivel impulso', color: 'text-orange-400', icon: '⚠' };
+                  if (cls === 'firme') return { text: stateMsgs?.firme || 'Estavel', color: 'text-green-400', icon: '✓' };
+                  if (cls === 'alerta') return { text: stateMsgs?.alerta || 'Movimento aceitavel para este exercicio', color: 'text-blue-400', icon: '~' };
+                  return { text: stateMsgs?.compensacao || 'Movimento excessivo — possivel impulso', color: 'text-orange-400', icon: '⚠' };
                 }
-                if (cls === 'firme') return { text: 'Controle excelente', color: 'text-green-400', icon: '✓' };
-                if (cls === 'alerta') return { text: 'Momentum normal da tecnica', color: 'text-blue-400', icon: '~' };
-                return { text: 'Momentum excessivo — reduzir carga', color: 'text-orange-400', icon: '⚠' };
+                // functional
+                if (cls === 'firme') return { text: stateMsgs?.firme || 'Controle excelente', color: 'text-green-400', icon: '✓' };
+                if (cls === 'alerta') return { text: stateMsgs?.alerta || 'Momentum normal da tecnica', color: 'text-blue-400', icon: '~' };
+                return { text: stateMsgs?.compensacao || 'Momentum excessivo — reduzir carga', color: 'text-orange-400', icon: '⚠' };
               })();
               return (
                 <div key={i} className={`bg-zinc-800/50 rounded-xl p-4 border-l-3 ${stabBorder}`}>

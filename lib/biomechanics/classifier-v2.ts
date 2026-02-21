@@ -48,6 +48,7 @@ export interface StabilizerJointResult {
   expectedState: string;
   instabilityMeaning: string;
   stabilityMode: 'rigid' | 'controlled' | 'functional';
+  stateMessages?: { firme?: string; alerta?: string; compensacao?: string };
   variation: { value: number; unit: string; classification: StabilizerClassification; classificationLabel: string };
   interpretation: string;
   correctiveExercises: string[];
@@ -413,6 +414,7 @@ export function classifyExerciseV2(
       expectedState: sj.expectedState,
       instabilityMeaning: effectiveInstabilityMeaning,
       stabilityMode: mode,
+      stateMessages: sj.stateMessages,
       variation: {
         value: input.variationValue,
         unit: input.unit || sj.criteria.maxVariation.unit,
