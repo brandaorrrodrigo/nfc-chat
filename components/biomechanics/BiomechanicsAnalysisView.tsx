@@ -226,7 +226,8 @@ export default function BiomechanicsAnalysisView({
           </div>
         )}
 
-        {(summary || safeRender(report.resumo_executivo || report.resumo || '')) && (
+        {/* Resumo textual: suprimir para V2 (texto LLM pode conter frases indesejadas) */}
+        {!pipelineVersion && (summary || safeRender(report.resumo_executivo || report.resumo || '')) && (
           <p className="text-sm text-zinc-300 border-t border-zinc-800 pt-4">
             {safeRender(report.resumo_executivo || report.resumo) || safeRender(summary)}
           </p>
@@ -252,7 +253,8 @@ export default function BiomechanicsAnalysisView({
         const problems = stabilizerAnalysis
           .filter(s => s.variation.classification !== 'firme')
           .map(s => safeRender(s.instability_meaning || s.interpretation || `${safeRender(s.label)}: ${safeRender(s.variation.classificationLabel)}`));
-        const positives = (report.pontos_positivos as string[]) || motorAnalysis
+        // Para V2: usar apenas dados estruturados (não texto LLM do report)
+        const positives = (!pipelineVersion && report.pontos_positivos as string[]) || motorAnalysis
           .filter(m => ['excellent', 'good'].includes(m.rom.classification))
           .slice(0, 3)
           .map(m => `${safeRender(m.label)}: ${safeRender(m.rom.classificationLabel)}`);
