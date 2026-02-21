@@ -257,8 +257,8 @@ export default function VideoDetailPage() {
         </div>
       </div>
 
-      {/* Content */}
-      <div className="max-w-3xl mx-auto px-4 py-6 space-y-6">
+      {/* Vídeo + meta — container estreito (mobile-friendly) */}
+      <div className="max-w-3xl mx-auto px-4 pt-6 space-y-6">
         {/* Video */}
         <VideoPlayer
           src={analysis.video_url}
@@ -314,8 +314,10 @@ export default function VideoDetailPage() {
             <p className="text-sm text-zinc-300">{analysis.user_description}</p>
           </div>
         )}
+      </div>
 
-        {/* Analysis Content */}
+      {/* Análise — container largo (mesmo do dashboard) */}
+      <div className="max-w-5xl mx-auto px-4 py-6">
         {analysis.status === 'PENDING_AI' || analysis.status === 'PROCESSING' ? (
           <div className="bg-zinc-900 rounded-xl p-5 border border-zinc-800 text-center">
             {pendingLocal ? (
