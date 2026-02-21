@@ -56,6 +56,7 @@ export interface StabilizerJointResult {
     maxFrame?: number;
     p10?: number;
     p90?: number;
+    baseThresholds: { acceptable: number; warning: number; danger: number };
     effectiveThresholds: { acceptable: number; warning: number; danger: number };
     explanation: string;
   };
@@ -471,6 +472,11 @@ export function classifyExerciseV2(
         maxFrame: input.maxFrame,
         p10: input.p10,
         p90: input.p90,
+        baseThresholds: {
+          acceptable: effectiveMaxVariation.acceptable,
+          warning: effectiveMaxVariation.warning,
+          danger: effectiveMaxVariation.danger,
+        },
         effectiveThresholds: effThresholds,
         explanation: buildTransparencyExplanation(input.variationValue, unit, stabClass, effThresholds, mode),
       },

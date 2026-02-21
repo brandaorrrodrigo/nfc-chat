@@ -386,6 +386,7 @@ export default function BiomechanicsAnalysisView({
               const transparency = (s as { transparency?: {
                 rawValue: number; minFrame?: number; maxFrame?: number;
                 p10?: number; p90?: number;
+                baseThresholds?: { acceptable: number; warning: number; danger: number };
                 effectiveThresholds: { acceptable: number; warning: number; danger: number };
                 explanation: string;
               } }).transparency;
@@ -439,14 +440,27 @@ export default function BiomechanicsAnalysisView({
                         {transparency.p10 != null && transparency.p90 != null && (
                           <p>P10–P90: <span className="text-zinc-300">{formatValue(transparency.p10)}° – {formatValue(transparency.p90)}°</span></p>
                         )}
-                        <p className="pt-0.5 border-t border-zinc-700/50">
-                          Thresholds:{' '}
-                          <span className="text-green-400">ok &lt;{transparency.effectiveThresholds.acceptable}{s.variation.unit}</span>
-                          {' | '}
-                          <span className="text-yellow-400">atenção &lt;{transparency.effectiveThresholds.warning}{s.variation.unit}</span>
-                          {' | '}
-                          <span className="text-red-400">limite &gt;{transparency.effectiveThresholds.danger}{s.variation.unit}</span>
-                        </p>
+                        <div className="pt-0.5 border-t border-zinc-700/50">
+                          {transparency.baseThresholds && mode !== 'rigid' && (
+                            <p className="text-zinc-600 mb-0.5">
+                              Base:{' '}
+                              <span className="text-zinc-500">ok &lt;{transparency.baseThresholds.acceptable}{s.variation.unit}</span>
+                              {' | '}
+                              <span className="text-zinc-500">atenção &lt;{transparency.baseThresholds.warning}{s.variation.unit}</span>
+                              {' | '}
+                              <span className="text-zinc-500">limite &gt;{transparency.baseThresholds.danger}{s.variation.unit}</span>
+                              <span className="text-zinc-600"> ×{mode === 'functional' ? '3' : '1.8'} ({mode})</span>
+                            </p>
+                          )}
+                          <p>
+                            Efetivo:{' '}
+                            <span className="text-green-400">ok &lt;{transparency.effectiveThresholds.acceptable}{s.variation.unit}</span>
+                            {' | '}
+                            <span className="text-yellow-400">atenção &lt;{transparency.effectiveThresholds.warning}{s.variation.unit}</span>
+                            {' | '}
+                            <span className="text-red-400">limite &gt;{transparency.effectiveThresholds.danger}{s.variation.unit}</span>
+                          </p>
+                        </div>
                         <p className="text-zinc-400 italic pt-0.5">{transparency.explanation}</p>
                       </div>
                     </div>
