@@ -50,6 +50,15 @@ export interface StabilizerJointResult {
   stabilityMode: 'rigid' | 'controlled' | 'functional';
   stateMessages?: { firme?: string; alerta?: string; compensacao?: string };
   variation: { value: number; unit: string; classification: StabilizerClassification; classificationLabel: string };
+  transparency: {
+    rawValue: number;
+    minFrame?: number;
+    maxFrame?: number;
+    p10?: number;
+    p90?: number;
+    effectiveThresholds: { acceptable: number; warning: number; danger: number };
+    explanation: string;
+  };
   interpretation: string;
   correctiveExercises: string[];
   ragTopics: string[];
@@ -106,6 +115,10 @@ export interface StabilizerMetricInput {
   joint: string;
   variationValue: number;
   unit?: string;
+  minFrame?: number;
+  maxFrame?: number;
+  p10?: number;
+  p90?: number;
 }
 
 // ============================
@@ -163,6 +176,28 @@ const STABILITY_MULTIPLIERS: Record<'rigid' | 'controlled' | 'functional', numbe
   controlled: 1.8,
   functional: 3.0,
 };
+
+/**
+ * Gera texto de explicação para o painel de transparência do estabilizador
+ */
+function buildTransparencyExplanation(
+  value: number,
+  unit: string,
+  cls: StabilizerClassification,
+  eff: { acceptable: number; warning: number; danger: number },
+  mode: 'rigid' | 'controlled' | 'functional',
+): string {
+  const threshold =
+    cls === 'firme' ? `<${eff.acceptable}${unit}` :
+    cls === 'alerta' ? `${eff.acceptable}–${eff.warning}${unit}` :
+    `>${eff.danger}${unit}`;
+  const clsLabel = cls === 'firme' ? 'dentro do aceitável' : cls === 'alerta' ? 'acima do aceitável' : 'acima do limite';
+  const modeNote =
+    mode === 'functional' ? 'Variação esperada no movimento funcional.' :
+    mode === 'controlled' ? 'Variação controlada é aceitável neste exercício.' :
+    'Estabilidade máxima esperada.';
+  return `Valor ${value}${unit} (${threshold}) — ${clsLabel}. ${modeNote}`;
+}
 
 /**
  * Classifica variação de articulação ESTABILIZADORA
@@ -408,6 +443,15 @@ export function classifyExerciseV2(
 
     const interpretation = getStabilizerInterpretation(stabClass, mode, sj.expectedState, effectiveInstabilityMeaning);
 
+    // Thresholds efetivos após aplicação do multiplicador de stabilityMode
+    const mult = STABILITY_MULTIPLIERS[mode];
+    const effThresholds = {
+      acceptable: Math.round(effectiveMaxVariation.acceptable * mult * 10) / 10,
+      warning: Math.round(effectiveMaxVariation.warning * mult * 10) / 10,
+      danger: Math.round(effectiveMaxVariation.danger * mult * 10) / 10,
+    };
+    const unit = input.unit || sj.criteria.maxVariation.unit;
+
     stabilizerAnalysis.push({
       joint: sj.joint,
       label: sj.label,
@@ -417,9 +461,18 @@ export function classifyExerciseV2(
       stateMessages: sj.stateMessages,
       variation: {
         value: input.variationValue,
-        unit: input.unit || sj.criteria.maxVariation.unit,
+        unit,
         classification: stabClass,
         classificationLabel: STABILIZER_LABELS[stabClass],
+      },
+      transparency: {
+        rawValue: input.variationValue,
+        minFrame: input.minFrame,
+        maxFrame: input.maxFrame,
+        p10: input.p10,
+        p90: input.p90,
+        effectiveThresholds: effThresholds,
+        explanation: buildTransparencyExplanation(input.variationValue, unit, stabClass, effThresholds, mode),
       },
       interpretation,
       correctiveExercises: stabClass !== 'firme' ? sj.correctiveExercises : [],

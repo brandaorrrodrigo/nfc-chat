@@ -324,7 +324,7 @@ const DEADLIFT_CONVENTIONAL_TEMPLATE: ExerciseTemplate = {
 
 const CHEST_SUPPORTED_ROW_TEMPLATE: ExerciseTemplate = {
   exerciseId: 'chest_supported_row',
-  exerciseName: 'Remada com Apoio de Peitoral',
+  exerciseName: 'Remada com Apoio (Chest Supported Row)',
   category: 'pull',
   type: 'compound',
   articulationType: 'biarticular',
@@ -379,7 +379,7 @@ const CHEST_SUPPORTED_ROW_TEMPLATE: ExerciseTemplate = {
     {
       joint: 'lumbar',
       label: 'Coluna Lombar',
-      expectedState: 'Lordose fisiológica mantida pelo apoio peitoral',
+      expectedState: 'Lordose fisiológica mantida — pad na região do esterno/diafragma',
       side: 'midline',
       criteria: {
         maxVariation: { metric: 'lumbar_angle_variation', acceptable: 8, warning: 15, danger: 22, unit: '°' },
@@ -410,13 +410,13 @@ const CHEST_SUPPORTED_ROW_TEMPLATE: ExerciseTemplate = {
     {
       joint: 'trunk',
       label: 'Tronco',
-      expectedState: 'Firme no apoio peitoral, sem rotação excessiva',
+      expectedState: 'Tronco estável com pad no esterno — escápulas livres para retrair',
       side: 'midline',
       criteria: {
         maxVariation: { metric: 'trunk_rotation_variation', acceptable: 12, warning: 20, danger: 30, unit: '°' },
       },
       stabilityMode: 'controlled',
-      instabilityMeaning: 'Uso de impulso rotacional, core fraco ou carga excessiva',
+      instabilityMeaning: 'Movimento excessivo do tronco — verificar contato com o pad e carga',
       stateMessages: {
         firme: 'Movimento escapular normal',
         alerta: 'Possível perda de contato com o pad',

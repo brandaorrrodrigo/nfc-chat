@@ -64,6 +64,7 @@ export default function BiomechanicsAnalysisView({
   voting,
 }: BiomechanicsAnalysisViewProps) {
   const [showTechnicalData, setShowTechnicalData] = useState(false);
+  const [openInfoIdx, setOpenInfoIdx] = useState<number | null>(null);
 
   // Verificar formato da análise
   const analysisType = data.analysis_type as string || '';
@@ -382,6 +383,13 @@ export default function BiomechanicsAnalysisView({
                 if (cls === 'alerta') return { text: stateMsgs?.alerta || 'Momentum normal da tecnica', color: 'text-blue-400', icon: '~' };
                 return { text: stateMsgs?.compensacao || 'Momentum excessivo — reduzir carga', color: 'text-orange-400', icon: '⚠' };
               })();
+              const transparency = (s as { transparency?: {
+                rawValue: number; minFrame?: number; maxFrame?: number;
+                p10?: number; p90?: number;
+                effectiveThresholds: { acceptable: number; warning: number; danger: number };
+                explanation: string;
+              } }).transparency;
+              const isInfoOpen = openInfoIdx === i;
               return (
                 <div key={i} className={`bg-zinc-800/50 rounded-xl p-4 border-l-3 ${stabBorder}`}>
                   <div className="flex items-center justify-between mb-2">
@@ -395,11 +403,24 @@ export default function BiomechanicsAnalysisView({
                         </span>
                       )}
                     </div>
-                    <span className={`text-[10px] px-2 py-0.5 rounded border ${
-                      stabClass === 'info' ? 'bg-blue-500/10 text-blue-400 border-blue-500/30' : getClassBadge(stabClass)
-                    }`}>
-                      {safeRender(s.variation.classificationLabel || s.variation.classification)}
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <span className={`text-[10px] px-2 py-0.5 rounded border ${
+                        stabClass === 'info' ? 'bg-blue-500/10 text-blue-400 border-blue-500/30' : getClassBadge(stabClass)
+                      }`}>
+                        {safeRender(s.variation.classificationLabel || s.variation.classification)}
+                      </span>
+                      {transparency && (
+                        <button
+                          onClick={() => setOpenInfoIdx(isInfoOpen ? null : i)}
+                          className={`p-0.5 rounded transition-colors ${isInfoOpen ? 'text-blue-400' : 'text-zinc-600 hover:text-zinc-400'}`}
+                          title="Como medimos?"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
                   </div>
                   <div className="text-[10px] mb-1">
                     <span className={stateMsg.color}>{stateMsg.icon} {stateMsg.text}</span>
@@ -407,6 +428,29 @@ export default function BiomechanicsAnalysisView({
                   <div className="text-[10px] text-zinc-500">
                     Variacao: {formatValue(s.variation.value)}{safeRender(s.variation.unit)}
                   </div>
+                  {isInfoOpen && transparency && (
+                    <div className="mt-2 p-2.5 bg-zinc-900/80 rounded-lg border border-zinc-700/50 text-[10px] space-y-1">
+                      <p className="text-zinc-300 font-medium mb-1.5">📊 Como medimos</p>
+                      <div className="text-zinc-500 space-y-0.5">
+                        <p>Valor medido: <span className="text-zinc-300">{formatValue(transparency.rawValue)}{safeRender(s.variation.unit)}</span></p>
+                        {transparency.minFrame != null && transparency.maxFrame != null && (
+                          <p>Range frames: <span className="text-zinc-300">{formatValue(transparency.minFrame)}° — {formatValue(transparency.maxFrame)}°</span></p>
+                        )}
+                        {transparency.p10 != null && transparency.p90 != null && (
+                          <p>P10–P90: <span className="text-zinc-300">{formatValue(transparency.p10)}° – {formatValue(transparency.p90)}°</span></p>
+                        )}
+                        <p className="pt-0.5 border-t border-zinc-700/50">
+                          Thresholds:{' '}
+                          <span className="text-green-400">ok &lt;{transparency.effectiveThresholds.acceptable}{s.variation.unit}</span>
+                          {' | '}
+                          <span className="text-yellow-400">atenção &lt;{transparency.effectiveThresholds.warning}{s.variation.unit}</span>
+                          {' | '}
+                          <span className="text-red-400">limite &gt;{transparency.effectiveThresholds.danger}{s.variation.unit}</span>
+                        </p>
+                        <p className="text-zinc-400 italic pt-0.5">{transparency.explanation}</p>
+                      </div>
+                    </div>
+                  )}
                   {Array.isArray(s.corrective_exercises) && s.corrective_exercises.length > 0 && (
                     <div className="mt-1.5 flex flex-wrap gap-1">
                       {s.corrective_exercises.map((ex, j) => (

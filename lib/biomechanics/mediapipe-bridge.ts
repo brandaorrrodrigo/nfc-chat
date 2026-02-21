@@ -667,6 +667,23 @@ function mapMediaPipeStabilizer(
     return robustVariation(values);
   };
 
+  // Helper: estatísticas de frame (min, max, P10, P90) para um ângulo
+  const getFrameStats = (key: keyof MediaPipeAngles): { min: number; max: number; p10: number; p90: number } | null => {
+    const values: number[] = [];
+    for (const frame of allFrameAngles) {
+      const v = (frame as Record<string, number | undefined>)[key as string];
+      if (v !== undefined && v >= 0) values.push(v);
+    }
+    if (values.length < 2) return null;
+    const sorted = [...values].sort((a, b) => a - b);
+    return {
+      min: Math.round(sorted[0] * 10) / 10,
+      max: Math.round(sorted[sorted.length - 1] * 10) / 10,
+      p10: Math.round(percentile(sorted, 0.1) * 10) / 10,
+      p90: Math.round(percentile(sorted, 0.9) * 10) / 10,
+    };
+  };
+
   /**
    * Corrige variação do tronco para exercícios onde o tronco DEVE mover (hinge).
    * Em deadlift com spine neutra: trunk_inclination ≈ f(hip_flexion)
@@ -706,7 +723,9 @@ function mapMediaPipeStabilizer(
     case 'lumbar': {
       const variation = getHipCorrectedTrunkVariation();
       if (variation === null) return null;
-      return { joint: 'lumbar', variationValue: variation, unit: '°' };
+      const lumbarStats = getFrameStats('trunk_inclination');
+      return { joint: 'lumbar', variationValue: variation, unit: '°',
+        minFrame: lumbarStats?.min, maxFrame: lumbarStats?.max, p10: lumbarStats?.p10, p90: lumbarStats?.p90 };
     }
 
     case 'trunk': {
@@ -714,7 +733,9 @@ function mapMediaPipeStabilizer(
       // Ex: 35° = forward lean moderado. Ranges no template: acceptable=40, warning=52
       const avgTrunk = agg.avgAngles.trunk_inclination;
       if (avgTrunk === undefined || avgTrunk === null) return null;
-      return { joint: 'trunk', variationValue: avgTrunk, unit: '°' };
+      const trunkStats = getFrameStats('trunk_inclination');
+      return { joint: 'trunk', variationValue: avgTrunk, unit: '°',
+        minFrame: trunkStats?.min, maxFrame: trunkStats?.max, p10: trunkStats?.p10, p90: trunkStats?.p90 };
     }
 
     case 'thoracic': {
@@ -740,14 +761,22 @@ function mapMediaPipeStabilizer(
       const leftVar = getRobustVariation('wrist_angle_left');
       const rightVar = getRobustVariation('wrist_angle_right');
       const variation = Math.max(leftVar ?? 0, rightVar ?? 0);
-      return { joint: 'wrist', variationValue: variation, unit: '°' };
+      const wristStats = (leftVar ?? 0) >= (rightVar ?? 0)
+        ? getFrameStats('wrist_angle_left')
+        : getFrameStats('wrist_angle_right');
+      return { joint: 'wrist', variationValue: variation, unit: '°',
+        minFrame: wristStats?.min, maxFrame: wristStats?.max, p10: wristStats?.p10, p90: wristStats?.p90 };
     }
 
     case 'elbow': {
       const leftVar = getRobustVariation('elbow_left');
       const rightVar = getRobustVariation('elbow_right');
       const variation = Math.max(leftVar ?? 0, rightVar ?? 0);
-      return { joint: 'elbow', variationValue: variation, unit: '°' };
+      const elbowStats = (leftVar ?? 0) >= (rightVar ?? 0)
+        ? getFrameStats('elbow_left')
+        : getFrameStats('elbow_right');
+      return { joint: 'elbow', variationValue: variation, unit: '°',
+        minFrame: elbowStats?.min, maxFrame: elbowStats?.max, p10: elbowStats?.p10, p90: elbowStats?.p90 };
     }
 
     case 'shoulder_elevation': {
