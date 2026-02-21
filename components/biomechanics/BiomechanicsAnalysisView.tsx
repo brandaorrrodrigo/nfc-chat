@@ -282,12 +282,12 @@ export default function BiomechanicsAnalysisView({
       {/* ═══ c) ANÁLISE MOTORA ═══ */}
       {motorAnalysis.length > 0 && (
         <div>
-          <div className="flex items-center gap-2 text-xl font-semibold text-white mb-4">
-            <Target className="w-5 h-5 text-green-400" />
-            Analise Motora
-            <span className="text-sm px-2 py-0.5 rounded-lg bg-green-500/20 text-green-400 font-bold">
-              {motorScore != null ? `${Number(motorScore).toFixed(1)}/10` : ''}
-            </span>
+          <div className="flex items-center gap-3 mb-4">
+            <Target className="w-6 h-6 text-green-400 flex-shrink-0" />
+            <span className="text-xl font-semibold text-white">Analise Motora</span>
+            {motorScore != null && (
+              <span className={`text-2xl font-bold ml-auto ${getScoreColor(motorScore)}`}>{Number(motorScore).toFixed(1)}<span className="text-sm text-zinc-500 font-normal">/10</span></span>
+            )}
           </div>
           <div className="space-y-3">
             {motorAnalysis.map((m, i) => {
@@ -300,20 +300,20 @@ export default function BiomechanicsAnalysisView({
               return (
                 <div key={i} className={`bg-zinc-800/50 rounded-xl p-4 border-l-3 ${romBg}`}>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-base text-zinc-200 font-semibold">{safeRender(m.label || m.joint)}</span>
+                    <span className="text-lg text-zinc-100 font-semibold">{safeRender(m.label || m.joint)}</span>
                     <span className={`text-xs px-2 py-0.5 rounded border ${getClassBadge(romClass)}`}>
                       {safeRender(m.rom.classificationLabel || romClass)}
                     </span>
                   </div>
-                  <div className="flex items-center gap-3 text-xs text-zinc-500">
+                  <div className="flex items-center gap-3 text-sm text-zinc-400">
                     <span>Movimento: {safeRender(m.movement)}</span>
                     <span>ROM: {formatValue(m.rom.value)}{safeRender(m.rom.unit)}{m.rom.startAngle != null && m.rom.peakAngle != null && ` (de ${formatValue(m.rom.startAngle, 0)}${m.rom.unit} a ${formatValue(m.rom.peakAngle, 0)}${m.rom.unit})`}</span>
                   </div>
                   {m.peak_contraction != null && !isNaN(Number(m.peak_contraction)) && (
-                    <div className="text-xs text-zinc-500 mt-0.5">Pico contracao: {formatValue(m.peak_contraction, 0)}{safeRender(m.rom.unit)}</div>
+                    <div className="text-sm text-zinc-500 mt-0.5">Pico contracao: {formatValue(m.peak_contraction, 0)}{safeRender(m.rom.unit)}</div>
                   )}
                   {m.rom.note && (
-                    <div className={`text-xs mt-0.5 ${m.rom.note.startsWith('⚠') ? 'text-orange-400' : 'text-zinc-500'}`}>{m.rom.note}</div>
+                    <div className={`text-sm mt-0.5 ${m.rom.note.startsWith('⚠') ? 'text-orange-400' : 'text-zinc-500'}`}>{m.rom.note}</div>
                   )}
                   {(() => {
                     const symVal = m.symmetry == null ? null
@@ -321,10 +321,10 @@ export default function BiomechanicsAnalysisView({
                       : typeof m.symmetry === 'object' && 'diff' in m.symmetry ? Number(m.symmetry.diff)
                       : null;
                     if (symVal === null || isNaN(symVal) || symVal > 20) return (
-                      <div className="text-xs mt-0.5 text-zinc-600">Vista lateral — simetria nao disponivel</div>
+                      <div className="text-sm mt-0.5 text-zinc-600">Vista lateral — simetria nao disponivel</div>
                     );
                     return (
-                      <div className={`text-xs mt-0.5 ${symVal > 15 ? 'text-orange-400' : 'text-zinc-500'}`}>
+                      <div className={`text-sm mt-0.5 ${symVal > 15 ? 'text-orange-400' : 'text-zinc-500'}`}>
                         Simetria: {formatValue(symVal)}° diferenca
                       </div>
                     );
@@ -339,14 +339,14 @@ export default function BiomechanicsAnalysisView({
       {/* ═══ d) ANÁLISE ESTABILIZADORES ═══ */}
       {stabilizerAnalysis.length > 0 && (
         <div>
-          <div className="flex items-center gap-2 text-xl font-semibold text-white mb-4">
-            <svg className="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="flex items-center gap-3 mb-4">
+            <svg className="w-6 h-6 text-blue-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
             </svg>
-            Analise Estabilizadores
-            <span className="text-sm px-2 py-0.5 rounded-lg bg-blue-500/20 text-blue-400 font-bold">
-              {stabilizerScore != null ? `${Number(stabilizerScore).toFixed(1)}/10` : ''}
-            </span>
+            <span className="text-xl font-semibold text-white">Analise Estabilizadores</span>
+            {stabilizerScore != null && (
+              <span className={`text-2xl font-bold ml-auto ${getScoreColor(stabilizerScore)}`}>{Number(stabilizerScore).toFixed(1)}<span className="text-sm text-zinc-500 font-normal">/10</span></span>
+            )}
           </div>
           <div className="space-y-3">
             {stabilizerAnalysis.map((s, i) => {
@@ -388,7 +388,7 @@ export default function BiomechanicsAnalysisView({
                 <div key={i} className={`bg-zinc-800/50 rounded-xl p-4 border-l-3 ${stabBorder}`}>
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-base text-zinc-200 font-semibold">{safeRender(s.label || s.joint)}</span>
+                      <span className="text-lg text-zinc-100 font-semibold">{safeRender(s.label || s.joint)}</span>
                       {mode !== 'rigid' && (
                         <span className={`text-[9px] px-1 py-0.5 rounded ${
                           mode === 'functional' ? 'bg-purple-500/20 text-purple-400' : 'bg-blue-500/20 text-blue-400'
@@ -416,10 +416,10 @@ export default function BiomechanicsAnalysisView({
                       )}
                     </div>
                   </div>
-                  <div className="text-xs mb-1">
+                  <div className="text-sm mb-1">
                     <span className={stateMsg.color}>{stateMsg.icon} {stateMsg.text}</span>
                   </div>
-                  <div className="text-xs text-zinc-500">
+                  <div className="text-sm text-zinc-500">
                     Variacao: {formatValue(s.variation.value)}{safeRender(s.variation.unit)}
                   </div>
                   {isInfoOpen && transparency && (
