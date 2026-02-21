@@ -355,6 +355,46 @@ function getLumbarInstabilityMeaning(kneeMinAngle: number): string {
 }
 
 /**
+ * Ajusta os thresholds da lombar proporcionalmente à profundidade do hip hinge (deadlift).
+ *
+ * Racional: quanto mais fundo o quadril chega (ângulo menor = mais flexão),
+ * maior a rotação pélvica esperada. Anilhas menores ou deficit deadlift amplificam
+ * o ROM e tornam a variação lombar anatomicamente proporcional.
+ *
+ * hipMinAngle = ângulo mínimo do quadril no fundo (peakAngle do quadril):
+ *   > 70°: amplitude normal → threshold BASE
+ *   45–70°: amplitude aumentada → threshold × 1.6
+ *   < 45°: amplitude extrema (anilhas pequenas / deficit) → threshold × 2.5
+ */
+function getAdjustedLumbarThresholdsHinge(
+  hipMinAngle: number,
+  base: { metric: string; acceptable: number; warning: number; danger: number; unit: string },
+): { metric: string; acceptable: number; warning: number; danger: number; unit: string } {
+  if (hipMinAngle > 70) return base;
+  const depthFactor = hipMinAngle < 45 ? 2.5 : 1.6;
+  return {
+    metric: base.metric,
+    unit: base.unit,
+    acceptable: base.acceptable * depthFactor,
+    warning: base.warning * depthFactor,
+    danger: base.danger * depthFactor,
+  };
+}
+
+/**
+ * Retorna mensagem contextual para variação lombar baseada na profundidade do hip hinge.
+ */
+function getLumbarInstabilityMeaningHinge(hipMinAngle: number): string {
+  if (hipMinAngle < 45) {
+    return 'Variação lombar proporcional à amplitude — anilhas menores ou deficit deadlift aumentam ROM natural. Foco em bracing e controle excêntrico.';
+  }
+  if (hipMinAngle <= 70) {
+    return 'Variação lombar moderada para amplitude do hip hinge. Verifique bracing abdominal e posição da pelve no início do pull.';
+  }
+  return 'Flexão lombar excessiva para a amplitude do levantamento. Fraqueza de eretores ou hip hinge incompleto.';
+}
+
+/**
  * Classifica um exercício completo usando o paradigma Motor vs Estabilizador
  */
 export function classifyExerciseV2(
@@ -439,6 +479,16 @@ export function classifyExerciseV2(
       if (kneeMinAngle !== undefined) {
         effectiveMaxVariation = getAdjustedLumbarThresholds(kneeMinAngle, sj.criteria.maxVariation);
         effectiveInstabilityMeaning = getLumbarInstabilityMeaning(kneeMinAngle);
+      }
+    }
+
+    // Threshold proporcional à profundidade do hip hinge para lombar em deadlift
+    if (sj.joint === 'lumbar' && template.category === 'hinge') {
+      const hipInput = motorInputs.find(m => m.joint === 'hip');
+      const hipMinAngle = hipInput?.peakAngle;
+      if (hipMinAngle !== undefined) {
+        effectiveMaxVariation = getAdjustedLumbarThresholdsHinge(hipMinAngle, sj.criteria.maxVariation);
+        effectiveInstabilityMeaning = getLumbarInstabilityMeaningHinge(hipMinAngle);
       }
     }
 
