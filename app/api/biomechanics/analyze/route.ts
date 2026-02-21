@@ -34,6 +34,7 @@ import { sendPromptToOllama } from '@/lib/biomechanics/llm-bridge';
 import { queryRAG } from '@/lib/biomechanics/biomechanics-rag';
 import { getExerciseTemplateV2 } from '@/lib/biomechanics/exercise-templates-v2';
 import { classifyExerciseV2, extractV2RAGTopics } from '@/lib/biomechanics/classifier-v2';
+import type { MediaPipeFrameResult, MediaPipeAngles } from '@/lib/biomechanics/mediapipe-bridge';
 import { buildPromptV2 } from '@/lib/biomechanics/prompt-builder';
 import { convertToBiomechanicalAnalysis } from '@/lib/biomechanics/mediapipe-to-biomechanical-bridge';
 import * as fs from 'fs';
@@ -41,6 +42,73 @@ import * as os from 'os';
 import * as path from 'path';
 
 const TABLE = 'nfc_chat_video_analyses';
+
+/**
+ * Mapeamento category → (angleKey, direction) para encontrar o frame do pico.
+ * angleKey: chave em f.world_angles || f.angles retornada pelo Python por frame.
+ * 'avg' indica computar média de left+right.
+ */
+const PEAK_ANGLE_MAP: Record<string, { key: string | 'avg_elbow' | 'avg_shoulder' | 'avg_knee'; dir: 'lower' | 'higher' }> = {
+  squat:               { key: 'hip_avg',       dir: 'lower'  },
+  hinge:               { key: 'hip_avg',       dir: 'lower'  },
+  pull:                { key: 'avg_elbow',     dir: 'lower'  },
+  push:                { key: 'avg_elbow',     dir: 'lower'  },
+  press:               { key: 'avg_elbow',     dir: 'lower'  },
+  hip_dominant:        { key: 'hip_avg',       dir: 'higher' },
+  isolation_shoulder:  { key: 'avg_shoulder',  dir: 'higher' },
+  isolation:           { key: 'avg_elbow',     dir: 'lower'  },
+};
+
+function getFrameAngle(angles: MediaPipeAngles, key: string): number | null {
+  if (key === 'avg_elbow') {
+    const l = angles.elbow_left;
+    const r = angles.elbow_right;
+    if (l != null && r != null) return (l + r) / 2;
+    return l ?? r ?? null;
+  }
+  if (key === 'avg_shoulder') {
+    const l = angles.shoulder_left;
+    const r = angles.shoulder_right;
+    if (l != null && r != null) return (l + r) / 2;
+    return l ?? r ?? null;
+  }
+  if (key === 'avg_knee') {
+    const l = angles.knee_left;
+    const r = angles.knee_right;
+    if (l != null && r != null) return (l + r) / 2;
+    return l ?? r ?? null;
+  }
+  return ((angles as unknown as Record<string, number>)[key] ?? null);
+}
+
+/**
+ * Retorna o índice em framePaths do frame onde o ângulo primário está no pico.
+ */
+function findPeakFrameIndex(
+  frames: MediaPipeFrameResult[],
+  category: string,
+): number {
+  const mapping = PEAK_ANGLE_MAP[category];
+  if (!mapping) return -1;
+
+  const { key, dir } = mapping;
+  let bestIdx = -1;
+  let bestVal: number = dir === 'lower' ? Infinity : -Infinity;
+
+  for (let i = 0; i < frames.length; i++) {
+    const f = frames[i];
+    if (!f.success) continue;
+    const angles = f.world_angles || f.angles;
+    if (!angles) continue;
+    const val = getFrameAngle(angles, key);
+    if (val == null || isNaN(val)) continue;
+    if (dir === 'lower' ? val < bestVal : val > bestVal) {
+      bestVal = val;
+      bestIdx = i;
+    }
+  }
+  return bestIdx;
+}
 
 export async function POST(request: NextRequest) {
   let tempDir: string | null = null;
@@ -506,12 +574,38 @@ export async function POST(request: NextRequest) {
       };
     }
 
+    // 12.5. Salvar frame do pico como thumbnail no Supabase Storage
+    let peakThumbnailUrl: string | undefined;
+    try {
+      const effectiveCategory = isV2 ? (templateV2!.category as string) : category;
+      const peakIdx = findPeakFrameIndex(mediapipeResult.frames, effectiveCategory);
+      if (peakIdx >= 0 && peakIdx < framePaths.length) {
+        const frameBuffer = fs.readFileSync(framePaths[peakIdx]);
+        const storagePath = `thumbnails/${videoId}_peak.jpg`;
+        const { error: uploadErr } = await supabase.storage
+          .from('nfv-videos')
+          .upload(storagePath, frameBuffer, { contentType: 'image/jpeg', upsert: true });
+        if (!uploadErr) {
+          const { data: urlData } = supabase.storage.from('nfv-videos').getPublicUrl(storagePath);
+          peakThumbnailUrl = urlData.publicUrl;
+          console.log(`[Biomechanics] Peak thumbnail saved: ${peakThumbnailUrl} (frame ${peakIdx + 1})`);
+        } else {
+          console.warn('[Biomechanics] Peak thumbnail upload error:', uploadErr.message);
+        }
+      } else {
+        console.warn('[Biomechanics] Peak frame index not found, skipping thumbnail');
+      }
+    } catch (thumbErr) {
+      console.error('[Biomechanics] Peak frame thumbnail failed (non-fatal):', thumbErr);
+    }
+
     // 13. Salvar no banco
     const { error: updateError } = await supabase
       .from(TABLE)
       .update({
         status: 'BIOMECHANICS_ANALYZED_V2',
         ai_analysis: biomechanicsResult,
+        ...(peakThumbnailUrl ? { thumbnail_url: peakThumbnailUrl } : {}),
         updated_at: new Date().toISOString(),
       })
       .eq('id', videoId);
