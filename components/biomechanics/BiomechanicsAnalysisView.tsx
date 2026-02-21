@@ -200,7 +200,7 @@ export default function BiomechanicsAnalysisView({
       {/* ═══ a) HERO: Score Geral ═══ */}
       <div className={`rounded-2xl p-6 border ${getScoreBg(score)} bg-gradient-to-br from-zinc-900 via-zinc-900/95 to-zinc-800/80`}>
         <div className="text-center mb-5">
-          <div className="text-[10px] text-zinc-500 uppercase tracking-[0.2em] mb-3">Score da Analise</div>
+          <div className="text-xs text-zinc-500 uppercase tracking-[0.2em] mb-3">Score da Analise</div>
           <div className={`text-9xl font-black tracking-tight ${getScoreColor(score)}`}>
             {Number(score).toFixed(1)}
             <span className="text-4xl text-zinc-600 font-normal">/10</span>
@@ -233,14 +233,14 @@ export default function BiomechanicsAnalysisView({
         )}
 
         <div className="flex items-center justify-between mt-3 pt-3 border-t border-zinc-800">
-          <span className="text-[10px] text-zinc-600">{framesAnalyzed} frames analisados</span>
+          <span className="text-xs text-zinc-600">{framesAnalyzed} frames analisados</span>
           <div className="flex items-center gap-2">
             {pipelineVersion && (
-              <span className={`text-[10px] px-2 py-0.5 rounded ${pipelineVersion === 'v2' ? 'bg-cyan-500/20 text-cyan-400' : 'bg-zinc-700 text-zinc-400'}`}>
+              <span className={`text-xs px-2 py-0.5 rounded ${pipelineVersion === 'v2' ? 'bg-cyan-500/20 text-cyan-400' : 'bg-zinc-700 text-zinc-400'}`}>
                 {pipelineVersion.toUpperCase()}
               </span>
             )}
-            <span className="text-[10px] text-zinc-600">
+            <span className="text-xs text-zinc-600">
               {pipelineVersion ? `MediaPipe ${(Number(mediapipeConfidence) * 100).toFixed(0)}%` : modelVision}
             </span>
           </div>
@@ -301,7 +301,7 @@ export default function BiomechanicsAnalysisView({
                 <div key={i} className={`bg-zinc-800/50 rounded-xl p-4 border-l-3 ${romBg}`}>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-lg text-zinc-100 font-semibold">{safeRender(m.label || m.joint)}</span>
-                    <span className={`text-xs px-2 py-0.5 rounded border ${getClassBadge(romClass)}`}>
+                    <span className={`text-sm px-2.5 py-0.5 rounded border ${getClassBadge(romClass)}`}>
                       {safeRender(m.rom.classificationLabel || romClass)}
                     </span>
                   </div>
@@ -390,7 +390,7 @@ export default function BiomechanicsAnalysisView({
                     <div className="flex items-center gap-1.5">
                       <span className="text-lg text-zinc-100 font-semibold">{safeRender(s.label || s.joint)}</span>
                       {mode !== 'rigid' && (
-                        <span className={`text-[9px] px-1 py-0.5 rounded ${
+                        <span className={`text-[11px] px-1 py-0.5 rounded ${
                           mode === 'functional' ? 'bg-purple-500/20 text-purple-400' : 'bg-blue-500/20 text-blue-400'
                         }`}>
                           {mode === 'functional' ? 'FUNC' : 'CTRL'}
@@ -398,7 +398,7 @@ export default function BiomechanicsAnalysisView({
                       )}
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span className={`text-xs px-2 py-0.5 rounded border ${
+                      <span className={`text-sm px-2.5 py-0.5 rounded border ${
                         stabClass === 'info' ? 'bg-blue-500/10 text-blue-400 border-blue-500/30' : getClassBadge(stabClass)
                       }`}>
                         {safeRender(s.variation.classificationLabel || s.variation.classification)}
@@ -423,7 +423,7 @@ export default function BiomechanicsAnalysisView({
                     Variacao: {formatValue(s.variation.value)}{safeRender(s.variation.unit)}
                   </div>
                   {isInfoOpen && transparency && (
-                    <div className="mt-2 p-2.5 bg-zinc-900/80 rounded-lg border border-zinc-700/50 text-[10px] space-y-1">
+                    <div className="mt-2 p-2.5 bg-zinc-900/80 rounded-lg border border-zinc-700/50 text-xs space-y-1">
                       <p className="text-zinc-300 font-medium mb-1.5">📊 Como medimos</p>
                       <div className="text-zinc-500 space-y-0.5">
                         <p>Valor medido: <span className="text-zinc-300">{formatValue(transparency.rawValue)}{safeRender(s.variation.unit)}</span></p>
@@ -522,7 +522,7 @@ export default function BiomechanicsAnalysisView({
             <Calendar className="w-4 h-4" />
             Agendar Reteste em 2-4 Semanas
           </button>
-          <p className="text-[10px] text-zinc-600 mt-2">Recomendado apos seguir o plano corretivo</p>
+          <p className="text-xs text-zinc-600 mt-2">Recomendado apos seguir o plano corretivo</p>
         </div>
       )}
 
@@ -560,99 +560,6 @@ export default function BiomechanicsAnalysisView({
         </div>
       )}
 
-      {/* ═══ i) RELATÓRIO IA ═══ */}
-      {report && typeof report === 'object' && Object.keys(report).length > 0 && (() => {
-        const pontosPositivos = report.pontos_positivos as string[] || [];
-        const pontosAtencao = report.pontos_de_atencao as Array<{ item: string; severidade: string; sugestao: string }> || [];
-        const conclusao = report.conclusao as string;
-        const recsTop3 = report.recomendacoes_top3 as Array<{ prioridade: number; acao: string; motivo: string }> || [];
-        const cadeiaMovimento = report.cadeia_de_movimento as Array<{ fase: string; descricao: string }> || [];
-        if (pontosPositivos.length === 0 && pontosAtencao.length === 0 && !conclusao && recsTop3.length === 0) return null;
-
-        return (
-          <div className="space-y-4">
-            {pontosPositivos.length > 0 && (
-              <div>
-                <div className="flex items-center gap-2 text-sm font-medium text-white mb-2">
-                  <CheckCircle className="w-4 h-4 text-green-400" />
-                  Pontos Positivos
-                </div>
-                <ul className="space-y-1">
-                  {pontosPositivos.map((p, i) => (
-                    <li key={i} className="flex items-start gap-2 text-xs text-zinc-300">
-                      <span className="text-green-400 mt-0.5">+</span>
-                      {safeRender(p)}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {cadeiaMovimento.length > 0 && (
-              <div>
-                <div className="flex items-center gap-2 text-sm font-medium text-white mb-2">
-                  <Play className="w-4 h-4 text-cyan-400" />
-                  Cadeia de Movimento
-                </div>
-                <div className="space-y-1.5">
-                  {cadeiaMovimento.map((fase, i) => (
-                    <div key={i} className="flex items-start gap-2 text-xs">
-                      <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${getFaseColor(String(fase.fase || '').toLowerCase())}`}>{safeRender(fase.fase)}</span>
-                      <span className="text-zinc-400">{safeRender(fase.descricao)}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {pontosAtencao.length > 0 && (
-              <div>
-                <div className="flex items-center gap-2 text-sm font-medium text-white mb-2">
-                  <AlertTriangle className="w-4 h-4 text-orange-400" />
-                  Pontos de Atencao
-                </div>
-                <div className="space-y-2">
-                  {pontosAtencao.map((p, i) => (
-                    <div key={i} className="bg-zinc-800/50 rounded-lg p-2.5 border-l-2 border-orange-500/50">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className={`text-[10px] font-semibold ${getSeveridadeColor(safeRender(p.severidade))}`}>{safeRender(p.severidade)}</span>
-                        <span className="text-xs text-zinc-300">{safeRender(p.item)}</span>
-                      </div>
-                      <p className="text-[10px] text-zinc-500">{safeRender(p.sugestao)}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {recsTop3.length > 0 && (
-              <div>
-                <div className="flex items-center gap-2 text-sm font-medium text-white mb-2">
-                  <Star className="w-4 h-4 text-yellow-400" />
-                  Recomendacoes
-                </div>
-                <div className="space-y-1.5">
-                  {recsTop3.map((r, i) => (
-                    <div key={i} className="flex items-start gap-2 text-xs">
-                      <span className="text-yellow-400 font-bold">#{safeRender(r.prioridade)}</span>
-                      <div>
-                        <span className="text-zinc-300">{safeRender(r.acao)}</span>
-                        <span className="text-zinc-500 ml-1">— {safeRender(r.motivo)}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {conclusao && (
-              <div className="bg-zinc-800/30 rounded-lg p-3 border border-zinc-700/50">
-                <p className="text-xs text-zinc-400 italic">{safeRender(conclusao)}</p>
-              </div>
-            )}
-          </div>
-        );
-      })()}
 
       {/* ═══ j) DADOS TÉCNICOS [Colapsado] ═══ */}
       <div>
