@@ -292,13 +292,18 @@ const DEADLIFT_CONVENTIONAL_TEMPLATE: ExerciseTemplate = {
     {
       joint: 'shoulder_position',
       label: 'Posição dos Ombros',
-      expectedState: 'Sobre ou ligeiramente à frente da barra',
+      expectedState: 'Ombros sobre ou à frente da barra durante o pull',
       side: 'bilateral',
       criteria: {
-        maxVariation: { metric: 'shoulder_bar_deviation', acceptable: 3, warning: 6, danger: 10, unit: 'cm' },
+        maxVariation: { metric: 'shoulder_bar_deviation', acceptable: 5, warning: 10, danger: 18, unit: 'cm' },
       },
-      stabilityMode: 'controlled',
+      stabilityMode: 'functional',
       instabilityMeaning: 'Barra afastando do corpo — braço de momento aumentado',
+      stateMessages: {
+        firme: 'Ombros bem posicionados sobre a barra',
+        alerta: 'Deslocamento normal com o movimento do tronco',
+        compensacao: 'Barra afastando do corpo — verificar path',
+      },
       correctiveExercises: ['deadlift com pausa no joelho', 'block pulls'],
       ragTopics: ['trajetória barra deadlift', 'posição ombros deadlift'],
     },

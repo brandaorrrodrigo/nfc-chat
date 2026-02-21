@@ -56,6 +56,7 @@ export interface StabilizerJointResult {
     maxFrame?: number;
     p10?: number;
     p90?: number;
+    correctionNote?: string;
     baseThresholds: { acceptable: number; warning: number; danger: number };
     effectiveThresholds: { acceptable: number; warning: number; danger: number };
     explanation: string;
@@ -120,6 +121,8 @@ export interface StabilizerMetricInput {
   maxFrame?: number;
   p10?: number;
   p90?: number;
+  /** Nota sobre correção aplicada (ex: hip correction no deadlift lombar) */
+  correctionNote?: string;
 }
 
 // ============================
@@ -472,6 +475,7 @@ export function classifyExerciseV2(
         maxFrame: input.maxFrame,
         p10: input.p10,
         p90: input.p90,
+        correctionNote: input.correctionNote,
         baseThresholds: {
           acceptable: effectiveMaxVariation.acceptable,
           warning: effectiveMaxVariation.warning,

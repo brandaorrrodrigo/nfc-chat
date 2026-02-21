@@ -386,6 +386,7 @@ export default function BiomechanicsAnalysisView({
               const transparency = (s as { transparency?: {
                 rawValue: number; minFrame?: number; maxFrame?: number;
                 p10?: number; p90?: number;
+                correctionNote?: string;
                 baseThresholds?: { acceptable: number; warning: number; danger: number };
                 effectiveThresholds: { acceptable: number; warning: number; danger: number };
                 explanation: string;
@@ -461,6 +462,9 @@ export default function BiomechanicsAnalysisView({
                             <span className="text-red-400">limite &gt;{transparency.effectiveThresholds.danger}{s.variation.unit}</span>
                           </p>
                         </div>
+                        {transparency.correctionNote && (
+                          <p className="text-zinc-600 italic pt-0.5 border-t border-zinc-700/30">⚙ {transparency.correctionNote}</p>
+                        )}
                         <p className="text-zinc-400 italic pt-0.5">{transparency.explanation}</p>
                       </div>
                     </div>

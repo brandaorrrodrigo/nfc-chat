@@ -689,19 +689,27 @@ function mapMediaPipeStabilizer(
    * Em deadlift com spine neutra: trunk_inclination ≈ f(hip_flexion)
    * A variação que NÃO é explicada pelo hip ROM = instabilidade espinhal real.
    */
-  const getHipCorrectedTrunkVariation = (): number | null => {
+  /**
+   * Retorna variação corrigida do tronco + metadados para display de transparência.
+   * Fator 0.4: em spine neutra o tronco move ~40% do hip ROM. Excesso = rounding.
+   * Fator 0.5 era muito alto → zerava completamente para boa técnica.
+   */
+  const getHipCorrectedTrunkVariation = (): { variation: number; note: string } | null => {
     const trunkVar = getRobustVariation('trunk_inclination');
     if (trunkVar === null) return null;
 
     // Só corrige para hinge — em squat/press o tronco não deve mover tanto
-    if (category !== 'hinge') return trunkVar;
+    if (category !== 'hinge') return { variation: trunkVar, note: '' };
 
     const hipVar = getRobustVariation('hip_avg');
-    if (hipVar === null || hipVar < 10) return trunkVar;
+    if (hipVar === null || hipVar < 10) return { variation: trunkVar, note: '' };
 
-    // Fator 0.5: em spine neutra, trunk move ~50% do que o hip
-    const corrected = Math.max(0, trunkVar - hipVar * 0.5);
-    return Math.round(corrected * 10) / 10;
+    // Fator 0.4: spine neutra → tronco move ~40% do que o quadril
+    // Se trunkVar ≤ hipVar*0.4: lombar neutra (corrected ≈ 0)
+    // Se trunkVar > hipVar*0.4: excesso de flexão lombar detectado
+    const corrected = Math.max(0, trunkVar - hipVar * 0.4);
+    const note = `Tronco P10-P90: ${trunkVar}° | Quadril P10-P90: ${hipVar}° | Correção (×0.4): -${Math.round(hipVar * 0.4)}° | Excesso: ${Math.round(corrected)}°`;
+    return { variation: Math.round(corrected * 10) / 10, note };
   };
 
   // Helper: P90 robusto para valores absolutos (valgo)
@@ -721,11 +729,15 @@ function mapMediaPipeStabilizer(
 
   switch (joint) {
     case 'lumbar': {
-      const variation = getHipCorrectedTrunkVariation();
-      if (variation === null) return null;
-      const lumbarStats = getFrameStats('trunk_inclination');
-      return { joint: 'lumbar', variationValue: variation, unit: '°',
-        minFrame: lumbarStats?.min, maxFrame: lumbarStats?.max, p10: lumbarStats?.p10, p90: lumbarStats?.p90 };
+      const result = getHipCorrectedTrunkVariation();
+      if (result === null) return null;
+      // Para hinge: não mostrar min/max brutos (enganosos vs variação corrigida)
+      // Para não-hinge: mostrar stats normais do tronco
+      const lumbarStats = category !== 'hinge' ? getFrameStats('trunk_inclination') : null;
+      return { joint: 'lumbar', variationValue: result.variation, unit: '°',
+        minFrame: lumbarStats?.min, maxFrame: lumbarStats?.max,
+        p10: lumbarStats?.p10, p90: lumbarStats?.p90,
+        correctionNote: result.note || undefined };
     }
 
     case 'trunk': {
@@ -739,9 +751,9 @@ function mapMediaPipeStabilizer(
     }
 
     case 'thoracic': {
-      const variation = getHipCorrectedTrunkVariation();
-      if (variation === null) return null;
-      return { joint: 'thoracic', variationValue: variation, unit: '°' };
+      const result = getHipCorrectedTrunkVariation();
+      if (result === null) return null;
+      return { joint: 'thoracic', variationValue: result.variation, unit: '°' };
     }
 
     case 'knee_alignment': {
@@ -809,9 +821,9 @@ function mapMediaPipeStabilizer(
 
     case 'thoracic_arch': {
       // Variação da inclinação do tronco como proxy para estabilidade do arco
-      const variation = getHipCorrectedTrunkVariation();
-      if (variation === null) return null;
-      return { joint: 'thoracic_arch', variationValue: variation, unit: '°' };
+      const result = getHipCorrectedTrunkVariation();
+      if (result === null) return null;
+      return { joint: 'thoracic_arch', variationValue: result.variation, unit: '°' };
     }
 
     case 'feet': {
