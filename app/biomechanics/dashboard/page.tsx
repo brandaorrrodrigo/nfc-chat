@@ -7,27 +7,9 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { AlertCircle, CheckCircle, AlertTriangle, Zap, Target, TrendingUp, Info, Trash2, ArrowLeft, X, Loader2, RefreshCw, Video, ArrowRight } from 'lucide-react';
+import { AlertTriangle, Zap, Trash2, ArrowLeft, X, Loader2, RefreshCw, Video, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { safeRender } from '@/lib/utils/safe-render';
 import BiomechanicsAnalysisView from '@/components/biomechanics/BiomechanicsAnalysisView';
-
-/** Arredonda valores numéricos para evitar floating point noise (ex: 26.800000000000004 → 26.8) */
-const formatValue = (val: unknown, decimals = 1): string => {
-  if (val === null || val === undefined) return '';
-  const num = typeof val === 'string' ? parseFloat(val) : Number(val);
-  if (isNaN(num)) return String(val);
-  return num.toFixed(decimals);
-};
-
-/** Formata string com valor+unidade (ex: "26.800000000000004°" → "26.8°") */
-const formatValueStr = (val: string): string => {
-  const match = val.match(/^(-?\d+\.?\d*)(.*)/);
-  if (!match) return val;
-  const num = parseFloat(match[1]);
-  if (isNaN(num)) return val;
-  return formatValue(num) + match[2];
-};
 
 interface Classification {
   criterion: string;
@@ -450,34 +432,6 @@ export default function BiomechanicsDashboard() {
     }
   };
 
-  const getScoreColor = (score: number) => {
-    if (score >= 8) return 'text-green-600';
-    if (score >= 6) return 'text-yellow-600';
-    if (score >= 4) return 'text-orange-600';
-    return 'text-red-600';
-  };
-
-  const getScoreBgColor = (score: number) => {
-    if (score >= 8) return 'bg-green-100';
-    if (score >= 6) return 'bg-yellow-100';
-    if (score >= 4) return 'bg-orange-100';
-    return 'bg-red-100';
-  };
-
-  const getClassificationIcon = (classification: string) => {
-    switch (classification) {
-      case 'danger':
-        return <AlertCircle className="w-5 h-5 text-red-600" />;
-      case 'warning':
-        return <AlertTriangle className="w-5 h-5 text-yellow-600" />;
-      case 'excellent':
-      case 'good':
-        return <CheckCircle className="w-5 h-5 text-green-600" />;
-      default:
-        return <CheckCircle className="w-5 h-5 text-blue-600" />;
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6">
       <div className="max-w-7xl mx-auto">
@@ -564,211 +518,15 @@ export default function BiomechanicsDashboard() {
         )}
 
         {/* Analysis Results */}
-        {analysis && (
+        {analysis && rawData && (
           <>
-            {/* Overall Score Card */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-              {/* Score */}
-              <div className={`rounded-lg border border-slate-700 p-6 ${getScoreBgColor(analysis.analysis.overall_score)}`}>
-                <p className="text-slate-600 text-sm font-semibold mb-2">SCORE GERAL</p>
-                <p className={`text-4xl font-bold ${getScoreColor(analysis.analysis.overall_score)}`}>
-                  {Number(analysis.analysis.overall_score).toFixed(1)}
-                  <span className="text-xl">/10</span>
-                </p>
-                {analysis.analysis.equipment_constraint && analysis.analysis.equipment_constraint !== 'none' && (
-                  <p className="text-slate-500 text-xs mt-2">Score reflete apenas qualidade técnica</p>
-                )}
-              </div>
-
-              {/* Exercise Type */}
-              <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
-                <p className="text-slate-400 text-sm font-semibold mb-2">EXERCÍCIO</p>
-                <p className="text-xl font-bold text-white capitalize">
-                  {analysis.analysis.exercise_type || 'Indefinido'}
-                </p>
-                {analysis.analysis.equipment_constraint_label && (
-                  <span className="inline-block mt-2 px-2 py-1 bg-amber-900/40 text-amber-300 text-xs rounded font-semibold">
-                    {analysis.analysis.equipment_constraint_label}
-                  </span>
-                )}
-              </div>
-
-              {/* Frames Analyzed */}
-              <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
-                <p className="text-slate-400 text-sm font-semibold mb-2">FRAMES</p>
-                <p className="text-xl font-bold text-cyan-400">
-                  {analysis.analysis.frames_analyzed}
-                </p>
-              </div>
-
-              {/* RAG Topics */}
-              <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
-                <p className="text-slate-400 text-sm font-semibold mb-2">TÓPICOS RAG</p>
-                <p className="text-xl font-bold text-purple-400">
-                  {(analysis?.analysis?.rag_topics_used || []).length}
-                </p>
-              </div>
-            </div>
-
-            {/* V2: Motor / Stabilizer Score Breakdown */}
-            {analysis.motorScore != null && analysis.stabilizerScore != null && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                <div className="bg-slate-800 rounded-lg border border-cyan-700/30 p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-slate-400 text-sm font-semibold">PIPELINE</p>
-                    <span className="px-2 py-0.5 rounded text-xs font-semibold bg-cyan-900/40 text-cyan-300 border border-cyan-700/30">
-                      {(analysis.pipelineVersion || 'v2').toUpperCase()}
-                    </span>
-                  </div>
-                  {analysis.mediapipeConfidence != null && (
-                    <p className="text-slate-400 text-sm">
-                      Confianca MediaPipe: <span className="text-cyan-400 font-semibold">{(Number(analysis.mediapipeConfidence) * 100).toFixed(0)}%</span>
-                    </p>
-                  )}
-                </div>
-                <div className={`rounded-lg border border-slate-700 p-6 ${getScoreBgColor(analysis.motorScore)}`}>
-                  <p className="text-slate-600 text-sm font-semibold mb-1">SCORE MOTOR (60%)</p>
-                  <p className={`text-3xl font-bold ${getScoreColor(analysis.motorScore)}`}>
-                    {Number(analysis.motorScore).toFixed(1)}<span className="text-lg">/10</span>
-                  </p>
-                </div>
-                <div className={`rounded-lg border border-slate-700 p-6 ${getScoreBgColor(analysis.stabilizerScore)}`}>
-                  <p className="text-slate-600 text-sm font-semibold mb-1">SCORE ESTABILIZADOR (40%)</p>
-                  <p className={`text-3xl font-bold ${getScoreColor(analysis.stabilizerScore)}`}>
-                    {Number(analysis.stabilizerScore).toFixed(1)}<span className="text-lg">/10</span>
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {/* Summary Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
-              <div className="bg-green-900/30 border border-green-700/50 rounded-lg p-4">
-                <p className="text-green-400 text-xs font-semibold mb-1">EXCELENTE</p>
-                <p className="text-3xl font-bold text-green-400">{analysis.diagnostic.summary.excellent}</p>
-              </div>
-              <div className="bg-blue-900/30 border border-blue-700/50 rounded-lg p-4">
-                <p className="text-blue-400 text-xs font-semibold mb-1">BOM</p>
-                <p className="text-3xl font-bold text-blue-400">{analysis.diagnostic.summary.good}</p>
-              </div>
-              <div className="bg-slate-700/30 border border-slate-600/50 rounded-lg p-4">
-                <p className="text-slate-400 text-xs font-semibold mb-1">ACEITÁVEL</p>
-                <p className="text-3xl font-bold text-slate-400">{analysis.diagnostic.summary.acceptable}</p>
-              </div>
-              <div className="bg-yellow-900/30 border border-yellow-700/50 rounded-lg p-4">
-                <p className="text-yellow-400 text-xs font-semibold mb-1">ALERTA</p>
-                <p className="text-3xl font-bold text-yellow-400">{analysis.diagnostic.summary.warning}</p>
-              </div>
-              <div className="bg-red-900/30 border border-red-700/50 rounded-lg p-4">
-                <p className="text-red-400 text-xs font-semibold mb-1">CRÍTICO</p>
-                <p className="text-3xl font-bold text-red-400">{analysis.diagnostic.summary.danger}</p>
-              </div>
-            </div>
-
-            {/* Problems Section */}
-            {analysis.diagnostic.problems.length > 0 && (
-              <div className="bg-slate-800 rounded-lg border border-red-700/50 p-6 mb-8">
-                <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                  <AlertCircle className="w-6 h-6 text-red-500" />
-                  Problemas Identificados
-                </h2>
-                <div className="space-y-3">
-                  {analysis.diagnostic.problems.map((problem, idx) => (
-                    <div
-                      key={idx}
-                      className="bg-red-900/20 border border-red-700/30 rounded p-4"
-                    >
-                      <div className="flex items-start gap-3">
-                        {getClassificationIcon(problem.classification)}
-                        <div className="flex-1">
-                          <p className="font-bold text-white">{safeRender(problem.label || problem.criterion)}</p>
-                          <p className="text-red-300 text-sm">
-                            Valor: <span className="font-mono font-semibold">{formatValueStr(safeRender(problem.value))}</span>
-                          </p>
-                          <p className="text-red-300 text-sm mt-1">
-                            Classificação: <span className="font-semibold">{safeRender(problem.classification_label || problem.classification)}</span>
-                          </p>
-                          {problem.note && (
-                            <p className="text-red-300/70 text-xs mt-1 italic">{safeRender(problem.note)}</p>
-                          )}
-                          {problem.rag_topics && problem.rag_topics.length > 0 && (
-                            <div className="mt-2 flex flex-wrap gap-1">
-                              {problem.rag_topics.map((topic, i) => (
-                                <span
-                                  key={i}
-                                  className="bg-red-900/40 text-red-300 text-xs px-2 py-1 rounded"
-                                >
-                                  {safeRender(topic)}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Positive Section */}
-            {analysis.diagnostic.positive.length > 0 && (
-              <div className="bg-slate-800 rounded-lg border border-green-700/50 p-6 mb-8">
-                <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                  <CheckCircle className="w-6 h-6 text-green-500" />
-                  Pontos Positivos
-                </h2>
-                <div className="space-y-3">
-                  {analysis.diagnostic.positive.map((positive, idx) => (
-                    <div
-                      key={idx}
-                      className="bg-green-900/20 border border-green-700/30 rounded p-4"
-                    >
-                      <div className="flex items-start gap-3">
-                        {getClassificationIcon(positive.classification)}
-                        <div className="flex-1">
-                          <p className="font-bold text-white">{safeRender(positive.label || positive.criterion)}</p>
-                          <p className="text-green-300 text-sm">
-                            Valor: <span className="font-mono font-semibold">{formatValueStr(safeRender(positive.value))}</span>
-                          </p>
-                          <p className="text-green-300 text-sm mt-1">
-                            Classificação: <span className="font-semibold">{safeRender(positive.classification_label || positive.classification)}</span>
-                          </p>
-                          {positive.note && (
-                            <p className="text-green-300/70 text-xs mt-1 italic">{safeRender(positive.note)}</p>
-                          )}
-                          {positive.rag_topics && positive.rag_topics.length > 0 && (
-                            <div className="mt-2 flex flex-wrap gap-1">
-                              {positive.rag_topics.map((topic, i) => (
-                                <span
-                                  key={i}
-                                  className="bg-green-900/40 text-green-300 text-xs px-2 py-1 rounded"
-                                >
-                                  {safeRender(topic)}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Análise Detalhada — layout unificado com comunidades/videos */}
-            {rawData && (
-              <div className="mt-8">
-                <BiomechanicsAnalysisView
-                  data={rawData}
-                  plan={correctivePlan}
-                  onGeneratePlan={handleGeneratePlan}
-                  planLoading={planLoading}
-                  planError={planError}
-                />
-              </div>
-            )}
+            <BiomechanicsAnalysisView
+              data={rawData}
+              plan={correctivePlan}
+              onGeneratePlan={handleGeneratePlan}
+              planLoading={planLoading}
+              planError={planError}
+            />
 
             {/* Metadata */}
             <div className="mt-8 text-center text-slate-500 text-sm">

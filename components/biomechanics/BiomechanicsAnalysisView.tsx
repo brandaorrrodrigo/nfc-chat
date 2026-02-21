@@ -308,14 +308,6 @@ export default function BiomechanicsAnalysisView({
                   <div className="flex items-center gap-3 text-[10px] text-zinc-500">
                     <span>Movimento: {safeRender(m.movement)}</span>
                     <span>ROM: {formatValue(m.rom.value)}{safeRender(m.rom.unit)}{m.rom.startAngle != null && m.rom.peakAngle != null && ` (de ${formatValue(m.rom.startAngle, 0)}${m.rom.unit} a ${formatValue(m.rom.peakAngle, 0)}${m.rom.unit})`}</span>
-                    {m.rom.returnAngle != null && (
-                      <span>retorno: {formatValue(m.rom.returnAngle, 0)}{safeRender(m.rom.unit)}</span>
-                    )}
-                    {m.rom.eccentricControl && m.rom.eccentricControl !== 'unknown' && (
-                      <span className={m.rom.eccentricControl === 'controlled' ? 'text-green-600' : 'text-orange-500'}>
-                        {m.rom.eccentricControl === 'controlled' ? '✓ exc. controlada' : '⚠ soltou peso'}
-                      </span>
-                    )}
                   </div>
                   {m.peak_contraction != null && !isNaN(Number(m.peak_contraction)) && (
                     <div className="text-[10px] text-zinc-500 mt-0.5">Pico contracao: {formatValue(m.peak_contraction, 0)}{safeRender(m.rom.unit)}</div>
@@ -524,13 +516,15 @@ export default function BiomechanicsAnalysisView({
       })()}
 
       {/* ═══ g) AGENDAR RETESTE ═══ */}
-      <div className="text-center">
-        <button className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-cyan-600/15 border border-cyan-500/30 text-cyan-300 text-sm font-medium hover:bg-cyan-600/25 transition-colors">
-          <Calendar className="w-4 h-4" />
-          Agendar Reteste em 2-4 Semanas
-        </button>
-        <p className="text-[10px] text-zinc-600 mt-2">Recomendado apos seguir o plano corretivo</p>
-      </div>
+      {stabilizerAnalysis.some(s => s.variation.classification !== 'firme') && (
+        <div className="text-center">
+          <button className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-cyan-600/15 border border-cyan-500/30 text-cyan-300 text-sm font-medium hover:bg-cyan-600/25 transition-colors">
+            <Calendar className="w-4 h-4" />
+            Agendar Reteste em 2-4 Semanas
+          </button>
+          <p className="text-[10px] text-zinc-600 mt-2">Recomendado apos seguir o plano corretivo</p>
+        </div>
+      )}
 
       {/* ═══ h) VOTE (opcional) ═══ */}
       {onVote && (
